@@ -1,0 +1,75 @@
+---
+title: 使用腾讯云 Ti-one 部署
+description: 在腾讯云 Ti-one 平台上部署 Youtu-RAG 后端服务的指南
+---
+
+本文档提供了在腾讯云 Ti-one 平台上部署 Youtu Embedding、Youtu HiChunk 和 Youtu Parsing 后端服务的说明。
+
+# 概述
+
+[腾讯云 Ti-one](https://cloud.tencent.com/product/tione) 是一个一站式机器学习平台，提供模型训练、部署和推理服务。使用 Ti-one，你可以在不管理自己的 GPU 基础设施的情况下部署 Youtu-RAG 后端服务。
+
+# 前提条件
+
+- 拥有 Ti-one 和腾讯云容器镜像服务（TCR）访问权限的腾讯云账户
+
+# 在 Ti-one 上部署服务
+
+## 步骤 1: 准备容器镜像
+
+1. 按照各后端服务的相应 Docker 部署指南构建 Docker 镜像
+    - [Youtu Embedding](./youtu-embedding/docker-image)
+    - [Youtu HiChunk](./hichunk/docker-image)
+    - [Youtu Parsing](./youtu-parsing/docker-image)
+2. 将 Docker 镜像上传到[腾讯云容器镜像服务（TCR）](https://cloud.tencent.com/product/tcr)。你可以按照 [TCR 文档](https://cloud.tencent.com/document/product/1141/41811)的说明将镜像推送到 TCR。
+
+## 步骤 2: 创建模型服务
+
+1. 登录[腾讯云控制台](https://console.cloud.tencent.com/)并导航到 [Ti-one](https://console.cloud.tencent.com/tione/v2/service/)
+2. 进入**模型服务** > **在线服务**
+3. 点击**创建服务**
+
+## 步骤 3: 配置模型
+
+1. **服务名称**: 为你的服务输入名称（例如，`youtu-embedding`）
+2. **部署方式**: 选择**标准部署**
+3. **资源来源**: 如果你有现有实例，选择**从 CVM 选择**，或选择**在 TI-ONE 上购买**创建新实例
+4. **模型来源**: 选择**容器镜像**，并选择你刚刚上传到腾讯云容器镜像服务（TCR）的容器镜像
+5. **端口**: 默认为 8501，或指定与你的容器配置匹配的自定义端口
+6. **规格**: 选择一个 GPU 实例
+
+## 步骤 4: 更新服务端点
+
+1. 创建服务后，导航到服务详情页面
+2. 在**服务调用**部分的**常规服务调用**下找到并复制**调用地址**。这将是你用于 Youtu-RAG 集成的服务端点。
+
+# 配置 Youtu-RAG
+
+一旦所有服务都在 Ti-one 上部署完成，使用 Ti-one 服务端点更新你的 `.env` 文件。你还需要检查你的 RAG 配置文件，如[本地部署指南](./index)中所示，以确保兼容性。
+
+```bash
+# =============================================
+# Embeddings (Ti-one)
+# =============================================
+UTU_EMBEDDING_URL=https://<你的-tione-embedding-端点>
+UTU_EMBEDDING_MODEL=youtu-embedding-2B
+
+# =============================================
+# Chunk (Ti-one)
+# =============================================
+UTU_CHUNK_BASE_URL=https://<你的-tione-hichunk-端点>
+UTU_CHUNK_MODEL=hichunk
+
+# =============================================
+# OCR (Ti-one)
+# =============================================
+UTU_OCR_BASE_URL=https://<你的-tione-parsing-端点>
+UTU_OCR_MODEL=youtu-parsing
+```
+
+# 其他资源
+
+- [腾讯云 Ti-one 文档](https://cloud.tencent.com/document/product/851)
+- [Ti-one 服务部署指南](https://cloud.tencent.com/document/product/851/74141)
+- [Ti-one 容器指南](https://cloud.tencent.com/document/product/851/74144)
+- [Ti-one 定价](https://cloud.tencent.com/document/product/851/74108)

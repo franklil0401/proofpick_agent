@@ -1,0 +1,58 @@
+---
+title: 本地使用 Youtu-RAG
+description: 本地部署和使用 Youtu-RAG 的指南
+---
+
+本文档提供了如何在本地部署和使用 Youtu-RAG 的分步指南。具体包括设置 Youtu Embedding、HiChunk、Youtu Parsing 后端服务，并将它们与 Youtu-RAG 集成。
+
+或者，你也可以考虑在腾讯云 Ti-one 平台上部署后端服务。详情请参见[使用腾讯云 Ti-one 部署](/docs/zh/ti-one)。
+
+## 步骤 1：部署 Youtu Embedding 服务
+按照[本地部署 Youtu Embedding](/docs/zh/youtu-embedding/deploying-locally) 或[使用 Docker 部署 Youtu Embedding](/docs/zh/youtu-embedding/docker-image) 中的说明设置 Youtu Embedding 服务。然后将以下配置添加到你的 `.env` 文件中：
+
+```bash
+# =============================================
+# Embeddings
+# =============================================
+
+# 在 configs/rag/xx.yaml 中设置 embedding type: "local" 
+# Youtu-Embedding-2B (本地服务，2048 维度)
+UTU_EMBEDDING_URL=http://<你的_embedding_服务器地址>:<端口>
+UTU_EMBEDDING_MODEL=youtu-embedding-2B
+```
+
+## 步骤 2：部署 Youtu HiChunk 服务
+按照[本地部署 Youtu HiChunk](/docs/zh/hichunk/deploying-locally) 或[使用 Docker 部署 Youtu HiChunk](/docs/zh/hichunk/docker-image) 中的说明设置 Youtu HiChunk 服务。然后将以下配置添加到你的 `.env` 文件中：
+
+```bash
+# =============================================
+# Chunk
+# =============================================
+# 在 configs/rag/file_management.yaml 中设置 chunk.enabled: true
+UTU_CHUNK_BASE_URL=http://<你的_hichunk_服务器地址>:<端口>
+UTU_CHUNK_MODEL=hichunk
+```
+
+你还需要在 RAG 配置文件 `configs/rag/file_management.yaml` 中将分块参数设置为 `true`：
+
+```yaml
+chunk:
+  enabled: true # 设置为 true 以启用分块
+  model: "${UTU_CHUNK_MODEL}"
+  base_url: "${UTU_CHUNK_BASE_URL}"
+```
+
+## 步骤 3：部署 Youtu Parsing 服务
+按照[本地部署 Youtu Parsing](/docs/zh/youtu-parsing/deploying-locally) 或[使用 Docker 部署 Youtu Parsing](/docs/zh/youtu-parsing/docker-image) 中的说明设置 Youtu Parsing 服务。然后将以下配置添加到你的 `.env` 文件中：
+
+```bash
+# =============================================
+# OCR
+# =============================================
+UTU_OCR_BASE_URL=https://<你的_youtu_parsing_服务器地址>:<端口>
+UTU_OCR_MODEL=youtu-parsing
+```
+
+
+## 最后一步：本地运行 Youtu-RAG
+在所有后端服务部署并配置完成后，你现在可以在本地运行 Youtu-RAG。确保你的 `.env` 文件包含你已部署的每个服务的正确主机和端口信息。

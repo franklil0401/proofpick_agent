@@ -1,0 +1,15 @@
+{
+  "icon": "home-4-line",
+  "defaultOpen": true,
+  "pages": [
+    "index",
+    "quickstart",
+    "environment-variables",
+    "frontend",
+    "ti-one",
+    "---Youtu RAG 组件---",
+    "hichunk",
+    "youtu-embedding",
+    "youtu-parsing"
+  ]
+}
