@@ -6,8 +6,8 @@
 |---|---|
 | 项目名称 | SmartBuy Research Agent（多源消费决策研究 Agent） |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 2：阿里云百炼 LLM、Embedding、Reranker 适配（已完成，等待用户验收） |
-| 当前状态 | 三模型、1024 维建库、KB Search、二阶段 Rerank、有限重试、显式降级、用量统计和日志脱敏已验证；阶段 3 尚未开始 |
+| 当前阶段 | 阶段 3：数据采集、统一结构、清洗和知识库构建（已完成，等待用户验收） |
+| 当前状态 | 12 个显示器型号、可重建 SQLite、60-chunk 正式知识库和 40 条检索评测已完成；阶段 4 Agent 编排尚未开始 |
 | 最后更新时间 | 2026-08-26 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
@@ -336,14 +336,14 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ## 9. 验收指标
 
-以下数值均为**建议目标**，不是已取得结果；阶段 1～6 应先测基线，再根据数据质量、API 限额和成本校准，并在变更时记录理由。
+以下数值是全项目**建议目标**；已取得的阶段 3 检索基线在表后和[阶段 3 报告](smartbuy/docs/stage3_data_and_retrieval_report.md)中单独记录，不能外推为完整 Agent 指标。
 
 | 指标 | 定义、测试数据与计算 | 建议目标 | 验收命令或操作 | 未达标处理 |
 |---|---|---|---|---|
 | 核心功能成功率 | 冒烟矩阵中成功功能数 / 应测功能数；覆盖上传、建库、KB、SQL、编排、Monitor | MVP 必选项 100%，非阻断增强项单列 | 计划 `uv run pytest tests/smoke -q` + 人工 UI 检查 | 阻断项不完成阶段；增强项降级并记录 |
 | 端到端任务完成率 | 满足预先定义行为的任务数 / 全部 E2E 任务 | ≥85% | 计划 `uv run python smartbuy/eval/run_eval.py --suite e2e` | 分类别定位数据、路由、生成失败，修复后重跑 |
-| Recall@K | 金标证据至少一个出现在 Top-K 的问题数 / 可评估检索问题数 | Recall@5 ≥90% | 计划 Eval CLI 的 retrieval suite | 调整切分、元数据、查询和 K，禁止只挑成功样本 |
-| nDCG@K / MRR | 按证据相关等级计算 nDCG@5；只有单一金标时补充 MRR | nDCG@5 ≥0.85 或 MRR ≥0.80 | 计划对同一召回集执行 rerank suite | 校准 instruct、候选数和重排适配；保留向量基线 |
+| Recall@K | Top-K 型号集合覆盖金标型号的比例，按可评估问题取平均 | Recall@5 ≥90% | `python -m smartbuy.eval.run_retrieval_eval`（真实调用、有费用） | 调整切分、元数据、查询和 K，禁止只挑成功样本 |
+| nDCG@K / MRR | 按二元型号相关度计算 nDCG@5；只有单一金标时可补充 MRR | nDCG@5 ≥0.85 或 MRR ≥0.80 | 同一 Runner 比较 Vector-only 与 Reranker | 校准候选数和重排适配；保留向量基线 |
 | 硬约束满足率 | 推荐候选满足的硬约束数 / 应满足总数；任务级任一违规即失败 | 字段级与任务级均 100% | 计划 constraint scorer + 人工 SQL 抽查 | 阶段 4/5 不完成；违规候选确定性移除 |
 | 证据引用正确率 | 引用内容直接支持对应原子事实数 / 全部引用事实数 | ≥95% | 计划 evidence scorer，人工复核至少 20% | 降低声明粒度、修复来源绑定或拒答 |
 | 无依据结论比例 | 无可访问证据支持的外部事实数 / 全部外部事实数 | ≤5%，关键硬约束为 0 | 计划 unsupported-claim scorer + 人工抽查 | 增加引用校验，无法支持的结论删除或标未知 |
@@ -356,6 +356,8 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 | 敏感信息扫描 | Git 历史与待提交内容中的真实 Key、私钥、`.env`、Authorization 头 | 0 个高可信发现 | `git diff --cached`、`git ls-files`、规则扫描；可引入 gitleaks | 立即取消提交并清理；若泄露则轮换 Key |
 | 自动化测试 | 单元/集成/E2E 测试通过率与关键自研模块覆盖率 | 测试 100% 通过；关键模块覆盖率 ≥80%（建议） | 计划 `uv run pytest -q --cov` | 修复失败；无法自动化项记录人工证据，不虚报覆盖率 |
 | 最终演示案例数 | 可重复运行且保存证据的案例 | ≥4：单文档、SQL、多源、边界/降级各至少 1；建议备用录屏 | 五分钟演示脚本逐项执行 | 不稳定能力移出演示，保留真实边界说明 |
+
+阶段 3 固定 40 条检索任务的真实结果：36 条有金标任务上，Vector-only / Vector + Reranker 的 Recall@5 分别为 0.8912 / 0.9838，nDCG@5 分别为 0.8170 / 0.9541；4 条无依据或无关问题的固定阈值拒答为 0/4。前两项达到建议目标不代表 Agentic RAG 完成，拒答失败要求阶段 4 增加字段证据与 SQLite 复核。
 
 ## 10. 分阶段开发计划
 
@@ -391,7 +393,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 2：阿里云百炼 LLM、Embedding、Reranker 适配
 
-- 阶段状态：**已完成（2026-08-26，等待用户验收）**。
+- 阶段状态：**已完成并通过用户验收（2026-08-26）**。
 - 阶段目标：安全复用系统 Key，分别跑通三类模型并接入 Youtu-RAG。
 - 前置依赖：阶段 1 基线；`Qianwen_workspace_id` 已配置且用户确认有效；百炼权限与北京地域匹配。
 - 开发任务：统一配置加载；普通/流式/Tool Calling；Embedding 1024 维和 `/model_id` 兼容处理；Reranker `/reranks`、顶层 `results`、用量统计；建库、KB Search、二阶段排序；超时/重试/降级/脱敏日志。
@@ -406,15 +408,17 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 3：数据采集、统一结构、清洗和知识库构建
 
-- 阶段目标：建立可追踪、可重建的显示器数据与知识库。
+- 阶段状态：**已完成（2026-08-26，等待用户验收）**。
+- 阶段目标：建立可追踪、可重建的显示器数据、SQLite、知识库和检索基线。
 - 前置依赖：阶段 2 Embedding 稳定；来源许可和首批型号确定。
-- 开发任务：来源清单、产品/价格/来源 Schema、清洗规范、构建 SQLite、导出 Excel、文档切分、索引版本、数据卡和 30～50 条评测集初稿。
-- 预计模块：`smartbuy/data/`、`smartbuy/db/`、`smartbuy/scripts/`、`smartbuy/eval/cases.jsonl`、数据卡（计划）。
-- 交付物：10～15 个型号、10～20 份治理资料、SQLite/Excel、向量索引、数据质量报告。
-- 测试方法：Schema/约束单测、校验值、重复/缺失/单位检查、人工抽查、Recall@5 基线。
-- 退出条件：关键规格均有来源；价格均有时间；数据库可由脚本重建；Recall@5 达建议目标或有校准说明。
-- 风险与回退：版权、动态页面、字段冲突；不提交受限 PDF，缩小型号集但不降低来源质量。
-- 文档更新：PROJECT_STRUCTURE、数据卡、README 数据范围和实际数量。
+- 实际开发：统一四实体 Schema；来源/许可/冲突治理；事实卡与 processed JSONL 生成；SQLite 原子重建与 CSV 可选导出；H2 切分、1024 维索引；40 条 Vector/Reranker 评测。
+- 实际模块：`smartbuy/data/`、`smartbuy/db/`、`smartbuy/retrieval/`、`smartbuy/eval/`、阶段 3 脚本、单元测试、数据卡、ADR-0003 和阶段报告。
+- 交付物：12 个型号、4 个品牌、16 份治理资料、4 条价格观察、180 条证据、12 张事实卡、工作区外 SQLite/Chroma、40 条评测任务和离线结果。
+- 测试方法：唯一性/URL/单位/三态/缺失/重复/地区/外键/哈希检查；SQLite 连续重建；人工抽查 3/12 型号；索引全量元数据检查；Vector/Reranker 真实评测和强制降级。
+- 量化退出条件：自动质量错误 0；SQLite `integrity=ok`、外键违规 0 且连续逻辑哈希一致；构建状态 `completed`，60 文档/60 chunks；Reranker Recall@5 0.9838、nDCG@5 0.9541；成本小于 10 元。
+- 实际结果：退出条件满足。固定阈值拒答 0/4 是非阻断但高优先级边界；本阶段未实现自然语言回答、Text2SQL、ReAct、Memory 或确定性硬约束。
+- 风险与回退：不提交第三方全文；动态价格追加且带时间；冲突并列保存；Reranker 失败保留向量顺序；组合约束和拒答转由阶段 4 的 SQLite/证据复核承担。
+- 文档更新：[数据卡](smartbuy/docs/data_card.md)、[ADR-0003](smartbuy/docs/adr/0003-governed-monitor-data-and-index.md)、[阶段 3 报告](smartbuy/docs/stage3_data_and_retrieval_report.md)、Runtime Manifest、项目结构和 README 已同步。
 - 建议 Commit Message：`feat(stage3): build governed monitor dataset and knowledge base`。
 
 ### 阶段 4：核心消费决策 Agent 工作流

@@ -1,0 +1,1269 @@
+{
+  "cases": [
+    {
+      "case_id": "c001",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "latency_ms": 225.1,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-g2724d-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9293768494722765,
+      "vector_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "benq-pd2705u-us"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c002",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pa27jcv-cn"
+      ],
+      "latency_ms": 200.814,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pa27jcv-cn",
+        "asus-pa279crv-cn",
+        "asus-pg27aqdm-cn",
+        "dell-g2724d-cn",
+        "benq-pd2725u-ca"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.8451639605683312,
+      "vector_model_ids": [
+        "asus-pa27jcv-cn",
+        "asus-pa279crv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-pd2725u-ca",
+        "benq-pd2705u-us"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c003",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pg27aqdm-cn"
+      ],
+      "latency_ms": 212.133,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn",
+        "asus-pa27jcv-cn",
+        "asus-pa279crv-cn",
+        "dell-g2724d-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9126414509699896,
+      "vector_model_ids": [
+        "asus-pg27aqdm-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn",
+        "benq-pd2705u-us"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c004",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "lg-27up850k-w-cn"
+      ],
+      "latency_ms": 223.173,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "asus-pg27aqdm-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9378535580176564,
+      "vector_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn",
+        "benq-pd2725u-ca"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c005",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "benq-ex2710u-cn"
+      ],
+      "latency_ms": 192.68,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27up850k-w-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9253722196034968,
+      "vector_model_ids": [
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c006",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "benq-pd2725u-ca"
+      ],
+      "latency_ms": 206.399,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-pd2725u-ca",
+        "benq-pd2705u-us",
+        "dell-s2722qc-cn",
+        "asus-pa27jcv-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.891065087135152,
+      "vector_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 0.6309297535714575,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c007",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "latency_ms": 196.554,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9513047591906695,
+      "vector_model_ids": [
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "benq-pd2725u-ca"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c008",
+      "category": "single_fact",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2724d-cn"
+      ],
+      "latency_ms": 221.926,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn",
+        "dell-s2722qc-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9341363907991798,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "benq-pd2725u-ca"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c009",
+      "category": "similar_model",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "latency_ms": 231.293,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.884856184973716,
+      "vector_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "dell-s2722qc-cn",
+        "benq-pd2705u-us",
+        "dell-g2724d-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c010",
+      "category": "similar_model",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "latency_ms": 210.349,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-s2722qc-cn",
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "benq-pd2725u-ca"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.6071259452255364,
+      "vector_model_ids": [
+        "dell-s2722qc-cn",
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c011",
+      "category": "similar_model",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pa27jcv-cn"
+      ],
+      "latency_ms": 186.845,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pa27jcv-cn",
+        "asus-pa279crv-cn",
+        "dell-u2723qe-cn",
+        "benq-pd2725u-ca",
+        "lg-27gs95qe-b-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.7801134726907637,
+      "vector_model_ids": [
+        "asus-pa27jcv-cn",
+        "asus-pa279crv-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27up850k-w-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c012",
+      "category": "similar_model",
+      "degraded": false,
+      "expected_model_ids": [
+        "lg-27gs95qe-b-cn"
+      ],
+      "latency_ms": 268.62,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn",
+        "asus-pg27aqdm-cn",
+        "dell-g2724d-cn",
+        "benq-pd2705u-us"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.8799833421889401,
+      "vector_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 0.6309297535714575,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c013",
+      "category": "similar_model",
+      "degraded": false,
+      "expected_model_ids": [
+        "benq-pd2725u-ca"
+      ],
+      "latency_ms": 189.359,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-pd2725u-ca",
+        "benq-pd2705u-us",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn",
+        "dell-u2724d-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9028479428100384,
+      "vector_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27up850k-w-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn"
+      ],
+      "vector_ndcg_at_5": 0.6309297535714575,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c014",
+      "category": "similar_model",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2724d-cn"
+      ],
+      "latency_ms": 404.461,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "dell-g2724d-cn",
+        "lg-27gs95qe-b-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.7591492681405784,
+      "vector_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-g2724d-cn",
+        "benq-pd2705u-us"
+      ],
+      "vector_ndcg_at_5": 0.6309297535714575,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c015",
+      "category": "multi_document",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "latency_ms": 219.393,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "lg-27gs95qe-b-cn",
+        "asus-pg27aqdm-cn",
+        "asus-pa279crv-cn",
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.7567417681274351,
+      "vector_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "benq-pd2705u-us"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c016",
+      "category": "multi_document",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn"
+      ],
+      "latency_ms": 273.894,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "benq-pd2725u-ca",
+        "lg-27up850k-w-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.7054687141887002,
+      "vector_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c017",
+      "category": "multi_document",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "latency_ms": 201.584,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "dell-u2723qe-cn",
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9023450713337711,
+      "vector_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-pd2705u-us",
+        "dell-u2724d-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c018",
+      "category": "multi_document",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-g2724d-cn",
+        "benq-ex2710u-cn"
+      ],
+      "latency_ms": 222.657,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-g2724d-cn",
+        "benq-ex2710u-cn",
+        "dell-u2724d-cn",
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.8895143291740912,
+      "vector_model_ids": [
+        "dell-g2724d-cn",
+        "benq-ex2710u-cn",
+        "dell-u2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c019",
+      "category": "multi_document",
+      "degraded": false,
+      "expected_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca"
+      ],
+      "latency_ms": 194.441,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.8557731149791875,
+      "vector_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c020",
+      "category": "multi_document",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn",
+        "benq-ex2710u-cn"
+      ],
+      "latency_ms": 212.408,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-ex2710u-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "reranked_ndcg_at_5": 0.6508205185601091,
+      "reranked_recall_at_5": 0.6666666666666666,
+      "should_abstain": false,
+      "top_relevance_score": 0.824391102548206,
+      "vector_model_ids": [
+        "benq-ex2710u-cn",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-u2724d-cn"
+      ],
+      "vector_ndcg_at_5": 0.6713860725233041,
+      "vector_recall_at_5": 0.6666666666666666
+    },
+    {
+      "case_id": "c021",
+      "category": "combined_filter",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "latency_ms": 212.42,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn",
+        "dell-s2722qc-cn",
+        "asus-pa279crv-cn",
+        "benq-pd2705u-us"
+      ],
+      "reranked_ndcg_at_5": 0.8048099750039491,
+      "reranked_recall_at_5": 0.75,
+      "should_abstain": false,
+      "top_relevance_score": 0.809148009170551,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "vector_ndcg_at_5": 0.19519002499605084,
+      "vector_recall_at_5": 0.25
+    },
+    {
+      "case_id": "c022",
+      "category": "combined_filter",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-s2722qc-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca"
+      ],
+      "latency_ms": 429.682,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-pd2705u-us",
+        "dell-s2722qc-cn",
+        "benq-pd2725u-ca",
+        "asus-pa27jcv-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.7620731396424246,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "benq-pd2705u-us",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 0.4776237035032179,
+      "vector_recall_at_5": 0.6666666666666666
+    },
+    {
+      "case_id": "c023",
+      "category": "combined_filter",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "latency_ms": 199.744,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn",
+        "benq-pd2705u-us",
+        "asus-pa279crv-cn",
+        "benq-ex2710u-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.7870718859520656,
+      "vector_model_ids": [
+        "asus-pg27aqdm-cn",
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "vector_ndcg_at_5": 0.6131471927654584,
+      "vector_recall_at_5": 0.5
+    },
+    {
+      "case_id": "c024",
+      "category": "combined_filter",
+      "degraded": false,
+      "expected_model_ids": [
+        "benq-ex2710u-cn"
+      ],
+      "latency_ms": 236.281,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-ex2710u-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "asus-pa279crv-cn",
+        "dell-u2724d-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.7463447687361744,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "asus-pa279crv-cn",
+        "dell-g2724d-cn",
+        "asus-pg27aqdm-cn",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 0.0,
+      "vector_recall_at_5": 0.0
+    },
+    {
+      "case_id": "c025",
+      "category": "combined_filter",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "latency_ms": 199.547,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "benq-ex2710u-cn",
+        "asus-pa279crv-cn"
+      ],
+      "reranked_ndcg_at_5": 0.6309297535714575,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.6738356641484444,
+      "vector_model_ids": [
+        "asus-pg27aqdm-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn",
+        "benq-ex2710u-cn"
+      ],
+      "vector_ndcg_at_5": 0.0,
+      "vector_recall_at_5": 0.0
+    },
+    {
+      "case_id": "c026",
+      "category": "combined_filter",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn"
+      ],
+      "latency_ms": 209.087,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "benq-pd2725u-ca",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.6872736502430814,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "benq-ex2710u-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 0.5012658353418871,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c027",
+      "category": "usb_c_trap",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2724d-cn"
+      ],
+      "latency_ms": 214.954,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "reranked_ndcg_at_5": 0.6309297535714575,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.8849353668382897,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "benq-ex2710u-cn",
+        "asus-pg27aqdm-cn",
+        "dell-u2723qe-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c028",
+      "category": "usb_c_trap",
+      "degraded": false,
+      "expected_model_ids": [],
+      "latency_ms": 204.087,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "asus-pg27aqdm-cn"
+      ],
+      "reranked_ndcg_at_5": 0.0,
+      "reranked_recall_at_5": 0.0,
+      "should_abstain": true,
+      "top_relevance_score": 0.8972514490321123,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "benq-ex2710u-cn",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "vector_ndcg_at_5": 0.0,
+      "vector_recall_at_5": 0.0
+    },
+    {
+      "case_id": "c029",
+      "category": "usb_c_trap",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "latency_ms": 188.239,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9312567621204424,
+      "vector_model_ids": [
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c030",
+      "category": "usb_c_trap",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-u2724d-cn"
+      ],
+      "latency_ms": 196.276,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9483420297898781,
+      "vector_model_ids": [
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn",
+        "benq-pd2705u-us",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c031",
+      "category": "price_temporal",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "latency_ms": 178.236,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2725u-ca",
+        "benq-pd2705u-us"
+      ],
+      "reranked_ndcg_at_5": 0.6309297535714575,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.6250459649866766,
+      "vector_model_ids": [
+        "benq-pd2725u-ca",
+        "dell-u2724d-cn",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "benq-pd2705u-us"
+      ],
+      "vector_ndcg_at_5": 0.43067655807339306,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c032",
+      "category": "price_temporal",
+      "degraded": false,
+      "expected_model_ids": [
+        "lg-27up850k-w-cn"
+      ],
+      "latency_ms": 208.362,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.5471733527700393,
+      "vector_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn",
+        "benq-pd2725u-ca"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c033",
+      "category": "price_temporal",
+      "degraded": false,
+      "expected_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "latency_ms": 210.221,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "asus-pg27aqdm-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.865959073117999,
+      "vector_model_ids": [
+        "dell-g2724d-cn",
+        "dell-u2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c034",
+      "category": "source_conflict",
+      "degraded": false,
+      "expected_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "latency_ms": 190.217,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.965300931233132,
+      "vector_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c035",
+      "category": "region_conflict",
+      "degraded": false,
+      "expected_model_ids": [
+        "asus-pa27jcv-cn"
+      ],
+      "latency_ms": 221.209,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pa27jcv-cn",
+        "asus-pa279crv-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "benq-pd2705u-us"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.6977991796860726,
+      "vector_model_ids": [
+        "asus-pa27jcv-cn",
+        "asus-pa279crv-cn",
+        "benq-pd2705u-us",
+        "asus-pg27aqdm-cn",
+        "benq-pd2725u-ca"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c036",
+      "category": "source_conflict",
+      "degraded": false,
+      "expected_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "latency_ms": 202.777,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-u2723qe-cn",
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.9676745568697078,
+      "vector_model_ids": [
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "asus-pg27aqdm-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c037",
+      "category": "insufficient_evidence",
+      "degraded": false,
+      "expected_model_ids": [],
+      "latency_ms": 204.49,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pa279crv-cn",
+        "benq-pd2725u-ca",
+        "benq-pd2705u-us",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "reranked_ndcg_at_5": 0.0,
+      "reranked_recall_at_5": 0.0,
+      "should_abstain": true,
+      "top_relevance_score": 0.48378531555405024,
+      "vector_model_ids": [
+        "dell-g2724d-cn",
+        "asus-pg27aqdm-cn",
+        "dell-s2722qc-cn",
+        "benq-ex2710u-cn",
+        "dell-u2723qe-cn"
+      ],
+      "vector_ndcg_at_5": 0.0,
+      "vector_recall_at_5": 0.0
+    },
+    {
+      "case_id": "c038",
+      "category": "insufficient_evidence",
+      "degraded": false,
+      "expected_model_ids": [],
+      "latency_ms": 217.228,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pg27aqdm-cn",
+        "asus-pa27jcv-cn",
+        "lg-27up850k-w-cn",
+        "benq-pd2725u-ca"
+      ],
+      "reranked_ndcg_at_5": 0.0,
+      "reranked_recall_at_5": 0.0,
+      "should_abstain": true,
+      "top_relevance_score": 0.5353354963418291,
+      "vector_model_ids": [
+        "lg-27gs95qe-b-cn",
+        "benq-ex2710u-cn",
+        "asus-pg27aqdm-cn",
+        "asus-pa279crv-cn",
+        "benq-pd2705u-us"
+      ],
+      "vector_ndcg_at_5": 0.0,
+      "vector_recall_at_5": 0.0
+    },
+    {
+      "case_id": "c039",
+      "category": "reranker_degradation",
+      "degraded": true,
+      "expected_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "latency_ms": 32.318,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "dell-s2722qc-cn"
+      ],
+      "reranked_ndcg_at_5": 1.0,
+      "reranked_recall_at_5": 1.0,
+      "should_abstain": false,
+      "top_relevance_score": 0.6954192519187927,
+      "vector_model_ids": [
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 1.0,
+      "vector_recall_at_5": 1.0
+    },
+    {
+      "case_id": "c040",
+      "category": "unrelated_noise",
+      "degraded": false,
+      "expected_model_ids": [],
+      "latency_ms": 344.807,
+      "predicted_abstain": false,
+      "reranked_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-s2722qc-cn",
+        "dell-g2724d-cn",
+        "asus-pa279crv-cn"
+      ],
+      "reranked_ndcg_at_5": 0.0,
+      "reranked_recall_at_5": 0.0,
+      "should_abstain": true,
+      "top_relevance_score": 0.33209251667317985,
+      "vector_model_ids": [
+        "lg-27up850k-w-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-s2722qc-cn"
+      ],
+      "vector_ndcg_at_5": 0.0,
+      "vector_recall_at_5": 0.0
+    }
+  ],
+  "data_version": "monitor-cn-2026-08-26-v1",
+  "evaluation_version": "monitor-retrieval-v1",
+  "index_contract": {
+    "chunk_config_version": "monitor-fact-card-h2-v1",
+    "chunk_overlap": 80,
+    "chunk_size": 700,
+    "collection_name": "smartbuy_monitors_v1",
+    "embedding_dimensions": 1024,
+    "embedding_model": "text-embedding-v4"
+  },
+  "metrics": {
+    "abstention_accuracy": 0.0,
+    "abstention_case_count": 4,
+    "abstention_correct_count": 0,
+    "average_latency_ms": 219.857,
+    "case_count": 40,
+    "embedding_batch_latency_ms": 1019.274,
+    "index_chunk_count": 60,
+    "p95_latency_ms": 344.807,
+    "reranker_degradation_available": true,
+    "scored_retrieval_case_count": 36,
+    "similar_model_error_rate_reranked": 0.0,
+    "similar_model_error_rate_vector": 0.5,
+    "vector_only_ndcg_at_5": 0.817028,
+    "vector_only_recall_at_5": 0.891204,
+    "vector_reranker_ndcg_at_5": 0.954123,
+    "vector_reranker_recall_at_5": 0.983796
+  },
+  "rerank_abstain_threshold": 0.2,
+  "usage": {
+    "call_count": 43,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 0.022633,
+    "input_tokens": 45266,
+    "output_tokens": 0,
+    "successful_calls": 43
+  },
+  "usage_by_operation": [
+    {
+      "average_latency_ms": 254.759,
+      "call_count": 4,
+      "estimated_cost_cny": 0.000446,
+      "input_tokens": 892,
+      "model": "text-embedding-v4",
+      "operation": "embedding",
+      "output_tokens": 0,
+      "p95_latency_ms": 324.893
+    },
+    {
+      "average_latency_ms": 191.559,
+      "call_count": 39,
+      "estimated_cost_cny": 0.022187,
+      "input_tokens": 44374,
+      "model": "qwen3-rerank",
+      "operation": "rerank",
+      "output_tokens": 0,
+      "p95_latency_ms": 372.196
+    }
+  ]
+}

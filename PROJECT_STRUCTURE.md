@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-08-26 |
-| 当前阶段 | 阶段 2：百炼三模型与 Youtu-RAG Provider 适配（已完成，等待用户验收） |
+| 当前阶段 | 阶段 3：受治理显示器数据、SQLite 与检索基线（已完成，等待用户验收） |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -29,23 +29,60 @@ proofpick_agent/
 │  ├─ config/
 │  │  ├─ __init__.py
 │  │  └─ bailian.py
+│  ├─ data/
+│  │  ├─ catalog/
+│  │  │  └─ monitors_v1.json
+│  │  ├─ demo/
+│  │  │  ├─ fact_cards/        # 12 份自制型号事实卡
+│  │  │  └─ manifest.json
+│  │  ├─ processed/
+│  │  │  ├─ products.jsonl
+│  │  │  ├─ price_observations.jsonl
+│  │  │  ├─ source_records.jsonl
+│  │  │  ├─ evidence_records.jsonl
+│  │  │  ├─ index_manifest.json
+│  │  │  └─ stage3_retrieval_results.json
+│  │  ├─ raw/
+│  │  │  └─ README.md
+│  │  ├─ __init__.py
+│  │  ├─ derive.py
+│  │  ├─ loader.py
+│  │  └─ quality.py
+│  ├─ db/
+│  │  ├─ __init__.py
+│  │  ├─ build_database.py
+│  │  └─ schema_v1.sql
 │  ├─ docs/
 │  │  ├─ adr/
 │  │  │  ├─ 0001-vendor-youtu-rag.md
-│  │  │  └─ 0002-bailian-provider-and-index-contract.md
+│  │  │  ├─ 0002-bailian-provider-and-index-contract.md
+│  │  │  └─ 0003-governed-monitor-data-and-index.md
+│  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
-│  │  └─ stage2_bailian_verification.md
+│  │  ├─ stage2_bailian_verification.md
+│  │  └─ stage3_data_and_retrieval_report.md
+│  ├─ eval/
+│  │  ├─ __init__.py
+│  │  ├─ cases.jsonl
+│  │  └─ run_retrieval_eval.py
 │  ├─ observability/
 │  │  ├─ __init__.py
 │  │  └─ usage.py
 │  ├─ providers/
 │  │  ├─ __init__.py
 │  │  └─ bailian.py
+│  ├─ retrieval/
+│  │  ├─ __init__.py
+│  │  └─ knowledge_base.py
 │  ├─ scripts/
 │  │  ├─ __init__.py
+│  │  ├─ build_stage3_data.py
+│  │  ├─ build_stage3_index.py
 │  │  ├─ start_youtu_rag.ps1
-│  │  └─ verify_bailian_stage2.py
+│  │  ├─ validate_stage3_data.py
+│  │  ├─ verify_bailian_stage2.py
+│  │  └─ verify_stage3_index.py
 │  └─ tests/
 │     ├─ fixtures/
 │     │  └─ stage1_baseline.md
@@ -53,7 +90,10 @@ proofpick_agent/
 │     │  └─ test_youtu_bailian_adapters.py
 │     └─ unit/
 │        ├─ test_bailian_config.py
-│        └─ test_bailian_provider.py
+│        ├─ test_bailian_provider.py
+│        ├─ test_stage3_data.py
+│        ├─ test_stage3_database.py
+│        └─ test_stage3_retrieval_contract.py
 └─ vendor/
    └─ youtu-rag/
       ├─ configs/
@@ -90,16 +130,31 @@ proofpick_agent/
 | `smartbuy/config/bailian.py` | 从继承进程安全加载百炼配置、派生三类端点和 Youtu 子进程映射 |
 | `smartbuy/providers/bailian.py` | 普通/流式/工具 Chat、1024 维 Embedding、Rerank、有限重试与降级实现 |
 | `smartbuy/observability/usage.py` | 不记录正文或凭据的内存 Token、延迟和成本账本 |
+| `smartbuy/data/catalog/monitors_v1.json` | 12 个型号、来源、追加式价格和冲突证据的唯一 canonical 源数据 |
+| `smartbuy/data/loader.py` / `derive.py` / `quality.py` | 加载、派生证据/事实卡和执行确定性数据质量门 |
+| `smartbuy/data/demo/` | Clone 后可用的 12 份自制事实卡及文件哈希清单 |
+| `smartbuy/data/processed/` | 可由 canonical 数据或真实评测重建的 JSONL、索引清单和脱敏指标结果 |
+| `smartbuy/data/raw/README.md` | 本地受限原文目录规则；除说明外的内容均被 Git 忽略 |
+| `smartbuy/db/schema_v1.sql` / `build_database.py` | 四实体 SQLite Schema、工作区外原子重建、完整性摘要和可选 CSV 导出 |
+| `smartbuy/retrieval/knowledge_base.py` | H2 事实卡切分、必需 chunk 元数据和 Youtu/Chroma 正式建库契约 |
+| `smartbuy/eval/cases.jsonl` | 40 条固定检索、冲突、拒答和降级金标任务 |
+| `smartbuy/eval/run_retrieval_eval.py` | Vector-only/Reranker 检索、Recall/nDCG/拒答/延迟/成本评测 |
 | `smartbuy/docs/adr/0001-vendor-youtu-rag.md` | 上游纳入方式、固定 Commit、修改边界和更新流程决策 |
 | `smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md` | 百炼 Provider、1024 维索引、重试和降级契约 |
+| `smartbuy/docs/adr/0003-governed-monitor-data-and-index.md` | 数据许可边界、四实体 Schema、事实卡和索引版本决策 |
+| `smartbuy/docs/data_card.md` | 数据范围、来源、缺失、哈希语义、人工抽查和合规说明 |
 | `smartbuy/docs/runtime_manifest.md` | 目标主机、依赖、模型状态、索引契约、运行路径和服务结果 |
 | `smartbuy/docs/stage1_smoke_test.md` | 阶段 1 命令、耗时、通过/延后项、安全事件与退出结论 |
 | `smartbuy/docs/stage2_bailian_verification.md` | 三模型、建库、KB Search、错误矩阵、安全处置和成本证据 |
+| `smartbuy/docs/stage3_data_and_retrieval_report.md` | 数据质量、SQLite、正式索引、40 条检索指标、成本和失败案例 |
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
+| `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
+| `smartbuy/scripts/build_stage3_index.py` / `verify_stage3_index.py` | 有界真实建库和不调用模型的 Chroma 契约复核 |
 | `smartbuy/tests/fixtures/stage1_baseline.md` | 自制、无隐私的 Markdown 上传与知识库配置冒烟夹具 |
 | `smartbuy/tests/unit/` | 百炼统一配置、请求契约、重试、维度与降级单元测试 |
 | `smartbuy/tests/integration/` | Youtu Embedding/Reranker 和 Toolkit 日志安全适配回归 |
+| `smartbuy/tests/unit/test_stage3_*` | 数据质量、评测集、SQLite 幂等和 chunk 元数据契约测试 |
 
 ## 计划结构
 
@@ -107,14 +162,9 @@ proofpick_agent/
 
 ```text
 smartbuy/
-├─ data/
-│  ├─ catalog/             # 商品与来源清单（阶段 3 计划）
-│  ├─ raw/                 # 本地受限原文，仅保留可提交说明（阶段 3 计划）
-│  ├─ processed/           # 可重建的清洗数据（阶段 3 计划）
-│  └─ demo/                # 合规演示数据（阶段 3/7 计划）
-├─ db/                     # SQLite Schema 与构建脚本（阶段 3 计划）
-├─ prompts/                # 消费决策和评测提示词（阶段 4 计划）
-├─ eval/                   # 用例、Runner、Scorer 和结果（阶段 4～6 计划）
+├─ prompts/                # 消费决策与工具选择提示词（阶段 4 计划）
+├─ workflows/              # KB + Text2SQL 工具编排（阶段 4 计划）
+├─ constraints/            # 确定性硬约束复核（阶段 5 计划）
 └─ tests/
    └─ e2e/                 # 正式端到端业务与降级测试（阶段 4～6 计划）
 ```
@@ -135,5 +185,7 @@ smartbuy/
 - [Runtime Manifest](smartbuy/docs/runtime_manifest.md)
 - [阶段 1 冒烟记录](smartbuy/docs/stage1_smoke_test.md)
 - [阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)
+- [阶段 3 数据卡](smartbuy/docs/data_card.md)
+- [阶段 3 数据与检索报告](smartbuy/docs/stage3_data_and_retrieval_report.md)
 - [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)

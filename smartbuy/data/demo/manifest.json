@@ -1,0 +1,96 @@
+{
+  "catalog_sha256": "b50fd4818575747dab00ffe922ea9720b3a7196e1a5162c0494cd6454a04210a",
+  "counts": {
+    "brands": 4,
+    "evidence": 180,
+    "fact_cards": 12,
+    "prices": 4,
+    "products": 12,
+    "sources": 16
+  },
+  "data_version": "monitor-cn-2026-08-26-v1",
+  "fact_cards": [
+    {
+      "model_id": "dell-u2723qe-cn",
+      "path": "smartbuy/data/demo/fact_cards/dell-u2723qe-cn.md",
+      "sha256": "cee81e1a8999aab610c34dbbe1502c459b26cb3758b3f286aad5d84cacee878b"
+    },
+    {
+      "model_id": "dell-s2722qc-cn",
+      "path": "smartbuy/data/demo/fact_cards/dell-s2722qc-cn.md",
+      "sha256": "4e3dcabe2cdd3331b5537a23e56fde98a7013939f71877982df2bed8f43dffa0"
+    },
+    {
+      "model_id": "dell-g2724d-cn",
+      "path": "smartbuy/data/demo/fact_cards/dell-g2724d-cn.md",
+      "sha256": "18ca25ba22836a84da74cfeb1880e3d1df10d4dfde87e0b3dd2bc9eafc24d30f"
+    },
+    {
+      "model_id": "dell-u2724d-cn",
+      "path": "smartbuy/data/demo/fact_cards/dell-u2724d-cn.md",
+      "sha256": "008dccab583ac92828476a6fca7139edf7d70bb4c6791e4eb171deabfd125596"
+    },
+    {
+      "model_id": "asus-pa279crv-cn",
+      "path": "smartbuy/data/demo/fact_cards/asus-pa279crv-cn.md",
+      "sha256": "4d9716558562723c5fd8c31817c565929b1f29690c9f4461a9c8cf00795b1c1c"
+    },
+    {
+      "model_id": "asus-pg27aqdm-cn",
+      "path": "smartbuy/data/demo/fact_cards/asus-pg27aqdm-cn.md",
+      "sha256": "5b2cf704eaac7d3dcbb4c07f294eafa8978f6c987ab628132163c473ee868121"
+    },
+    {
+      "model_id": "asus-pa27jcv-cn",
+      "path": "smartbuy/data/demo/fact_cards/asus-pa27jcv-cn.md",
+      "sha256": "4d6e27d6f8f370a8f95671c0c968b47d315a2aff2a6eea57c4fee95a57909634"
+    },
+    {
+      "model_id": "lg-27up850k-w-cn",
+      "path": "smartbuy/data/demo/fact_cards/lg-27up850k-w-cn.md",
+      "sha256": "63ef99c840f9268cf5f1ffaef7979dcc295ff96738f09a705d78ec902df4503c"
+    },
+    {
+      "model_id": "lg-27gs95qe-b-cn",
+      "path": "smartbuy/data/demo/fact_cards/lg-27gs95qe-b-cn.md",
+      "sha256": "14cf940ac0132ce75006a283ae577b63f93562954e66785249c2a802bc8eeef7"
+    },
+    {
+      "model_id": "benq-pd2705u-us",
+      "path": "smartbuy/data/demo/fact_cards/benq-pd2705u-us.md",
+      "sha256": "a0cb2206865da118b6ce7123634e29a254c5f4d092b90c6cd4e60ca4dcf723af"
+    },
+    {
+      "model_id": "benq-pd2725u-ca",
+      "path": "smartbuy/data/demo/fact_cards/benq-pd2725u-ca.md",
+      "sha256": "0088b3a6913353753196e85b941a816eb98d972782cdf7241e0d8f95c6bea82e"
+    },
+    {
+      "model_id": "benq-ex2710u-cn",
+      "path": "smartbuy/data/demo/fact_cards/benq-ex2710u-cn.md",
+      "sha256": "981ab847b609440c60bfa3ae89cc4520c3d1436f74a7e8a619a44259df20533b"
+    }
+  ],
+  "logical_data_sha256": "079c4f745e8dbbb538fe7cdacf5479f4e25ebc38972ef2175edf8876a35e8ffe",
+  "quality": {
+    "all_missing_by_field": {
+      "release_date": 12,
+      "usb_c_power_delivery_w": 4,
+      "warranty": 6,
+      "weight_kg": 4,
+      "width_mm": 1
+    },
+    "brand_count": 4,
+    "conflict_evidence_count": 3,
+    "critical_missing_count": 0,
+    "critical_missing_rate": 0.0,
+    "cross_region_source_count": 1,
+    "error_count": 0,
+    "missing_by_field": {},
+    "price_observation_count": 4,
+    "product_count": 12,
+    "source_count": 16,
+    "warning_count": 0
+  },
+  "schema_version": "1.0.0"
+}

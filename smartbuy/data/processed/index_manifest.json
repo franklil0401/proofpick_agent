@@ -1,0 +1,504 @@
+{
+  "builder_chunk_count": 60,
+  "chroma_chunk_count": 60,
+  "collection_metadata": {
+    "chunk_config_version": "monitor-fact-card-h2-v1",
+    "data_version": "monitor-cn-2026-08-26-v1",
+    "distance_metric": "cosine",
+    "embedding_dimensions": 1024,
+    "embedding_model": "text-embedding-v4"
+  },
+  "collection_name": "smartbuy_monitors_v1",
+  "counts_match": true,
+  "data_version": "monitor-cn-2026-08-26-v1",
+  "document_count": 60,
+  "embedding_call_count": 60,
+  "embedding_estimated_cost_cny": 0.0026125,
+  "embedding_input_tokens": 5225,
+  "embedding_usage": [
+    {
+      "estimated_cost_cny": 4.9e-05,
+      "input_tokens": 98,
+      "item_count": 1,
+      "latency_ms": 459.515,
+      "model": "text-embedding-v4",
+      "total_tokens": 98
+    },
+    {
+      "estimated_cost_cny": 2.45e-05,
+      "input_tokens": 49,
+      "item_count": 1,
+      "latency_ms": 100.161,
+      "model": "text-embedding-v4",
+      "total_tokens": 49
+    },
+    {
+      "estimated_cost_cny": 2.95e-05,
+      "input_tokens": 59,
+      "item_count": 1,
+      "latency_ms": 94.077,
+      "model": "text-embedding-v4",
+      "total_tokens": 59
+    },
+    {
+      "estimated_cost_cny": 1.6e-05,
+      "input_tokens": 32,
+      "item_count": 1,
+      "latency_ms": 255.609,
+      "model": "text-embedding-v4",
+      "total_tokens": 32
+    },
+    {
+      "estimated_cost_cny": 6.3e-05,
+      "input_tokens": 126,
+      "item_count": 1,
+      "latency_ms": 89.233,
+      "model": "text-embedding-v4",
+      "total_tokens": 126
+    },
+    {
+      "estimated_cost_cny": 4.8e-05,
+      "input_tokens": 96,
+      "item_count": 1,
+      "latency_ms": 96.101,
+      "model": "text-embedding-v4",
+      "total_tokens": 96
+    },
+    {
+      "estimated_cost_cny": 2.4e-05,
+      "input_tokens": 48,
+      "item_count": 1,
+      "latency_ms": 95.164,
+      "model": "text-embedding-v4",
+      "total_tokens": 48
+    },
+    {
+      "estimated_cost_cny": 2.9e-05,
+      "input_tokens": 58,
+      "item_count": 1,
+      "latency_ms": 97.081,
+      "model": "text-embedding-v4",
+      "total_tokens": 58
+    },
+    {
+      "estimated_cost_cny": 1.55e-05,
+      "input_tokens": 31,
+      "item_count": 1,
+      "latency_ms": 94.56,
+      "model": "text-embedding-v4",
+      "total_tokens": 31
+    },
+    {
+      "estimated_cost_cny": 0.0001105,
+      "input_tokens": 221,
+      "item_count": 1,
+      "latency_ms": 98.853,
+      "model": "text-embedding-v4",
+      "total_tokens": 221
+    },
+    {
+      "estimated_cost_cny": 5.1e-05,
+      "input_tokens": 102,
+      "item_count": 1,
+      "latency_ms": 149.271,
+      "model": "text-embedding-v4",
+      "total_tokens": 102
+    },
+    {
+      "estimated_cost_cny": 2.4e-05,
+      "input_tokens": 48,
+      "item_count": 1,
+      "latency_ms": 110.593,
+      "model": "text-embedding-v4",
+      "total_tokens": 48
+    },
+    {
+      "estimated_cost_cny": 2.85e-05,
+      "input_tokens": 57,
+      "item_count": 1,
+      "latency_ms": 86.416,
+      "model": "text-embedding-v4",
+      "total_tokens": 57
+    },
+    {
+      "estimated_cost_cny": 1.65e-05,
+      "input_tokens": 33,
+      "item_count": 1,
+      "latency_ms": 95.414,
+      "model": "text-embedding-v4",
+      "total_tokens": 33
+    },
+    {
+      "estimated_cost_cny": 6.7e-05,
+      "input_tokens": 134,
+      "item_count": 1,
+      "latency_ms": 94.929,
+      "model": "text-embedding-v4",
+      "total_tokens": 134
+    },
+    {
+      "estimated_cost_cny": 5e-05,
+      "input_tokens": 100,
+      "item_count": 1,
+      "latency_ms": 91.736,
+      "model": "text-embedding-v4",
+      "total_tokens": 100
+    },
+    {
+      "estimated_cost_cny": 2.45e-05,
+      "input_tokens": 49,
+      "item_count": 1,
+      "latency_ms": 93.177,
+      "model": "text-embedding-v4",
+      "total_tokens": 49
+    },
+    {
+      "estimated_cost_cny": 2.65e-05,
+      "input_tokens": 53,
+      "item_count": 1,
+      "latency_ms": 83.141,
+      "model": "text-embedding-v4",
+      "total_tokens": 53
+    },
+    {
+      "estimated_cost_cny": 1.7e-05,
+      "input_tokens": 34,
+      "item_count": 1,
+      "latency_ms": 102.875,
+      "model": "text-embedding-v4",
+      "total_tokens": 34
+    },
+    {
+      "estimated_cost_cny": 6.35e-05,
+      "input_tokens": 127,
+      "item_count": 1,
+      "latency_ms": 97.554,
+      "model": "text-embedding-v4",
+      "total_tokens": 127
+    },
+    {
+      "estimated_cost_cny": 4.8e-05,
+      "input_tokens": 96,
+      "item_count": 1,
+      "latency_ms": 88.705,
+      "model": "text-embedding-v4",
+      "total_tokens": 96
+    },
+    {
+      "estimated_cost_cny": 5.5e-05,
+      "input_tokens": 110,
+      "item_count": 1,
+      "latency_ms": 99.615,
+      "model": "text-embedding-v4",
+      "total_tokens": 110
+    },
+    {
+      "estimated_cost_cny": 2.7e-05,
+      "input_tokens": 54,
+      "item_count": 1,
+      "latency_ms": 104.234,
+      "model": "text-embedding-v4",
+      "total_tokens": 54
+    },
+    {
+      "estimated_cost_cny": 1.5e-05,
+      "input_tokens": 30,
+      "item_count": 1,
+      "latency_ms": 123.795,
+      "model": "text-embedding-v4",
+      "total_tokens": 30
+    },
+    {
+      "estimated_cost_cny": 0.0001335,
+      "input_tokens": 267,
+      "item_count": 1,
+      "latency_ms": 136.855,
+      "model": "text-embedding-v4",
+      "total_tokens": 267
+    },
+    {
+      "estimated_cost_cny": 4.8e-05,
+      "input_tokens": 96,
+      "item_count": 1,
+      "latency_ms": 97.49,
+      "model": "text-embedding-v4",
+      "total_tokens": 96
+    },
+    {
+      "estimated_cost_cny": 2.35e-05,
+      "input_tokens": 47,
+      "item_count": 1,
+      "latency_ms": 99.401,
+      "model": "text-embedding-v4",
+      "total_tokens": 47
+    },
+    {
+      "estimated_cost_cny": 2.8e-05,
+      "input_tokens": 56,
+      "item_count": 1,
+      "latency_ms": 92.023,
+      "model": "text-embedding-v4",
+      "total_tokens": 56
+    },
+    {
+      "estimated_cost_cny": 1.5e-05,
+      "input_tokens": 30,
+      "item_count": 1,
+      "latency_ms": 97.773,
+      "model": "text-embedding-v4",
+      "total_tokens": 30
+    },
+    {
+      "estimated_cost_cny": 6e-05,
+      "input_tokens": 120,
+      "item_count": 1,
+      "latency_ms": 153.677,
+      "model": "text-embedding-v4",
+      "total_tokens": 120
+    },
+    {
+      "estimated_cost_cny": 4.85e-05,
+      "input_tokens": 97,
+      "item_count": 1,
+      "latency_ms": 101.27,
+      "model": "text-embedding-v4",
+      "total_tokens": 97
+    },
+    {
+      "estimated_cost_cny": 3.7e-05,
+      "input_tokens": 74,
+      "item_count": 1,
+      "latency_ms": 135.127,
+      "model": "text-embedding-v4",
+      "total_tokens": 74
+    },
+    {
+      "estimated_cost_cny": 2.65e-05,
+      "input_tokens": 53,
+      "item_count": 1,
+      "latency_ms": 100.39,
+      "model": "text-embedding-v4",
+      "total_tokens": 53
+    },
+    {
+      "estimated_cost_cny": 3.9e-05,
+      "input_tokens": 78,
+      "item_count": 1,
+      "latency_ms": 122.826,
+      "model": "text-embedding-v4",
+      "total_tokens": 78
+    },
+    {
+      "estimated_cost_cny": 0.0001335,
+      "input_tokens": 267,
+      "item_count": 1,
+      "latency_ms": 123.681,
+      "model": "text-embedding-v4",
+      "total_tokens": 267
+    },
+    {
+      "estimated_cost_cny": 4.75e-05,
+      "input_tokens": 95,
+      "item_count": 1,
+      "latency_ms": 125.6,
+      "model": "text-embedding-v4",
+      "total_tokens": 95
+    },
+    {
+      "estimated_cost_cny": 2.35e-05,
+      "input_tokens": 47,
+      "item_count": 1,
+      "latency_ms": 130.935,
+      "model": "text-embedding-v4",
+      "total_tokens": 47
+    },
+    {
+      "estimated_cost_cny": 2.65e-05,
+      "input_tokens": 53,
+      "item_count": 1,
+      "latency_ms": 95.207,
+      "model": "text-embedding-v4",
+      "total_tokens": 53
+    },
+    {
+      "estimated_cost_cny": 4e-05,
+      "input_tokens": 80,
+      "item_count": 1,
+      "latency_ms": 89.837,
+      "model": "text-embedding-v4",
+      "total_tokens": 80
+    },
+    {
+      "estimated_cost_cny": 0.000102,
+      "input_tokens": 204,
+      "item_count": 1,
+      "latency_ms": 155.197,
+      "model": "text-embedding-v4",
+      "total_tokens": 204
+    },
+    {
+      "estimated_cost_cny": 4.9e-05,
+      "input_tokens": 98,
+      "item_count": 1,
+      "latency_ms": 124.986,
+      "model": "text-embedding-v4",
+      "total_tokens": 98
+    },
+    {
+      "estimated_cost_cny": 2.45e-05,
+      "input_tokens": 49,
+      "item_count": 1,
+      "latency_ms": 108.027,
+      "model": "text-embedding-v4",
+      "total_tokens": 49
+    },
+    {
+      "estimated_cost_cny": 2.95e-05,
+      "input_tokens": 59,
+      "item_count": 1,
+      "latency_ms": 113.702,
+      "model": "text-embedding-v4",
+      "total_tokens": 59
+    },
+    {
+      "estimated_cost_cny": 4e-05,
+      "input_tokens": 80,
+      "item_count": 1,
+      "latency_ms": 100.073,
+      "model": "text-embedding-v4",
+      "total_tokens": 80
+    },
+    {
+      "estimated_cost_cny": 0.0001035,
+      "input_tokens": 207,
+      "item_count": 1,
+      "latency_ms": 100.085,
+      "model": "text-embedding-v4",
+      "total_tokens": 207
+    },
+    {
+      "estimated_cost_cny": 4.95e-05,
+      "input_tokens": 99,
+      "item_count": 1,
+      "latency_ms": 100.962,
+      "model": "text-embedding-v4",
+      "total_tokens": 99
+    },
+    {
+      "estimated_cost_cny": 3.6e-05,
+      "input_tokens": 72,
+      "item_count": 1,
+      "latency_ms": 347.484,
+      "model": "text-embedding-v4",
+      "total_tokens": 72
+    },
+    {
+      "estimated_cost_cny": 2.5e-05,
+      "input_tokens": 50,
+      "item_count": 1,
+      "latency_ms": 86.323,
+      "model": "text-embedding-v4",
+      "total_tokens": 50
+    },
+    {
+      "estimated_cost_cny": 4e-05,
+      "input_tokens": 80,
+      "item_count": 1,
+      "latency_ms": 128.678,
+      "model": "text-embedding-v4",
+      "total_tokens": 80
+    },
+    {
+      "estimated_cost_cny": 0.0001015,
+      "input_tokens": 203,
+      "item_count": 1,
+      "latency_ms": 120.657,
+      "model": "text-embedding-v4",
+      "total_tokens": 203
+    },
+    {
+      "estimated_cost_cny": 5.15e-05,
+      "input_tokens": 103,
+      "item_count": 1,
+      "latency_ms": 93.157,
+      "model": "text-embedding-v4",
+      "total_tokens": 103
+    },
+    {
+      "estimated_cost_cny": 2.4e-05,
+      "input_tokens": 48,
+      "item_count": 1,
+      "latency_ms": 90.536,
+      "model": "text-embedding-v4",
+      "total_tokens": 48
+    },
+    {
+      "estimated_cost_cny": 2.65e-05,
+      "input_tokens": 53,
+      "item_count": 1,
+      "latency_ms": 106.582,
+      "model": "text-embedding-v4",
+      "total_tokens": 53
+    },
+    {
+      "estimated_cost_cny": 1.65e-05,
+      "input_tokens": 33,
+      "item_count": 1,
+      "latency_ms": 93.767,
+      "model": "text-embedding-v4",
+      "total_tokens": 33
+    },
+    {
+      "estimated_cost_cny": 6.3e-05,
+      "input_tokens": 126,
+      "item_count": 1,
+      "latency_ms": 87.331,
+      "model": "text-embedding-v4",
+      "total_tokens": 126
+    },
+    {
+      "estimated_cost_cny": 4.95e-05,
+      "input_tokens": 99,
+      "item_count": 1,
+      "latency_ms": 88.255,
+      "model": "text-embedding-v4",
+      "total_tokens": 99
+    },
+    {
+      "estimated_cost_cny": 2.45e-05,
+      "input_tokens": 49,
+      "item_count": 1,
+      "latency_ms": 97.906,
+      "model": "text-embedding-v4",
+      "total_tokens": 49
+    },
+    {
+      "estimated_cost_cny": 2.75e-05,
+      "input_tokens": 55,
+      "item_count": 1,
+      "latency_ms": 90.2,
+      "model": "text-embedding-v4",
+      "total_tokens": 55
+    },
+    {
+      "estimated_cost_cny": 1.6e-05,
+      "input_tokens": 32,
+      "item_count": 1,
+      "latency_ms": 95.02,
+      "model": "text-embedding-v4",
+      "total_tokens": 32
+    },
+    {
+      "estimated_cost_cny": 6.05e-05,
+      "input_tokens": 121,
+      "item_count": 1,
+      "latency_ms": 86.297,
+      "model": "text-embedding-v4",
+      "total_tokens": 121
+    }
+  ],
+  "errors": [],
+  "processed_documents": 60,
+  "required_chunk_metadata_missing": [],
+  "status": "completed"
+}
