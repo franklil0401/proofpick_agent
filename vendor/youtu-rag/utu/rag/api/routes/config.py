@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 
 from ..database import get_db, KnowledgeBase
 from ..services.kb_config_service import KBConfigService
+from ..utils.security import redact_sensitive_config
 
 logger = logging.getLogger(__name__)
 router = APIRouter()
@@ -127,7 +128,7 @@ async def get_config(kb_id_or_name: str, db: Session = Depends(get_db)):
             'is_custom': kb_config_path.exists()
         }
         
-        return config
+        return redact_sensitive_config(config)
         
     except HTTPException:
         raise

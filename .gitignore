@@ -9,3 +9,24 @@ __pycache__/
 .ruff_cache/
 *.log
 
+# Local runtime data and generated indexes
+rag_data/
+minio-data/
+vector_store*/
+chroma*/
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
+# Local model artifacts
+*.gguf
+*.safetensors
+*.ckpt
+*.pt
+*.pth
+
+# Raw or restricted source material stays local; keep only an explicit guide.
+smartbuy/data/raw/*
+!smartbuy/data/raw/README.md

@@ -3,7 +3,7 @@ name: "file_management"
 description: "File management configuration"
 
 ocr:
-  enabled: true 
+  enabled: false
   model: "${UTU_OCR_MODEL}"
   base_url: "${UTU_OCR_BASE_URL}"
 

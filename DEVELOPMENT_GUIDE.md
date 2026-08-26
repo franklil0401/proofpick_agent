@@ -6,8 +6,8 @@
 |---|---|
 | 项目名称 | SmartBuy Research Agent（多源消费决策研究 Agent） |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 0：文档、仓库和开发规范初始化 |
-| 当前状态 | 文档体系已初始化；业务代码、数据集、上游部署和模型联调均未开始 |
+| 当前阶段 | 阶段 1：上游项目基线运行与 Windows 环境验证（已完成） |
+| 当前状态 | Youtu-RAG 固定版本已纳入；Windows 依赖、MinIO、WebUI、Monitor、文件、知识库配置和基础 Chat 已通过；向量建库与 KB Search 明确转入阶段 2 Provider 适配后验证 |
 | 最后更新时间 | 2026-08-26 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
@@ -292,14 +292,14 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 | 能力 | 模型 | 接口形态 | 状态 |
 |---|---|---|---|
-| LLM | `qwen-plus` | Workspace 专属 OpenAI-compatible `chat/completions` | 计划，待阶段 2 验证普通、流式和 Tool Calling |
+| LLM | `qwen-plus` | Workspace 专属 OpenAI-compatible `chat/completions` | 用户最小调用及阶段 1 基础非流式 Chat 已通过；流式和 Tool Calling 留待阶段 2 |
 | Embedding | `text-embedding-v4`，固定 1024 维 | Workspace 专属 `/compatible-mode/v1/embeddings` | 计划，待验证批量、空输入和超长输入 |
-| Reranker | `qwen3-rerank` | Workspace 专属 `/compatible-api/v1/reranks` | 计划，需适配复数端点和顶层 `results` |
+| Reranker | `qwen3-rerank` | Workspace 专属 `/compatible-api/v1/reranks` | 用户最小调用已通过（106 tokens）；Youtu-RAG 适配与降级留待阶段 2 |
 
 ### 环境变量与当前可用性
 
-- `Qianwen_api_key`：必需、敏感；2026-08-26 仅检查到当前进程可读取，未读取或输出其值。
-- `Qianwen_workspace_id`：必需、非密钥；2026-08-26 当前进程未检测到，**待用户补充**，不得猜测。
+- `Qianwen_api_key`：必需、敏感；2026-08-26 持久化 Windows 环境检查为 `configured`。阶段 1 发生一次上游配置响应泄露后，旧 Key 已由用户禁用并轮换；新值不得读取或输出。
+- `Qianwen_workspace_id`：必需、配置项；2026-08-26 持久化 Windows 环境检查为 `configured`，并已由用户确认有效。
 - Key、Workspace 和地域必须匹配；当前说明文档约定中国大陆华北 2（北京）。
 
 业务代码只能通过统一配置对象读取变量。允许在启动进程内把 `Qianwen_api_key` 映射到 `UTU_LLM_API_KEY`、`UTU_EMBEDDING_API_KEY` 和 `UTU_RERANKER_API_KEY`，禁止打印、比较或持久化这些值。真实密钥不得写入 `.env`；非敏感模型名和 URL 可由配置文件管理。
@@ -324,7 +324,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 | GPU | GTX 960，2 GB |
 | 在线模型 | 云端百炼 API 为主要方案 |
 | 本地模型 | 仅可选实验或降级；不下载/运行 2B Embedding 作为主方案 |
-| 路径 | 使用短 ASCII 路径；当前仓库路径为 ASCII，但上游具体落盘方式需阶段 1 决策 |
+| 路径 | 仓库为 `E:/Agent_project/proofpick_agent`；上游固定在 `vendor/youtu-rag/`，运行数据放在短 ASCII 仓库外路径 `C:/ai/` |
 
 强制约束：
 
@@ -376,21 +376,23 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 1：上游项目基线运行与 Windows 环境验证
 
-- 阶段目标：固定 Youtu-RAG commit，在 Windows 跑通未改业务逻辑的最小 Chat、文件、KB 链路。
-- 前置依赖：阶段 0 完成；确认上游纳入本仓库的方式；短 ASCII 路径、网络和 MinIO 可用。
-- 开发任务：检查上游最新配置；记录 commit/license；`uv sync --frozen`；启动 MinIO、FastAPI/WebUI；先关闭 OCR/HiChunk；用不含密钥的占位配置完成结构验证。
-- 预计模块：上游代码目录（路径待 ADR）、`smartbuy/docs/runtime_manifest.md`、Issue/ADR 记录、启动脚本（计划）。
-- 交付物：Runtime Manifest、S0～S6 冒烟证据、第一处真实阻塞和解决记录。
-- 测试方法：关键导入、MinIO health、UI/Monitor、文本文件上传、最小知识库和一条 KB Search。
-- 退出条件：依赖、MinIO、WebUI、文件上传、建库和 KB Search 全部通过；上游 commit 可追溯。
-- 风险与回退：Windows 路径/依赖/API 不兼容；先隔离服务排障，两天仍无基础 KB 时以 ADR 评估 Kotaemon。
-- 文档更新：记录真实目录、命令、版本、未验证能力和上游差异。
+- 阶段状态：**已完成（2026-08-26）**。
+- 阶段目标：固定 Youtu-RAG commit，在 Windows 跑通未改 SmartBuy 业务逻辑的依赖、服务、基础 Chat、文件和知识库配置链路。
+- 前置依赖：阶段 0 已完成；Windows 持久化环境变量已配置；短 ASCII 运行路径、网络和 MinIO 可用。
+- 开发任务：以 subtree 固定上游；记录 commit/license/差异；`uv sync --frozen`；启动 MinIO、FastAPI/WebUI；关闭 OCR/HiChunk、本地模型和阶段 1 Reranker；验证文件、KB 配置和基础 Chat；修复配置接口凭据回显。
+- 实际模块：`vendor/youtu-rag/`、`smartbuy/scripts/start_youtu_rag.ps1`、`smartbuy/docs/`、脱敏安全测试、根目录许可证与第三方声明。
+- 交付物：[Runtime Manifest](smartbuy/docs/runtime_manifest.md)、[ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)、[冒烟记录](smartbuy/docs/stage1_smoke_test.md)、许可证与差异记录。
+- 测试方法：关键导入、MinIO health、UI/Monitor、Markdown 上传、知识库创建与文件关联、基础非流式 Chat、配置响应脱敏单测和接口回归。
+- 量化退出条件：`uv sync --frozen` 成功且锁文件不变；三个 HTTP 入口均为 200；上传、KB 关联、基础 Chat 均成功；配置 Key 字段 100% 脱敏；敏感扫描为零；上游 commit 可追溯。KB Build/KB Search 改为阶段 2 完成 Embedding Provider 与 1024 维验证后的退出项，避免跨阶段误调用。
+- 实际结果：上述阶段 1 条件全部满足；KB 文件当前为 `pending`、0 chunks，未宣称已完成向量检索。
+- 风险与回退：发现上游配置响应会返回解析后的凭据；已轮换旧 Key、增加递归脱敏与测试，并让启动脚本排除陈旧 Process 环境。Embedding 失败时不建库、不复用索引，转阶段 2 明确处理。
+- 文档更新：已记录真实目录、命令、版本、上游差异、未验证能力和安全处置。
 - 建议 Commit Message：`chore(stage1): establish youtu-rag windows baseline`。
 
 ### 阶段 2：阿里云百炼 LLM、Embedding、Reranker 适配
 
 - 阶段目标：安全复用系统 Key，分别跑通三类模型并接入 Youtu-RAG。
-- 前置依赖：阶段 1 基线；用户提供 `Qianwen_workspace_id`；百炼权限与北京地域匹配。
+- 前置依赖：阶段 1 基线；`Qianwen_workspace_id` 已配置且用户确认有效；百炼权限与北京地域匹配。
 - 开发任务：统一配置加载；独立最小调用；LLM 流式/Tool Calling；Embedding 1024 维和 `/model_id` 兼容处理；Reranker `/reranks`、`instruct`、顶层 `results`；超时/重试/脱敏日志。
 - 预计模块：`smartbuy/config/`、Provider/adapter、启动环境映射脚本、API 集成测试（均为计划）。
 - 交付物：三类 API 验证结果、适配代码、错误矩阵和成本起始基线。
@@ -501,24 +503,25 @@ docs: initialize development guide and project map
 
 ## 13. 风险与待决策事项
 
-| 风险/未知项 | 当前状态 | 缓解与降级 | 是否阻塞当前文档阶段 |
+| 风险/未知项 | 当前状态 | 缓解与降级 | 是否阻塞下一阶段 |
 |---|---|---|---|
-| `Qianwen_workspace_id` | 当前进程未检测到 | 用户从百炼控制台提供并设为环境变量；不得猜测 | 否；阻塞阶段 2 API 实测 |
-| 百炼权限、地域和限流 | 未实测 | 三模型分别最小测试；401/403 不重试，429 有限退避 | 否 |
+| `Qianwen_workspace_id` | Windows 持久化变量已配置且用户确认有效 | 统一配置层读取，不硬编码、不散落 | 否 |
+| 百炼权限、地域和限流 | `qwen-plus`、`qwen3-rerank` 最小调用成功；Embedding 未实测 | 三模型分别验证；401/403 不重试，429/超时/5xx 有限退避 | 否；Embedding 是阶段 2 必测项 |
 | 原交接模型方案冲突 | FINAL 示例为 DeepSeek/混元/Jina；当前要求改用百炼三模型 | 依信息优先级采用百炼，保留上游兼容性测试 | 否 |
-| 百炼 Embedding `/model_id` 兼容 | 上游实际 commit 未验证 | 优先新增 OpenAI-compatible Provider；不盲目重试 | 否；可能阻塞阶段 2/3 |
-| Reranker `/rerank` 与 `/reranks` | 已知接口差异，代码未验证 | 保留完整端点并解析顶层 `results`；失败退化向量排序 | 否 |
-| API 调用成本和配额 | 预算上限未知 | 阶段 2 建基线，阶段 6 设置预算停止线 | 否；需用户确认预算 |
-| Web Search 凭据 | Serper/Jina 可用性未知 | KB + SQL 作为稳定主链路，Web 为时效补充 | 否 |
+| 百炼 Embedding `/model_id` 兼容 | 固定上游已确认，但真实请求未执行 | 优先新增 OpenAI-compatible Provider；严格断言 1024 维，不盲目重试 | 可能阻塞阶段 2 建库，但不阻塞开始适配 |
+| Reranker `/rerank` 与 `/reranks` | 用户已验证完整 `/reranks` 端点；Youtu 适配未完成 | 保留完整端点并解析顶层 `results`；失败退化向量排序 | 否 |
+| API 调用成本和配额 | 阶段 2 上限 5 元；阶段 3～5 各建议不超 10 元；累计上限 50 元 | 先用 3～5 条样本；记录调用/Token/估算成本；可能超限立即停止 | 否 |
+| Web Search 凭据 | 当前未提供，且已确认不阻塞阶段 1～3 | KB + SQLite/Text2SQL 为稳定主链路；无凭据时返回可演示降级结果 | 否 |
 | 数据版权与再分发 | 官方 PDF 逐份许可未知 | 只提交来源清单、校验值和自制摘要 | 否；阻塞对应原文公开发布 |
 | 动态价格和页面变化 | 不可完全复现 | 记录地区/时间，保留快照或历史观察 | 否 |
-| Windows 路径和依赖 | 上游未运行 | 短 ASCII 路径、逐服务冒烟、两天兜底判断 | 否；可能阻塞阶段 1 |
-| 上游快速变化 | 当前 commit 尚未固定 | 阶段 1 固定 commit，更新前看差异和 Issue | 否 |
-| 上游纳入本仓库方式 | 尚未决定 | 建议阶段 1 用 ADR 比较 subtree/快照/其他方式，保留 LICENSE 与归属 | 否；进入阶段 1 前应确认 |
+| Windows 路径和依赖 | 阶段 1 已通过；运行数据需避开深路径 | 保持 `C:/ai/` 短 ASCII 路径，逐服务回归 | 否 |
+| 上游快速变化 | 已固定 `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066` | 仅按 ADR 审查并 subtree 更新，每次重跑基线 | 否 |
+| 上游配置凭据回显 | 阶段 1 已真实触发；旧 Key 已轮换 | 递归脱敏、单测、接口回归、排除陈旧 Process 环境；原始配置响应不得写日志 | 否；修复已验证 |
+| 上游纳入本仓库方式 | 已决定 Git subtree 固定版本 | 保留上游 LICENSE、第三方声明和供应商目录差异表 | 否 |
 | GraphRAG 复杂度 | 与 MVP 目标不匹配 | 当前不做；只有基线稳定且用户批准时单独实验 | 否 |
 | Python Executor 安全 | 非强沙箱、可能有全局状态 | 仅本地可信文件、普通权限、专用目录；公网发布前重构隔离 | 否 |
-| API 说明文档 Git 状态 | 当前文件存在但未被 Git 跟踪，本阶段按要求不纳入三文档提交 | 保留原文件；由用户确认是否在后续独立提交纳入版本管理 | 否，但远端相对链接在其被跟踪前无法打开 |
-| 项目许可证 | 上游 Youtu-RAG 为 MIT；本项目根目录尚无 LICENSE | 阶段 1/7 确认本项目许可证，保留上游许可和致谢 | 否 |
+| API 说明文档 Git 状态 | 已获授权在阶段 1 纳入；敏感扫描通过且文件保持原名/原内容 | 提交前再次扫描，禁止包含真实 Key 或请求头 | 否 |
+| 项目许可证 | 本项目与 Youtu-RAG 均为 MIT；数据许可单独管理 | 保留根 LICENSE、上游 LICENSE 和第三方声明 | 否 |
 
 ## 文档导航
 
