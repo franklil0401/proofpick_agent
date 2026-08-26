@@ -1,8 +1,6 @@
 [CmdletBinding()]
 param(
-    [string]$ProjectRoot = (
-        Resolve-Path (Join-Path $PSScriptRoot "../../vendor/youtu-rag")
-    ).Path,
+    [string]$ProjectRoot = "",
     [string]$RuntimeRoot = "C:/ai/youtu-rag-runtime",
     [string]$HostAddress = "127.0.0.1",
     [int]$Port = 8000
@@ -11,24 +9,23 @@ param(
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
 
-function Get-RequiredSystemEnvironment {
-    param([Parameter(Mandatory = $true)][string]$Name)
-
-    # Read only persisted Windows scopes. The parent agent process may still
-    # contain a revoked key after rotation, so Process scope is intentionally
-    # excluded.
-    foreach ($scope in @("Machine", "User")) {
-        $value = [Environment]::GetEnvironmentVariable($Name, $scope)
-        if (-not [string]::IsNullOrWhiteSpace($value)) {
-            return $value.Trim()
-        }
-    }
-
-    throw "Missing required Windows environment variable: $Name"
+if ([string]::IsNullOrWhiteSpace($ProjectRoot)) {
+    $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "../../vendor/youtu-rag")).Path
 }
 
-$apiKey = Get-RequiredSystemEnvironment -Name "Qianwen_api_key"
-$workspaceId = Get-RequiredSystemEnvironment -Name "Qianwen_workspace_id"
+function Get-RequiredProcessEnvironment {
+    param([Parameter(Mandatory = $true)][string]$Name)
+
+    $value = [Environment]::GetEnvironmentVariable($Name, "Process")
+    if (-not [string]::IsNullOrWhiteSpace($value)) {
+        return $value.Trim()
+    }
+
+    throw "Missing required inherited process environment variable: $Name"
+}
+
+$apiKey = Get-RequiredProcessEnvironment -Name "Qianwen_api_key"
+$workspaceId = Get-RequiredProcessEnvironment -Name "Qianwen_workspace_id"
 $runtimeRootNormalized = $RuntimeRoot.Replace("\", "/").TrimEnd("/")
 $compatibleBaseUrl = (
     "https://{0}.cn-beijing.maas.aliyuncs.com/compatible-mode/v1" -f $workspaceId
@@ -48,6 +45,7 @@ $env:UTU_LLM_API_KEY = $apiKey
 $env:UTU_EMBEDDING_MODEL = "text-embedding-v4"
 $env:UTU_EMBEDDING_URL = $compatibleBaseUrl
 $env:UTU_EMBEDDING_API_KEY = $apiKey
+$env:UTU_EMBEDDING_DIMENSIONS = "1024"
 
 $env:UTU_RERANKER_MODEL = "qwen3-rerank"
 $env:UTU_RERANKER_URL = $rerankUrl
@@ -72,6 +70,7 @@ $env:RELATIONAL_DB_PATH = "$RuntimeRoot/relational_database/rag_demo.sqlite"
 $env:ENABLE_VECTOR_MONITOR = "true"
 $env:ENABLE_MINIO_MONITOR = "true"
 $env:UTU_LOG_LEVEL = "INFO"
+$env:UTU_DEFAULT_AGENT_CONFIG = "simple/base.yaml"
 
 @(
     $RuntimeRoot,

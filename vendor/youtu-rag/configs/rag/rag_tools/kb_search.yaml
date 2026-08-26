@@ -5,24 +5,20 @@ activated_tools: null
 config:
   # Embedding configuration
   #
-  # Option 1: Local Service (No API key required)
-  # For self-hosted embedding services (e.g., youtu-embedding-2B)
   embedding:
-    backend: service
+    backend: openai
+    model: ${oc.env:UTU_EMBEDDING_MODEL}
+    api_key: ${oc.env:UTU_EMBEDDING_API_KEY}
     base_url: ${oc.env:UTU_EMBEDDING_URL}
-
-  # Option 2: OpenAI API Standard (API key required)
-  # For OpenAI or OpenAI-compatible embedding APIs
-  # embedding:
-  #   backend: openai
-  #   model: ${oc.env:UTU_EMBEDDING_MODEL}
-  #   api_key: ${oc.env:UTU_EMBEDDING_API_KEY}
-  #   base_url: ${oc.env:UTU_EMBEDDING_URL}
+    dimensions: 1024
+    batch_size: 10
 
   # Reranker configuration
   reranker:
-    backend: jina
-    threshold: 0.5
+    backend: openai
+    model: ${oc.env:UTU_RERANKER_MODEL}
+    api_key: ${oc.env:UTU_RERANKER_API_KEY}
+    base_url: ${oc.env:UTU_RERANKER_URL}
 
   # Vector store configuration
   vector_store:

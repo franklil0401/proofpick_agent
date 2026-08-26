@@ -134,6 +134,7 @@ class ProcessTask(BaseModel):
 
     source_config: SourceConfig
     task_id: str
+    force_rebuild: bool = False
 
 
 # ==================== Main Agent ====================
@@ -683,7 +684,8 @@ class KnowledgeBuilderAgent(SimpleAgent):
         for idx, source in enumerate(request.sources):
             task = ProcessTask(
                 source_config=source,
-                task_id=f"{request.knowledge_base_id}_{idx}"
+                task_id=f"{request.knowledge_base_id}_{idx}",
+                force_rebuild=request.force_rebuild,
             )
 
             if source.source_type == 'qa_file':
@@ -846,6 +848,7 @@ class KnowledgeBuilderAgent(SimpleAgent):
                 self.minio_client
                 and source.source_type in ["minio_file", "qa_file"]
                 and source.status == "completed"
+                and not task.force_rebuild
             ):
                 try:
                     # Comparing file ETag and metadata hash

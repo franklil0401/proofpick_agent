@@ -6,8 +6,8 @@
 |---|---|
 | 项目名称 | SmartBuy Research Agent（多源消费决策研究 Agent） |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 1：上游项目基线运行与 Windows 环境验证（已完成） |
-| 当前状态 | Youtu-RAG 固定版本已纳入；Windows 依赖、MinIO、WebUI、Monitor、文件、知识库配置和基础 Chat 已通过；向量建库与 KB Search 明确转入阶段 2 Provider 适配后验证 |
+| 当前阶段 | 阶段 2：阿里云百炼 LLM、Embedding、Reranker 适配（已完成，等待用户验收） |
+| 当前状态 | 三模型、1024 维建库、KB Search、二阶段 Rerank、有限重试、显式降级、用量统计和日志脱敏已验证；阶段 3 尚未开始 |
 | 最后更新时间 | 2026-08-26 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
@@ -292,17 +292,17 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 | 能力 | 模型 | 接口形态 | 状态 |
 |---|---|---|---|
-| LLM | `qwen-plus` | Workspace 专属 OpenAI-compatible `chat/completions` | 用户最小调用及阶段 1 基础非流式 Chat 已通过；流式和 Tool Calling 留待阶段 2 |
-| Embedding | `text-embedding-v4`，固定 1024 维 | Workspace 专属 `/compatible-mode/v1/embeddings` | 计划，待验证批量、空输入和超长输入 |
-| Reranker | `qwen3-rerank` | Workspace 专属 `/compatible-api/v1/reranks` | 用户最小调用已通过（106 tokens）；Youtu-RAG 适配与降级留待阶段 2 |
+| LLM | `qwen-plus` | Workspace 专属 OpenAI-compatible `chat/completions` | 普通、SSE 流式、Tool Calling 均已验证 |
+| Embedding | `text-embedding-v4`，固定 1024 维 | Workspace 专属 `/compatible-mode/v1/embeddings` | 批量数量/顺序/维度、语义冒烟、Youtu 建库与 KB Search 已验证 |
+| Reranker | `qwen3-rerank` | Workspace 专属 `/compatible-api/v1/reranks` | 独立排序、Youtu 二阶段排序、有限重试和向量降级已验证 |
 
 ### 环境变量与当前可用性
 
-- `Qianwen_api_key`：必需、敏感；2026-08-26 持久化 Windows 环境检查为 `configured`。阶段 1 发生一次上游配置响应泄露后，旧 Key 已由用户禁用并轮换；新值不得读取或输出。
-- `Qianwen_workspace_id`：必需、配置项；2026-08-26 持久化 Windows 环境检查为 `configured`，并已由用户确认有效。
+- `Qianwen_api_key`：必需、敏感；2026-08-26 当前继承进程检查为 `configured`。阶段 1 配置响应和阶段 2 Toolkit 日志分别暴露过当时的 Key；两次均已停止服务、清理本地输出并由用户禁用/轮换，当前值禁止输出或持久化。
+- `Qianwen_workspace_id`：必需、配置项；2026-08-26 当前继承进程检查为 `configured`，并已由用户确认有效。
 - Key、Workspace 和地域必须匹配；当前说明文档约定中国大陆华北 2（北京）。
 
-业务代码只能通过统一配置对象读取变量。允许在启动进程内把 `Qianwen_api_key` 映射到 `UTU_LLM_API_KEY`、`UTU_EMBEDDING_API_KEY` 和 `UTU_RERANKER_API_KEY`，禁止打印、比较或持久化这些值。真实密钥不得写入 `.env`；非敏感模型名和 URL 可由配置文件管理。
+业务代码只能通过统一配置对象和 `os.getenv` 读取当前进程继承的变量。允许在启动子进程内把 `Qianwen_api_key` 映射到 `UTU_LLM_API_KEY`、`UTU_EMBEDDING_API_KEY` 和 `UTU_RERANKER_API_KEY`，禁止从 Windows 注册表读取，禁止打印或持久化这些值。真实密钥不得写入 `.env`；非敏感模型名和 URL 可由配置文件管理。
 
 ### Youtu-RAG 适配检查
 
@@ -391,15 +391,17 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 2：阿里云百炼 LLM、Embedding、Reranker 适配
 
+- 阶段状态：**已完成（2026-08-26，等待用户验收）**。
 - 阶段目标：安全复用系统 Key，分别跑通三类模型并接入 Youtu-RAG。
 - 前置依赖：阶段 1 基线；`Qianwen_workspace_id` 已配置且用户确认有效；百炼权限与北京地域匹配。
-- 开发任务：统一配置加载；独立最小调用；LLM 流式/Tool Calling；Embedding 1024 维和 `/model_id` 兼容处理；Reranker `/reranks`、`instruct`、顶层 `results`；超时/重试/脱敏日志。
-- 预计模块：`smartbuy/config/`、Provider/adapter、启动环境映射脚本、API 集成测试（均为计划）。
-- 交付物：三类 API 验证结果、适配代码、错误矩阵和成本起始基线。
-- 测试方法：普通/流式/工具 LLM；两条文本 Embedding 且维度严格 1024；Reranker 排序；401/429/超时模拟。
-- 退出条件：三类 API 正常调用；Key 扫描为零；索引元数据固定模型与维度；失败状态有正确重试或拒绝策略。
-- 风险与回退：Workspace/权限/端点/限流；不得猜 ID，Reranker 失败回退向量排序，Embedding 不通则阻断建库并报告。
-- 文档更新：只记录变量名、域名、模型和验证结果，不记录 Key。
+- 开发任务：统一配置加载；普通/流式/Tool Calling；Embedding 1024 维和 `/model_id` 兼容处理；Reranker `/reranks`、顶层 `results`、用量统计；建库、KB Search、二阶段排序；超时/重试/降级/脱敏日志。
+- 实际模块：`smartbuy/config/`、`smartbuy/providers/`、`smartbuy/observability/`、验证脚本、单元/集成测试，以及最小供应商兼容补丁。
+- 交付物：[ADR-0002](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md)、[阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)、三模型 Provider、错误矩阵和成本起始基线。
+- 测试方法：5 次有界真实模型调用；阶段 1 夹具强制重建；实际 Chroma count；Youtu KB Search + Rerank；401/429/超时/错误维度/503 模拟；日志与工作区敏感扫描。
+- 退出条件：三类 API 正常；测试知识库 `completed` 且 API/Chroma 均为 2 chunks；KB Search 与二阶段排序成功；17 tests passed；核心静态检查通过；Key 匹配为零；失败状态有正确重试或拒绝/降级策略。
+- 实际结果：退出条件全部满足。最终独立验证 398 input + 31 output tokens，估算 0.0003243 元；正式质量指标仍需阶段 3～6 评测集，不能由单样本推断。
+- 风险与回退：已修复向量路径分裂、`force_rebuild` 二次跳过和 Toolkit 配置日志泄露；Reranker 失败回退向量排序，Embedding 失败/维度错误阻断建库，无 Web 凭据时使用基础 Chat + KB。
+- 文档更新：Runtime Manifest、项目结构、README、供应商差异、ADR 和验证记录已同步；只记录变量名、模型与脱敏统计。
 - 建议 Commit Message：`feat(stage2): integrate bailian model providers`。
 
 ### 阶段 3：数据采集、统一结构、清洗和知识库构建
@@ -506,10 +508,10 @@ docs: initialize development guide and project map
 | 风险/未知项 | 当前状态 | 缓解与降级 | 是否阻塞下一阶段 |
 |---|---|---|---|
 | `Qianwen_workspace_id` | Windows 持久化变量已配置且用户确认有效 | 统一配置层读取，不硬编码、不散落 | 否 |
-| 百炼权限、地域和限流 | `qwen-plus`、`qwen3-rerank` 最小调用成功；Embedding 未实测 | 三模型分别验证；401/403 不重试，429/超时/5xx 有限退避 | 否；Embedding 是阶段 2 必测项 |
+| 百炼权限、地域和限流 | `qwen-plus`、`text-embedding-v4`、`qwen3-rerank` 均已通过有界真实调用 | 401/403 不重试，429/超时/5xx 有限退避；批量评测前仍先用 3～5 条样本 | 否 |
 | 原交接模型方案冲突 | FINAL 示例为 DeepSeek/混元/Jina；当前要求改用百炼三模型 | 依信息优先级采用百炼，保留上游兼容性测试 | 否 |
-| 百炼 Embedding `/model_id` 兼容 | 固定上游已确认，但真实请求未执行 | 优先新增 OpenAI-compatible Provider；严格断言 1024 维，不盲目重试 | 可能阻塞阶段 2 建库，但不阻塞开始适配 |
-| Reranker `/rerank` 与 `/reranks` | 用户已验证完整 `/reranks` 端点；Youtu 适配未完成 | 保留完整端点并解析顶层 `results`；失败退化向量排序 | 否 |
+| 百炼 Embedding `/model_id` 兼容 | 已修复；Youtu 实际建库和检索均通过，返回向量严格为 1024 维 | OpenAI-compatible Provider 显式传 `dimensions=1024`，验证数量、顺序和维度；模型或维度变更时重建索引 | 否；已验证 |
+| Reranker `/rerank` 与 `/reranks` | 已适配完整 `/reranks` 端点和顶层 `results`；Youtu 二阶段排序已通过 | 保留完整端点；有限重试后保留向量顺序并显式标记降级 | 否；已验证 |
 | API 调用成本和配额 | 阶段 2 上限 5 元；阶段 3～5 各建议不超 10 元；累计上限 50 元 | 先用 3～5 条样本；记录调用/Token/估算成本；可能超限立即停止 | 否 |
 | Web Search 凭据 | 当前未提供，且已确认不阻塞阶段 1～3 | KB + SQLite/Text2SQL 为稳定主链路；无凭据时返回可演示降级结果 | 否 |
 | 数据版权与再分发 | 官方 PDF 逐份许可未知 | 只提交来源清单、校验值和自制摘要 | 否；阻塞对应原文公开发布 |
@@ -517,7 +519,9 @@ docs: initialize development guide and project map
 | Windows 路径和依赖 | 阶段 1 已通过；运行数据需避开深路径 | 保持 `C:/ai/` 短 ASCII 路径，逐服务回归 | 否 |
 | 上游快速变化 | 已固定 `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066` | 仅按 ADR 审查并 subtree 更新，每次重跑基线 | 否 |
 | 上游文档触发 Secret Scanning | 阶段 1 出现模型类名误报，GitHub 拒绝首次推送 | 不允许疑似 Secret；以无语义字符串拆分清理并记录派生 Commit/差异，重新扫描 | 否；已处理 |
-| 上游配置凭据回显 | 阶段 1 已真实触发；旧 Key 已轮换 | 递归脱敏、单测、接口回归、排除陈旧 Process 环境；原始配置响应不得写日志 | 否；修复已验证 |
+| 上游配置凭据回显 | 阶段 1 已真实触发；旧 Key 已轮换 | 递归脱敏、单测、接口回归；轮换后重启进程并只读取继承环境；原始配置响应不得写日志 | 否；修复已验证 |
+| 上游 Toolkit 配置日志泄露 | 阶段 2 已真实触发；受影响 Key 已轮换，仓库外日志已清空 | 工具配置日志只记录字段名，Chat/Embedding/Reranker 不记录正文；`caplog` 回归与实际 Key 扫描 | 否；修复后复测通过 |
+| 向量建库与检索路径分裂 | 上游 BuildRequest 默认写入仓库内路径，检索读取运行路径 | 建库显式继承 `VECTOR_STORE_PATH`，退出时同时检查 API chunks 与 Chroma count | 否；修复后均为 2 |
 | 上游纳入本仓库方式 | 已决定 Git subtree 固定版本 | 保留上游 LICENSE、第三方声明和供应商目录差异表 | 否 |
 | GraphRAG 复杂度 | 与 MVP 目标不匹配 | 当前不做；只有基线稳定且用户批准时单独实验 | 否 |
 | Python Executor 安全 | 非强沙箱、可能有全局状态 | 仅本地可信文件、普通权限、专用目录；公网发布前重构隔离 | 否 |
@@ -530,3 +534,5 @@ docs: initialize development guide and project map
 - [当前项目结构](PROJECT_STRUCTURE.md)
 - [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)
+- [阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)
+- [ADR-0002：百炼 Provider 与索引契约](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md)

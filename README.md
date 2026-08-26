@@ -2,7 +2,7 @@
 
 多源消费决策研究 Agent：在 Youtu-RAG 基础上构建可追踪、可评测、可执行硬约束复核的消费决策系统。
 
-> 当前状态：**阶段 1 已完成**。Windows 上游基线、基础 Chat、文件管理和知识库配置骨架已经跑通；向量建库、KB Search、百炼三模型完整适配和 SmartBuy 消费决策能力仍在计划中。
+> 当前状态：**阶段 2 已完成，等待用户验收**。Windows 上的百炼三模型、1024 维文本建库、KB Search、二阶段 Rerank、有限重试和显式降级已经跑通；真实显示器数据与 SmartBuy 消费决策工作流仍在计划中。
 
 ## 项目场景
 
@@ -18,16 +18,19 @@ SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费�
 - 在 Windows 11、Python 3.12.3、uv 0.12.3 上完成 `uv sync --frozen`，锁文件无需修改。
 - 本机回环地址启动 MinIO、FastAPI、Youtu-RAG WebUI 和 `/monitor`，相关入口均返回 HTTP 200。
 - 上传自制 Markdown 测试文件、查看文件列表、创建知识库并关联文件。
-- 使用无 Web Search 工具的基础 Agent 完成一次 `qwen-plus` 非流式 Chat，返回 HTTP 200。
-- 关闭阶段 1 非必要的 OCR、HiChunk、本地模型、Memory 和 Reranker。
+- `qwen-plus` 普通调用、SSE 流式和 Tool Calling 均通过有界真实调用。
+- `text-embedding-v4` 批量返回数量与顺序正确，每条严格为 1024 维。
+- 阶段 1 自制文档已重建为 2 chunks；API 状态与目标 Chroma collection 实际计数一致。
+- KB Search 能召回夹具事实，`qwen3-rerank` 在向量召回后完成二阶段排序；失败时可显式回退向量顺序。
+- 401 不重试；429、5xx 和超时有限退避；错误 Embedding 维度阻断索引写入。
+- 使用无 Web Search 工具的基础 Agent，缺少 Serper 凭据不影响默认启动、Chat 或 KB 主链路。
+- OCR、HiChunk、本地模型和 Memory 在当前文本基线中保持关闭。
 - 修复上游配置接口返回解析后凭据的风险；递归脱敏单测和真实接口回归通过。
-- 建立上游纳入 ADR、Runtime Manifest、冒烟记录、MIT License 和第三方声明。
+- 修复上游 Toolkit 配置日志泄露、Windows UTF-8、向量路径分裂和 `force_rebuild` 仍被跳过的问题。
+- 已有 17 项阶段相关测试通过；自研代码与三类核心 Provider 文件 Ruff 检查通过。
 
 ### 尚未实现或尚未验证
 
-- `text-embedding-v4` 真实调用、严格 1024 维断言、向量索引与 KB Search。
-- Youtu-RAG 中 `qwen3-rerank` 的请求/响应适配、有限重试和降级。
-- `qwen-plus` SSE 流式与 Tool Calling 的项目内适配测试。
 - 显示器数据 Schema、合规数据集、SQLite、知识库、评测集和正式演示数据。
 - KB Search + Text2SQL 的 Agentic 编排、确定性硬约束复核和消费决策报告。
 - Web Search 凭据与动态价格/库存链路；无凭据不阻塞阶段 1～3。
@@ -39,7 +42,8 @@ SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费�
 |---|---|
 | Youtu-RAG 上游 | FastAPI/WebUI、文件管理、知识库框架、Agent 配置、检索与监控基础设施 |
 | SmartBuy 阶段 1 新增 | 固定版本 subtree、Windows 云 API 启动脚本、运行清单、许可证/差异记录、阶段测试夹具、配置接口凭据脱敏及回归测试 |
-| SmartBuy 后续计划 | 百炼 Provider、消费数据、KB/SQL 工具编排、Reranker、硬约束复核、统一评测和演示界面 |
+| SmartBuy 阶段 2 新增 | 统一百炼配置与 Provider、1024 维索引契约、用量账本、Youtu Embedding/Reranker 适配、有限重试/降级和日志安全回归 |
+| SmartBuy 后续计划 | 消费数据、KB/SQL 工具编排、硬约束复核、统一评测和演示界面 |
 
 供应商目录差异见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，纳入决策见 [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)。
 
@@ -57,7 +61,7 @@ Agent 选择与多源工具编排（计划）
       ├─ Text2SQL：SQLite 参数、硬约束与计算
       └─ Web Search：当前价格、库存和近期变化（有凭据时）
       ↓
-向量召回 → qwen3-rerank 二阶段重排 → 证据融合（计划）
+向量召回 → qwen3-rerank 二阶段重排（阶段 2 已验证）→ 证据融合（计划）
       ↓
 代码/SQL 确定性硬约束复核（计划）
       ↓
@@ -71,19 +75,19 @@ Agent 选择与多源工具编排（计划）
 | Python 3.12、uv | 阶段 1 已验证 |
 | Youtu-RAG / Youtu-Agent | 固定上游版本已纳入；基线已验证 |
 | FastAPI、原生 WebUI、Monitor | 阶段 1 已验证 |
-| MinIO、SQLite、Chroma、FAISS | MinIO/SQLite 骨架已运行；向量建库待阶段 2 |
-| 百炼 `qwen-plus` | 用户最小调用及阶段 1 基础 Chat 已通过；流式/Tool Calling 待阶段 2 |
-| 百炼 `text-embedding-v4`（1024 维） | 未真实调用，待阶段 2 |
-| 百炼 `qwen3-rerank` | 用户最小调用已通过；项目适配待阶段 2 |
-| Pytest 与项目 Eval Runner | 脱敏单测已存在；业务评测计划中 |
+| MinIO、SQLite、Chroma、FAISS | MinIO/SQLite 基线与 Chroma 1024 维测试索引已运行；FAISS 未作为当前主链路 |
+| 百炼 `qwen-plus` | 普通、流式、Tool Calling 已验证 |
+| 百炼 `text-embedding-v4`（1024 维） | 批量、契约校验、建库与 KB Search 已验证 |
+| 百炼 `qwen3-rerank` | 独立和 Youtu 二阶段排序、有限重试与降级已验证 |
+| Pytest 与项目 Eval Runner | 阶段相关 17 tests passed；业务评测集仍在计划中 |
 
-## 快速开始（阶段 1 已验证范围）
+## 快速开始（阶段 2 已验证范围）
 
 ### 1. 前置条件
 
 - Windows 11、Python 3.12、uv。
 - 从 MinIO 官方发行渠道取得 Windows Server 二进制，放在短 ASCII 仓库外路径，例如 `C:/ai/minio/minio.exe`。
-- 在 Windows User 或 Machine 环境中配置 `Qianwen_api_key` 和 `Qianwen_workspace_id`。不要打印值，也不要创建真实 `.env`。
+- 在 Windows 系统环境变量中配置 `Qianwen_api_key` 和 `Qianwen_workspace_id`，然后重启终端/IDE/服务，使新进程继承变量。正式程序只通过 `os.getenv` 读取当前进程；不要打印值，也不要创建真实 `.env`。
 
 ### 2. 同步依赖
 
@@ -106,14 +110,22 @@ MinIO 和 Youtu-RAG 必须使用一致的当前进程 MinIO 凭据。真实值�
 ./smartbuy/scripts/start_youtu_rag.ps1
 ```
 
-阶段 1 验证入口：
+阶段 2 验证入口：
 
 - WebUI：`http://127.0.0.1:8000/`
 - 健康检查：`http://127.0.0.1:8000/health`
 - Monitor：`http://127.0.0.1:8000/monitor`
 - MinIO Console：`http://127.0.0.1:9001/`
 
-当前可验证上传、文件管理、知识库创建/关联和基础 Chat。**不要在阶段 2 Provider 适配前把 KB Build/KB Search 作为已可用功能。**完整的版本、路径和测试证据见 [Runtime Manifest](smartbuy/docs/runtime_manifest.md) 与[阶段 1 冒烟记录](smartbuy/docs/stage1_smoke_test.md)。
+当前可验证上传、文件管理、知识库创建/关联、基础 Chat、文本建库、KB Search 和二阶段 Rerank。这里只使用一个自制文档，不能据此宣称检索质量达标。完整版本、路径和证据见 [Runtime Manifest](smartbuy/docs/runtime_manifest.md) 与[阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)。
+
+### 4. 有界 Provider 验证（会产生少量费用）
+
+```powershell
+uv run --project vendor/youtu-rag python -m smartbuy.scripts.verify_bailian_stage2
+```
+
+该脚本只输出配置状态、计数、维度、Token、延迟和估算成本，不输出 Key 或模型正文。它不是默认 CI 测试；运行前应确认阶段预算。
 
 ## Windows 环境
 
@@ -133,8 +145,8 @@ GTX 960 2 GB 不作为本地大模型或 Embedding 的主要在线推理设备�
 
 | 变量名 | 用途 | 规则 |
 |---|---|---|
-| `Qianwen_api_key` | 百炼三模型共用 API Key | 敏感；仅从 Windows User/Machine 环境读取，禁止输出或持久化 |
-| `Qianwen_workspace_id` | 百炼业务空间 ID | 配置项；统一读取，不在业务代码散落硬编码 |
+| `Qianwen_api_key` | 百炼三模型共用 API Key | 敏感；仅从继承后的 Process 环境读取，禁止输出或持久化 |
+| `Qianwen_workspace_id` | 百炼业务空间 ID | 配置项；由统一配置层读取，不在业务代码散落硬编码 |
 | `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` | 本地 MinIO Server | 仅本地进程环境；不得提交 |
 | `MINIO_ACCESS_KEY` / `MINIO_SECRET_KEY` | Youtu-RAG 访问本地 MinIO | 与 Server 当前进程配置一致；不得提交 |
 
@@ -142,14 +154,16 @@ GTX 960 2 GB 不作为本地大模型或 Embedding 的主要在线推理设备�
 
 ## 测试与评测
 
-当前已运行：
+当前阶段相关回归命令：
 
 ```powershell
-Set-Location vendor/youtu-rag
-uv run pytest tests/rag/api/test_config_security.py -q
+uv run --project vendor/youtu-rag --group dev python -m pytest `
+  smartbuy/tests/unit `
+  smartbuy/tests/integration/test_youtu_bailian_adapters.py `
+  vendor/youtu-rag/tests/rag/api/test_config_security.py -q
 ```
 
-结果：`1 passed`。阶段 1 的人工冒烟结果见[测试记录](smartbuy/docs/stage1_smoke_test.md)。业务评测仍为计划：至少 30 条任务比较 Direct LLM、Fixed RAG、Agentic RAG 和 Agentic RAG + Constraint Check，覆盖 Recall@K、nDCG/MRR、硬约束满足率、引用正确率、无依据结论、成功率、延迟、成本和降级可用性。建议目标不是已取得结果，详见[开发指南验收指标](DEVELOPMENT_GUIDE.md#9-验收指标)。
+结果：`17 passed`，另有 3 条上游依赖弃用警告。阶段 2 真实调用、错误矩阵、延迟和成本见[验证记录](smartbuy/docs/stage2_bailian_verification.md)。业务评测仍为计划：至少 30 条任务比较 Direct LLM、Fixed RAG、Agentic RAG 和 Agentic RAG + Constraint Check，覆盖 Recall@K、nDCG/MRR、硬约束满足率、引用正确率、无依据结论、成功率、延迟、成本和降级可用性。建议目标不是已取得结果，详见[开发指南验收指标](DEVELOPMENT_GUIDE.md#9-验收指标)。
 
 ## 文档导航
 
@@ -160,6 +174,8 @@ uv run pytest tests/rag/api/test_config_security.py -q
 - [Runtime Manifest](smartbuy/docs/runtime_manifest.md)：固定版本、依赖和运行状态。
 - [阶段 1 冒烟记录](smartbuy/docs/stage1_smoke_test.md)：通过项、边界和安全修复。
 - [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)：Youtu-RAG 纳入决策。
+- [阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)：三模型、建库、KB Search、错误矩阵与成本。
+- [ADR-0002](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md)：百炼 Provider 与索引契约。
 - [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)：上游归属、许可和供应商目录差异。
 
 ## 上游参考与致谢

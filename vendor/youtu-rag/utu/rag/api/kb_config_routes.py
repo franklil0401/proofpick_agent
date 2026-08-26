@@ -24,11 +24,22 @@ from .database import (
 from .minio_client import MinIOClient
 from .models.kb_config import KBBuildRequest, KBBuildResponse, QAValidationResult
 from .utils import load_yaml_config
-from ..knowledge_builder.agent import KnowledgeBuilderAgent, BuildRequest, SourceConfig
+from ..knowledge_builder.agent import KnowledgeBuilderAgent, BuildRequest, SourceConfig, StorageConfig
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/knowledge", tags=["knowledge-configuration"])
+
+
+def _runtime_storage_config() -> StorageConfig:
+    """Resolve build storage from the inherited process environment."""
+    return StorageConfig(
+        vector_persist_dir=os.getenv("VECTOR_STORE_PATH", "rag_data/vector_store"),
+        relational_db_path=os.getenv(
+            "RELATIONAL_DB_PATH", "rag_data/relational_database/rag_demo.sqlite"
+        ),
+        minio_bucket=os.getenv("MINIO_BUCKET", "knowledge-base"),
+    )
 
 
 # Helper functions are now imported from utils (load_yaml_config)
@@ -297,8 +308,12 @@ async def update_kb_configuration(
         # - Storing passwords in environment variables
         # - Using a secrets management service
         for db_conn in config_update.configuration.dbConnections:
-            logger.info(f"🔍 Processing db_conn: {db_conn}")
-            logger.info(f"🔍 Password field: '{db_conn.get('password', 'KEY_NOT_FOUND')}'")
+            logger.info(
+                "Processing database connection: type=%s, host=%s, password=%s",
+                db_conn.get("type", "mysql"),
+                db_conn.get("host", ""),
+                "configured" if db_conn.get("password") else "missing",
+            )
 
             connection_str = db_conn.get("connectionString", "")
             db_type = db_conn.get("type", "mysql")
@@ -701,6 +716,7 @@ async def build_knowledge_base(
             collection_name=kb.collection_name,
             sources=source_configs,
             tools_config=tools_config,
+            storage_config=_runtime_storage_config(),
             force_rebuild=build_request.force_rebuild,
             progress_callback=on_progress
         )

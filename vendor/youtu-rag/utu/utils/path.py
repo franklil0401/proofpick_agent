@@ -67,7 +67,7 @@ class FileUtils:
             file_path = pathlib.Path(file_path)
         if not file_path.exists():
             raise FileNotFoundError(f"File {file_path} does not exist")
-        with file_path.open() as f:
+        with file_path.open(encoding="utf-8") as f:
             return yaml.safe_load(f)
 
     @staticmethod
@@ -113,7 +113,7 @@ class FileUtils:
             file_path = pathlib.Path(file_path)
         if not file_path.exists():
             raise FileNotFoundError(f"File {file_path} does not exist")
-        with file_path.open() as f:
+        with file_path.open(encoding="utf-8") as f:
             return json.load(f)
 
     @staticmethod

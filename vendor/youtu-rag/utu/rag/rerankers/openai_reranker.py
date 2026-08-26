@@ -8,6 +8,7 @@ Supports all reranking services using OpenAI-compatible /rerank API:
 
 import asyncio
 import logging
+import time
 from typing import Any
 
 import httpx
@@ -37,6 +38,7 @@ class OpenAIReranker(BaseReranker):
         timeout: float = 30.0,
         max_retries: int = 3,
         retry_delay: float = 2.0,
+        instruct: str | None = None,
     ):
         """Initialize OpenAI-compatible reranker.
 
@@ -59,6 +61,9 @@ class OpenAIReranker(BaseReranker):
         self.timeout = timeout
         self.max_retries = max_retries
         self.retry_delay = retry_delay
+        self.instruct = instruct
+        self.last_degraded = False
+        self.last_usage: dict[str, int | float | str] = {}
 
         logger.info(
             f"Initialized OpenAIReranker: model={self.model}, base_url={self.base_url}"
@@ -86,6 +91,7 @@ class OpenAIReranker(BaseReranker):
         top_k = top_k or len(results)
 
         try:
+            self.last_degraded = False
             documents = [result.chunk.content for result in results]
 
             rerank_scores = await self._call_rerank_api(
@@ -115,8 +121,9 @@ class OpenAIReranker(BaseReranker):
             )
             return reranked_results
 
-        except Exception as e:
-            logger.error(f"Reranking failed: {str(e)}")
+        except Exception:
+            self.last_degraded = True
+            logger.error("Reranking failed (details suppressed); using vector-order fallback")
             # Return original results if reranking fails
             return results[:top_k]
 
@@ -139,7 +146,7 @@ class OpenAIReranker(BaseReranker):
         Raises:
             httpx.HTTPError: Raised if all retries failed
         """
-        if self.base_url.endswith("/rerank"):
+        if self.base_url.endswith(("/rerank", "/reranks")):
             url = self.base_url
         else:
             url = f"{self.base_url}/rerank"
@@ -156,8 +163,11 @@ class OpenAIReranker(BaseReranker):
             "documents": documents,
             "top_n": min(top_k, len(documents)),
         }
+        if self.instruct:
+            payload["instruct"] = self.instruct
 
         last_exception = None
+        started = time.perf_counter()
 
         for attempt in range(self.max_retries):
             try:
@@ -168,10 +178,26 @@ class OpenAIReranker(BaseReranker):
                     data = response.json()
 
                     results = data.get("results", [])
+                    usage = data.get("usage") or {}
+                    total_tokens = int(usage.get("total_tokens", 0) or 0)
+                    input_tokens = int(usage.get("input_tokens", total_tokens) or total_tokens)
+                    latency_ms = (time.perf_counter() - started) * 1000
+                    self.last_usage = {
+                        "model": self.model,
+                        "item_count": len(documents),
+                        "input_tokens": input_tokens,
+                        "total_tokens": total_tokens,
+                        "attempts": attempt + 1,
+                        "latency_ms": round(latency_ms, 3),
+                        "estimated_cost_cny": input_tokens * 0.5 / 1_000_000,
+                    }
 
                     logger.info(
-                        f"Rerank API returned {len(results)} results for query: "
-                        f"'{query[:50]}{'...' if len(query) > 50 else ''}'"
+                        "Rerank API returned %s results: input_tokens=%s, attempts=%s, latency_ms=%.1f",
+                        len(results),
+                        input_tokens,
+                        attempt + 1,
+                        latency_ms,
                     )
 
                     return results
@@ -190,7 +216,7 @@ class OpenAIReranker(BaseReranker):
                     )
                 else:
                     # Non-retryable error
-                    logger.error(f"HTTP Error {status_code}: {str(e)}")
+                    logger.error("Non-retryable rerank HTTP error: %s", status_code)
                     raise
 
             except httpx.TimeoutException as e:

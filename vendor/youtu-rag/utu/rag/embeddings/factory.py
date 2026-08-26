@@ -2,7 +2,6 @@
 
 import logging
 import os
-from typing import Any
 
 from ..base import BaseEmbedder
 from .openai_embedder import OpenAIEmbedder
@@ -73,6 +72,8 @@ class EmbedderFactory:
         embedding_url = os.getenv("UTU_EMBEDDING_URL")
         if embedding_url:
             model = kwargs.pop("model", None) or os.getenv("UTU_EMBEDDING_MODEL", "youtu-embedding-2b")
+            dimensions = kwargs.pop("dimensions", None) or os.getenv("UTU_EMBEDDING_DIMENSIONS")
+            dimensions = int(dimensions) if dimensions else None
             # Try UTU_EMBEDDING_API_KEY first, then fall back to UTU_API_KEY
             api_key = os.getenv("UTU_EMBEDDING_API_KEY")
 
@@ -84,6 +85,7 @@ class EmbedderFactory:
                 model=model,
                 base_url=embedding_url,
                 api_key=api_key,
+                dimensions=dimensions,
                 **kwargs
             )
 
@@ -115,7 +117,7 @@ class EmbedderFactory:
         logger.info("🚀 Creating Local Embedding Service (ServiceEmbedder)")
         logger.info(f"   Service URL: {service_url}")
         logger.info(f"   Batch Size: {kwargs.get('batch_size', 64)}")
-        logger.info(f"   Type: Local service (no API key required)")
+        logger.info("   Type: Local service (no API key required)")
         logger.info("=" * 60)
 
         return ServiceEmbedder(service_url=service_url, **kwargs)
@@ -132,10 +134,18 @@ class EmbedderFactory:
             "OPENAI_EMBEDDING_MODEL", "text-embedding-3-small"
         )
         base_url = kwargs.pop("base_url", None) or os.getenv("UTU_EMBEDDING_URL")
+        dimensions = kwargs.pop("dimensions", None) or os.getenv("UTU_EMBEDDING_DIMENSIONS")
+        dimensions = int(dimensions) if dimensions else None
 
         logger.info(f"Creating OpenAI-compatible embedder: model={model}, base_url={base_url}")
 
-        return OpenAIEmbedder(model=model, api_key=api_key, base_url=base_url, **kwargs)
+        return OpenAIEmbedder(
+            model=model,
+            api_key=api_key,
+            base_url=base_url,
+            dimensions=dimensions,
+            **kwargs,
+        )
 
 
 def create_embedder(backend: str = "auto", **kwargs) -> BaseEmbedder:

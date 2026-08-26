@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     MINIO_SECRET_KEY: str = os.getenv("MINIO_SECRET_KEY", "minioadmin")
     MINIO_BUCKET: str = os.getenv("MINIO_BUCKET", "rag-documents")
     MINIO_SECURE: bool = os.getenv("MINIO_SECURE", "false").lower() == "true"
-    DEFAULT_AGENT_CONFIG: str = "simple/base_search.yaml"
+    DEFAULT_AGENT_CONFIG: str = os.getenv("UTU_DEFAULT_AGENT_CONFIG", "simple/base.yaml")
 
     @property
     def database_url(self) -> str:

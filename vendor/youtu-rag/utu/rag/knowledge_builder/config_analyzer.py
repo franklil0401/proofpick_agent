@@ -108,7 +108,7 @@ class KnowledgeBuilderAnalyzer:
             storage_monitoring_config_path: Storage monitoring configuration path
         """
         self.kb_config_path = kb_config_path or "configs/rag/default.yaml"
-        self.storage_monitoring_config_path = kb_config_path or "configs/rag/default.yaml"
+        self.storage_monitoring_config_path = storage_monitoring_config_path or "configs/rag/default.yaml"
 
         logger.info(f"KnowledgeBuilderAnalyzer initialized")
         logger.info(f"  KB Config: {self.kb_config_path}")
@@ -343,11 +343,11 @@ class KnowledgeBuilderAnalyzer:
 
         state = StorageState(
             vector_store_type=vector_config.get("backend", "chroma"),
-            vector_persist_dir=vector_config.get(
-                "persist_directory", "./rag_data/vector_store"
-            ),
+            vector_persist_dir=os.getenv("VECTOR_STORE_PATH")
+            or vector_config.get("persist_directory", "./rag_data/vector_store"),
             relational_db_type=relational_config.get("backend", "sqlite"),
-            relational_db_path=relational_config.get("sqlite", {}).get(
+            relational_db_path=os.getenv("RELATIONAL_DB_PATH")
+            or relational_config.get("sqlite", {}).get(
                 "db_path", "./rag_data/relational_database/rag_demo.sqlite"
             ),
             object_storage_enabled=True,

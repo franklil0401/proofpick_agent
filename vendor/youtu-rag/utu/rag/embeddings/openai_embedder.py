@@ -1,9 +1,8 @@
 """OpenAI Embeddings implementation."""
 
-import asyncio
 import logging
 import os
-from typing import List
+import time
 
 from openai import AsyncOpenAI
 
@@ -21,7 +20,8 @@ class OpenAIEmbedder(BaseEmbedder):
         api_key: str | None = None,
         base_url: str | None = None,
         batch_size: int = 100,
-        max_retries: int = 3,
+        dimensions: int | None = None,
+        max_retries: int = 2,
         timeout: float = 60.0,
         batch_delay: float = 3.0,
     ):
@@ -35,6 +35,7 @@ class OpenAIEmbedder(BaseEmbedder):
             api_key: OpenAI API key (defaults to UTU_EMBEDDING_API_KEY env var)
             base_url: Custom base URL for OpenAI-compatible services
             batch_size: Maximum batch size for API calls
+            dimensions: Explicit embedding dimension for providers that support it
             max_retries: Maximum number of retries on failure
             timeout: Request timeout in seconds
             batch_delay: Delay in seconds between batches to avoid rate limiting
@@ -42,6 +43,8 @@ class OpenAIEmbedder(BaseEmbedder):
         self.model = model
         self.batch_size = batch_size
         self.batch_delay = batch_delay
+        self.dimensions = dimensions
+        self.usage_records: list[dict[str, int | float | str]] = []
 
         # Initialize OpenAI client
         self.client = AsyncOpenAI(
@@ -53,7 +56,52 @@ class OpenAIEmbedder(BaseEmbedder):
 
         logger.info(
             f"Initialized OpenAIEmbedder with model: {self.model}, "
-            f"batch_size: {self.batch_size}, batch_delay: {self.batch_delay}s"
+            f"batch_size: {self.batch_size}, dimensions: {self.dimensions}, "
+            f"batch_delay: {self.batch_delay}s"
+        )
+
+    def _request_kwargs(self, input_value: str | list[str]) -> dict:
+        kwargs = {
+            "model": self.model,
+            "input": input_value,
+            "encoding_format": "float",
+        }
+        if self.dimensions is not None:
+            kwargs["dimensions"] = self.dimensions
+        return kwargs
+
+    def _validate_embeddings(self, embeddings: list[list[float]], expected_count: int) -> None:
+        if len(embeddings) != expected_count:
+            raise ValueError(
+                f"Embedding response count mismatch: expected {expected_count}, got {len(embeddings)}"
+            )
+        if self.dimensions is not None and any(len(vector) != self.dimensions for vector in embeddings):
+            raise ValueError(f"Embedding response dimension mismatch: expected {self.dimensions}")
+
+    def _record_usage(self, response, item_count: int, latency_ms: float) -> None:
+        usage = getattr(response, "usage", None)
+        input_tokens = int(
+            getattr(usage, "prompt_tokens", None)
+            or getattr(usage, "input_tokens", None)
+            or getattr(usage, "total_tokens", None)
+            or 0
+        )
+        total_tokens = int(getattr(usage, "total_tokens", None) or input_tokens)
+        record = {
+            "model": self.model,
+            "item_count": item_count,
+            "input_tokens": input_tokens,
+            "total_tokens": total_tokens,
+            "latency_ms": round(latency_ms, 3),
+            "estimated_cost_cny": input_tokens * 0.5 / 1_000_000,
+        }
+        self.usage_records.append(record)
+        logger.info(
+            "Embedding usage: model=%s, items=%s, input_tokens=%s, latency_ms=%.1f",
+            self.model,
+            item_count,
+            input_tokens,
+            latency_ms,
         )
 
     def _batched(self, iterable, n):
@@ -66,7 +114,7 @@ class OpenAIEmbedder(BaseEmbedder):
         while batch := tuple(islice(it, n)):
             yield batch
 
-    async def embed_texts(self, texts: List[str]) -> List[List[float]]:
+    async def embed_texts(self, texts: list[str]) -> list[list[float]]:
         """Generate embeddings for a list of texts.
 
         Args:
@@ -88,67 +136,37 @@ class OpenAIEmbedder(BaseEmbedder):
             for i, batch in enumerate(batches):
                 logger.info(f"Processing batch {i + 1}/{total_batches} with {len(batch)} texts...")
 
-                # Log request details
-                logger.info(f"📤 Embedding API Request Details:")
-                logger.info(f"  - Model: {self.model}")
-                logger.info(f"  - Batch size: {len(batch)} texts")
-                logger.info(f"  - Base URL: {self.client.base_url}")
-                for idx, text in enumerate(batch):
-                    text_preview = text[:200] if len(text) > 200 else text
-                    logger.info(f"  - Text {idx + 1}: length={len(text)} chars, preview=\"{text_preview}...\"")
-
-                # Retry logic for handling WAF blocks and rate limits
-                max_retries = 3
-                for retry in range(max_retries):
-                    try:
-                        # Call OpenAI embedding API
-                        response = await self.client.embeddings.create(
-                            model=self.model, input=list(batch), encoding_format="float"
-                        )
-
-                        # Extract embeddings
-                        batch_embeddings = [item.embedding for item in response.data]
-                        embeddings.extend(batch_embeddings)
-                        logger.info(f"✅ Successfully received {len(batch_embeddings)} embeddings from API")
-                        break  # Success, exit retry loop
-
-                    except Exception as e:
-                        error_msg = str(e)
-                        is_waf_block = "waf-static.tencent.com" in error_msg.lower() or "501page.html" in error_msg.lower()
-                        is_rate_limit = "rate" in error_msg.lower() or "429" in error_msg
-
-                        # Log error details
-                        logger.error(f"❌ Embedding API error on batch {i + 1}:")
-                        logger.error(f"  - Error type: {'WAF block' if is_waf_block else 'Rate limit' if is_rate_limit else 'Other'}")
-                        logger.error(f"  - Batch size: {len(batch)} texts")
-                        logger.error(f"  - Total chars in batch: {sum(len(t) for t in batch)}")
-                        logger.error(f"  - Error message: {error_msg[:500]}")
-
-                        if retry < max_retries - 1 and (is_waf_block or is_rate_limit):
-                            # Exponential backoff: 5s, 10s, 20s
-                            wait_time = 5 * (2 ** retry)
-                            logger.warning(
-                                f"⚠️ {'WAF block' if is_waf_block else 'Rate limit'} detected on batch {i + 1}. "
-                                f"Retrying in {wait_time}s... (attempt {retry + 1}/{max_retries})"
-                            )
-                            await asyncio.sleep(wait_time)
-                        else:
-                            # Last retry or non-retryable error
-                            raise
+                logger.info(
+                    "Embedding API request: model=%s, batch_size=%s, dimensions=%s",
+                    self.model,
+                    len(batch),
+                    self.dimensions,
+                )
+                started = time.perf_counter()
+                response = await self.client.embeddings.create(**self._request_kwargs(list(batch)))
+                latency_ms = (time.perf_counter() - started) * 1000
+                ordered = sorted(response.data, key=lambda item: item.index)
+                batch_embeddings = [item.embedding for item in ordered]
+                self._validate_embeddings(batch_embeddings, len(batch))
+                self._record_usage(response, len(batch), latency_ms)
+                embeddings.extend(batch_embeddings)
+                logger.info("Successfully received %s embeddings from API", len(batch_embeddings))
 
                 # Add delay between batches to avoid rate limiting (except for last batch)
                 if i < total_batches - 1 and self.batch_delay > 0:
                     logger.debug(f"Waiting {self.batch_delay}s before next batch...")
+                    import asyncio
+
                     await asyncio.sleep(self.batch_delay)
 
             logger.info(f"✓ Successfully generated {len(embeddings)} embeddings")
             return embeddings
 
-        except Exception as e:
-            logger.error(f"✗ Error generating embeddings: {str(e)}")
+        except Exception:
+            logger.error("Error generating embeddings (details suppressed)")
             raise
 
-    async def embed_query(self, query: str) -> List[float]:
+    async def embed_query(self, query: str) -> list[float]:
         """Generate embedding for a single query.
 
         Args:
@@ -159,15 +177,17 @@ class OpenAIEmbedder(BaseEmbedder):
         """
         try:
             # Call OpenAI embedding API for single query
-            response = await self.client.embeddings.create(
-                model=self.model, input=query, encoding_format="float"
-            )
+            started = time.perf_counter()
+            response = await self.client.embeddings.create(**self._request_kwargs(query))
+            latency_ms = (time.perf_counter() - started) * 1000
 
             embedding = response.data[0].embedding
+            self._validate_embeddings([embedding], 1)
+            self._record_usage(response, 1, latency_ms)
 
-            logger.info(f"✓ Successfully generated embedding for query")
+            logger.info("✓ Successfully generated embedding for query")
             return embedding
 
-        except Exception as e:
-            logger.error(f"✗ Error generating query embedding: {str(e)}")
+        except Exception:
+            logger.error("Error generating query embedding (details suppressed)")
             raise

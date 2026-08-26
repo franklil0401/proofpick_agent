@@ -249,13 +249,18 @@ class SimpleAgent:
             raise ValueError(f"Unknown toolkit mode: {toolkit_config.mode}")
 
     async def _load_builtin_toolkit(self, toolkit_config: ToolkitConfig) -> AsyncBaseToolkit:
-        logger.info(f"Loading builtin toolkit `{toolkit_config.name}` with config {toolkit_config}")
+        logger.info(
+            "Loading builtin toolkit `%s` (mode=%s, configured_fields=%s)",
+            toolkit_config.name,
+            toolkit_config.mode,
+            sorted(toolkit_config.config.keys()),
+        )
         toolkit = TOOLKIT_MAP[toolkit_config.name](toolkit_config)
         self._toolkits[toolkit_config.name] = toolkit
         return toolkit
 
     async def _load_customized_toolkit(self, toolkit_config: ToolkitConfig) -> AsyncBaseToolkit:
-        logger.info(f"Loading customized toolkit `{toolkit_config.name}` with config {toolkit_config}")
+        logger.info("Loading customized toolkit `%s` (mode=%s)", toolkit_config.name, toolkit_config.mode)
         assert toolkit_config.customized_filepath is not None and toolkit_config.customized_classname is not None
         toolkit_class = load_class_from_file(toolkit_config.customized_filepath, toolkit_config.customized_classname)
         toolkit = toolkit_class(toolkit_config)
@@ -263,7 +268,11 @@ class SimpleAgent:
         return toolkit
 
     async def _load_mcp_server(self, toolkit_config: ToolkitConfig) -> MCPServer:
-        logger.info(f"Loading MCP server `{toolkit_config.name}` with params {toolkit_config.config}")
+        logger.info(
+            "Loading MCP server `%s` (configured_fields=%s)",
+            toolkit_config.name,
+            sorted(toolkit_config.config.keys()),
+        )
         mcp_server = get_mcp_server(toolkit_config)
         server = await self._mcps_exit_stack.enter_async_context(mcp_server)
         self._mcp_servers.append(server)

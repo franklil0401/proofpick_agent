@@ -207,8 +207,11 @@ class KBSearchToolkit(BaseRAGToolkit):
             retrieval_top_k = top_k * self.recall_multiplier if auto_rerank else top_k
 
             logger.info(
-                f"[kb_embedding_search] KB={kb_id}, query='{query[:50]}...', "
-                f"top_k={top_k}, auto_rerank={auto_rerank}, retrieval_top_k={retrieval_top_k}"
+                "[kb_embedding_search] KB=%s, top_k=%s, auto_rerank=%s, retrieval_top_k=%s",
+                kb_id,
+                top_k,
+                auto_rerank,
+                retrieval_top_k,
             )
 
             filters = self._build_metadata_filters(metadata_filters)
@@ -257,7 +260,8 @@ class KBSearchToolkit(BaseRAGToolkit):
 
                     reranked_results = await self.reranker.rerank(query=query, results=results, top_k=top_k)
 
-                    result_data["reranked"] = True
+                    result_data["reranked"] = not getattr(self.reranker, "last_degraded", False)
+                    result_data["rerank_degraded"] = getattr(self.reranker, "last_degraded", False)
                     result_data["total_results"] = len(reranked_results)
                     result_data["results"] = []
 
@@ -349,7 +353,7 @@ class KBSearchToolkit(BaseRAGToolkit):
                 "model", "jina-reranker-v2-base-multilingual"
             )
 
-            logger.info(f"[kb_rerank] query='{query[:50]}...', top_k={top_k}, model={model}")
+            logger.info("[kb_rerank] top_k=%s, model=%s", top_k, model)
 
             try:
                 candidates_data = json.loads(candidates)
@@ -394,7 +398,7 @@ class KBSearchToolkit(BaseRAGToolkit):
                 retrieval_results.append(result)
 
             reranked_results = await self.reranker.rerank(
-                query=query, results=retrieval_results, top_n=top_k
+                query=query, results=retrieval_results, top_k=top_k
             )
 
             # Apply metadata boosting if provided (future feature)
@@ -414,7 +418,8 @@ class KBSearchToolkit(BaseRAGToolkit):
                 "original_count": len(candidate_results),
                 "rerank_top_k": top_k,
                 "rerank_model": model,
-                "reranked": True,
+                "reranked": not getattr(self.reranker, "last_degraded", False),
+                "rerank_degraded": getattr(self.reranker, "last_degraded", False),
                 "results": [],
             }
 
@@ -522,8 +527,11 @@ class KBSearchToolkit(BaseRAGToolkit):
             top_k = top_k if top_k is not None else self.file_search_top_k
             retrieval_top_k = top_k * self.recall_multiplier if auto_rerank else top_k
             logger.info(
-                f"[kb_file_search] KB={kb_id}, query='{query[:50]}...', "
-                f"top_k={top_k}, auto_rerank={auto_rerank}, retrieval_top_k={retrieval_top_k}"
+                "[kb_file_search] KB=%s, top_k=%s, auto_rerank=%s, retrieval_top_k=%s",
+                kb_id,
+                top_k,
+                auto_rerank,
+                retrieval_top_k,
             )
             base_filters = self._build_metadata_filters(metadata_filters)
 
@@ -607,7 +615,8 @@ class KBSearchToolkit(BaseRAGToolkit):
                         query=query, results=retrieval_results, top_k=top_k
                     )
 
-                    result_data["reranked"] = True
+                    result_data["reranked"] = not getattr(reranker, "last_degraded", False)
+                    result_data["rerank_degraded"] = getattr(reranker, "last_degraded", False)
                     result_data["total_files"] = len(reranked_results)
 
                     for idx, result in enumerate(reranked_results, 1):

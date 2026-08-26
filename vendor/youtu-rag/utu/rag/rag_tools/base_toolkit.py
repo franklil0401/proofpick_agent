@@ -33,7 +33,13 @@ class BaseRAGToolkit(AsyncBaseToolkit):
 
         self.embedding_config = self.config.config.get("embedding", {})
         self.vector_store_base_config = self.config.config.get("vector_store", {})
-        logger.info(f"Embedding config: {self.embedding_config}")
+        logger.info(
+            "Embedding config loaded: backend=%s, model=%s, dimensions=%s, api_key=%s",
+            self.embedding_config.get("backend", "openai"),
+            self.embedding_config.get("model"),
+            self.embedding_config.get("dimensions"),
+            "configured" if self.embedding_config.get("api_key") else "missing",
+        )
         logger.info(f"Vector store base config: {self.vector_store_base_config}")
 
         self._embedder_cache = None  # Shared embedder for all KBs
@@ -65,6 +71,7 @@ class BaseRAGToolkit(AsyncBaseToolkit):
             embedder_params["api_key"] = config.get("api_key")
             embedder_params["base_url"] = config.get("base_url")
             embedder_params["batch_size"] = config.get("batch_size", 16)
+            embedder_params["dimensions"] = config.get("dimensions")
 
         return embedder_params
 

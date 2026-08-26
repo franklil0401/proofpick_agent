@@ -15,10 +15,12 @@ chunking:
 embedding:
   display_name: "🔢 向量嵌入 (Embedding)"
   type: "api"  # Options: local, api
+  backend: "openai"
   model: "${UTU_EMBEDDING_MODEL}"  
   base_url: "${UTU_EMBEDDING_URL}" 
   api_key: "${UTU_EMBEDDING_API_KEY}"
-  batch_size: 16
+  dimensions: 1024
+  batch_size: 10
 
 # embedding:
 #   display_name: "🔢 向量嵌入 (Embedding)"
@@ -31,7 +33,8 @@ embedding:
 reranker:
   display_name: "🎯 重排序 (Reranker)"
   type: "api"  # Options: local, api
-  enabled: false
+  enabled: true
+  backend: "openai"
   model: "${UTU_RERANKER_MODEL}"
   base_url: "${UTU_RERANKER_BASE_URL}"
   top_k: 5

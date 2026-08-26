@@ -31,7 +31,12 @@ async def chat(request: ChatRequest):
     - error: error message
     """
     try:
-        logger.info(f"Received chat request: {request.query[:100]}...")
+        logger.info(
+            "Received chat request: stream=%s, kb_id=%s, query_chars=%s",
+            request.stream,
+            request.kb_id,
+            len(request.query),
+        )
 
         # Auto select mode
         if request.auto_select:

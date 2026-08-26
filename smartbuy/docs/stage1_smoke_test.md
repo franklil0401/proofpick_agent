@@ -39,7 +39,7 @@ Set-Location <repo-root>
 ./smartbuy/scripts/start_youtu_rag.ps1
 ```
 
-启动脚本要求 Windows 持久化环境中存在 `Qianwen_api_key` 与 `Qianwen_workspace_id`，只报告 `configured/missing`，不得用打印值的方式排查。
+当前启动脚本要求调用进程已经继承 `Qianwen_api_key` 与 `Qianwen_workspace_id`，只报告 `configured/missing`，不得用打印值的方式排查。阶段 1 当时直接读取持久化作用域的做法已在阶段 2 按用户决定废止；轮换 Key 后应重启终端、IDE 和服务。
 
 ## 关键配置与 Windows 处理
 
@@ -57,7 +57,7 @@ Set-Location <repo-root>
 2. 检查工作区、diff 和 Git；未发现 Key 被写入源码、文档、日志、数据库快照或待提交内容，也未发生推送。
 3. 用户已禁用旧 Key，并把新值写入同名 Windows 系统变量。
 4. 配置接口增加递归敏感字段脱敏；测试只使用 `dummy-*` 虚构值。
-5. 启动脚本不再读取可能残留旧值的 Process 作用域，只读取 Machine/User 持久化作用域。
+5. 阶段 1 当时通过读取 Machine/User 持久化作用域规避旧进程残留；阶段 2 已改为正式程序只读取继承后的 Process 环境，并以“轮换后重启所有长运行进程”处理陈旧值。
 6. 重新启动后仅断言脱敏哨兵、凭据前缀缺失和状态码，不再输出原始配置响应。
 
 安全回归命令结果：`1 passed`；重新运行接口检查结果为 Key 字段已脱敏、未发现 Authorization 内容。轮换后的新 Key 从未在测试输出或文件中显示。
