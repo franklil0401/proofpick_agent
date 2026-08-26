@@ -1,0 +1,6 @@
+# DTR Framework Configuration
+type: custom
+
+config:
+  # max_iterations
+  max_iterations: 20

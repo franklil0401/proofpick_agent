@@ -1,0 +1,95 @@
+# Agent Configuration Mapping
+
+agents:
+  - name: "Chat"
+    description: "基础对话Agent"
+    agent_object: "SimpleAgent"
+    config_path: "simple/base.yaml"
+    icon: "💬"
+
+  - name: "Web Search"
+    description: "网络搜索增强Agent"
+    agent_object: "SimpleAgent"
+    config_path: "simple/base_search.yaml"
+    icon: "🔍"
+
+  - name: "KB Search"
+    description: "知识库检索Agent，支持向量搜索和重排序"
+    agent_object: "SimpleAgent"
+    config_path: "ragref/kb_search/kb_search.yaml"
+    icon: "📚"
+
+  - name: "Meta Retrieval"
+    description: "元数据检索Agent, 支持元数据筛选检索和重排序"
+    agent_object: "SimpleAgent"
+    config_path: "ragref/meta_retrieval/meta_retrieval.yaml"
+    icon: "📚"
+
+  - name: "File QA"
+    description: "智能文件问答Agent，支持PDF/Word/Excel等多种格式，自动选择最佳处理策略"
+    agent_object: "SimpleAgent"
+    config_path: "ragref/file/file_qa.yaml"
+    icon: "📄"
+
+  - name: "Excel Agent"
+    description: "Excel表格问答Agent (基于ExcelAgent)"
+    agent_object: "ExcelAgent"
+    config_path: "ragref/excel/excel.yaml"
+    icon: "📊"
+
+  - name: "Excel Deep Analysis"
+    description: "Excel表格深度分析Agent"
+    agent_object: "OrchestratorAgent"
+    config_path: "ragref/excel_analysis/base.yaml"
+    icon: "📈"
+
+  - name: "Text2SQL"
+    description: "文本转SQL Agent"
+    agent_object: "OrchestraReactSqlAgent"
+    config_path: "ragref/text2sql/text2sql.yaml"
+    icon: "💻"
+
+  - name: "Parallel Orchestrator"
+    description: "并行多Agent编排器，同时执行多个Agent并智能融合结果"
+    agent_object: "ParallelOrchestratorAgent"
+    config_path: "orchestrator/parallel.yaml"
+    icon: "🚀"
+
+agent_selection:
+  enabled: true
+
+  model_params:
+    temperature: 0.3
+    top_p: 0.95
+
+  system_prompt: "你是一个智能Agent选择器，擅长根据问题特征选择最合适的处理Agent。请严格按照JSON格式返回结果。"
+
+  selection_prompt: |
+    你需要根据用户问题和检索提示，从可用Agent列表中选择最合适的Agent来处理请求。
+
+    ## 输入信息
+    - 用户问题: {question}
+    - 检索提示: {howtofind}
+
+    ## 可用的Agents
+    {agents_desc}
+
+    ## 选择原则
+    1. **优先精准匹配**: 选择功能最匹配问题需求的Agent
+    2. **单一优于多个**: 如果单个Agent能完成任务，不要选择多个
+    3. **并行处理场景**: 仅在需要从多个数据源获取信息并综合时，才选择多个Agent
+    4. **考虑数据类型**: 根据问题涉及的数据格式（文档、表格、数据库等）选择对应Agent
+
+    ## 输出格式
+    严格返回JSON数组格式，仅包含选中的Agent名称，不要添加任何解释或其他文字。
+
+    示例: ["Agent Name 1", "Agent Name 2"]
+
+    请输出你的选择:
+
+
+
+
+
+
+

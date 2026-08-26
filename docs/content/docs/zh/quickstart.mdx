@@ -1,0 +1,289 @@
+---
+title: 快速开始
+description: 本指南将引导你完成 Youtu-RAG 的设置、配置必要的服务并启动系统
+---
+
+## 环境要求
+
+- **Python**: 3.12+
+- **包管理器**: 推荐使用 [uv](https://github.com/astral-sh/uv)
+- **操作系统**: Linux Desktop / macOS / Windows
+
+---
+
+## 安装与设置
+
+### 1. 克隆仓库
+
+首先，克隆仓库并设置 Python 环境。
+
+```bash
+# 克隆项目仓库
+git clone https://github.com/TencentCloudADP/youtu-rag.git
+cd youtu-rag
+
+# 使用 uv 安装依赖
+uv sync
+
+# 激活虚拟环境
+source .venv/bin/activate
+
+# 从示例创建环境配置文件
+cp .env.example .env
+```
+
+---
+
+## 服务配置
+
+### 2. 对象存储（MinIO）配置
+
+MinIO 是一个高性能对象存储服务，用于存储上传的文档文件（仍然是本地管理）。
+
+安装说明请参考官方 [MinIO 仓库](https://github.com/minio/minio)。支持两种安装方法：
+
+- **从源码安装**: 从源代码构建和安装 MinIO
+- **构建 Docker 镜像**: 使用 Docker 容器部署 MinIO
+
+**使用 Docker 快速开始**:
+
+```bash
+# 拉取 MinIO Docker 镜像
+docker pull minio/minio
+
+# 运行 MinIO 服务器
+docker run -p 9000:9000 -p 9001:9001 \
+  --name minio \
+  -v ~/minio/data:/data \
+  -e "MINIO_ROOT_USER=minioadmin" \
+  -e "MINIO_ROOT_PASSWORD=minioadmin" \
+  minio/minio server /data --console-address ":9001"
+```
+
+启动后，使用凭据 `minioadmin/minioadmin` 访问 MinIO 控制台 `http://localhost:9001`。
+
+---
+
+### 3. 模型部署
+
+Youtu-RAG 正常运行需要部署以下模型：
+
+| 模型 | HuggingFace | 部署方式 | 是否必需 |
+|:---|:---|:---|:---:|
+| [Youtu-Embedding](https://github.com/TencentCloudADP/youtu-embedding) | [HuggingFace](https://huggingface.co/tencent/Youtu-Embedding) | 本地或 API | ✅ 必需 |
+| [Youtu-Parsing](https://github.com/TencentCloudADP/youtu-parsing) | [HuggingFace](https://huggingface.co/tencent/Youtu-Parsing) | 本地或 API | ⭕ 可选 |
+| [Youtu-HiChunk](https://github.com/TencentCloudADP/hichunk) | [HuggingFace](https://huggingface.co/tencent/Youtu-HiChunk) | 本地或 API | ⭕ 可选 |
+
+**注意**: 你也可以使用其他兼容的 API 服务来替代本地部署这些模型的 Embedding、OCR 和 Chunking 功能。
+
+---
+
+## 环境变量配置
+
+### 4. 配置核心环境变量
+
+编辑 `.env` 文件并填写以下核心配置：
+
+#### LLM 配置（必需）
+
+```bash
+# LLM 配置
+UTU_LLM_TYPE=chat.completions
+UTU_LLM_MODEL=deepseek-chat
+UTU_LLM_BASE_URL=https://api.deepseek.com/v1
+UTU_LLM_API_KEY=你的_deepseek_api_key  # 替换为你的 API Key
+```
+
+#### Embedding 配置（必需）
+
+**选项 1: 本地服务（Youtu-Embedding-2B）**
+
+```bash
+UTU_EMBEDDING_URL=http://localhost:8081
+UTU_EMBEDDING_MODEL=youtu-embedding-2B
+```
+
+**选项 2: 其他 API 服务**
+
+```bash
+UTU_EMBEDDING_URL=https://api.your-embedding-service.com
+UTU_EMBEDDING_API_KEY=你的_api_key
+UTU_EMBEDDING_MODEL=模型名称
+```
+
+#### MinIO 配置（必需）
+
+```bash
+# MinIO 配置
+ENABLE_MINIO_MONITOR=true
+MINIO_ENDPOINT=localhost:9000
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+MINIO_BUCKET=ufile
+MINIO_BUCKET_SYS=sysfile
+MINIO_SECURE=false
+MINIO_LOCAL_TMP_DIR=/tmp/minio
+```
+
+#### 可选服务
+
+**Reranker 配置（可选，提高检索准确性）**
+
+```bash
+UTU_RERANKER_MODEL=jina-reranker-v3
+UTU_RERANKER_URL=https://api.jina.ai/v1/rerank
+UTU_RERANKER_API_KEY=你的_jina_api_key
+```
+
+**OCR 配置（可选，可本地部署 Youtu-Parsing）**
+
+```bash
+UTU_OCR_BASE_URL=https://api.ocr.com/ocr
+UTU_OCR_MODEL=youtu-ocr
+```
+
+**Chunk 配置（可选，可本地部署 Youtu-HiChunk）**
+
+```bash
+UTU_CHUNK_BASE_URL=https://api.hichunk.com/chunk
+UTU_CHUNK_MODEL=hichunk
+```
+
+**记忆功能（可选）**
+
+```bash
+memoryEnabled=false  # 设置为 true 以启用双层记忆机制
+```
+
+> **注意**: 如果你不需要 OCR 和 Chunk 功能，可以在 `configs/rag/file_management.yaml` 中设置 `ocr enabled: false` 和 `chunk enabled: false` 来禁用它们。
+
+完整的环境变量配置详情，请参考[环境变量文档](./environment-variables)。
+
+---
+
+## 启动服务
+
+### 5. 启动 Youtu-RAG
+
+```bash
+# 方法 1: 使用启动脚本（推荐）
+bash start.sh
+
+# 方法 2: 直接使用 uvicorn
+uv run uvicorn utu.rag.api.main:app --reload --host 0.0.0.0 --port 8000
+```
+
+成功启动后，访问以下地址：
+
+- 📱 **前端界面**: http://localhost:8000
+- 📊 **监控面板**: http://localhost:8000/monitor
+
+---
+
+## 使用系统
+
+### 6. 开始使用 WebUI
+
+服务运行后，你可以通过 Web 界面开始使用 Youtu-RAG：
+
+#### 文件管理
+1. 点击左侧边栏的**源文件**
+2. 上传文件（PDF、Excel、图片等）
+3. 查看文件处理状态和预览内容
+
+#### 知识库管理
+1. 点击左侧边栏的**知识库**
+2. 创建新的知识库
+3. 关联文件、数据库或问答示例
+4. 构建向量索引
+
+#### 智能对话
+1. 点击左侧边栏的**问AI**
+2. 选择一个智能体（Chat、KB Search、Text2SQL 等）
+3. 如果需要，选择一个知识库
+4. 启用**记忆**开关以更好地保持上下文
+5. 开始聊天！
+
+详细使用说明，请参考 [WebUI 使用指南](./frontend)。
+
+---
+
+## 高级配置
+
+### 追踪与监控
+
+Youtu-RAG 集成了 [Phoenix](https://arize.com/docs/phoenix) 用于追踪和监控智能体执行流程。
+
+```bash
+# Phoenix/OpenTelemetry 配置
+PHOENIX_ENDPOINT=http://127.0.0.1:6006/v1/traces
+PHOENIX_PROJECT_NAME=youtu_rag
+PHOENIX_API_KEY=你的_PHOENIX_API_KEY  # Phoenix Cloud 需要
+```
+
+### 数据库配置
+
+默认情况下，Youtu-RAG 使用 SQLite 存储系统数据。你可以配置不同的数据库：
+
+```bash
+# SQLite（默认）
+UTU_DB_URL=sqlite:///./rag_data/relational_database/rag_demo.sqlite
+
+# PostgreSQL
+UTU_DB_URL=postgresql://user:password@host:port/database
+
+# MySQL
+UTU_DB_URL=mysql://user:password@host:port/database
+```
+
+### 向量存储配置
+
+```bash
+# ChromaDB 配置
+ENABLE_VECTOR_MONITOR=true
+VECTOR_STORE_PATH=./rag_data/vector_store
+```
+
+---
+
+## 故障排除
+
+### 常见问题
+
+**问题 1: MinIO 连接失败**
+- 确保 MinIO 服务正在运行: `docker ps | grep minio`
+- 验证 `.env` 文件中的 MinIO 端点和凭据
+
+**问题 2: Embedding 服务不可用**
+- 检查 Youtu-Embedding 服务是否正在运行
+- 验证 `UTU_EMBEDDING_URL` 是否正确
+- 测试端点: `curl http://localhost:8081/health`
+
+**问题 3: OCR/HiChunk 不工作**
+- 检查这些服务是否正确部署
+- 或在 `configs/rag/file_management.yaml` 中禁用它们：
+  ```yaml
+  ocr:
+    enabled: false
+  chunk:
+    enabled: false
+  ```
+
+**问题 4: 端口已被占用**
+- 在 `.env` 中更改服务器端口：
+  ```bash
+  SERVER_PORT=8001
+  ```
+
+---
+
+## 下一步
+
+- **探索智能体**: 在 WebUI 中尝试不同的智能体来完成各种任务
+- **上传文档**: 用你自己的文档构建知识库
+- **启用记忆**: 打开记忆功能以获得更好的对话体验
+- **查看基准测试**: 在 [README](https://github.com/TencentCloudADP/youtu-rag/blob/main/README_ZH.md#%E8%AF%84%E6%B5%8B%E5%9F%BA%E5%87%86) 中了解 Youtu-RAG 的性能
+
+更多详细文档：
+- [WebUI 使用指南](./frontend) - 使用 Web 界面的完整指南
+- [环境变量](./environment-variables) - 所有配置选项

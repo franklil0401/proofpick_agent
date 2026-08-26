@@ -1,0 +1,200 @@
+---
+title: 环境变量
+description: 本文档概述了 Youtu-RAG 中关键环境变量的配置
+---
+
+## 概述
+
+在运行 Youtu-RAG 之前，你需要配置必要的环境变量。推荐的做法是从项目根目录复制 `.env.example` 文件开始：
+
+```sh
+cp .env.example .env
+```
+
+然后，编辑 `.env` 文件以填写所需的 API Keys 和其他配置。
+
+## Web UI
+
+Youtu-RAG Web 界面可以使用以下设置进行配置：
+
+```sh
+# 服务器主机（0.0.0.0 监听所有接口）
+SERVER_HOST=0.0.0.0
+# 服务器端口（前端和后端使用相同端口）
+SERVER_PORT=8000
+```
+
+## LLM API Keys
+
+Youtu-RAG 的核心能力依赖于大型语言模型（LLM）。你需要为不同的功能模块配置适当的模型。这是智能体操作所依赖的主要文本生成 LLM。
+
+```sh
+# LLM 类型（例如，chat.completions、responses）
+UTU_LLM_TYPE=chat.completions
+# LLM 模型名称（例如，deepseek-chat、gpt-4-turbo）
+UTU_LLM_MODEL=deepseek-chat
+# LLM 提供商的 API 基础 URL（例如，https://api.deepseek.com/v1）
+UTU_LLM_BASE_URL=https://api.deepseek.com/v1
+# LLM 提供商的 API Key
+UTU_LLM_API_KEY=你的_API_KEY
+```
+
+## 工具
+
+一些工具包需要自己的 API Keys 或特定配置。
+
+### 搜索工具包（`SearchToolkit`）
+
+搜索工具包默认集成以下两个服务：
+
+1. **网页搜索**: 使用 [Serper](https://serper.dev/) 提供的高效 Google 搜索 API。你需要注册并获取 API Key。
+2. **网页内容提取**: 使用 [Jina AI Reader](https://jina.ai/reader/) 将网页内容转换为 LLM 友好的 Markdown 格式。这也需要注册和 API Key。
+
+在你的 `.env` 文件中进行如下配置：
+
+```sh
+# 从 https://serper.dev/ 获取
+SERPER_API_KEY=你的_SERPER_API_KEY
+# 从 https://jina.ai/reader/ 获取
+JINA_API_KEY=你的_JINA_API_KEY
+```
+
+### OCR 工具包（`Youtu-Parsing`）
+
+Youtu-RAG 集成了用于从图像和文档中提取文本的 OCR 服务：
+
+```sh
+# OCR 服务基础 URL
+UTU_OCR_BASE_URL=你的_OCR_服务_URL
+# OCR 模型名称
+UTU_OCR_MODEL=youtu-ocr
+```
+
+### Embedding 工具包（`Youtu-Embedding`）
+
+Youtu-RAG 支持两种嵌入服务选项：
+
+**选项 1: 本地 Youtu-Embedding 服务（2048 维度）**
+
+```sh
+# Youtu-Embedding-2B 本地服务 URL
+UTU_EMBEDDING_URL=你的_EMBEDDING_服务_URL
+# 模型名称
+UTU_EMBEDDING_MODEL=youtu-embedding-2B
+```
+
+**选项 2: 其他 Embedding 服务**
+
+```sh
+# API URL（OpenAI API 标准）
+UTU_EMBEDDING_URL=你的_API_URL
+# API Key
+UTU_EMBEDDING_API_KEY=你的_API_KEY
+# 模型名称
+UTU_EMBEDDING_MODEL=模型名称
+```
+
+
+### Reranker 工具包（`Jina-Reranker`）
+
+重排序服务用于通过重新排序搜索结果来提高检索准确性：
+
+```sh
+# Reranker 模型名称
+UTU_RERANKER_MODEL=jina-reranker-v3
+# Reranker API URL
+UTU_RERANKER_URL=https://api.jina.ai/v1/rerank
+# Reranker API Key（从 https://jina.ai/reranker 获取）
+UTU_RERANKER_API_KEY=你的_JINA_RERANKER_API_KEY
+```
+
+## 数据库
+
+### 向量数据库
+
+Youtu-RAG 使用 ChromaDB 作为向量数据库来存储文档嵌入：
+
+```sh
+# 启用向量存储监控
+ENABLE_VECTOR_MONITOR=true
+# ChromaDB 向量存储路径
+VECTOR_STORE_PATH=./rag_data/vector_store
+```
+
+### 关系型数据库
+
+关系型数据库用于系统管理、存储追踪数据和评估结果：
+
+```sh
+# 数据库 URL（SQLite 示例）
+# 对于本地开发，SQLite 数据库将在指定目录中创建
+UTU_DB_URL=sqlite:///./rag_data/relational_database/rag_demo.sqlite
+```
+
+你也可以通过相应修改连接 URL 来使用其他数据库系统（例如，PostgreSQL、MySQL）。
+
+### MinIO
+
+MinIO 用作对象存储来管理 RAG 相关文件：
+
+```sh
+# 启用 MinIO 对象存储监控
+ENABLE_MINIO_MONITOR=true
+# MinIO 端点
+MINIO_ENDPOINT=localhost:9000
+# MinIO 访问凭据
+MINIO_ACCESS_KEY=minioadmin
+MINIO_SECRET_KEY=minioadmin
+# RAG 用户文件存储的 MinIO 桶名称
+MINIO_BUCKET=ufile
+# RAG 系统文件存储的 MinIO 桶名称
+MINIO_BUCKET_SYS=sysfile
+# 使用安全连接（https 为 true，http 为 false）
+MINIO_SECURE=false
+# MinIO 操作的本地临时目录
+MINIO_LOCAL_TMP_DIR=/tmp/minio
+```
+
+## 追踪与监控
+
+框架集成了 [OpenTelemetry](https://opentelemetry.io/) 和 [Phoenix](https://arize.com/docs/phoenix) 用于追踪和监控智能体的执行流程。
+
+```sh
+# Phoenix/OpenTelemetry 追踪接收端点
+PHOENIX_ENDPOINT=http://127.0.0.1:6006/v1/traces
+# Phoenix UI 中显示的项目名称
+PHOENIX_PROJECT_NAME=youtu_rag
+# Phoenix API Key（Phoenix Cloud 服务需要）
+# 从 https://app.phoenix.arize.com/s/_space_name_/settings/general 获取
+PHOENIX_API_KEY=你的_PHOENIX_API_KEY
+```
+
+如果你在本地使用 Phoenix，只需要 `PHOENIX_ENDPOINT`。对于 Phoenix Cloud 服务，你还需要配置 `PHOENIX_API_KEY`。
+
+
+## 记忆
+
+Youtu-RAG 支持记忆功能，用于在对话中保持上下文：
+
+```sh
+# 启用/禁用记忆功能（true/false）
+memoryEnabled=false
+```
+
+设置为 `true` 以启用记忆功能，这允许系统记住之前的交互。
+
+## 日志
+
+配置应用程序的日志级别：
+
+```sh
+# 日志级别（DEBUG、INFO、WARNING、ERROR、CRITICAL）
+UTU_LOG_LEVEL=INFO
+```
+
+可用的日志级别：
+- `DEBUG`: 用于诊断问题的详细信息
+- `INFO`: 一般信息消息（推荐用于生产环境）
+- `WARNING`: 潜在有害情况的警告消息
+- `ERROR`: 严重问题的错误消息
+- `CRITICAL`: 非常严重错误的关键消息
