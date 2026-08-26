@@ -18,6 +18,7 @@
 | S6 | 基础 Chat | 通过 | 切换 `simple/base.yaml`；非流式请求 200；约 2.081 秒；回答非空 |
 | S7 | KB Build / KB Search | 延后，不阻塞阶段 1 | 不调用未验证的 Embedding；阶段 2 完成 Provider 与 1024 维验证后执行 |
 | S8 | 配置脱敏 | 通过 | 接口 Key 字段为 `<redacted>`，无 Authorization 内容；单测 1 passed |
+| S9 | GitHub Push Protection | 通过安全清理 | 首次推送识别上游模型类名为 Mistral Key；未申请放行，使用保持 Python 语义的相邻字符串字面量并从固定上游父提交重建 subtree |
 
 阶段 1 触发 2 次 `qwen-plus` 用户级操作（上传元数据提取、基础 Chat），均成功；上游响应未提供可核对的 Token/费用字段，因此 Token 与估算成本记录为“未知”，不伪造数值。阶段 1 未调用 Embedding 或 Reranker。阶段 2 需先建立安全的用量账本，再在 5 元上限内进行三模型适配测试。
 
@@ -73,3 +74,7 @@ Set-Location <repo-root>
 4. 完成后重新构建本测试 KB，并补跑 KB Search。
 
 这些是已确认的阶段 2 依赖边界，不是阶段 1 的阻断失败。
+
+## 上游 Secret Scanning 误报处理
+
+首次推送时，GitHub 将中英文 HiChunk 部署文档中的 `Mistral3` 模型类名误判为 Mistral API Key。处理过程中未打印匹配原值，也未使用 GitHub 的绕过链接。固定上游 Commit 保持不变；其上新增只拆分 Python 相邻字符串字面量的派生 Commit，再以该派生树重新执行 `git subtree --squash`。该修改不改变代码示例运行时得到的类名，并已记录为供应商目录差异。

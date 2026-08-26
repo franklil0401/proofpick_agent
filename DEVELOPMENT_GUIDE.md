@@ -516,6 +516,7 @@ docs: initialize development guide and project map
 | 动态价格和页面变化 | 不可完全复现 | 记录地区/时间，保留快照或历史观察 | 否 |
 | Windows 路径和依赖 | 阶段 1 已通过；运行数据需避开深路径 | 保持 `C:/ai/` 短 ASCII 路径，逐服务回归 | 否 |
 | 上游快速变化 | 已固定 `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066` | 仅按 ADR 审查并 subtree 更新，每次重跑基线 | 否 |
+| 上游文档触发 Secret Scanning | 阶段 1 出现模型类名误报，GitHub 拒绝首次推送 | 不允许疑似 Secret；以无语义字符串拆分清理并记录派生 Commit/差异，重新扫描 | 否；已处理 |
 | 上游配置凭据回显 | 阶段 1 已真实触发；旧 Key 已轮换 | 递归脱敏、单测、接口回归、排除陈旧 Process 环境；原始配置响应不得写日志 | 否；修复已验证 |
 | 上游纳入本仓库方式 | 已决定 Git subtree 固定版本 | 保留上游 LICENSE、第三方声明和供应商目录差异表 | 否 |
 | GraphRAG 复杂度 | 与 MVP 目标不匹配 | 当前不做；只有基线稳定且用户批准时单独实验 | 否 |

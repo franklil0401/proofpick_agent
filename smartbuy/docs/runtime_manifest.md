@@ -10,6 +10,7 @@
 | 当前项目分支 | `main` |
 | Youtu-RAG 上游仓库 | <https://github.com/TencentCloudADP/youtu-rag> |
 | Youtu-RAG Commit | `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066` |
+| 安全清理派生 Commit | `87af8dcf679f82779257c32c262d34285b6b9903`；仅处理 GitHub 对模型类名的 Secret 误报 |
 | 纳入日期/方式 | 2026-08-26，`git subtree --squash` |
 | 供应商目录 | `vendor/youtu-rag/` |
 | 上游许可证 | MIT，见 `vendor/youtu-rag/LICENSE` |

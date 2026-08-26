@@ -7,6 +7,7 @@
 - 项目：TencentCloudADP/youtu-rag
 - 上游仓库：<https://github.com/TencentCloudADP/youtu-rag>
 - 固定上游 Commit：`ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066`
+- 安全清理派生 Commit：`87af8dcf679f82779257c32c262d34285b6b9903`（其唯一父提交为上述固定上游 Commit）
 - 纳入日期：2026-08-26
 - 纳入方式：`git subtree --squash`，目录为 `vendor/youtu-rag/`
 - 许可证：MIT License
@@ -25,6 +26,8 @@ Youtu-RAG 的版权归原权利人所有。本项目根目录 [LICENSE](LICENSE)
 | `vendor/youtu-rag/utu/rag/api/routes/config.py` | 配置接口返回前执行递归脱敏 |
 | `vendor/youtu-rag/utu/rag/api/utils/security.py` | 新增通用凭据字段脱敏函数 |
 | `vendor/youtu-rag/tests/rag/api/test_config_security.py` | 使用虚构值验证递归脱敏及不修改原对象 |
+| `vendor/youtu-rag/docs/content/docs/en/hichunk/deploying-locally.mdx` | 将同一 Python 类名拆成相邻字符串字面量，保持示例语义并避开 GitHub 对模型类名的 Mistral Key 误报 |
+| `vendor/youtu-rag/docs/content/docs/zh/hichunk/deploying-locally.mdx` | 与英文说明做相同的无语义安全清理 |
 
 其余 SmartBuy 场景代码、启动脚本、文档、数据和评测代码放在 `smartbuy/` 或仓库根目录，不与上游原生能力混写。后续若继续修改 `vendor/youtu-rag/`，必须同步更新本声明和[上游纳入 ADR](smartbuy/docs/adr/0001-vendor-youtu-rag.md)。
 

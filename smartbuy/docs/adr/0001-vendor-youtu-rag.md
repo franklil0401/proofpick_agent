@@ -13,10 +13,11 @@ SmartBuy 需要复用 Youtu-RAG 的 FastAPI、WebUI、文件管理、知识库�
 1. 上游仓库固定为 <https://github.com/TencentCloudADP/youtu-rag>。
 2. 纳入的准确上游 Commit 为 `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066`。
 3. 使用只读语义远端名 `upstream-youtu-rag` 获取该 Commit；不改变 `origin`。
-4. 使用 `git subtree --squash` 纳入 `vendor/youtu-rag/`。本次 squash 提交为 `a3c79d6`，subtree 合并提交为 `12858d5`。
-5. 保留上游 [MIT License](../../../vendor/youtu-rag/LICENSE) 和版权说明；根目录 [THIRD_PARTY_NOTICES.md](../../../THIRD_PARTY_NOTICES.md) 记录来源与差异。
-6. 上游源码原则上保持原样。SmartBuy 场景层、百炼适配、硬约束复核、数据和评测代码优先放入 `smartbuy/`。
-7. 确需修改供应商目录时，必须记录具体文件、原因、测试和上游差异；阶段 1 的差异以第三方声明为准。
+4. GitHub Push Protection 将上游 HiChunk 文档中的 Python 模型类名误判为 Mistral API Key。为不申请绕过安全规则，在固定上游 Commit 之上创建仅拆分相邻字符串字面量的派生 Commit `87af8dcf679f82779257c32c262d34285b6b9903`；类名运行语义不变，具体文件列入第三方差异。
+5. 使用 `git subtree --squash` 从该派生 Commit 纳入 `vendor/youtu-rag/`。本次 squash 提交为 `889970d`，subtree 合并提交为 `401f746`；派生 Commit 的唯一父提交仍是固定上游 Commit，可完整追溯。
+6. 保留上游 [MIT License](../../../vendor/youtu-rag/LICENSE) 和版权说明；根目录 [THIRD_PARTY_NOTICES.md](../../../THIRD_PARTY_NOTICES.md) 记录来源与差异。
+7. 上游源码原则上保持原样。SmartBuy 场景层、百炼适配、硬约束复核、数据和评测代码优先放入 `smartbuy/`。
+8. 确需修改供应商目录时，必须记录具体文件、原因、测试和上游差异；阶段 1 的差异以第三方声明为准。
 
 ## 备选方案
 
@@ -29,6 +30,7 @@ SmartBuy 需要复用 Youtu-RAG 的 FastAPI、WebUI、文件管理、知识库�
 - 仓库体积增加，但普通 clone 可直接获得上游源码。
 - 后续上游更新必须显式 fetch、审查差异、重新运行 Windows 基线和安全测试，再执行 subtree 更新。
 - `vendor/youtu-rag/` 中的本项目修改可能产生上游合并冲突；修改范围必须保持最小且有测试覆盖。
+- 上游更新时若 GitHub Secret Scanning 再次误报，先判断匹配内容的真实语义；不得直接允许疑似 Secret，必须用无语义变更清理或停止并报告。
 - 上游 MIT 许可不覆盖项目数据，数据许可另行记录。
 
 ## 更新流程
