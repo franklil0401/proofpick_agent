@@ -17,6 +17,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
+from smartbuy.api import router as smartbuy_router
+
 from ...utils import setup_logging
 from .config import settings
 
@@ -133,6 +135,7 @@ def create_app() -> FastAPI:
     app.include_router(config_router, prefix="/api/config", tags=["Config"])
     app.include_router(monitor_router, tags=["Monitor"])
     app.include_router(memory_router, prefix="/api/memory", tags=["Memory"])
+    app.include_router(smartbuy_router)
     
 
     register_basic_routes(app)

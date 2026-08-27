@@ -2,6 +2,10 @@
 
 // ========== UI State Management ==========
 
+const smartbuySessionId = (window.crypto && window.crypto.randomUUID)
+  ? window.crypto.randomUUID()
+  : `smartbuy-${Date.now()}`;
+
 /**
  * Agent Knowledge Base Requirements Configuration
  * - required: Must select a knowledge base to use
@@ -45,7 +49,8 @@ function updateSendButtonState() {
   if (!input || !sendBtn) return;
 
   const hasContent = input.value.trim().length > 0;
-  const hasAgent = agentSelect && agentSelect.value;
+  const smartbuyMode = document.getElementById('smartbuy-mode')?.checked || false;
+  const hasAgent = smartbuyMode || (agentSelect && agentSelect.value);
   const hasKb = kbSelect && kbSelect.value;
 
   // Get current Agent's knowledge base requirement
@@ -55,7 +60,7 @@ function updateSendButtonState() {
   let canSend = hasContent && hasAgent;
 
   // If Agent requires knowledge base, check if knowledge base is selected
-  if (kbRequirement === 'required') {
+  if (!smartbuyMode && kbRequirement === 'required') {
     canSend = canSend && hasKb;
   }
 
@@ -957,9 +962,10 @@ async function sendMessage() {
 
   const agentSelect = document.getElementById('agent-select');
   const kbSelect = document.getElementById('kb-select');
+  const smartbuyMode = document.getElementById('smartbuy-mode')?.checked || false;
 
   // Check if Agent is selected
-  if (!agentSelect.value) {
+  if (!smartbuyMode && !agentSelect.value) {
     showToast(t('toast_select_agent'), 'warning');
     return;
   }
@@ -968,7 +974,7 @@ async function sendMessage() {
   const kbRequirement = getCurrentAgentKbRequirement();
 
   // Validate based on Agent's knowledge base requirement
-  if (kbRequirement === 'required' && !kbSelect.value) {
+  if (!smartbuyMode && kbRequirement === 'required' && !kbSelect.value) {
     // Get Agent name for prompt
     const selectedOption = agentSelect.options[agentSelect.selectedIndex];
     const agentName = selectedOption.text;
@@ -996,7 +1002,17 @@ async function sendMessage() {
 
   try {
     // Check if Auto Select is selected
-    if (agentSelect.value === 'auto_select') {
+    if (smartbuyMode) {
+      const requestBody = {
+        query: message,
+        stream: true,
+        session_id: smartbuySessionId,
+        user_id: 'local-demo-user',
+        use_long_term_memory: document.getElementById('memory-switch')?.checked || false,
+        smartbuy_mode: true
+      };
+      await streamChatResponse(requestBody);
+    } else if (agentSelect.value === 'auto_select') {
       // Auto Select mode: use smart selection API
       const requestBody = {
         query: message,
@@ -1959,12 +1975,15 @@ async function streamChatResponse(messageData) {
     startTotalTimeTimer();
 
     // Send POST request to /api/chat with stream enabled
-    const response = await fetch(API_BASE + '/api/chat', {
+    const endpoint = messageData.smartbuy_mode ? '/api/smartbuy/chat' : '/api/chat';
+    const requestPayload = {...messageData};
+    delete requestPayload.smartbuy_mode;
+    const response = await fetch(API_BASE + endpoint, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(messageData),
+      body: JSON.stringify(requestPayload),
       signal: currentAbortController.signal
     });
 

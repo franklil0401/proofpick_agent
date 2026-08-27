@@ -1,8 +1,8 @@
 # SmartBuy Runtime Manifest
 
-最后更新：2026-08-26
-当前阶段：阶段 3 已完成，等待用户验收
-运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 显示器数据/SQLite/Chroma
+最后更新：2026-08-27
+当前阶段：阶段 4 已完成，等待用户验收
+运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界多工具 Agent
 
 ## 代码与纳入方式
 
@@ -17,7 +17,7 @@
 | 上游许可证 | MIT，见 `vendor/youtu-rag/LICENSE` |
 | `uv.lock` SHA-256 | `726A4CC25B64C0B0C98DBADB51218F86433C7C424B52D40C88FE0910B1BFB659` |
 
-详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
+详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，Agent/Memory 决策见 [ADR-0004](adr/0004-bounded-react-evidence-and-memory.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
 
 ## 主机与关键版本
 
@@ -44,6 +44,7 @@
 - 1024 维向量索引：`C:/ai/youtu-rag-runtime/vector_store_bailian_v4_1024/`。
 - 阶段 3 SQLite：`C:/ai/smartbuy-stage3/smartbuy_monitors_v1.sqlite`。
 - 阶段 3 Chroma：`C:/ai/smartbuy-stage3/vector_store_text_embedding_v4_1024/`，collection `smartbuy_monitors_v1`。
+- 阶段 4 长期偏好（本地运行时）：`C:/ai/smartbuy-stage4/preferences.json`；评测偏好使用独立文件，不进入 Git。
 - API/WebUI：`127.0.0.1:8000`；MinIO API/Console：`127.0.0.1:9000` / `127.0.0.1:9001`。
 - 运行数据库、向量索引、MinIO 数据和日志均在仓库外，不进入 Git。
 
@@ -56,6 +57,7 @@
 | Reranker | `qwen3-rerank`，完整 `/compatible-api/v1/reranks` | 独立排序与 Youtu 二阶段排序均通过；失败可显式降级 |
 | OCR / HiChunk | 关闭 | 阶段 2 文本夹具不需要 |
 | Web Search | 未配置 | 不阻塞；默认基础 Agent 不加载 Serper |
+| SmartBuy Agent | qwen-plus Tool Calling；8 steps / 12 tool calls | KB/SQL/Evidence/Memory/报告通过；Web 只验证 unavailable 降级 |
 | 本地模型 | 关闭 | 不作为主要在线链路 |
 
 配置只从当前进程继承的 `Qianwen_api_key` 和 `Qianwen_workspace_id` 读取。启动脚本将其映射为子进程 `UTU_*`，不读取 Windows 注册表、不写 `.env`、不输出值。轮换 Key 后必须重启所有长运行进程。
@@ -78,6 +80,15 @@
 - Chunk 元数据：12 个必需字段无缺失；12 个唯一型号；地区标签 CN/US/CA；Embedding 模型/维度为 `text-embedding-v4`/1024。
 - Reranker 降级：强制故障用例保持前五向量顺序并显式标记 degraded。
 
+阶段 4 SmartBuy Agent：
+
+- API：`POST /api/smartbuy/chat`（JSON 或 SSE）、`GET /api/smartbuy/monitor`、`/api/smartbuy/memory/{user_id}` 生命周期接口。
+- WebUI：聊天页 SmartBuy 开关切换到独立端点；复用上游 `tool_call/tool_output/done` 卡片；`/monitor` 追加脱敏摘要。
+- 有界执行：最多 8 步、12 工具调用、20 秒单工具超时、0.25 元单任务预算。
+- 数据库：Text2SQL 只读打开阶段 3 SQLite；单 SELECT、表列白名单、authorizer、执行时限和 20 行上限。
+- 证据：按稳定型号/地区/字段/时效/冲突输出四态；Reranker 分数不作为主要拒答规则。
+- 真实服务冒烟：`127.0.0.1:8001` 的根页面、WebUI、`/monitor`、SmartBuy SSE 均 HTTP 200；SSE 三类事件与 Monitor 运行计数通过，敏感标记为 0；测试后进程已关闭。
+
 ## 测试与成本
 
 - 自动化：17 passed，3 条上游依赖弃用警告。
@@ -94,11 +105,20 @@
 - 全量建库 5,225 input tokens，估算 0.0026125 元；含小样本、一次元数据失败后的复跑和一次观测补全评测，阶段 3 总估算不超过 0.0493 元。
 - 自动化：23 passed，3 条上游依赖弃用警告；`smartbuy/` 与阶段 2 核心供应商 Provider 文件 Ruff 通过。
 
-阶段 2 模型错误矩阵见[阶段 2 验证记录](stage2_bailian_verification.md)，阶段 3 数据与检索证据见[阶段 3 报告](stage3_data_and_retrieval_report.md)。
+阶段 4：
+
+- 4 条最终 dry run 端到端 4/4；45 次模型操作，154,182 input + 4,133 output tokens，估算 0.1291333 元。
+- 16 条最终全量：工具选择 16/16，正例型号召回 7/7，应拒答 9/9，多跳 8/8，Schema 16/16，端到端 15/16；平均/P95 25,900.192/40,194.556ms。
+- 最终全量 147 次模型操作，478,162 input + 16,510 output tokens，估算 0.4073413 元。
+- 唯一失败是 LLM 臆加显示尺寸约束；只接受用户显式给值字段后，单条回归 1/1，估算 0.023361 元。
+- 已记录开发迭代估算 2.0659403 元；加一次未持久化 Token 的 HTTP smoke 后严格上界小于 2.3159403 元，低于 10 元。
+- 阶段 4 提交前完整项目回归 56 passed、3 条上游依赖弃用警告；`smartbuy/` Ruff、Python compileall 与前端 JavaScript 语法检查通过。
+
+阶段 2 模型错误矩阵见[阶段 2 验证记录](stage2_bailian_verification.md)，阶段 3 数据与检索证据见[阶段 3 报告](stage3_data_and_retrieval_report.md)，阶段 4 Agent 证据见[阶段 4 报告](stage4_agent_workflow_report.md)。
 
 ## 已知边界
 
 - 阶段 1/2 夹具知识库仍只有一个自制文档和 2 chunks；阶段 3 正式知识库另有 12 个型号和 60 chunks。
-- 阶段 3 已测检索 Recall/nDCG/P95；业务任务完成率、引用正确率和硬约束满足率仍须阶段 4～6 测量。
+- 阶段 4 已测工具选择、任务完成、拒答、多跳、延迟和成本；引用正确率及阶段 5 最终硬约束满足率仍需后续评测。
 - 上游供应商目录存在既有 lint 债务，本阶段只保证自研代码及三类核心 Provider 文件通过；不做无关批量格式化。
-- Web Search、Agent 中的 SQLite/Text2SQL 编排和确定性硬约束复核尚未实现；SQLite 数据库本身已可重建。
+- Web Search 真实调用和阶段 5 最终确定性硬约束复核尚未实现；当前 Web 仅有 unavailable 降级接口。

@@ -12,6 +12,7 @@ Set-StrictMode -Version Latest
 if ([string]::IsNullOrWhiteSpace($ProjectRoot)) {
     $ProjectRoot = (Resolve-Path (Join-Path $PSScriptRoot "../../vendor/youtu-rag")).Path
 }
+$smartBuyRoot = (Resolve-Path (Join-Path $PSScriptRoot "../..")).Path
 
 function Get-RequiredProcessEnvironment {
     param([Parameter(Mandatory = $true)][string]$Name)
@@ -36,6 +37,11 @@ $rerankUrl = (
 
 $env:SERVER_HOST = $HostAddress
 $env:SERVER_PORT = $Port.ToString()
+$pythonPathParts = @($smartBuyRoot, $ProjectRoot)
+if (-not [string]::IsNullOrWhiteSpace($env:PYTHONPATH)) {
+    $pythonPathParts += $env:PYTHONPATH
+}
+$env:PYTHONPATH = $pythonPathParts -join ";"
 
 $env:UTU_LLM_TYPE = "chat.completions"
 $env:UTU_LLM_MODEL = "qwen-plus"

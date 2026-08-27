@@ -1,0 +1,206 @@
+{
+  "cases": [
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidates": [
+        {
+          "model_id": "dell-g2724d-cn",
+          "overall_status": "matched"
+        }
+      ],
+      "case_id": "s4-014",
+      "category": "combined_filter",
+      "degraded_states": [],
+      "expected_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 42114.321,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "候选字段四态核验完成，达到显式停止条件。",
+      "tool_call_count": 6,
+      "tool_selection_pass": true,
+      "trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 5,
+            "required_fields": [
+              "brand",
+              "model_id",
+              "model_name",
+              "resolution",
+              "refresh_rate_hz",
+              "panel_type",
+              "has_usb_c",
+              "region"
+            ],
+            "summary": "筛选中国版QHD、120Hz+、非OLED、无USB-C的显示器"
+          },
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已区分硬约束、软偏好、必要字段和待确认项。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "筛选中国版QHD、120Hz+、非OLED、无USB-C的显示器",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "filter_count": 5,
+            "reason": "查询符合中国版QHD、120Hz+、非OLED、无USB-C条件的显示器型号",
+            "sql": "SELECT model_id, model_name, brand, resolution, refresh_rate_hz, panel_type, has_usb_c, region, is_oled FROM products WHERE region = 'CN' AND resolution = '2560x1440' AND refresh_rate_hz >= 120 AND is_oled = 0 AND has_usb_c = 0"
+          },
+          "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+          "parent_step": null,
+          "result_summary": "只读查询返回 1 个候选；缺失字段 0 类。",
+          "status": "success",
+          "step": 2,
+          "stop_or_degrade_reason": null,
+          "task_summary": "筛选中国版QHD、120Hz+、非OLED、无USB-C的显示器",
+          "tool": "text2sql"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 5,
+            "model_ids": [
+              "dell-g2724d-cn"
+            ],
+            "reason": "核验Dell G2724D中国版是否满足QHD、120Hz+、非OLED、无USB-C的所有硬约束条件",
+            "required_fields": [
+              "brand",
+              "model_id",
+              "model_name",
+              "resolution",
+              "refresh_rate_hz",
+              "panel_type",
+              "has_usb_c",
+              "region",
+              "is_oled"
+            ]
+          },
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": 2,
+          "result_summary": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "status": "failed",
+          "step": 3,
+          "stop_or_degrade_reason": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "task_summary": "筛选中国版QHD、120Hz+、非OLED、无USB-C的显示器",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "dell-g2724d-cn"
+            ],
+            "query_summary": "Dell G2724D 中国版 官方规格",
+            "reason": "获取Dell G2724D中国版的官方规格信息以进行后续验证",
+            "required_fields": [
+              "brand",
+              "model_id",
+              "model_name",
+              "resolution",
+              "refresh_rate_hz",
+              "panel_type",
+              "has_usb_c",
+              "region",
+              "is_oled"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 2,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 4,
+          "stop_or_degrade_reason": null,
+          "task_summary": "筛选中国版QHD、120Hz+、非OLED、无USB-C的显示器",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 5,
+            "model_ids": [
+              "dell-g2724d-cn"
+            ],
+            "reason": "核验Dell G2724D中国版是否满足QHD、120Hz+、非OLED、无USB-C的所有硬约束条件",
+            "required_fields": [
+              "region",
+              "is_oled",
+              "resolution",
+              "refresh_rate_hz",
+              "has_usb_c"
+            ]
+          },
+          "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+          "parent_step": 4,
+          "result_summary": "核验 1 个型号、5 个字段；matched=5，not_matched=0，unknown=0，conflict=0。",
+          "status": "success",
+          "step": 5,
+          "stop_or_degrade_reason": null,
+          "task_summary": "筛选中国版QHD、120Hz+、非OLED、无USB-C的显示器",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "agent_requested_stop": true
+          },
+          "next_action": "停止并生成经过 Schema 校验的报告。",
+          "parent_step": null,
+          "result_summary": "已满足显式停止条件。",
+          "status": "success",
+          "step": 6,
+          "stop_or_degrade_reason": null,
+          "task_summary": "筛选中国版QHD、120Hz+、非OLED、无USB-C的显示器",
+          "tool": "finish_decision"
+        }
+      ],
+      "usage": {
+        "call_count": 8,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.023361,
+        "input_tokens": 25547,
+        "output_tokens": 1573,
+        "successful_calls": 8
+      }
+    }
+  ],
+  "evaluation_version": "smartbuy-stage4-e2e-v1",
+  "metrics": {
+    "abstention_accuracy": 1.0,
+    "average_latency_ms": 42114.321,
+    "average_tool_calls": 6.0,
+    "case_count": 1,
+    "end_to_end_pass_rate": 1.0,
+    "model_recall": 1.0,
+    "multihop_completion_rate": 1.0,
+    "p95_latency_ms": 42114.321,
+    "schema_pass_rate": 1.0,
+    "tool_selection_accuracy": 1.0
+  },
+  "mode": "full",
+  "usage": {
+    "call_count": 8,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 0.023361,
+    "input_tokens": 25547,
+    "output_tokens": 1573,
+    "successful_calls": 8
+  }
+}

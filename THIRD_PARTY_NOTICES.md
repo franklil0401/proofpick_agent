@@ -1,6 +1,6 @@
 # 第三方软件声明
 
-最后更新：2026-08-26（阶段 2）
+最后更新：2026-08-27（阶段 4）
 
 ## Youtu-RAG
 
@@ -51,6 +51,19 @@ Youtu-RAG 的版权归原权利人所有。本项目根目录 [LICENSE](LICENSE)
 | `vendor/youtu-rag/utu/utils/path.py` | YAML/JSON 显式 UTF-8 读取，修复 Windows GBK 默认编码失败 |
 
 阶段 2 的设计与回归证据见 [ADR-0002](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md) 和[阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)。这些修改保持通用 Youtu-RAG 主体结构不变；后续上游更新时需逐项复核是否已由上游等价修复。
+
+### 本项目对供应商目录的阶段 4 修改
+
+阶段 4 的业务实现仍位于 `smartbuy/`。为让现有 Youtu-RAG WebUI、FastAPI 和 Monitor 展示 SmartBuy 工具轨迹，只做以下接线/展示修改：
+
+| 文件 | 变更原因 |
+|---|---|
+| `vendor/youtu-rag/utu/rag/api/main.py` | 注册独立 `/api/smartbuy` 路由，不替换上游 `/api/chat` |
+| `vendor/youtu-rag/utu/rag/api/routes/monitor.py` | 在现有 `/monitor` 追加 SmartBuy 脱敏运行摘要，并避免把底层异常正文返回前端 |
+| `vendor/youtu-rag/frontend/rag_webui/pages/chat.html` | 增加 SmartBuy 模式开关 |
+| `vendor/youtu-rag/frontend/rag_webui/assets/js/components/chat.js` | SmartBuy 模式切换到独立 SSE 端点，复用上游工具卡片和最终 Markdown 渲染 |
+
+业务 Agent、工具、Memory、Schema、评测和报告均未写入供应商目录。设计与边界见 [ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md) 和[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)。上游更新时，应先尝试把这四处接线改为无需修改供应商源码的扩展机制。
 
 ## 本地开发依赖
 

@@ -2,7 +2,7 @@
 
 多源消费决策研究 Agent：在 Youtu-RAG 基础上构建可追踪、可评测、可执行硬约束复核的消费决策系统。
 
-> 当前状态：**阶段 3 已完成，等待用户验收**。Windows 上已有 12 个受治理显示器型号、可重建 SQLite、60-chunk 正式知识库和 40 条检索评测；SmartBuy 多工具 Agent、Text2SQL 编排和完整消费决策仍在计划中。
+> 当前状态：**阶段 4 已完成，等待用户验收**。Windows 上已运行有界 qwen-plus ReAct、只读 Text2SQL、KB Search、字段 Evidence Check、分层 Memory、结构化报告和 WebUI/SSE/Monitor；最终 16 条 E2E 为 15/16，唯一失败已复现、修复并独立回归 1/1。阶段 5 的最终确定性 Constraint Checker 尚未实现。
 
 ## 项目场景
 
@@ -32,12 +32,19 @@ SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费�
 - 正式知识库构建状态 `completed`，60 文档/60 chunks 与 Chroma 一致；每块保留型号、地区、来源、时间、切分和 Embedding 契约元数据。
 - 40 条检索任务中，Vector-only / Reranker Recall@5 为 0.8912 / 0.9838，nDCG@5 为 0.8170 / 0.9541；相似型号 Top-1 错误率从 50% 降至 0%。
 - Reranker 强制降级保留向量结果；固定阈值无证据拒答为 0/4，已明确记录为后续边界。
+- 实现最多 8 步、12 次工具调用的 qwen-plus Tool Calling 循环；依赖门禁保证组合任务按 SQL → KB → Evidence 观察链推进，轨迹不记录隐藏思维链。
+- Text2SQL 使用只读 SQLite、单 SELECT、表列白名单、SQLite authorizer、超时与最大行数；非法 SQL 可受控模板降级，禁止无条件全表降级。
+- Evidence Check 按字段证据、型号/地区、时效和冲突输出 `matched/not_matched/unknown/conflict`，不再以固定 Reranker 阈值拒答。
+- Web Search 标准工具当前返回 `unavailable`；无凭据时 KB + SQLite 主链路仍可完成稳定 Demo，未宣称动态搜索已实现。
+- 短期会话约束和候选可继承/覆盖；长期偏好须明确确认，支持查看、覆盖、删除和关闭，且拒绝保存价格、库存和商品事实。
+- 结构化报告经 Pydantic Schema 校验并渲染 Markdown；WebUI 展示工具卡片，`/monitor` 展示脱敏运行摘要。
+- 最终 16 条 E2E：工具选择 16/16、正例型号召回 7/7、9 条应拒答样本 9/9、多跳 8/8、Schema 16/16、端到端 15/16；修复后失败用例独立回归 1/1。
 
 ### 尚未实现或尚未验证
 
-- KB Search + Text2SQL 的 Agentic 编排、确定性硬约束复核和消费决策报告。
-- 无依据问题的字段证据判定；当前固定相关度阈值不能可靠拒答。
-- Web Search 凭据与动态价格/库存链路；无凭据不阻塞阶段 1～3。
+- 阶段 5 的最终确定性硬约束复核；阶段 4 的字段 Evidence Check 不能冒充最终 Constraint Checker。
+- 真实 Web Search 与动态价格/库存补充；当前没有凭据，只验证 unavailable/degraded 接口。
+- 阶段 6 的 Direct LLM / Fixed RAG / Agentic RAG / + Constraint Check 四组完整消融与重复运行。
 - GraphRAG 不属于 MVP 或阶段 1～5 默认任务，不得视为已实现能力。
 
 ## 上游原生能力与本项目贡献
@@ -48,7 +55,8 @@ SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费�
 | SmartBuy 阶段 1 新增 | 固定版本 subtree、Windows 云 API 启动脚本、运行清单、许可证/差异记录、阶段测试夹具、配置接口凭据脱敏及回归测试 |
 | SmartBuy 阶段 2 新增 | 统一百炼配置与 Provider、1024 维索引契约、用量账本、Youtu Embedding/Reranker 适配、有限重试/降级和日志安全回归 |
 | SmartBuy 阶段 3 新增 | 显示器数据治理、四实体 Schema、可重建 SQLite、自制事实卡、正式 Chroma 知识库、40 条检索集和 Vector/Reranker 基线 |
-| SmartBuy 后续计划 | KB/SQL 工具编排、硬约束复核、完整任务评测和演示界面 |
+| SmartBuy 阶段 4 新增 | 有界 ReAct、KB/只读 SQL/Evidence/Web 降级工具、分层 Memory、Schema 报告、SSE/Monitor 与 16 条 E2E |
+| SmartBuy 后续计划 | 阶段 5 最终 Constraint Checker、阶段 6 四组消融/稳定性优化、阶段 7 发布演示整理 |
 
 供应商目录差异见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，纳入决策见 [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)。
 
@@ -61,14 +69,14 @@ SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费�
       ↓
 Youtu-RAG WebUI / FastAPI / SSE
       ↓
-Agent 选择与多源工具编排（计划）
+有界 Agent 规划、工具观察与继续规划（阶段 4 已实现）
       ├─ KB Search：官方文档事实
       ├─ Text2SQL：SQLite 参数、硬约束与计算
       └─ Web Search：当前价格、库存和近期变化（有凭据时）
       ↓
-向量召回 → qwen3-rerank 二阶段重排（阶段 3 正式数据已评测）→ 证据融合（计划）
+向量召回 → qwen3-rerank 二阶段重排 → 字段 Evidence Check（阶段 4 已实现）
       ↓
-代码/SQL 确定性硬约束复核（计划）
+最终确定性 Constraint Checker（阶段 5 计划）
       ↓
 推荐、淘汰原因、证据、冲突、未知项和降级状态
 ```
@@ -84,9 +92,9 @@ Agent 选择与多源工具编排（计划）
 | 百炼 `qwen-plus` | 普通、流式、Tool Calling 已验证 |
 | 百炼 `text-embedding-v4`（1024 维） | 批量、契约校验、建库与 KB Search 已验证 |
 | 百炼 `qwen3-rerank` | 独立和 Youtu 二阶段排序、有限重试与降级已验证 |
-| Pytest 与项目 Eval Runner | 数据/数据库/索引契约自动化已加入；40 条检索基线已真实运行，完整 Agent E2E 仍在计划中 |
+| Pytest 与项目 Eval Runner | 数据/数据库/索引、SQL 安全、Evidence、Memory、Agent/API/SSE 回归已加入；40 条检索基线和 16 条 Agent E2E 已真实运行 |
 
-## 快速开始（阶段 3 已验证范围）
+## 快速开始（阶段 4 已验证范围）
 
 ### 1. 前置条件
 
@@ -124,6 +132,8 @@ MinIO 和 Youtu-RAG 必须使用一致的当前进程 MinIO 凭据。真实值�
 
 阶段 2 服务链路可验证上传、文件管理、知识库创建/关联、基础 Chat、文本建库、KB Search 和二阶段 Rerank；该服务冒烟仍只使用一个自制文档。阶段 3 的检索质量由独立 12 型号/40 任务语料测量，不能把两套证据混为一谈。完整版本和路径见 [Runtime Manifest](smartbuy/docs/runtime_manifest.md)。
 
+聊天页勾选 **SmartBuy** 后会调用 `/api/smartbuy/chat`，在现有工具卡片中展示脱敏步骤，并在最终卡片渲染结构化 Markdown 报告。Memory 开关只控制按需召回已确认的长期偏好；不会保存本轮价格、库存或模型推测。
+
 ### 4. 有界 Provider 验证（会产生少量费用）
 
 ```powershell
@@ -153,6 +163,17 @@ vendor\youtu-rag\.venv\Scripts\python.exe -m smartbuy.eval.run_retrieval_eval
 ```
 
 先跑 3 个型号的小样本，再全量构建；输入未变化时不要重复全量向量化。真实索引和评测结果见[阶段 3 报告](smartbuy/docs/stage3_data_and_retrieval_report.md)。Chroma 默认位于 `C:/ai/smartbuy-stage3/`，不进入 Git。
+
+### 7. 运行阶段 4 Agent 评测（会产生费用）
+
+```powershell
+$env:PYTHONPATH="$PWD;$PWD\vendor\youtu-rag"
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage4_eval --dry-run
+# 只有 dry run 通过且预算允许时再运行：
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage4_eval
+```
+
+脚本先支持 4 条 dry run，再运行 16 条完整集合；每任务有步骤、工具调用和成本硬上限。真实指标、失败样本和成本见[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)。
 
 ## Windows 环境
 
@@ -190,9 +211,9 @@ uv run --project vendor/youtu-rag --group dev python -m pytest `
   vendor/youtu-rag/tests/rag/api/test_config_security.py -q
 ```
 
-结果：`23 passed`，另有 3 条上游依赖弃用警告；`smartbuy/` 与阶段 2 核心供应商 Provider 文件 Ruff 检查通过。
+阶段 4 新增 SQL 安全/金标、字段四态、Memory、Agent 循环、Reranker/Web 降级、API/SSE/UI 回归。提交前完整回归为 `56 passed`、3 条上游弃用警告；`smartbuy/` Ruff、Python 编译和前端 JavaScript 语法检查通过。详见[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)。
 
-阶段 3 新增 40 条检索任务，只评估数据质量、召回、重排、相似型号和降级，不宣称 Agentic RAG 已完成。真实结果与失败案例见[阶段 3 报告](smartbuy/docs/stage3_data_and_retrieval_report.md)。后续仍需比较 Direct LLM、Fixed RAG、Agentic RAG 和 Agentic RAG + Constraint Check，并评估硬约束满足率、引用正确率、无依据结论和任务完成率。建议目标见[开发指南验收指标](DEVELOPMENT_GUIDE.md#9-验收指标)。
+阶段 3 的 40 条任务只评估检索；阶段 4 的 16 条任务评估工具选择、多跳、字段拒答、Schema 和端到端行为。最终全量端到端 15/16，修复后失败用例独立回归 1/1。阶段 6 仍需比较 Direct LLM、Fixed RAG、Agentic RAG 和 Agentic RAG + Constraint Check，并做重复运行；建议目标见[开发指南验收指标](DEVELOPMENT_GUIDE.md#9-验收指标)。
 
 ## 文档导航
 
@@ -208,6 +229,8 @@ uv run --project vendor/youtu-rag --group dev python -m pytest `
 - [阶段 3 数据卡](smartbuy/docs/data_card.md)：数据范围、字段、来源、缺失、许可和质量检查。
 - [阶段 3 验证报告](smartbuy/docs/stage3_data_and_retrieval_report.md)：SQLite、知识库、检索指标、成本和失败案例。
 - [ADR-0003](smartbuy/docs/adr/0003-governed-monitor-data-and-index.md)：数据治理、Schema 和索引版本决策。
+- [阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)：ReAct、工具、Memory、E2E、成本、失败与服务冒烟。
+- [ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)：有界执行、SQL/Evidence、轨迹和 Memory 决策。
 - [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)：上游归属、许可和供应商目录差异。
 
 ## 上游参考与致谢

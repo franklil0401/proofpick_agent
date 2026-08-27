@@ -6,9 +6,9 @@
 |---|---|
 | 项目名称 | SmartBuy Research Agent（多源消费决策研究 Agent） |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 3：数据采集、统一结构、清洗和知识库构建（已完成，等待用户验收） |
-| 当前状态 | 12 个显示器型号、可重建 SQLite、60-chunk 正式知识库和 40 条检索评测已完成；阶段 4 Agent 编排尚未开始 |
-| 最后更新时间 | 2026-08-26 |
+| 当前阶段 | 阶段 4：核心消费决策 Agent 工作流（已完成，等待用户验收） |
+| 当前状态 | 有界 ReAct、KB/只读 SQL/Evidence/Web 降级工具、分层 Memory、Schema 报告、WebUI/SSE/Monitor 和 16 条 E2E 已实现；阶段 5 最终 Constraint Checker 尚未开始 |
+| 最后更新时间 | 2026-08-27 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
 ### 信息来源与优先级
@@ -264,11 +264,11 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 工具、状态、记忆、存储和展示
 
-- 工具：KB Search、Meta Retrieval、Text2SQL、Web Search；Excel Agent 为增强能力。
-- 状态：第一版沿用上游单用户、单进程边界，服务只绑定 `127.0.0.1`；进程级 Agent/文件环境变量不适合多租户。
-- 记忆：短期保存会话偏好，长期只保存经过验证的偏好或处理经验，不将生成答案固化为产品事实。
-- 存储：MinIO 保存上传文档，Chroma 保存向量，SQLite 保存产品/价格/来源，专用目录保存临时执行文件。
-- 展示：复用 Youtu-RAG WebUI、SSE 和 `/monitor`；增强阶段再增加消费决策卡片。
+- 工具：阶段 4 已实现 KB Search、只读 Text2SQL、Evidence Check 和 Web Search `unavailable` 接口；Meta Retrieval、Excel Agent 和真实 Web Search 仍是增强能力。
+- 状态：当前沿用单用户、单进程边界，服务只绑定 `127.0.0.1`；结构化 Agent 状态保存需求、候选、工具观察和公开轨迹，进程级状态/环境变量不适合多租户。
+- 记忆：短期会话已支持约束和候选继承/覆盖；长期仅在用户明确确认后保存白名单内的稳定偏好，支持查看、覆盖、删除和关闭，不保存商品事实、价格、库存或模型推测。
+- 存储：MinIO 保存上传文档，Chroma 保存向量，SQLite 保存产品/价格/来源，长期偏好和临时执行文件位于仓库外专用目录。
+- 展示：已复用 Youtu-RAG WebUI、SSE 和 `/monitor` 展示 SmartBuy 模式、工具状态、来源摘要和最终 Markdown 报告；完整 Prompt、隐藏思维链和敏感错误不进入前端。
 
 ### 正常链路与降级链路
 
@@ -357,7 +357,9 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 | 自动化测试 | 单元/集成/E2E 测试通过率与关键自研模块覆盖率 | 测试 100% 通过；关键模块覆盖率 ≥80%（建议） | 计划 `uv run pytest -q --cov` | 修复失败；无法自动化项记录人工证据，不虚报覆盖率 |
 | 最终演示案例数 | 可重复运行且保存证据的案例 | ≥4：单文档、SQL、多源、边界/降级各至少 1；建议备用录屏 | 五分钟演示脚本逐项执行 | 不稳定能力移出演示，保留真实边界说明 |
 
-阶段 3 固定 40 条检索任务的真实结果：36 条有金标任务上，Vector-only / Vector + Reranker 的 Recall@5 分别为 0.8912 / 0.9838，nDCG@5 分别为 0.8170 / 0.9541；4 条无依据或无关问题的固定阈值拒答为 0/4。前两项达到建议目标不代表 Agentic RAG 完成，拒答失败要求阶段 4 增加字段证据与 SQLite 复核。
+阶段 3 固定 40 条检索任务的真实结果：36 条有金标任务上，Vector-only / Vector + Reranker 的 Recall@5 分别为 0.8912 / 0.9838，nDCG@5 分别为 0.8170 / 0.9541；4 条无依据或无关问题的固定阈值拒答为 0/4。
+
+阶段 4 固定 16 条 Agent E2E 的真实结果：工具选择 16/16，7 条正例任务型号召回 7/7，9 条应拒答任务 9/9，8 条依赖式多跳 8/8，Schema 16/16，端到端 15/16；平均/P95 为 25.900/40.195 秒。唯一失败由模型臆加用户未提出的显示尺寸约束造成；改为仅接受用户显式给值的资格字段后，该样本独立回归 1/1。该结果证明阶段 4 字段拒答有效，但不等同于阶段 5 最终硬约束满足率已验收。
 
 ## 10. 分阶段开发计划
 
@@ -408,7 +410,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 3：数据采集、统一结构、清洗和知识库构建
 
-- 阶段状态：**已完成（2026-08-26，等待用户验收）**。
+- 阶段状态：**已完成并验收（Commit `068224003fd99e41c3020423cdca7faa6a16af1d`）**。
 - 阶段目标：建立可追踪、可重建的显示器数据、SQLite、知识库和检索基线。
 - 前置依赖：阶段 2 Embedding 稳定；来源许可和首批型号确定。
 - 实际开发：统一四实体 Schema；来源/许可/冲突治理；事实卡与 processed JSONL 生成；SQLite 原子重建与 CSV 可选导出；H2 切分、1024 维索引；40 条 Vector/Reranker 评测。
@@ -423,15 +425,17 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 4：核心消费决策 Agent 工作流
 
-- 阶段目标：形成 KB + Text2SQL + 可选 Web 的真实多源决策闭环。
-- 前置依赖：阶段 3 数据和索引；上游 Agent 配置可运行。
-- 开发任务：需求/约束解析、Text2SQL Schema 提示、并行编排、来源融合、结构化报告、证据不足和冲突策略、前端轨迹。
-- 预计模块：`smartbuy/prompts/`、消费决策编排配置、输出 Schema、工作流集成测试（计划）。
-- 交付物：至少一条 KB + SQL 和一条可用时的 KB + SQL + Web 任务；推荐/淘汰/证据/风险报告。
-- 测试方法：人工 SQL 对照、worker SSE/Monitor 轨迹、E2E 正常/冲突/拒答样本。
-- 退出条件：核心功能成功率门槛通过；KB + SQL 编排可重复；证据不足不强答；Web 失败可降级。
-- 风险与回退：模型不稳定选工具、Web 波动、全局状态；改为已验证工具串行或显式路由，单用户本地运行。
-- 文档更新：真实工具清单、输入输出、限制、演示问题和失败案例。
+- 阶段状态：**已完成（2026-08-27，等待用户验收）**。
+- 阶段目标：形成 KB + Text2SQL + Evidence Check + 可选 Web 的真实多源决策闭环。
+- 前置依赖：阶段 3 数据、工作区外 SQLite/Chroma 和阶段 2 百炼 Provider；均满足。
+- 实际开发：任务类型/显式约束解析；最多 8 步的 qwen-plus Tool Calling；工具白名单、超时、预算和停止门；只读 Text2SQL；KB 二阶段检索；字段四态 Evidence；Web unavailable 降级；会话/长期偏好 Memory；Pydantic/Markdown 报告；SSE 与 Monitor 展示。
+- 实际模块：`smartbuy/agent/`、`api/`、`domain/`、`memory/`、`tools/`、Agent monitor、阶段 4 Eval/测试、ADR-0004 与技术报告；供应商 WebUI/API 只做接线路由和展示补丁。
+- 交付物：16 条 E2E 与脱敏结果、3 个可重复多跳案例、7 组 SQL 金标、安全攻击用例、5 类 Memory 生命周期测试、结构化报告和真实服务冒烟。
+- 测试方法：提交前完整项目回归 56 passed；4 条 dry run 后 16 条真实 E2E；失败用例独立复现/修复；回环地址 WebUI/SSE/Monitor 人工冒烟；Ruff/编译/JS 语法与敏感扫描。
+- 量化退出结果：工具选择 16/16，正例型号召回 7/7，9 条应拒答 9/9，多跳 8/8，Schema 16/16，端到端 15/16；失败修复后定向 1/1；最终全量成本 ¥0.4073413，阶段累计严格上界 <¥2.3159403，低于 10 元。
+- 风险与回退：Tool Calling 路径仍有非确定性，执行器门禁阻止越序和越权；Web 无凭据返回 unavailable；Reranker 失败保留向量顺序；SQL 不支持字段转 KB/Evidence；最大步数时安全停止。平均 25.900 秒、P95 40.195 秒，阶段 6 再优化。
+- 阶段边界：阶段 4 Evidence Check 不是阶段 5 最终 Constraint Checker；未实现真实 Web Search、GraphRAG、第二品类或四组消融。
+- 文档更新：[ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)、[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`feat(stage4): implement multi-source purchase decision workflow`。
 
 ### 阶段 5：Agentic RAG 核心增强点

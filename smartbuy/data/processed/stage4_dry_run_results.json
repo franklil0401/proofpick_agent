@@ -1,0 +1,824 @@
+{
+  "cases": [
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "kb_search"
+      ],
+      "candidates": [],
+      "case_id": "s4-001",
+      "category": "simple_fact",
+      "degraded_states": [],
+      "expected_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "expected_tools": [
+        "kb_search"
+      ],
+      "latency_ms": 11661.822,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "知识库证据检索完成，达到显式停止条件。",
+      "tool_call_count": 3,
+      "tool_selection_pass": true,
+      "trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 1,
+            "required_fields": [
+              "display_size_inch",
+              "resolution"
+            ],
+            "summary": "查询 Dell U2723QE 的屏幕尺寸和分辨率"
+          },
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已区分硬约束、软偏好、必要字段和待确认项。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查询 Dell U2723QE 的屏幕尺寸和分辨率",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "U2723QE"
+            ],
+            "query_summary": "Dell U2723QE 官方规格",
+            "reason": "直接检索官方资料确认屏幕尺寸与分辨率",
+            "required_fields": [
+              "display_size_inch",
+              "resolution"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 1,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 2,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查询 Dell U2723QE 的屏幕尺寸和分辨率",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "agent_requested_stop": true
+          },
+          "next_action": "停止并生成经过 Schema 校验的报告。",
+          "parent_step": null,
+          "result_summary": "已满足显式停止条件。",
+          "status": "success",
+          "step": 3,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查询 Dell U2723QE 的屏幕尺寸和分辨率",
+          "tool": "finish_decision"
+        }
+      ],
+      "usage": {
+        "call_count": 5,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0076584,
+        "input_tokens": 9216,
+        "output_tokens": 240,
+        "successful_calls": 5
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidates": [
+        {
+          "model_id": "dell-u2723qe-cn",
+          "overall_status": "matched"
+        },
+        {
+          "model_id": "asus-pa279crv-cn",
+          "overall_status": "unknown"
+        },
+        {
+          "model_id": "lg-27up850k-w-cn",
+          "overall_status": "unknown"
+        }
+      ],
+      "case_id": "s4-002",
+      "category": "combined_filter",
+      "degraded_states": [
+        "text2sql: 只读查询返回 3 个候选；缺失字段 4 类。"
+      ],
+      "expected_model_ids": [
+        "asus-pa279crv-cn",
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 36978.673,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "字段级证据存在 unknown 或 conflict，已停止并拒绝标记为完全满足。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 5,
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "panel_type",
+              "refresh_rate_hz",
+              "price_cny",
+              "warranty"
+            ],
+            "summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器"
+          },
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已区分硬约束、软偏好、必要字段和待确认项。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "filter_count": 5,
+            "reason": "执行硬约束筛选，获取满足27英寸、4K、USB-C视频输入且供电≥90W的中国版显示器候选型号。",
+            "sql": "SELECT model_id, model_name, brand, panel_type, refresh_rate_hz, price_cny, warranty FROM products WHERE display_size_inch = 27 AND resolution = '3840x2160' AND usb_c_video = 1 AND usb_c_power_delivery_w >= 90 AND region = 'CN'"
+          },
+          "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+          "parent_step": null,
+          "result_summary": "只读查询返回 3 个候选；缺失字段 4 类。",
+          "status": "degraded",
+          "step": 2,
+          "stop_or_degrade_reason": "只读查询返回 3 个候选；缺失字段 4 类。",
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "text2sql"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 5,
+            "model_ids": [
+              "dell-u2723qe-cn",
+              "asus-pa279crv-cn",
+              "lg-27up850k-w-cn"
+            ],
+            "reason": "核验三款候选型号在关键字段（含硬约束）上的匹配状态，确认是否全部满足要求。",
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "panel_type",
+              "refresh_rate_hz",
+              "price_cny",
+              "warranty"
+            ]
+          },
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": 2,
+          "result_summary": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "status": "failed",
+          "step": 3,
+          "stop_or_degrade_reason": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "dell-u2723qe-cn"
+            ],
+            "query_summary": "Dell UltraSharp U2723QE 中国版官方规格",
+            "reason": "补全 Dell U2723QE-CN 的缺失字段，尤其是 warranty 和 price_cny。",
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "panel_type",
+              "refresh_rate_hz",
+              "price_cny",
+              "warranty"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 2,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 4,
+          "stop_or_degrade_reason": null,
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "asus-pa279crv-cn"
+            ],
+            "query_summary": "ASUS ProArt PA279CRV 中国版官方规格",
+            "reason": "补全 ASUS PA279CRV-CN 的缺失字段，尤其是 price_cny 和 warranty。",
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "panel_type",
+              "refresh_rate_hz",
+              "price_cny",
+              "warranty"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 2,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 5,
+          "stop_or_degrade_reason": null,
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "lg-27up850k-w-cn"
+            ],
+            "query_summary": "LG 27UP850K-W 中国版官方规格",
+            "reason": "补全 LG 27UP850K-W-CN 的缺失字段，尤其是 price_cny 和 warranty。",
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "panel_type",
+              "refresh_rate_hz",
+              "price_cny",
+              "warranty"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 2,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 6,
+          "stop_or_degrade_reason": null,
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 5,
+            "model_ids": [
+              "dell-u2723qe-cn",
+              "asus-pa279crv-cn",
+              "lg-27up850k-w-cn"
+            ],
+            "reason": "核验三款候选型号在全部必要字段（含硬约束）上的匹配状态，确认是否全部满足要求。",
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "panel_type",
+              "refresh_rate_hz",
+              "price_cny",
+              "warranty"
+            ]
+          },
+          "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+          "parent_step": 6,
+          "result_summary": "核验 3 个型号、7 个字段；matched=18，not_matched=0，unknown=3，conflict=0。",
+          "status": "success",
+          "step": 7,
+          "stop_or_degrade_reason": null,
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "agent_requested_stop": true
+          },
+          "next_action": "停止并生成经过 Schema 校验的报告。",
+          "parent_step": null,
+          "result_summary": "已满足显式停止条件。",
+          "status": "success",
+          "step": 8,
+          "stop_or_degrade_reason": null,
+          "task_summary": "中国版27英寸4K USB-C视频且供电≥90W的显示器",
+          "tool": "finish_decision"
+        }
+      ],
+      "usage": {
+        "call_count": 14,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0440064,
+        "input_tokens": 52015,
+        "output_tokens": 1457,
+        "successful_calls": 14
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidates": [
+        {
+          "model_id": "dell-u2724d-cn",
+          "overall_status": "not_matched"
+        },
+        {
+          "model_id": "dell-u2723qe-cn",
+          "overall_status": "matched"
+        }
+      ],
+      "case_id": "s4-003",
+      "category": "similar_model",
+      "degraded_states": [
+        "text2sql: 只读查询返回 2 个候选；缺失字段 1 类。"
+      ],
+      "expected_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 38185.555,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "候选字段四态核验完成，达到显式停止条件。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 1,
+            "required_fields": [
+              "model_id",
+              "usb_c_video",
+              "usb_c_power_delivery_w"
+            ],
+            "summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力"
+          },
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已区分硬约束、软偏好、必要字段和待确认项。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "U2723QE",
+              "U2724D"
+            ],
+            "query_summary": "U2723QE U2724D USB-C 视频输入 供电功率",
+            "reason": "检索两款显示器的USB-C视频输入和供电功率官方规格",
+            "required_fields": [
+              "model_id",
+              "usb_c_video",
+              "usb_c_power_delivery_w"
+            ]
+          },
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": null,
+          "result_summary": "组合约束任务必须先由 Text2SQL 产生候选。",
+          "status": "failed",
+          "step": 2,
+          "stop_or_degrade_reason": "组合约束任务必须先由 Text2SQL 产生候选。",
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "filter_count": 1,
+            "reason": "获取U2723QE和U2724D的基本信息以进行后续规格查询",
+            "sql": "SELECT model_id, model_name, brand FROM products WHERE model_id IN ('U2723QE', 'U2724D')"
+          },
+          "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+          "parent_step": null,
+          "result_summary": "只读查询返回 2 个候选；缺失字段 1 类。",
+          "status": "degraded",
+          "step": 3,
+          "stop_or_degrade_reason": "只读查询返回 2 个候选；缺失字段 1 类。",
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "text2sql"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 2,
+            "model_ids": [
+              "dell-u2723qe-cn",
+              "dell-u2724d-cn"
+            ],
+            "reason": "验证U2723QE和U2724D的USB-C视频输入和供电能力是否符合要求",
+            "required_fields": [
+              "model_id",
+              "usb_c_video",
+              "usb_c_power_delivery_w"
+            ]
+          },
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": 2,
+          "result_summary": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "status": "failed",
+          "step": 4,
+          "stop_or_degrade_reason": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "dell-u2723qe-cn"
+            ],
+            "query_summary": "Dell U2723QE USB-C specifications",
+            "reason": "获取U2723QE的USB-C视频输入和供电功率官方规格",
+            "required_fields": [
+              "model_id",
+              "usb_c_video",
+              "usb_c_power_delivery_w"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 3,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 5,
+          "stop_or_degrade_reason": null,
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "dell-u2724d-cn"
+            ],
+            "query_summary": "Dell U2724D USB-C specifications",
+            "reason": "获取U2724D的USB-C视频输入和供电功率官方规格",
+            "required_fields": [
+              "model_id",
+              "usb_c_video",
+              "usb_c_power_delivery_w"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 3,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 6,
+          "stop_or_degrade_reason": null,
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 2,
+            "model_ids": [
+              "dell-u2723qe-cn",
+              "dell-u2724d-cn"
+            ],
+            "reason": "验证U2723QE和U2724D的USB-C视频输入和供电能力是否符合要求",
+            "required_fields": [
+              "model_id",
+              "usb_c_video",
+              "usb_c_power_delivery_w"
+            ]
+          },
+          "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+          "parent_step": 6,
+          "result_summary": "核验 2 个型号、3 个字段；matched=4，not_matched=2，unknown=0，conflict=0。",
+          "status": "success",
+          "step": 7,
+          "stop_or_degrade_reason": null,
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "agent_requested_stop": true
+          },
+          "next_action": "停止并生成经过 Schema 校验的报告。",
+          "parent_step": null,
+          "result_summary": "已满足显式停止条件。",
+          "status": "success",
+          "step": 8,
+          "stop_or_degrade_reason": null,
+          "task_summary": "比较U2723QE和U2724D的USB-C视频输入和供电能力",
+          "tool": "finish_decision"
+        }
+      ],
+      "usage": {
+        "call_count": 12,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0354571,
+        "input_tokens": 40902,
+        "output_tokens": 1562,
+        "successful_calls": 12
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidates": [
+        {
+          "model_id": "benq-pd2725u-ca",
+          "overall_status": "unknown"
+        },
+        {
+          "model_id": "benq-pd2705u-us",
+          "overall_status": "unknown"
+        },
+        {
+          "model_id": "dell-g2724d-cn",
+          "overall_status": "unknown"
+        },
+        {
+          "model_id": "dell-s2722qc-cn",
+          "overall_status": "unknown"
+        },
+        {
+          "model_id": "dell-u2723qe-cn",
+          "overall_status": "unknown"
+        },
+        {
+          "model_id": "dell-u2724d-cn",
+          "overall_status": "unknown"
+        },
+        {
+          "model_id": "benq-ex2710u-cn",
+          "overall_status": "unknown"
+        }
+      ],
+      "case_id": "s4-004",
+      "category": "insufficient_evidence",
+      "degraded_states": [
+        "agent: maximum step limit reached"
+      ],
+      "expected_model_ids": [],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search"
+      ],
+      "latency_ms": 23567.024,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "达到最大 ReAct 步骤数，安全停止。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 2,
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "camera",
+              "face_recognition"
+            ],
+            "summary": "查找支持内置摄像头和人脸识别的显示器"
+          },
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已区分硬约束、软偏好、必要字段和待确认项。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "filter_count": 2,
+            "reason": "执行硬约束筛选：内置摄像头且支持人脸识别",
+            "sql": "SELECT model_id, model_name, brand, camera, face_recognition FROM products WHERE camera = 1 AND face_recognition = 1"
+          },
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": null,
+          "result_summary": "结构化条件不属于治理字段，不能退化为全表查询。",
+          "status": "failed",
+          "step": 2,
+          "stop_or_degrade_reason": "结构化条件不属于治理字段，不能退化为全表查询。",
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "text2sql"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [],
+            "query_summary": "支持内置摄像头和人脸识别的显示器",
+            "reason": "KB 检索可覆盖非结构化字段 camera 和 face_recognition",
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "brand",
+              "camera",
+              "face_recognition"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 2,
+          "result_summary": "KB 命中 8 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 3,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 2,
+            "model_ids": [
+              "benq-pd2725u-ca",
+              "benq-pd2705u-us",
+              "dell-g2724d-cn",
+              "dell-s2722qc-cn",
+              "dell-u2723qe-cn",
+              "dell-u2724d-cn",
+              "benq-ex2710u-cn"
+            ],
+            "reason": "核验候选型号是否真正满足内置摄像头和人脸识别双硬约束",
+            "required_fields": [
+              "camera",
+              "face_recognition"
+            ]
+          },
+          "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+          "parent_step": 3,
+          "result_summary": "核验 7 个型号、2 个字段；matched=0，not_matched=0，unknown=14，conflict=0。",
+          "status": "success",
+          "step": 4,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "dell-s2722qc-cn"
+            ],
+            "query_summary": "Dell S2722QC 内置摄像头 人脸识别",
+            "reason": "聚焦单型号，精准检索缺失字段",
+            "required_fields": [
+              "camera",
+              "face_recognition"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 2,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 5,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 2,
+            "model_ids": [
+              "dell-s2722qc-cn"
+            ],
+            "reason": "再次核验 Dell S2722QC 是否满足双硬约束，确认字段缺失状态",
+            "required_fields": [
+              "camera",
+              "face_recognition"
+            ]
+          },
+          "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+          "parent_step": 5,
+          "result_summary": "核验 1 个型号、2 个字段；matched=0，not_matched=0，unknown=2，conflict=0。",
+          "status": "success",
+          "step": 6,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "dell-u2723qe-cn"
+            ],
+            "query_summary": "Dell UltraSharp U2723QE 内置摄像头 人脸识别",
+            "reason": "聚焦另一高相关型号，补全缺失字段",
+            "required_fields": [
+              "camera",
+              "face_recognition"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 2,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 7,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 2,
+            "model_ids": [
+              "dell-u2723qe-cn"
+            ],
+            "reason": "核验 Dell U2723QE 是否满足双硬约束，确认字段缺失状态",
+            "required_fields": [
+              "camera",
+              "face_recognition"
+            ]
+          },
+          "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+          "parent_step": 7,
+          "result_summary": "核验 1 个型号、2 个字段；matched=0，not_matched=0，unknown=2，conflict=0。",
+          "status": "success",
+          "step": 8,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查找支持内置摄像头和人脸识别的显示器",
+          "tool": "evidence_check"
+        }
+      ],
+      "usage": {
+        "call_count": 14,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0420114,
+        "input_tokens": 52049,
+        "output_tokens": 874,
+        "successful_calls": 14
+      }
+    }
+  ],
+  "evaluation_version": "smartbuy-stage4-e2e-v1",
+  "metrics": {
+    "abstention_accuracy": 1.0,
+    "average_latency_ms": 27598.269,
+    "average_tool_calls": 6.75,
+    "case_count": 4,
+    "end_to_end_pass_rate": 1.0,
+    "model_recall": 1.0,
+    "multihop_completion_rate": 1.0,
+    "p95_latency_ms": 38185.555,
+    "schema_pass_rate": 1.0,
+    "tool_selection_accuracy": 1.0
+  },
+  "mode": "dry_run",
+  "usage": {
+    "call_count": 45,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 0.1291333,
+    "input_tokens": 154182,
+    "output_tokens": 4133,
+    "successful_calls": 45
+  }
+}

@@ -1,0 +1,632 @@
+"""A bounded qwen-plus Tool Calling loop with sanitized, auditable observations."""
+
+from __future__ import annotations
+
+import asyncio
+import inspect
+import json
+import re
+import time
+import uuid
+from collections.abc import Awaitable, Callable
+from typing import Any
+
+from pydantic import ValidationError
+
+from smartbuy.agent.reporting import build_report
+from smartbuy.domain import (
+    AgentLimits,
+    AgentState,
+    ConstraintOperator,
+    ConstraintSpec,
+    DecisionReport,
+    EvidenceReference,
+    FieldAssessment,
+    ToolTrace,
+    UserRequirements,
+)
+from smartbuy.memory import LongTermPreferenceStore, SessionMemoryStore
+from smartbuy.observability import agent_monitor
+from smartbuy.tools import ToolResult
+
+
+EventCallback = Callable[[dict[str, Any]], Awaitable[None] | None]
+
+
+SYSTEM_PROMPT = """你是 SmartBuy 显示器消费决策 Agent。你必须通过工具观察结果逐步规划，不能凭记忆补全商品事实。
+规则：
+1. 首次调用 set_requirements，区分硬约束、软偏好、必要字段和待确认项；连续追问要覆盖被修改的旧条件。
+   task_type 必须标成 fact/filter/comparison/dynamic/unrelated；“哪款满足”是 filter，“A 和 B 哪个”是 comparison。
+2. 简单官方事实只用 kb_search；参数筛选先用 text2sql，再基于候选型号用 kb_search 核验官方资料，最后用 evidence_check 检查字段完整性。
+3. 下一跳必须依赖上一跳候选、缺失字段或冲突；不得无目的重复搜索。
+4. 证据的 matched/not_matched/unknown/conflict 只能采用 evidence_check 结果，不能用 Reranker 分数替代。
+5. Web Search unavailable 时继续 KB + SQL；不得虚构动态价格或库存。
+6. 候选存在但未执行 evidence_check 时不得 finish。关键字段 unknown/conflict 时不得声称完全满足。
+7. 不输出隐藏思维链。工具 reason 只写一句可公开的行动理由，不超过 200 字。
+8. 必须在预算和最大步骤内调用 finish_decision；若证据不足应明确拒答。
+可查询表：products、price_observations、source_records、evidence_records。SQL 只能是一条 SELECT。
+"""
+
+
+SET_REQUIREMENTS_SCHEMA = {
+    "type": "function",
+    "function": {
+        "name": "set_requirements",
+        "description": "结构化当前需求；这是每轮任务的第一个工具。",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "summary": {"type": "string", "maxLength": 300},
+                "task_type": {
+                    "type": "string",
+                    "enum": ["fact", "filter", "comparison", "dynamic", "unrelated"],
+                },
+                "hard_constraints": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "field": {"type": "string"},
+                            "operator": {"type": "string", "enum": ["eq", "lte", "gte", "in", "not_in"]},
+                            "value": {},
+                            "hard": {"type": "boolean"},
+                        },
+                        "required": ["field", "operator", "value"],
+                    },
+                },
+                "soft_preferences": {"type": "array", "items": {"type": "string"}},
+                "required_fields": {"type": "array", "items": {"type": "string"}},
+                "excluded_model_ids": {"type": "array", "items": {"type": "string"}},
+                "pending_questions": {"type": "array", "items": {"type": "string"}},
+            },
+            "required": [
+                "summary", "task_type", "hard_constraints", "soft_preferences", "required_fields", "pending_questions"
+            ],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
+FINISH_SCHEMA = {
+    "type": "function",
+    "function": {
+        "name": "finish_decision",
+        "description": "证据充分或已确认无法补足时停止；报告由工具观察确定性生成。",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "stop_reason": {"type": "string", "maxLength": 300},
+                "pending_questions": {"type": "array", "items": {"type": "string"}},
+            },
+            "required": ["stop_reason", "pending_questions"],
+            "additionalProperties": False,
+        },
+    },
+}
+
+
+class PurchaseDecisionAgent:
+    """Execute a bounded public-observation loop; no model reasoning is logged or returned."""
+
+    def __init__(
+        self,
+        provider: Any,
+        tools: dict[str, Any],
+        *,
+        limits: AgentLimits | None = None,
+        session_memory: SessionMemoryStore | None = None,
+        preference_memory: LongTermPreferenceStore | None = None,
+    ) -> None:
+        self.provider = provider
+        self.tools = tools
+        self.limits = limits or AgentLimits()
+        self.session_memory = session_memory or SessionMemoryStore()
+        self.preference_memory = preference_memory or LongTermPreferenceStore()
+        expected = {"text2sql", "kb_search", "evidence_check", "web_search"}
+        missing = expected - set(tools)
+        if missing:
+            raise ValueError(f"missing required tools: {sorted(missing)}")
+
+    @property
+    def tool_schemas(self) -> list[dict[str, Any]]:
+        return [SET_REQUIREMENTS_SCHEMA, *[self.tools[name].schema for name in sorted(self.tools)], FINISH_SCHEMA]
+
+    @staticmethod
+    def _safe_arguments(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
+        safe: dict[str, Any] = {}
+        if name == "text2sql":
+            safe["sql"] = " ".join(str(arguments.get("sql", "")).split())[:500]
+            safe["filter_count"] = len(arguments.get("filters", []))
+        elif name in {"kb_search", "web_search"}:
+            safe["query_summary"] = str(arguments.get("query", ""))[:160]
+            safe["model_ids"] = list(arguments.get("model_ids", []))[:10]
+            safe["required_fields"] = list(arguments.get("required_fields", []))[:15]
+        elif name == "evidence_check":
+            safe["model_ids"] = list(arguments.get("model_ids", []))[:10]
+            safe["required_fields"] = list(arguments.get("required_fields", []))[:15]
+            safe["constraint_count"] = len(arguments.get("constraints", []))
+        elif name == "set_requirements":
+            safe["summary"] = str(arguments.get("summary", ""))[:200]
+            safe["required_fields"] = list(arguments.get("required_fields", []))[:15]
+            safe["constraint_count"] = len(arguments.get("hard_constraints", []))
+        elif name == "finish_decision":
+            safe["agent_requested_stop"] = True
+        if arguments.get("reason"):
+            safe["reason"] = str(arguments["reason"])[:200]
+        return safe
+
+    @staticmethod
+    def _usage(provider: Any, start_index: int) -> dict[str, Any]:
+        ledger = getattr(provider, "ledger", None)
+        if ledger is None:
+            return {"call_count": 0, "input_tokens": 0, "output_tokens": 0, "estimated_cost_cny": 0.0}
+        records = ledger.snapshot()[start_index:]
+        return {
+            "call_count": len(records),
+            "successful_calls": sum(bool(item["success"]) for item in records),
+            "degraded_calls": sum(bool(item["degraded"]) for item in records),
+            "input_tokens": sum(int(item["input_tokens"]) for item in records),
+            "output_tokens": sum(int(item["output_tokens"]) for item in records),
+            "estimated_cost_cny": round(sum(float(item["estimated_cost_cny"]) for item in records), 8),
+        }
+
+    async def _emit(self, callback: EventCallback | None, event: dict[str, Any]) -> None:
+        if callback is None:
+            return
+        result = callback(event)
+        if inspect.isawaitable(result):
+            await result
+
+    def _start_state(self, query: str, session_id: str, user_id: str | None) -> tuple[AgentState, UserRequirements | None]:
+        previous = self.session_memory.get(session_id)
+        if previous is None:
+            return AgentState(session_id=session_id, user_id=user_id, query=query), None
+        previous_requirements = previous.requirements.model_copy(deep=True)
+        previous.query = query
+        previous.user_id = user_id or previous.user_id
+        previous.traces = []
+        previous.degraded_states = []
+        previous.tool_call_count = 0
+        previous.stop_reason = None
+        previous.finished = False
+        return previous, previous_requirements
+
+    async def _invoke_tool(
+        self,
+        name: str,
+        arguments: dict[str, Any],
+        state: AgentState,
+        previous_requirements: UserRequirements | None,
+    ) -> ToolResult:
+        if name == "set_requirements":
+            try:
+                current = UserRequirements.model_validate(arguments)
+            except ValidationError:
+                return ToolResult(
+                    tool=name, status="failed", error_code="INVALID_REQUIREMENTS",
+                    summary="需求结构未通过 Schema 校验。",
+                )
+            current.task_type = self._infer_task_type(state.query, current.task_type)
+            current = self._augment_requirements(state.query, current)
+            state.requirements = (
+                self.session_memory.merge_requirements(previous_requirements, current)
+                if previous_requirements else current
+            )
+            return ToolResult(
+                tool=name, status="success", summary="已区分硬约束、软偏好、必要字段和待确认项。",
+                data=state.requirements.model_dump(mode="json"),
+            )
+        if name == "finish_decision":
+            observed = {
+                trace.tool
+                for trace in state.traces
+                if trace.status in {"success", "degraded", "unavailable"}
+            }
+            if state.candidate_rows and not state.assessments:
+                return ToolResult(
+                    tool=name, status="failed", error_code="EVIDENCE_CHECK_REQUIRED",
+                    summary="已有候选但尚未执行字段级证据核验，不能结束。",
+                )
+            if not state.candidate_rows and not state.kb_hits and not ({"text2sql", "evidence_check"} & observed):
+                return ToolResult(
+                    tool=name, status="failed", error_code="OBSERVATION_REQUIRED",
+                    summary="尚无工具观察结果，不能结束。",
+                )
+            state.requirements.pending_questions = list(arguments.get("pending_questions", []))
+            statuses = {item.status.value for items in state.assessments.values() for item in items}
+            successful_sql = any(
+                trace.tool == "text2sql" and trace.status in {"success", "degraded"} for trace in state.traces
+            )
+            if "unknown" in statuses or "conflict" in statuses:
+                state.stop_reason = "字段级证据存在 unknown 或 conflict，已停止并拒绝标记为完全满足。"
+            elif state.assessments:
+                state.stop_reason = "候选字段四态核验完成，达到显式停止条件。"
+            elif successful_sql and not state.candidate_rows:
+                state.stop_reason = "只读结构化查询没有满足条件的候选，已安全停止。"
+            elif state.kb_hits:
+                state.stop_reason = "知识库证据检索完成，达到显式停止条件。"
+            else:
+                state.stop_reason = "证据链无法继续补足，已安全停止。"
+            state.finished = True
+            return ToolResult(tool=name, status="success", summary="已满足显式停止条件。", data={"finished": True})
+        tool = self.tools.get(name)
+        if tool is None:
+            return ToolResult(
+                tool=name, status="failed", error_code="TOOL_NOT_ALLOWED", summary="工具不在白名单中。",
+            )
+        observed = [
+            trace.tool for trace in state.traces if trace.status in {"success", "degraded", "unavailable"}
+        ]
+        if not state.requirements.summary:
+            return ToolResult(
+                tool=name, status="failed", error_code="REQUIREMENTS_REQUIRED",
+                summary="必须先调用 set_requirements。",
+            )
+        hard_flow = state.requirements.task_type in {"filter", "comparison", "dynamic"}
+        sql_attempted = any(trace.tool == "text2sql" for trace in state.traces)
+        sql_succeeded = "text2sql" in observed
+        if name == "kb_search" and hard_flow and not sql_succeeded and not sql_attempted:
+            return ToolResult(
+                tool=name, status="failed", error_code="SQL_CANDIDATES_REQUIRED",
+                summary="组合约束任务必须先由 Text2SQL 产生候选。",
+            )
+        if (
+            name == "kb_search"
+            and state.requirements.task_type == "dynamic"
+            and {"price_cny", "stock_status"} & set(state.requirements.required_fields)
+            and "web_search" not in observed
+        ):
+            return ToolResult(
+                tool=name, status="failed", error_code="WEB_STATUS_REQUIRED",
+                summary="动态价格或库存必须先观察 Web Search 的可用状态。",
+            )
+        if name == "evidence_check" and hard_flow:
+            stable_spec_fields = {
+                "region", "display_size_inch", "resolution", "refresh_rate_hz", "panel_type", "is_oled",
+                "has_usb_c", "usb_c_video", "usb_c_power_delivery_w", "stand_adjustment", "width_mm",
+                "weight_kg", "warranty",
+            }
+            needs_kb = bool(
+                stable_spec_fields
+                & {item.field for item in state.requirements.hard_constraints}
+            )
+            source_observed = (
+                "kb_search" in observed
+                if needs_kb
+                else "kb_search" in observed or "web_search" in observed
+            )
+            if not source_observed or (sql_succeeded and not state.candidate_rows):
+                return ToolResult(
+                    tool=name, status="failed", error_code="DEPENDENT_EVIDENCE_REQUIRED",
+                    summary="Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+                )
+        if name == "evidence_check" and not hard_flow:
+            fact_fields = {
+                "model_id", "model_name", "brand", "display_size_inch", "resolution", "refresh_rate_hz",
+                "panel_type", "width_mm", "weight_kg",
+            }
+            if set(state.requirements.required_fields).issubset(fact_fields):
+                return ToolResult(
+                    tool=name, status="failed", error_code="KB_FACT_SUFFICIENT",
+                    summary=(
+                        "简单官方事实必须先由 KB Search 取证。"
+                        if not state.kb_hits
+                        else "简单官方事实已由 KB 命中，应直接结束而非增加工具调用。"
+                    ),
+                )
+        if name == "text2sql":
+            filters = [dict(item) for item in arguments.get("filters", []) if isinstance(item, dict)]
+            state_constraints = state.requirements.hard_constraints
+            locator_constraints = [item for item in state_constraints if item.field in {"model_id", "model_name"}]
+            if locator_constraints:
+                # For named-model verification/comparison, SQL selects the named candidates;
+                # Evidence Check, not SQL, decides whether each requested property is satisfied.
+                filters = [item.model_dump(mode="json", exclude={"hard"}) for item in locator_constraints]
+            else:
+                by_field = {str(item.get("field")): item for item in filters}
+                for constraint in state_constraints:
+                    by_field[constraint.field] = constraint.model_dump(mode="json", exclude={"hard"})
+                filters = list(by_field.values())
+            arguments["filters"] = filters
+        elif name == "evidence_check":
+            eligibility_constraints = [
+                item for item in state.requirements.hard_constraints if item.field not in {"model_id", "model_name"}
+            ]
+            identity_fields = {"model_id", "model_name", "brand"}
+            if eligibility_constraints:
+                required_fields = [item.field for item in eligibility_constraints]
+                required_fields.extend(
+                    field
+                    for field in state.requirements.required_fields
+                    if field in {"price_cny", "stock_status", "observed_at"}
+                )
+            else:
+                required_fields = [
+                    field for field in state.requirements.required_fields if field not in identity_fields
+                ]
+            arguments["required_fields"] = list(dict.fromkeys(required_fields))
+            arguments["constraints"] = [
+                item.model_dump(mode="json") for item in eligibility_constraints
+            ]
+        try:
+            result = await asyncio.wait_for(tool.invoke(arguments), timeout=self.limits.tool_timeout_seconds)
+        except TimeoutError:
+            result = ToolResult(
+                tool=name, status="failed", error_code="TOOL_TIMEOUT", summary="工具超过单次执行时限。",
+            )
+        if name == "text2sql" and result.data.get("rows") is not None:
+            state.candidate_rows = result.data["rows"]
+        elif name == "kb_search":
+            for hit in result.data.get("hits", []):
+                if not all(hit.get(key) for key in ("source_id", "source_url", "model_id", "region")):
+                    continue
+                state.kb_hits.append(
+                    EvidenceReference(
+                        source_id=hit["source_id"], source_url=hit["source_url"],
+                        source_type=hit.get("source_type") or "knowledge_base", model_id=hit["model_id"],
+                        region=hit["region"], location=hit.get("section"), effective_time=hit.get("accessed_at"),
+                    )
+                )
+        elif name == "evidence_check":
+            for model_id, items in result.data.get("models", {}).items():
+                state.assessments[model_id] = [FieldAssessment.model_validate(item) for item in items]
+                state.verified_fields[model_id] = [item.field for item in state.assessments[model_id]]
+        if result.degraded or result.status in {"degraded", "unavailable"}:
+            state.degraded_states.append(f"{name}: {result.summary}")
+        return result
+
+    @staticmethod
+    def _infer_task_type(
+        query: str, declared: str
+    ) -> str:
+        normalized = query.lower()
+        if any(token in normalized for token in ("阳台", "浇水器", "与显示器无关")):
+            return "unrelated"
+        if any(token in normalized for token in ("当前价格", "现在", "库存", "多少钱")):
+            return "dynamic"
+        if "还是" in normalized or "到底" in normalized or (
+            any(token in normalized for token in ("比较", "中，哪", "中哪", "哪个", "哪台"))
+            and any(token in normalized for token in (" 和 ", "与", "和", "中"))
+        ):
+            return "comparison"
+        if any(token in normalized for token in ("找", "哪些", "哪款", "预算", "至少", "不超过", "满足", "是否", "能否")):
+            return "filter"
+        return declared
+
+    @staticmethod
+    def _augment_requirements(query: str, requirements: UserRequirements) -> UserRequirements:
+        """Normalize explicit user wording into fields; this parses requirements, not final eligibility."""
+        normalized = query.lower().replace(" ", "")
+        explicit_existing = {"model_id", "model_name"}
+        field_markers = {
+            "brand": ("品牌",),
+            "panel_type": ("面板", "ips", "va"),
+            "stand_adjustment": ("支架", "升降", "旋转"),
+            "width_mm": ("宽度",),
+            "weight_kg": ("重量", "kg"),
+            "warranty": ("保修",),
+            "camera": ("摄像头",),
+            "face_recognition": ("人脸识别",),
+        }
+        for field, markers in field_markers.items():
+            if any(marker in normalized for marker in markers):
+                explicit_existing.add(field)
+        constraints = {
+            item.field: item
+            for item in requirements.hard_constraints
+            if item.field in explicit_existing
+        }
+
+        def put(field: str, operator: ConstraintOperator, value: Any) -> None:
+            constraints[field] = ConstraintSpec(field=field, operator=operator, value=value, hard=True)
+
+        if "中国版" in normalized or "中国大陆" in normalized:
+            put("region", ConstraintOperator.EQ, "CN")
+        size = re.search(r"(\d+(?:\.\d+)?)英寸", normalized)
+        if size:
+            put("display_size_inch", ConstraintOperator.EQ, float(size.group(1)))
+        if "非oled" in normalized or "不要oled" in normalized:
+            put("is_oled", ConstraintOperator.EQ, False)
+        elif "oled" in normalized:
+            put("is_oled", ConstraintOperator.EQ, True)
+        resolution_map = {"8k": "7680x4320", "5k": "5120x2880", "4k": "3840x2160", "qhd": "2560x1440"}
+        for token, value in resolution_map.items():
+            if token in normalized:
+                put("resolution", ConstraintOperator.EQ, value)
+                break
+        refresh = re.search(r"(?:至少|不低于)(\d+(?:\.\d+)?)hz", normalized)
+        if refresh:
+            put("refresh_rate_hz", ConstraintOperator.GTE, float(refresh.group(1)))
+        elif match := re.search(r"(\d+(?:\.\d+)?)hz", normalized):
+            put("refresh_rate_hz", ConstraintOperator.EQ, float(match.group(1)))
+        if any(token in normalized for token in ("没有usb-c", "无usb-c", "不要usb-c")):
+            put("has_usb_c", ConstraintOperator.EQ, False)
+        if "usb-c视频" in normalized or "usb-c输入视频" in normalized:
+            put("usb_c_video", ConstraintOperator.EQ, True)
+        power = re.search(r"(?:至少|不少于|不低于)(\d+(?:\.\d+)?)w", normalized)
+        if power:
+            put("usb_c_power_delivery_w", ConstraintOperator.GTE, float(power.group(1)))
+        elif match := re.search(r"(\d+(?:\.\d+)?)w供电", normalized):
+            put("usb_c_power_delivery_w", ConstraintOperator.GTE, float(match.group(1)))
+        if "不支持任何usb-c供电" in normalized or "完全不支持usb-c供电" in normalized:
+            put("usb_c_power_delivery_w", ConstraintOperator.EQ, None)
+        budget = re.search(r"预算(\d+(?:\.\d+)?)元", normalized)
+        if budget:
+            put("price_cny", ConstraintOperator.LTE, float(budget.group(1)))
+        width = re.search(r"宽度不超过(\d+(?:\.\d+)?)mm", normalized)
+        if width:
+            put("width_mm", ConstraintOperator.LTE, float(width.group(1)))
+        requirements.hard_constraints = list(constraints.values())
+        requirements.required_fields = list(
+            dict.fromkeys([*requirements.required_fields, *constraints.keys()])
+        )
+        return requirements
+
+    @staticmethod
+    def _next_action(name: str, result: ToolResult, state: AgentState) -> str:
+        if result.status == "failed":
+            return "根据错误码选择受控降级或安全停止。"
+        if name == "set_requirements":
+            return "按问题类型选择 KB 或只读 SQL。"
+        if name == "text2sql":
+            return "用返回的候选型号核验官方资料与缺失字段。"
+        if name == "kb_search":
+            return "根据命中片段执行字段级 Evidence Check 或补查缺失项。"
+        if name == "evidence_check":
+            return "根据四态结果补查 unknown/conflict，或明确结束/拒答。"
+        if name == "web_search":
+            return "Web 不可用，回到 KB + SQL 稳定链路。"
+        return "停止并生成经过 Schema 校验的报告。"
+
+    async def run(
+        self,
+        query: str,
+        *,
+        session_id: str | None = None,
+        user_id: str | None = None,
+        use_long_term_memory: bool = False,
+        event_callback: EventCallback | None = None,
+    ) -> DecisionReport:
+        started = time.perf_counter()
+        session_id = session_id or str(uuid.uuid4())
+        state, previous_requirements = self._start_state(query, session_id, user_id)
+        preferences = (
+            self.preference_memory.recall(user_id, requested=use_long_term_memory) if user_id else {}
+        )
+        previous_context = {
+            "requirements": previous_requirements.model_dump(mode="json") if previous_requirements else None,
+            "previous_candidates": [row.get("model_id") for row in state.candidate_rows[:10]],
+            "confirmed_preferences": preferences,
+        }
+        messages: list[dict[str, Any]] = [
+            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": "可用的脱敏会话上下文：" + json.dumps(previous_context, ensure_ascii=False)},
+            {"role": "user", "content": query},
+        ]
+        ledger = getattr(self.provider, "ledger", None)
+        ledger_start = len(ledger.snapshot()) if ledger is not None else 0
+        correction_sent = False
+        for step in range(1, self.limits.max_steps + 1):
+            usage = self._usage(self.provider, ledger_start)
+            if float(usage["estimated_cost_cny"]) >= self.limits.max_task_cost_cny:
+                state.stop_reason = "达到单任务 API 成本预算，安全停止。"
+                state.degraded_states.append("agent: cost budget reached")
+                break
+            try:
+                response = await self.provider.chat(
+                    messages, tools=self.tool_schemas, tool_choice="auto", temperature=0.0, max_tokens=800
+                )
+            except Exception:
+                state.stop_reason = "模型调用失败，已在不暴露底层敏感错误的情况下停止。"
+                state.degraded_states.append("agent: qwen-plus unavailable")
+                break
+            assistant_message = response.data
+            messages.append(assistant_message)
+            tool_calls = assistant_message.get("tool_calls") or []
+            if not tool_calls:
+                if not correction_sent and step < self.limits.max_steps:
+                    messages.append({"role": "system", "content": "必须通过白名单工具继续，并用 finish_decision 明确停止。"})
+                    correction_sent = True
+                    continue
+                state.stop_reason = "模型未选择工具，Agent 安全停止。"
+                break
+            for call in tool_calls:
+                if state.tool_call_count >= self.limits.max_tool_calls:
+                    state.stop_reason = "达到工具调用总预算，安全停止。"
+                    state.finished = True
+                    break
+                function = call.get("function") or {}
+                name = str(function.get("name", ""))
+                raw_arguments = function.get("arguments", "{}")
+                try:
+                    arguments = json.loads(raw_arguments) if isinstance(raw_arguments, str) else dict(raw_arguments)
+                    if not isinstance(arguments, dict):
+                        raise ValueError
+                except (ValueError, TypeError, json.JSONDecodeError):
+                    arguments = {}
+                    result = ToolResult(
+                        tool=name or "unknown", status="failed", error_code="INVALID_TOOL_ARGUMENTS",
+                        summary="工具参数不是有效 JSON 对象。",
+                    )
+                else:
+                    result = await self._invoke_tool(name, arguments, state, previous_requirements)
+                state.tool_call_count += 1
+                parent_step = arguments.get("parent_step") if isinstance(arguments.get("parent_step"), int) else None
+                if name == "kb_search":
+                    actual_parent = next(
+                        (item.step for item in reversed(state.traces) if item.tool == "text2sql"), None
+                    )
+                    parent_step = actual_parent if actual_parent is not None else parent_step
+                elif name == "evidence_check":
+                    actual_parent = next(
+                        (item.step for item in reversed(state.traces) if item.tool == "kb_search"), None
+                    )
+                    parent_step = actual_parent if actual_parent is not None else parent_step
+                trace = ToolTrace(
+                    step=step,
+                    parent_step=parent_step,
+                    task_summary=state.requirements.summary or query[:160],
+                    tool=name or "unknown",
+                    arguments_summary=self._safe_arguments(name, arguments),
+                    status=result.status,
+                    result_summary=result.summary,
+                    next_action=self._next_action(name, result, state),
+                    stop_or_degrade_reason=(result.summary if result.status in {"failed", "degraded", "unavailable"} else None),
+                )
+                state.traces.append(trace)
+                await self._emit(
+                    event_callback,
+                    {"type": "tool_observation", "trace": trace.model_dump(mode="json")},
+                )
+                compact = result.compact()
+                encoded = json.dumps(compact, ensure_ascii=False, default=str)
+                messages.append(
+                    {
+                        "role": "tool",
+                        "tool_call_id": call.get("id", f"call-{state.tool_call_count}"),
+                        "name": name,
+                        "content": encoded[:18_000],
+                    }
+                )
+                if result.error_code == "UNSUPPORTED_FILTERS":
+                    messages.append(
+                        {
+                            "role": "system",
+                            "content": (
+                                "这些字段不在结构化 Schema 中，不得再次尝试 Text2SQL 或全表扫描。"
+                                "下一步用 kb_search（model_ids 可为空）检索字段，再用 evidence_check 判断 unknown。"
+                            ),
+                        }
+                    )
+                if name == "evidence_check" and result.status == "success":
+                    messages.append(
+                        {
+                            "role": "system",
+                            "content": "字段四态核验已完成。若无明确的未解决查询目标，下一步必须调用 finish_decision。",
+                        }
+                    )
+                if state.finished:
+                    break
+            if state.finished:
+                break
+        if not state.stop_reason:
+            state.stop_reason = "达到最大 ReAct 步骤数，安全停止。"
+            state.degraded_states.append("agent: maximum step limit reached")
+        self.session_memory.save(state)
+        usage = self._usage(self.provider, ledger_start)
+        report = build_report(state, latency_ms=(time.perf_counter() - started) * 1000, usage=usage)
+        agent_monitor.record(
+            {
+                "session_id": session_id,
+                "latency_ms": report.latency_ms,
+                "tool_call_count": report.tool_call_count,
+                "tools": report.tools_used,
+                "statuses": [trace.status for trace in report.trace],
+                "stop_reason": report.stop_reason,
+                "abstained": report.abstained,
+                "estimated_cost_cny": usage.get("estimated_cost_cny", 0.0),
+            }
+        )
+        await self._emit(event_callback, {"type": "report", "report": report.model_dump(mode="json")})
+        return report
