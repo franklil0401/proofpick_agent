@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
 from typing import Any
 
@@ -9,6 +10,11 @@ from smartbuy.config import BailianSettings
 from smartbuy.providers import BailianProvider
 from smartbuy.retrieval.knowledge_base import DEFAULT_INDEX_DIR, INDEX_CONTRACT, youtu_environment
 from smartbuy.tools.base import ToolResult
+
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+DEFAULT_EVIDENCE_PATH = PROJECT_ROOT / "smartbuy/data/processed/evidence_records.jsonl"
+DEFAULT_SOURCES_PATH = PROJECT_ROOT / "smartbuy/data/processed/source_records.jsonl"
 
 
 class KBSearchTool:
@@ -24,6 +30,8 @@ class KBSearchTool:
         store: Any | None = None,
         vector_top_k: int = 30,
         result_top_k: int = 8,
+        evidence_path: Path | str = DEFAULT_EVIDENCE_PATH,
+        sources_path: Path | str = DEFAULT_SOURCES_PATH,
     ) -> None:
         self.settings = settings
         self.provider = provider
@@ -31,6 +39,9 @@ class KBSearchTool:
         self._store = store
         self.vector_top_k = vector_top_k
         self.result_top_k = result_top_k
+        self.evidence_path = Path(evidence_path)
+        self.sources_path = Path(sources_path)
+        self._evidence_index: dict[tuple[str, str], list[dict[str, Any]]] | None = None
 
     @property
     def schema(self) -> dict[str, Any]:
@@ -72,9 +83,37 @@ class KBSearchTool:
             self._store = self._open_store()
         return self._store
 
+    def _load_evidence_index(self) -> dict[tuple[str, str], list[dict[str, Any]]]:
+        if self._evidence_index is not None:
+            return self._evidence_index
+        source_urls: dict[str, str] = {}
+        if self.sources_path.exists():
+            for line in self.sources_path.read_text(encoding="utf-8").splitlines():
+                if line.strip():
+                    row = json.loads(line)
+                    source_urls[str(row["source_id"])] = str(row["url"])
+        index: dict[tuple[str, str], list[dict[str, Any]]] = {}
+        if self.evidence_path.exists():
+            for line in self.evidence_path.read_text(encoding="utf-8").splitlines():
+                if not line.strip():
+                    continue
+                row = json.loads(line)
+                key = (str(row["model_id"]), str(row["normalized_field"]))
+                index.setdefault(key, []).append(
+                    {
+                        "evidence_id": row["evidence_id"],
+                        "source_id": row["source_id"],
+                        "source_url": source_urls.get(str(row["source_id"])),
+                        "field": row["normalized_field"],
+                    }
+                )
+        self._evidence_index = index
+        return index
+
     async def invoke(self, arguments: dict[str, Any]) -> ToolResult:
         query = str(arguments.get("query", "")).strip()
         model_ids = {str(item) for item in arguments.get("model_ids", []) if str(item)}
+        required_fields = [str(item) for item in arguments.get("required_fields", []) if str(item)]
         if not query:
             return ToolResult(
                 tool=self.name, status="failed", error_code="EMPTY_QUERY",
@@ -116,9 +155,15 @@ class KBSearchTool:
                 vector_scores=[item["vector_score"] for item in candidates],
             )
             hits = []
+            evidence_index = self._load_evidence_index()
             for rank, item in enumerate(reranked.data, start=1):
                 candidate = candidates[int(item["index"])]
                 metadata = candidate["metadata"]
+                bindings = [
+                    binding
+                    for field in required_fields
+                    for binding in evidence_index.get((str(metadata.get("model_id", "")), field), [])
+                ]
                 hits.append(
                     {
                         "rank": rank,
@@ -134,6 +179,7 @@ class KBSearchTool:
                         "source_url": metadata.get("source_url"),
                         "section": metadata.get("section_page"),
                         "accessed_at": metadata.get("accessed_at"),
+                        "evidence_bindings": bindings,
                     }
                 )
             degraded = bool(reranked.degraded)

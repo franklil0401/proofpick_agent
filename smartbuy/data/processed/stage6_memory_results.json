@@ -1,0 +1,29 @@
+{
+  "case_count": 5,
+  "cases": [
+    {
+      "case_id": "m6-001",
+      "passed": true
+    },
+    {
+      "case_id": "m6-002",
+      "passed": true
+    },
+    {
+      "case_id": "m6-003",
+      "passed": true
+    },
+    {
+      "case_id": "m6-004",
+      "passed": true
+    },
+    {
+      "case_id": "m6-005",
+      "passed": true
+    }
+  ],
+  "evaluation_version": "smartbuy-stage6-memory-v1",
+  "fixture_ids_match": true,
+  "passed": true,
+  "passed_count": 5
+}

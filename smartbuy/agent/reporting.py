@@ -97,7 +97,11 @@ def build_report(
             ),
             overall_status=overall,
             fields=fields,
-            eligible=bool(verification and verification.eligible),
+            eligible=(
+                bool(verification.eligible)
+                if verification
+                else recommendation_task and overall == ConstraintStatus.MATCHED
+            ),
             verifier_status=verification.overall_status if verification else None,
             constraint_results=verification.constraint_results if verification else [],
             violated_fields=verification.violated_fields if verification else [],

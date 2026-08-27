@@ -130,6 +130,7 @@ class PurchaseDecisionAgent:
         preference_memory: LongTermPreferenceStore | None = None,
         constraint_normalizer: ConstraintNormalizer | None = None,
         constraint_verifier: CandidateConstraintVerifier | None = None,
+        enable_constraint_checker: bool = True,
     ) -> None:
         self.provider = provider
         self.tools = tools
@@ -142,9 +143,13 @@ class PurchaseDecisionAgent:
         if missing:
             raise ValueError(f"missing required tools: {sorted(missing)}")
         database_path = getattr(tools["text2sql"], "database_path", None)
-        if constraint_verifier is None and database_path is None:
+        if enable_constraint_checker and constraint_verifier is None and database_path is None:
             raise ValueError("constraint_verifier is required when Text2SQL has no database_path")
-        self.constraint_verifier = constraint_verifier or CandidateConstraintVerifier(database_path)
+        self.enable_constraint_checker = enable_constraint_checker
+        self.constraint_verifier = (
+            constraint_verifier
+            or (CandidateConstraintVerifier(database_path) if enable_constraint_checker else None)
+        )
 
     @property
     def tool_schemas(self) -> list[dict[str, Any]]:
@@ -555,13 +560,28 @@ class PurchaseDecisionAgent:
             for hit in result.data.get("hits", []):
                 if not all(hit.get(key) for key in ("source_id", "source_url", "model_id", "region")):
                     continue
-                state.kb_hits.append(
-                    EvidenceReference(
-                        source_id=hit["source_id"], source_url=hit["source_url"],
-                        source_type=hit.get("source_type") or "knowledge_base", model_id=hit["model_id"],
-                        region=hit["region"], location=hit.get("section"), effective_time=hit.get("accessed_at"),
+                bindings = hit.get("evidence_bindings") or [
+                    {
+                        "evidence_id": None,
+                        "source_id": hit["source_id"],
+                        "source_url": hit["source_url"],
+                        "field": None,
+                    }
+                ]
+                for binding in bindings:
+                    state.kb_hits.append(
+                        EvidenceReference(
+                            evidence_id=binding.get("evidence_id"),
+                            source_id=binding.get("source_id") or hit["source_id"],
+                            source_url=binding.get("source_url") or hit["source_url"],
+                            source_type=hit.get("source_type") or "knowledge_base",
+                            model_id=hit["model_id"],
+                            region=hit["region"],
+                            field=binding.get("field"),
+                            location=hit.get("section"),
+                            effective_time=hit.get("accessed_at"),
+                        )
                     )
-                )
                 self._remember_candidate(
                     state,
                     str(hit["model_id"]),
@@ -705,8 +725,14 @@ class PurchaseDecisionAgent:
             "previous_candidates": [row.get("model_id") for row in state.candidate_rows[:10]],
             "confirmed_preferences": preferences,
         }
+        system_prompt = SYSTEM_PROMPT
+        if not self.enable_constraint_checker:
+            system_prompt = system_prompt.replace(
+                "10. finish_decision 后系统仍会对完整工具候选池强制运行 Constraint Checker；你不能跳过、覆盖或修改其结果。",
+                "10. 本实验关闭最终 Constraint Checker；必须如实保留 Evidence Check 的四态结果。",
+            )
         messages: list[dict[str, Any]] = [
-            {"role": "system", "content": SYSTEM_PROMPT},
+            {"role": "system", "content": system_prompt},
             {"role": "system", "content": "可用的脱敏会话上下文：" + json.dumps(previous_context, ensure_ascii=False)},
             {"role": "user", "content": query},
         ]
@@ -745,6 +771,7 @@ class PurchaseDecisionAgent:
                 function = call.get("function") or {}
                 name = str(function.get("name", ""))
                 raw_arguments = function.get("arguments", "{}")
+                tool_started = time.perf_counter()
                 try:
                     arguments = json.loads(raw_arguments) if isinstance(raw_arguments, str) else dict(raw_arguments)
                     if not isinstance(arguments, dict):
@@ -786,6 +813,7 @@ class PurchaseDecisionAgent:
                     result_summary=result.summary,
                     next_action=self._next_action(name, result, state),
                     stop_or_degrade_reason=(result.summary if result.status in {"failed", "degraded", "unavailable"} else None),
+                    duration_ms=round((time.perf_counter() - tool_started) * 1000, 3),
                 )
                 state.traces.append(trace)
                 await self._emit(
@@ -847,6 +875,7 @@ class PurchaseDecisionAgent:
                 ],
                 "reason": "有界循环结束前未完成字段证据核验，执行确定性白名单回退。",
             }
+            fallback_started = time.perf_counter()
             fallback = await self._invoke_tool(
                 "evidence_check",
                 fallback_arguments,
@@ -872,6 +901,7 @@ class PurchaseDecisionAgent:
                 stop_or_degrade_reason=(
                     "模型在有界循环内未完成 Evidence Check；运行时执行白名单回退。"
                 ),
+                duration_ms=round((time.perf_counter() - fallback_started) * 1000, 3),
             )
             state.traces.append(fallback_trace)
             state.degraded_states.append(
@@ -882,58 +912,65 @@ class PurchaseDecisionAgent:
                 {"type": "tool_observation", "trace": fallback_trace.model_dump(mode="json")},
             )
         pool_model_ids = list(state.candidate_pool_rows)
-        await self._emit(
-            event_callback,
-            {
-                "type": "constraint_check_started",
-                "verifier_version": VERIFIER_VERSION,
-                "candidate_pool_count": len(pool_model_ids),
-            },
-        )
-        constraint_started = time.perf_counter()
-        try:
-            state.constraint_verification = self.constraint_verifier.verify_candidates(
-                state.constraint_set, pool_model_ids
+        if self.enable_constraint_checker:
+            assert self.constraint_verifier is not None
+            await self._emit(
+                event_callback,
+                {
+                    "type": "constraint_check_started",
+                    "verifier_version": VERIFIER_VERSION,
+                    "candidate_pool_count": len(pool_model_ids),
+                },
             )
-        except Exception:
-            state.constraint_verification = self.constraint_verifier.fail_closed(
-                state.constraint_set,
-                pool_model_ids,
-                "Constraint Checker 异常，已 fail closed；敏感错误细节未记录。",
+            constraint_started = time.perf_counter()
+            try:
+                state.constraint_verification = self.constraint_verifier.verify_candidates(
+                    state.constraint_set, pool_model_ids
+                )
+            except Exception:
+                state.constraint_verification = self.constraint_verifier.fail_closed(
+                    state.constraint_set,
+                    pool_model_ids,
+                    "Constraint Checker 异常，已 fail closed；敏感错误细节未记录。",
+                )
+            state.constraint_check_latency_ms = round(
+                (time.perf_counter() - constraint_started) * 1000, 3
             )
-        state.constraint_check_latency_ms = round(
-            (time.perf_counter() - constraint_started) * 1000, 3
-        )
-        await self._emit(
-            event_callback,
-            {
-                "type": "constraint_check_completed",
-                "verification": state.constraint_verification.model_dump(mode="json"),
-                "latency_ms": state.constraint_check_latency_ms,
-            },
-        )
-        pre_rank_usage = self._usage(self.provider, ledger_start)
-        if float(pre_rank_usage["estimated_cost_cny"]) >= self.limits.max_task_cost_cny:
-            order = list(state.constraint_verification.eligible_model_ids)
-            explanations: dict[str, str] = {}
-            ranking_degraded = False
-        else:
-            order, explanations, ranking_degraded = await rank_compliant_candidates(
-                self.provider,
-                state.constraint_verification,
-                state.constraint_set.active(),
+            await self._emit(
+                event_callback,
+                {
+                    "type": "constraint_check_completed",
+                    "verification": state.constraint_verification.model_dump(mode="json"),
+                    "latency_ms": state.constraint_check_latency_ms,
+                },
             )
-        state.ranked_eligible_model_ids = order
-        state.candidate_explanations = explanations
-        if ranking_degraded:
-            state.degraded_states.append("soft ranking: model unavailable; preserved verifier order")
-        if state.requirements.task_type in {"filter", "comparison", "dynamic"}:
-            if state.constraint_verification.degraded:
-                state.stop_reason = "Constraint Checker 降级并 fail closed，本次不输出合规推荐。"
-            elif state.constraint_verification.eligible_model_ids:
-                state.stop_reason = "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。"
+            pre_rank_usage = self._usage(self.provider, ledger_start)
+            if float(pre_rank_usage["estimated_cost_cny"]) >= self.limits.max_task_cost_cny:
+                order = list(state.constraint_verification.eligible_model_ids)
+                explanations: dict[str, str] = {}
+                ranking_degraded = False
             else:
-                state.stop_reason = "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。"
+                order, explanations, ranking_degraded = await rank_compliant_candidates(
+                    self.provider,
+                    state.constraint_verification,
+                    state.constraint_set.active(),
+                )
+            state.ranked_eligible_model_ids = order
+            state.candidate_explanations = explanations
+            if ranking_degraded:
+                state.degraded_states.append("soft ranking: model unavailable; preserved verifier order")
+            if state.requirements.task_type in {"filter", "comparison", "dynamic"}:
+                if state.constraint_verification.degraded:
+                    state.stop_reason = "Constraint Checker 降级并 fail closed，本次不输出合规推荐。"
+                elif state.constraint_verification.eligible_model_ids:
+                    state.stop_reason = "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。"
+                else:
+                    state.stop_reason = "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。"
+        else:
+            state.constraint_verification = None
+            state.constraint_check_latency_ms = 0.0
+            state.ranked_eligible_model_ids = []
+            state.candidate_explanations = {}
         self.session_memory.save(state)
         usage = self._usage(self.provider, ledger_start)
         report = build_report(state, latency_ms=(time.perf_counter() - started) * 1000, usage=usage)
@@ -947,11 +984,21 @@ class PurchaseDecisionAgent:
                 "stop_reason": report.stop_reason,
                 "abstained": report.abstained,
                 "estimated_cost_cny": usage.get("estimated_cost_cny", 0.0),
-                "constraint_checker_version": state.constraint_verification.verifier_version,
+                "constraint_checker_version": (
+                    state.constraint_verification.verifier_version
+                    if state.constraint_verification else None
+                ),
                 "constraint_statuses": [
-                    item.overall_status.value for item in state.constraint_verification.candidates
+                    item.overall_status.value
+                    for item in (
+                        state.constraint_verification.candidates
+                        if state.constraint_verification else []
+                    )
                 ],
-                "constraint_degraded": state.constraint_verification.degraded,
+                "constraint_degraded": (
+                    state.constraint_verification.degraded
+                    if state.constraint_verification else False
+                ),
                 "constraint_check_latency_ms": state.constraint_check_latency_ms,
                 "constraint_candidates": [
                     {
@@ -973,7 +1020,10 @@ class PurchaseDecisionAgent:
                             for result in item.constraint_results
                         ],
                     }
-                    for item in state.constraint_verification.candidates
+                    for item in (
+                        state.constraint_verification.candidates
+                        if state.constraint_verification else []
+                    )
                 ],
             }
         )

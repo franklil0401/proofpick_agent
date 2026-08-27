@@ -112,6 +112,7 @@ class ToolTrace(BaseModel):
     result_summary: str
     next_action: str
     stop_or_degrade_reason: str | None = None
+    duration_ms: float = Field(default=0.0, ge=0)
 
 
 class DecisionReport(BaseModel):

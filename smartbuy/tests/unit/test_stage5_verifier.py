@@ -139,3 +139,11 @@ def test_unsupported_hard_constraint_is_explicit_unknown(database):
     assert candidate.eligible is False
     assert candidate.overall_status == VerificationStatus.UNKNOWN
     assert set(candidate.unsupported_constraints) == {"camera", "face_recognition"}
+
+
+def test_ambiguous_soft_constraint_requires_clarification(database):
+    _, result = verify(database, "27 英寸左右", ["dell-u2723qe-cn"])
+    candidate = result.candidates[0]
+    assert candidate.eligible is False
+    assert candidate.overall_status == VerificationStatus.UNKNOWN
+    assert candidate.unsupported_constraints == ["display_size_inch"]

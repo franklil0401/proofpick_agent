@@ -356,11 +356,21 @@ class CandidateConstraintVerifier:
             if result.constraint.active and result.constraint.hard_or_soft == ConstraintStrength.HARD
         ]
         hard_statuses = {result.status for result in hard_results}
+        # Active ambiguous/unsupported requests are clarification gates even
+        # when deliberately classified as soft preferences. They must not be
+        # silently treated as fully verified recommendations.
+        clarification_required = any(
+            result.constraint.active
+            and (not result.constraint.supported or result.constraint.ambiguous)
+            for result in results
+        )
         if VerificationStatus.FAILED in hard_statuses:
             overall = VerificationStatus.FAILED
         elif VerificationStatus.CONFLICT in hard_statuses:
             overall = VerificationStatus.CONFLICT
         elif VerificationStatus.UNKNOWN in hard_statuses:
+            overall = VerificationStatus.UNKNOWN
+        elif clarification_required:
             overall = VerificationStatus.UNKNOWN
         else:
             overall = VerificationStatus.PASSED
@@ -370,7 +380,7 @@ class CandidateConstraintVerifier:
         conflicts = [result.constraint.field for result in hard_results if result.status == VerificationStatus.CONFLICT]
         unsupported = [
             result.constraint.field
-            for result in hard_results
+            for result in results
             if not result.constraint.supported or result.constraint.ambiguous
         ]
         evidence_ids = list(dict.fromkeys(result.evidence_id for result in results if result.evidence_id))

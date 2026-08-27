@@ -1,0 +1,12 @@
+{
+  "cause": "模型级 nDCG 在 ranked model_id 上未先去重，同一型号的多个 chunk 被重复计为相关增益，导致 nDCG 大于 1。",
+  "initial_result_sha256": "9ff2f49051be3905688830cd66ba05d684c68db647909f47dbd34338c7cbd840",
+  "initial_values": {
+    "aggregate_fixed_rag_ndcg_at_5": 1.325511,
+    "first_run_fixed_rag_ndcg_at_5": 1.360603
+  },
+  "preserved": true,
+  "raw_prediction_count": 480,
+  "raw_predictions_changed_by_fix": false,
+  "sensitive_information_leaked": false
+}

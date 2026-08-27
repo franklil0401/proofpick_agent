@@ -6,8 +6,8 @@
 |---|---|
 | 项目名称 | SmartBuy Research Agent（多源消费决策研究 Agent） |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 5：确定性硬约束复核（已完成，等待用户验收） |
-| 当前状态 | 带来源 ConstraintSet、完整候选池、只读 Checker、软排序护栏、SSE/Monitor 字段审计和自然/故障注入消融已实现；阶段 6 尚未开始 |
+| 当前阶段 | 阶段 6：评测、可观测性、缓存、错误恢复和降级（已完成，等待用户验收） |
+| 当前状态 | 40 条冻结自然集、四组各三次对照、统一脱敏账本、隐私安全缓存、13 类故障注入、Memory 与 Checker 确定性专项均已完成；阶段 7 尚未开始 |
 | 最后更新时间 | 2026-08-27 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
@@ -437,13 +437,13 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 测试方法：提交前完整项目回归 56 passed；4 条 dry run 后 16 条真实 E2E；失败用例独立复现/修复；回环地址 WebUI/SSE/Monitor 人工冒烟；Ruff/编译/JS 语法与敏感扫描。
 - 量化退出结果：工具选择 16/16，正例型号召回 7/7，9 条应拒答 9/9，多跳 8/8，Schema 16/16，端到端 15/16；失败修复后定向 1/1；最终全量成本 ¥0.4073413，阶段累计严格上界 <¥2.3159403，低于 10 元。
 - 风险与回退：Tool Calling 路径仍有非确定性，执行器门禁阻止越序和越权；Web 无凭据返回 unavailable；Reranker 失败保留向量顺序；SQL 不支持字段转 KB/Evidence；最大步数时安全停止。平均 25.900 秒、P95 40.195 秒，阶段 6 再优化。
-- 阶段边界：阶段 4 Evidence Check 当时不是最终 Constraint Checker；阶段 5 已补齐该边界。真实 Web Search、GraphRAG、第二品类和四组完整消融仍未实现。
+- 阶段边界：阶段 4 Evidence Check 当时不是最终 Constraint Checker；阶段 5 已补齐该边界，四组完整消融已在阶段 6 完成。真实 Web Search、GraphRAG 和第二品类仍未实现。
 - 文档更新：[ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)、[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`feat(stage4): implement multi-source purchase decision workflow`。
 
 ### 阶段 5：Agentic RAG 核心增强点
 
-- 阶段状态：**已完成（2026-08-27，等待用户验收）**。
+- 阶段状态：**已完成并通过用户验收（Commit `7a6e560719010050607f26a75267ca893653d3ac`）**。
 - 阶段目标：完成不可被 LLM 绕过、可量化且可审计的硬约束确定性复核；GraphRAG 继续后置。
 - 前置依赖：阶段 4 工作流、阶段 3 只读 SQLite/evidence 和硬约束金标；均满足。
 - 实际开发：带来源约束归一化与优先级；会话/长期偏好覆盖和取消；完整候选池累计；只读 `verify_candidates`；价格时效、地区、证据冲突和 fail-closed；LLM 合规集合排序护栏；SSE/Monitor 字段结果；固定池 A/B、自然用例和独立故障注入 Scorer。
@@ -451,22 +451,26 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 交付物：ConstraintSet、Checker v1、自然 10 条、故障注入 12 条、固定池 A/B、在线 4 条 dry run/16 条完整结果/定向回归及脱敏工具轨迹。
 - 测试方法：先纯本地 76 项回归和固定套件，再 4 条在线 dry run、一次 16 条完整 E2E，最后只复测保留的失败用例；Ruff、编译、JS 语法和敏感扫描。
 - 量化退出结果：自然 55/55 字段、10/10 任务；故障注入 21/21 字段、12/12 任务、12/12 拦截；unknown/conflict、unsupported、重复执行和 s4-014 均 100%；Checker API/成本为 0，在线平均 Checker 延迟 2.014ms。
-- 风险与回退：首批词表有意收窄；unsupported/ambiguous、null、冲突和 Checker 异常均 fail closed。首次在线 E2E 13/16，失败原样保留并定向修复；阶段 6 需完整重复评测。
-- 阶段边界：未实现真实 Web Search、GraphRAG、第二品类、自动下单、四组完整重复消融或公网多租户。
+- 风险与回退：首批词表有意收窄；unsupported/ambiguous、null、冲突和 Checker 异常均 fail closed。首次在线 E2E 13/16 与定向修复均保留；阶段 6 已完成完整重复评测。
+- 阶段边界：未实现真实 Web Search、GraphRAG、第二品类、自动下单或公网多租户。
 - 文档更新：[ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)、[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`feat(stage5): add deterministic constraint verification`。
 
 ### 阶段 6：评测、可观测性、缓存、错误恢复和降级
 
+- 阶段状态：**已完成（2026-08-27，等待用户验收）**。
 - 阶段目标：用可复现实验证明能力边界，并提高稳定性和成本透明度。
-- 前置依赖：阶段 4～5 可运行；至少 30 条金标任务。
-- 开发任务：四组 Baseline Runner、Scorer、重复运行、延迟/Token/成本、缓存、重试、故障注入、脱敏监控、回归报告。
-- 预计模块：`smartbuy/eval/`、缓存与观测配置、结果报告和故障测试（计划）。
-- 交付物：指标表、失败样本、P50/P95、成本、降级报告和配置快照。
-- 测试方法：固定数据同模型同温度运行；重复 3 次；关闭 Web/Reranker/Memory；扫描敏感信息。
-- 退出条件：验收表中的阻断指标通过或经用户接受校准；所有失败保留；关键自动化测试通过。
-- 风险与回退：费用/限流、LLM Judge 偏差、动态 Web；设置预算停止线、人工抽查、固定快照。
-- 文档更新：README 只写真实结果；开发指南记录目标校准；结构图同步结果目录。
+- 前置依赖：阶段 4～5 可运行；40 条自然金标与工作区外 SQLite/Chroma 可用；均满足。
+- 实际开发：四组 Baseline Runner、冻结/哈希验证、确定性 Scorer、三次重复、split 指标、统一账本、TTL/容量/版本/完整性安全缓存、受控 Provider/存储故障、Memory 和 Checker 确定性专项、checkpoint 合并审计。
+- 实际模块：`smartbuy/eval/stage6_*` 与 Runner/Scorer/构建器、`smartbuy/cache/`、`observability/eval_ledger.py`、Evidence/Agent 集成、阶段 6 测试、ADR-0006、脱敏结果和技术报告。
+- 交付物：40 条自然集（16 regression + 24 holdout）、13 条 failure、5 条 memory、480 个唯一四组预测、4,464 条统一账本、指标 CSV、缓存/故障/定向回归结果和配置快照。
+- 测试方法：先纯本地冻结/缓存/Scorer/故障/Memory，再 3 条四组 smoke；成本估算通过后四组各完整运行 3 次；最后运行缓存、Checker 同输入确定性、完整项目回归、Ruff、编译、文档链接和敏感扫描。提交前完整项目回归 89 passed、3 条上游依赖弃用警告。
+- 量化退出结果：首次 E2E A/B/C/D 为 16/40、17/40、28/40、31/40；D 的违规候选推荐 0/43，三次聚合 92/120，最终候选集合一致 40/40；Checker 同输入字节一致 40/40；故障 13/13；Memory 修复后 5/5；缓存输出一致 5/5。
+- 首次失败与修复：保留 smoke Scorer TypeError、nDCG 去重错误、Fixed RAG 28 次 JSONDecodeError、C/D 各 12 次分辨率 ValueError 和 59 条 checkpoint 重复审计。分辨率修复后的 D 定向回归 4/4，未覆盖首次指标。
+- 成本与性能：四组唯一预测 ¥8.57293；阶段全部活动可审计下限 ¥11.4491691、保守估算 <¥13，低于 ¥20。D 平均/P95 24.802/41.328 秒；热缓存 5/5 命中且输出一致，平均 10.436ms，但未用于主实验。
+- 风险与回退：LLM 无 seed，holdout D 仅 15/24；严格 evidence 金标可能低估合法引用；错误 usage 丢失使阶段成本只能报告下限；缓存仅允许公共评测且故障时绕过；Checker 异常 fail closed。
+- 阶段边界：未实现真实 Web Search、GraphRAG、第二品类、生产 SLA 或公网多租户；阶段 7 负责干净 Windows 复现和演示发布。
+- 文档更新：[ADR-0006](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)、[阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`test(stage6): add reproducible evaluation and resilience checks`。
 
 ### 阶段 7：前端展示、演示数据、README 和发布整理
@@ -525,10 +529,11 @@ docs: initialize development guide and project map
 | 原交接模型方案冲突 | FINAL 示例为 DeepSeek/混元/Jina；当前要求改用百炼三模型 | 依信息优先级采用百炼，保留上游兼容性测试 | 否 |
 | 百炼 Embedding `/model_id` 兼容 | 已修复；Youtu 实际建库和检索均通过，返回向量严格为 1024 维 | OpenAI-compatible Provider 显式传 `dimensions=1024`，验证数量、顺序和维度；模型或维度变更时重建索引 | 否；已验证 |
 | Reranker `/rerank` 与 `/reranks` | 已适配完整 `/reranks` 端点和顶层 `results`；Youtu 二阶段排序已通过 | 保留完整端点；有限重试后保留向量顺序并显式标记降级 | 否；已验证 |
-| API 调用成本和配额 | 阶段 2 上限 5 元；阶段 3～5 各建议不超 10 元；累计上限 50 元 | 先用 3～5 条样本；记录调用/Token/估算成本；可能超限立即停止 | 否 |
-| Web Search 凭据 | 当前未提供，阶段 1～5 均以 unavailable 降级完成 | KB + SQLite/Text2SQL 为稳定主链路；无凭据时返回可演示降级结果 | 否 |
+| API 调用成本和配额 | 阶段 6 可审计下限 ¥11.4491691、保守估算 <¥13，低于 ¥20；项目累计仍受 50 元上限 | 先 smoke；checkpoint 续跑；记录失败用量缺口并不伪装精确账单；可能超限立即停止 | 否 |
+| Web Search 凭据 | 当前未提供，阶段 1～6 均以 unavailable 降级完成 | KB + SQLite/Text2SQL 为稳定主链路；无凭据时返回可演示降级结果 | 否 |
 | 约束自然语言覆盖 | 阶段 5 只承诺首批 11 个字段和已声明表达；模糊/未支持表达不猜测 | provenance gate + `unsupported/ambiguous` + fail closed；阶段 6 只扩展有金标的表达 | 否；实际边界已记录 |
-| 在线 E2E 波动 | 阶段 5 首次完整 13/16，安全门 16/16；三个失败保留并定向修复 | 阶段 6 固定配置做完整重复运行；执行器继续限制依赖、步骤、工具和成本 | 否；阻塞阶段 6 宣称稳定性提升 |
+| 在线 E2E 波动 | 阶段 6 三次中 D 候选集合一致 40/40、工具路径一致 33/40；相同输入 Checker 40/40 字节一致 | 区分 LLM 路由、工具结果与 Checker 确定性；保留首次失败，不宣称模型完全确定 | 否；阶段 7 只选已验证 Demo |
+| 严格引用评分 | C/D 首次金标引用命中 56/808、56/638；最小金标未枚举所有合法证据 | 同时报关键证据覆盖、错型号/地区引用和金标口径；阶段 7 收敛冗余引用 | 否；限制简历表述 |
 | 数据版权与再分发 | 官方 PDF 逐份许可未知 | 只提交来源清单、校验值和自制摘要 | 否；阻塞对应原文公开发布 |
 | 动态价格和页面变化 | 不可完全复现 | 记录地区/时间，保留快照或历史观察 | 否 |
 | Windows 路径和依赖 | 阶段 1 已通过；运行数据需避开深路径 | 保持 `C:/ai/` 短 ASCII 路径，逐服务回归 | 否 |
@@ -555,3 +560,5 @@ docs: initialize development guide and project map
 - [ADR-0004：有界 ReAct、字段证据与分层记忆](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)
 - [阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)
 - [ADR-0005：确定性硬约束安全门](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)
+- [阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)
+- [ADR-0006：冻结评测、缓存与韧性](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)

@@ -1,8 +1,8 @@
 # SmartBuy Runtime Manifest
 
 最后更新：2026-08-27
-当前阶段：阶段 5 已完成，等待用户验收
-运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界多工具 Agent + 确定性 Constraint Checker
+当前阶段：阶段 6 已完成，等待用户验收
+运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界多工具 Agent + 确定性 Constraint Checker + 可复现评测/缓存/故障降级
 
 ## 代码与纳入方式
 
@@ -17,7 +17,7 @@
 | 上游许可证 | MIT，见 `vendor/youtu-rag/LICENSE` |
 | `uv.lock` SHA-256 | `726A4CC25B64C0B0C98DBADB51218F86433C7C424B52D40C88FE0910B1BFB659` |
 
-详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，Agent/Memory 决策见 [ADR-0004](adr/0004-bounded-react-evidence-and-memory.md)，确定性安全门见 [ADR-0005](adr/0005-deterministic-constraint-gate.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
+详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，Agent/Memory 决策见 [ADR-0004](adr/0004-bounded-react-evidence-and-memory.md)，确定性安全门见 [ADR-0005](adr/0005-deterministic-constraint-gate.md)，评测/缓存/韧性决策见 [ADR-0006](adr/0006-reproducible-evaluation-cache-and-resilience.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
 
 ## 主机与关键版本
 
@@ -46,6 +46,7 @@
 - 阶段 3 Chroma：`C:/ai/smartbuy-stage3/vector_store_text_embedding_v4_1024/`，collection `smartbuy_monitors_v1`。
 - 阶段 4 长期偏好（本地运行时）：`C:/ai/smartbuy-stage4/preferences.json`；评测偏好使用独立文件，不进入 Git。
 - 阶段 5 在线评测偏好：`C:/ai/smartbuy-stage5/eval_preferences.json`；只含评测生命周期数据，不进入 Git。
+- 阶段 6 分片检查点和临时缓存：`C:/ai/smartbuy-stage6/`；仅用于可恢复运行，原始检查点不进入 Git，合并审计和脱敏汇总进入仓库。
 - API/WebUI：`127.0.0.1:8000`；MinIO API/Console：`127.0.0.1:9000` / `127.0.0.1:9001`。
 - 运行数据库、向量索引、MinIO 数据和日志均在仓库外，不进入 Git。
 
@@ -60,6 +61,9 @@
 | Web Search | 未配置 | 不阻塞；默认基础 Agent 不加载 Serper |
 | SmartBuy Agent | qwen-plus Tool Calling；8 steps / 12 tool calls | KB/SQL/Evidence/Memory/报告通过；Web 只验证 unavailable 降级 |
 | Constraint Checker | `smartbuy-constraint-checker-v1`；只读 SQLite/evidence | 完整候选池、来源门禁、四态、边界、fail-closed 和重复执行通过；0 API 调用 |
+| Stage 6 Eval | qwen-plus，temperature=0，max output=800；固定数据/索引/as_of | A/B/C/D 相同 40 条自然任务，各 3 次；配置和数据哈希已冻结 |
+| Safe Cache | `smartbuy-stage6-cache-v1`；默认关闭 | 仅公开稳定中间结果；TTL/容量/版本/校验和/手动清空及损坏绕过通过 |
+| Eval Ledger | `smartbuy-eval-ledger-v1` | 记录运行、步骤、Token、成本、延迟、重试、命中和降级；禁止 Prompt、Key、Authorization 和思维链 |
 | 本地模型 | 关闭 | 不作为主要在线链路 |
 
 配置只从当前进程继承的 `Qianwen_api_key` 和 `Qianwen_workspace_id` 读取。启动脚本将其映射为子进程 `UTU_*`，不读取 Windows 注册表、不写 `.env`、不输出值。轮换 Key 后必须重启所有长运行进程。
@@ -99,9 +103,21 @@
 - 输出：`DecisionReport smartbuy-decision-v2` 含 ConstraintSet、完整 VerificationBatch、证据/来源 ID、语义指纹和 Checker 延迟。
 - 前端：SSE 增加 `constraint_check_started/completed`；WebUI 和 `/monitor` 展示脱敏候选字段状态、版本和延迟。
 
+阶段 6 评测与韧性：
+
+- 冻结自然集 40 条（regression 16 + holdout 24），SHA-256 `6082ac83d72441fedf7ac3083a3c53f31d538ca54216f2cf99d3a9de5068e0ef`；故障集 13 条、Memory 集 5 条另行计分。
+- 公平配置哈希 `c5001c9707c5cb7302c26745407cf989676e832b6984109604dec829754ab096`；主实验禁用缓存，A/B/C/D 各 40 条 × 3 次，共 480 个唯一预测。
+- 首次运行 E2E：Direct LLM 16/40、Fixed RAG 17/40、Agentic RAG 28/40、Agentic RAG + Checker 31/40；增强组违规候选推荐 0/43。
+- 三次聚合 E2E：A 46/120、B 51/120、C 81/120、D 92/120；增强组候选集合 40/40、拒答 39/40 一致，工具路径 33/40 一致。
+- 同输入 Checker 三次执行 40/40 字节级一致；不调用模型、不产生额外 API 成本。
+- 缓存基准 5 条公开 KB 查询：冷/热平均 1441.682/10.436ms，输出 5/5 一致，热缓存命中 5/5；动态价格明确绕过。
+- 受控故障注入 13/13 正确识别、重试或降级，静默伪装 0；Checker 异常 fail closed。Memory 修复前 4/5，修复后 5/5，首次结果保留。
+- 当前阶段 4 全量回归 16/16；阶段 4 原始 15/16、阶段 5 首次 13/16 和后续定向修复保持为独立历史记录。
+- 详细精确分母、首次失败、缓存、故障、Token/成本和有效性威胁见[阶段 6 报告](stage6_evaluation_and_resilience_report.md)。
+
 ## 测试与成本
 
-- 自动化：17 passed，3 条上游依赖弃用警告。
+- 当前提交前自动化：89 passed，3 条上游依赖弃用警告。
 - 静态检查：`smartbuy/` 与三类核心 Provider 文件 Ruff 通过。
 - 独立三模型最终验证：5 次调用、398 input + 31 output tokens，估算 0.0003243 元。
 - 最终 Youtu 建库/查询：Embedding 130 input tokens，估算 0.000065 元；Reranker 160 input tokens，估算 0.000080 元。
@@ -133,11 +149,21 @@
 - 保存的在线评测与回归累计 271 次账本调用，1,097,782 input + 26,510 output tokens，估算 0.8967852 元；Checker 本身 0 次 API、0 元。
 - 提交前完整项目回归 76 passed、3 条上游依赖弃用警告；Ruff、Python compileall 和前端 JavaScript 语法检查通过。
 
-阶段 2 模型错误矩阵见[阶段 2 验证记录](stage2_bailian_verification.md)，阶段 3 数据与检索证据见[阶段 3 报告](stage3_data_and_retrieval_report.md)，阶段 4 Agent 证据见[阶段 4 报告](stage4_agent_workflow_report.md)，阶段 5 安全门证据见[阶段 5 报告](stage5_constraint_verification_report.md)。
+阶段 6：
+
+- 主实验 480 个唯一预测；首次运行/三次聚合 E2E 分别为 A 16/40、46/120，B 17/40、51/120，C 28/40、81/120，D 31/40、92/120。
+- 首次 D 组硬约束任务 24/30、违规推荐 0/43、拒答 33/40；C/D 的关键结论最小金标证据覆盖均为 56/71，错型号/错地区引用均为 0。
+- 首次运行平均/P95：A 1573.456/1889.912ms，B 5339.969/12200.512ms，C 27497.519/50946.717ms，D 24802.374/41327.653ms；主实验为冷运行，不与热缓存混比。
+- 首次 Fixed RAG 有 10 次结构化输出解析失败；首次 C/D 各有 4 条 `resolution >= 3840x2160` 证据比较错误。修复后 4 条定向回归 D 4/4、C 1/4，且无同类异常；首次结果未覆盖。
+- 故障 13/13、Memory 5/5、缓存输出一致 5/5、Checker 确定性 40/40；统一脱敏账本和四组指标 CSV 已提交。
+- 可审计 API 成本下界 11.4491691 元；考虑未完整持久化 usage 的异常路径后保守估计仍小于 13 元，低于阶段 20 元上限，项目累计低于 50 元上限。
+- 提交前完整项目回归 89 passed、3 条上游依赖弃用警告；不使用真实 Web Search，不宣称 GraphRAG 或生产 SLA。
+
+阶段 2 模型错误矩阵见[阶段 2 验证记录](stage2_bailian_verification.md)，阶段 3 数据与检索证据见[阶段 3 报告](stage3_data_and_retrieval_report.md)，阶段 4 Agent 证据见[阶段 4 报告](stage4_agent_workflow_report.md)，阶段 5 安全门证据见[阶段 5 报告](stage5_constraint_verification_report.md)，阶段 6 四组主实验与韧性证据见[阶段 6 报告](stage6_evaluation_and_resilience_report.md)。
 
 ## 已知边界
 
 - 阶段 1/2 夹具知识库仍只有一个自制文档和 2 chunks；阶段 3 正式知识库另有 12 个型号和 60 chunks。
-- 阶段 5 已通过声明字段的硬约束阻断门槛；引用正确率、完整四组对照和多次重复稳定性仍留待阶段 6。
+- 阶段 6 已完成完整四组对照、核心组三次重复、统一账本、缓存和故障注入；holdout 首次增强组仍有 9/24 未完成，主要边界是证据覆盖与上游 LLM 路由/结构化输出稳定性。
 - 上游供应商目录存在既有 lint 债务，本阶段只保证自研代码及三类核心 Provider 文件通过；不做无关批量格式化。
 - Web Search 真实调用仍未实现；当前 Web 仅有 unavailable 降级接口。首批约束词表有意收窄，unsupported/ambiguous 会 fail closed。

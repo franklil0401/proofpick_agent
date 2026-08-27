@@ -1,0 +1,18 @@
+{
+  "completed_online_predictions": 12,
+  "estimated_cost_cny": 0.3276161,
+  "error_category": "TypeError",
+  "error_location": "deterministic scorer wrong_model_or_region_reference_rate",
+  "failure_summary": "12 个在线任务完成后，评分器在引用地区为空时尝试 int(None)，首次 smoke 未生成汇总。",
+  "preserved": true,
+  "run_scope": {
+    "case_ids": [
+      "s4-001",
+      "s4-002",
+      "s4-004"
+    ],
+    "experiment_groups": 4,
+    "repetitions": 1
+  },
+  "sensitive_information_leaked": false
+}

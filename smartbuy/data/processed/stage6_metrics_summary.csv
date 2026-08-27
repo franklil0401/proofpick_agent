@@ -1,0 +1,5 @@
+﻿scope,experiment_group,e2e_numerator,e2e_denominator,candidate_recall_numerator,candidate_recall_denominator,candidate_precision_numerator,candidate_precision_denominator,violating_recommendation_numerator,violating_recommendation_denominator,abstention_accuracy_numerator,abstention_accuracy_denominator,recall_at_5_numerator,recall_at_5_denominator,ndcg_at_5,average_latency_ms,p95_latency_ms,estimated_cost_cny
+first_run_40,agentic_rag,28,40,21,41,21,50,10,38,30,40,27,28,0.931546,27497.519,50946.717,1.3594063
+first_run_40,agentic_rag_checker,31,40,25,41,25,45,0,43,33,40,26,28,0.9,24802.374,41327.653,1.3712829
+first_run_40,direct_llm,16,40,0,41,0,3,39,39,18,40,0,0,,1573.456,1889.912,0.020348
+first_run_40,fixed_rag,17,40,20,41,20,41,31,57,27,40,22,25,0.867299,5339.969,12200.512,0.1422808

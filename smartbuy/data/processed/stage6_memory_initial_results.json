@@ -1,0 +1,30 @@
+{
+  "case_count": 5,
+  "cases": [
+    {
+      "case_id": "m6-001",
+      "passed": true
+    },
+    {
+      "case_id": "m6-002",
+      "passed": false
+    },
+    {
+      "case_id": "m6-003",
+      "passed": true
+    },
+    {
+      "case_id": "m6-004",
+      "passed": true
+    },
+    {
+      "case_id": "m6-005",
+      "passed": true
+    }
+  ],
+  "evaluation_version": "smartbuy-stage6-memory-v1",
+  "fixture_ids_match": true,
+  "passed": false,
+  "passed_count": 4,
+  "preservation_note": "阶段 6 首次本地 Memory 评测原始汇总；m6-002 暴露‘预算改成’未覆盖旧会话条件的问题，修复后结果另存于 stage6_memory_results.json。"
+}

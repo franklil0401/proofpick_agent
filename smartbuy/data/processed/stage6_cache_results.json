@@ -1,0 +1,1436 @@
+{
+  "average_speedup": 138.15,
+  "cache_policy": {
+    "dynamic_price_cached": false,
+    "max_entries": 2000,
+    "path_committed": false,
+    "public_evaluation_opt_in": true,
+    "ttl_seconds": 86400
+  },
+  "cache_stats": {
+    "bypasses": 4,
+    "corruptions": 0,
+    "hit_rate": 0.25,
+    "hits": 5,
+    "misses": 15,
+    "writes": 15
+  },
+  "case_count": 5,
+  "cold": {
+    "average_latency_ms": 1441.682,
+    "cache_hits": 0,
+    "p95_latency_ms": 5812.424,
+    "requests": 5
+  },
+  "config_hash": "c5001c9707c5cb7302c26745407cf989676e832b6984109604dec829754ab096",
+  "data_version": "monitor-cn-2026-08-26-v1",
+  "dynamic_bypass": {
+    "first_cache_hit": false,
+    "outputs_identical": true,
+    "second_cache_hit": false
+  },
+  "evaluation_version": "smartbuy-stage6-cache-v1",
+  "hot": {
+    "average_latency_ms": 10.436,
+    "cache_hits": 5,
+    "p95_latency_ms": 10.721,
+    "requests": 5
+  },
+  "index_version": "monitor-fact-card-h2-v1",
+  "output_identity": {
+    "denominator": 5,
+    "numerator": 5,
+    "rate": 1.0
+  },
+  "rows": [
+    {
+      "cache_hit": false,
+      "case_id": "cache-001",
+      "degraded": false,
+      "duration_ms": 5812.424,
+      "phase": "cold",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "02c280469a1339d082e26c93c7d1e1e3",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.9189692875448994,
+              "section": "型号与显示",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：型号与显示\n- 稳定型号 ID：`dell-u2723qe-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：3840x2160\n- 刷新率：60 Hz\n- 面板：IPS Black；OLED：否",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.8129604458808899
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "9dea57b803e7ca87c1acb0ca09b32e0a",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 2,
+              "region": "CN",
+              "rerank_score": 0.6082807639259438,
+              "section": "支架与机身",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：611.4 mm\n- 重量：6.64 kg",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7132952809333801
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "LG",
+              "chunk_id": "39da06eb654a553f5c81ec0750b4f16c",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-lg-27gs95qe-b-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-lg-27gs95qe-b-cn-product",
+                  "source_url": "https://www.lg.com/cn/monitors/lg-27gs95qe-b"
+                }
+              ],
+              "model_id": "lg-27gs95qe-b-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.5901158410624793,
+              "section": "型号与显示",
+              "snippet": "型号：LG UltraGear 27GS95QE-B（CN）\n章节：型号与显示\n- 稳定型号 ID：`lg-27gs95qe-b-cn`\n- 地区/版本：CN\n- 尺寸：26.5 英寸\n- 分辨率：2560x1440\n- 刷新率：240 Hz\n- 面板：OLED；OLED：是",
+              "source_id": "src-lg-27gs95qe-b-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.lg.com/cn/monitors/lg-27gs95qe-b",
+              "vector_score": 0.6693575382232666
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "4f74d8524d02aa2e4c989599cd471393",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.5850772678219351,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：90 W。",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7224576473236084
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "bcb6831ad1202f86b2d6fe45ff8f8546",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.580962235851214,
+              "section": "来源与未知项",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：来源与未知项\n- [Dell UltraSharp U2723QE 中国产品页](https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8)（CN，访问 2026-08-26T12:00:00+08:00）\n\n- 当前未知字段：release_date。\n- 不同地区版本不自动合并；动态价格不得当作长期事实。",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7505612969398499
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": false,
+      "case_id": "cache-002",
+      "degraded": false,
+      "duration_ms": 325.197,
+      "phase": "cold",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "9cb53dd641966fb67564bdac131b9aae",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.9427058651487172,
+              "section": "型号与显示",
+              "snippet": "型号：Dell G2724D（CN）\n章节：型号与显示\n- 稳定型号 ID：`dell-g2724d-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：2560x1440\n- 刷新率：165 Hz\n- 面板：Fast IPS；OLED：否",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.8040658235549927
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "ed5f391f753029ba909756314c982581",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-u2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2724d-cn",
+              "rank": 2,
+              "region": "CN",
+              "rerank_score": 0.8783375328923386,
+              "section": "型号与显示",
+              "snippet": "型号：Dell UltraSharp U2724D（CN）\n章节：型号与显示\n- 稳定型号 ID：`dell-u2724d-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：2560x1440\n- 刷新率：120 Hz\n- 面板：IPS Black；OLED：否",
+              "source_id": "src-dell-u2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6998305320739746
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "aa3a31b243ae56f309a4ae837d8b1180",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-u2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2724d-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.6530901583143108,
+              "section": "支架与机身",
+              "snippet": "型号：Dell UltraSharp U2724D（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：未知\n- 重量：未知",
+              "source_id": "src-dell-u2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.5937211513519287
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "8af2578ade2e368719607c9d1b6a0239",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.6273860404449947,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell G2724D（CN）\n章节：USB-C 与接口判断\n有 USB-C：否；USB-C 视频输入：否；USB-C 供电：未知。 随附或可用的 USB-C 转 DisplayPort 线材不等于显示器配有 USB-C 端口。",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.719994068145752
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "a6e9cbaa2d17c862b2ea0e2f14a8ebf4",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.615802093111567,
+              "section": "来源与未知项",
+              "snippet": "型号：Dell G2724D（CN）\n章节：来源与未知项\n- [Dell G2724D 中国产品页](https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8)（CN，访问 2026-08-26T12:00:00+08:00）\n- [Dell G2724D 手册与文档](https://www.dell.com/support/product-details/zh-cn/product/g2724d-monitor/resources/manuals)（CN，访问 2026-08-26T12:00:00+08:00）\n\n- 当前未知字段：weight_kg、release_date。\n- 不同地区版本不自动合并；动态价格不得当作长期事实。",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7585799694061279
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": false,
+      "case_id": "cache-003",
+      "degraded": false,
+      "duration_ms": 339.642,
+      "phase": "cold",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "8534d977a2045fbb30be7c1a1bf728db",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-benq-pd2705u-us-spec",
+                  "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html"
+                },
+                {
+                  "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w-overview",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-benq-pd2705u-us-overview",
+                  "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u.html"
+                }
+              ],
+              "model_id": "benq-pd2705u-us",
+              "rank": 1,
+              "region": "US",
+              "rerank_score": 0.9764996705039852,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：BenQ PD2705U（US）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。 官方规格页给出 65W，官方介绍素材另有 60W 描述；主值采用更具体的规格页并保留冲突。 零售标题还出现 Thunderbolt 3 描述，但官方规格仅列 USB-C，因此零售说法不能覆盖官方字段。",
+              "source_id": "src-benq-pd2705u-us-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html",
+              "vector_score": 0.8595472574234009
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "5948627da2fb5eb241005df9aaf1fa68",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2725u-ca-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-benq-pd2725u-ca-spec",
+                  "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html"
+                }
+              ],
+              "model_id": "benq-pd2725u-ca",
+              "rank": 2,
+              "region": "CA",
+              "rerank_score": 0.8962536135719462,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：BenQ PD2725U（CA）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。",
+              "source_id": "src-benq-pd2725u-ca-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+              "vector_score": 0.7832751870155334
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "4f74d8524d02aa2e4c989599cd471393",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.6994056290466926,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：90 W。",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6940763592720032
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "751a47312f4f7ff921e12f7520a8e489",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa27jcv-cn-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-asus-pa27jcv-cn-manual",
+                  "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+                }
+              ],
+              "model_id": "asus-pa27jcv-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.6834555772819876,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：ASUS ProArt PA27JCV（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：96 W。",
+              "source_id": "src-asus-pa27jcv-cn-manual",
+              "source_type": "official_manual",
+              "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+              "vector_score": 0.6943904757499695
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "39cdcaa829c125ab06a43e35582ef468",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-s2722qc-cn-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-dell-s2722qc-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-s2722qc-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.68193783759524,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell S2722QC（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。",
+              "source_id": "src-dell-s2722qc-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6883631944656372
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": false,
+      "case_id": "cache-004",
+      "degraded": false,
+      "duration_ms": 388.955,
+      "phase": "cold",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "fbabf3c2ac59d2555fc9539abb9c16b9",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa279crv-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-asus-pa279crv-cn-spec",
+                  "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/"
+                }
+              ],
+              "model_id": "asus-pa279crv-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.9515430351150627,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：ASUS ProArt PA279CRV（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：96 W。",
+              "source_id": "src-asus-pa279crv-cn-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+              "vector_score": 0.8492578864097595
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "751a47312f4f7ff921e12f7520a8e489",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa27jcv-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-asus-pa27jcv-cn-manual",
+                  "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+                }
+              ],
+              "model_id": "asus-pa27jcv-cn",
+              "rank": 2,
+              "region": "CN",
+              "rerank_score": 0.7818832201100319,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：ASUS ProArt PA27JCV（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：96 W。",
+              "source_id": "src-asus-pa27jcv-cn-manual",
+              "source_type": "official_manual",
+              "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+              "vector_score": 0.7888096570968628
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "8e2b283c1b79d60cab174d0005fb325e",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa279crv-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-asus-pa279crv-cn-spec",
+                  "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/"
+                }
+              ],
+              "model_id": "asus-pa279crv-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.6629553367627044,
+              "section": "型号与显示",
+              "snippet": "型号：ASUS ProArt PA279CRV（CN）\n章节：型号与显示\n- 稳定型号 ID：`asus-pa279crv-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：3840x2160\n- 刷新率：60 Hz\n- 面板：IPS；OLED：否",
+              "source_id": "src-asus-pa279crv-cn-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+              "vector_score": 0.7664328217506409
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "8af2578ade2e368719607c9d1b6a0239",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.5919371102755826,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell G2724D（CN）\n章节：USB-C 与接口判断\n有 USB-C：否；USB-C 视频输入：否；USB-C 供电：未知。 随附或可用的 USB-C 转 DisplayPort 线材不等于显示器配有 USB-C 端口。",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6752141714096069
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "39cdcaa829c125ab06a43e35582ef468",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-s2722qc-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-dell-s2722qc-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-s2722qc-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.5764168794040851,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell S2722QC（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。",
+              "source_id": "src-dell-s2722qc-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6886038780212402
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": false,
+      "case_id": "cache-005",
+      "degraded": false,
+      "duration_ms": 342.191,
+      "phase": "cold",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "LG",
+              "chunk_id": "29d7e479b399b32939cfb35b1e536184",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-lg-27up850k-w-cn-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-lg-27up850k-w-cn-product",
+                  "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w"
+                }
+              ],
+              "model_id": "lg-27up850k-w-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.7575039713646021,
+              "section": "支架与机身",
+              "snippet": "型号：LG 27UP850K-W（CN）\n章节：支架与机身\n- 支架：高度、俯仰、垂直旋转\n- 宽度：613.5 mm\n- 重量：5.9 kg",
+              "source_id": "src-lg-27up850k-w-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+              "vector_score": 0.6928129196166992
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "bef5e8c84026f5c42de7c67c786d2156",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2705u-us-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-benq-pd2705u-us-spec",
+                  "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html"
+                }
+              ],
+              "model_id": "benq-pd2705u-us",
+              "rank": 2,
+              "region": "US",
+              "rerank_score": 0.5642273363962707,
+              "section": "支架与机身",
+              "snippet": "型号：BenQ PD2705U（US）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：614 mm\n- 重量：9.3 kg",
+              "source_id": "src-benq-pd2705u-us-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html",
+              "vector_score": 0.68603515625
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "6c63c7561e9c94a86a27761834b3139d",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2725u-ca-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-benq-pd2725u-ca-spec",
+                  "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html"
+                }
+              ],
+              "model_id": "benq-pd2725u-ca",
+              "rank": 3,
+              "region": "CA",
+              "rerank_score": 0.5633525191877031,
+              "section": "支架与机身",
+              "snippet": "型号：BenQ PD2725U（CA）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：614.8 mm\n- 重量：8.3 kg",
+              "source_id": "src-benq-pd2725u-ca-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+              "vector_score": 0.6839408874511719
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "d2edaeac91ee50140185f3ee25ea407e",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-ex2710u-cn-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-benq-ex2710u-cn-spec",
+                  "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html"
+                }
+              ],
+              "model_id": "benq-ex2710u-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.5041763182840096,
+              "section": "支架与机身",
+              "snippet": "型号：BenQ MOBIUZ EX2710U（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转\n- 宽度：609 mm\n- 重量：8 kg",
+              "source_id": "src-benq-ex2710u-cn-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html",
+              "vector_score": 0.6440644860267639
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "66b10f03f445db58cf7d11878cdb3d3d",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa27jcv-cn-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-asus-pa27jcv-cn-manual",
+                  "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+                }
+              ],
+              "model_id": "asus-pa27jcv-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.5019599928898134,
+              "section": "支架与机身",
+              "snippet": "型号：ASUS ProArt PA27JCV（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：612.2 mm\n- 重量：5.91 kg",
+              "source_id": "src-asus-pa27jcv-cn-manual",
+              "source_type": "official_manual",
+              "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+              "vector_score": 0.5972899198532104
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": true,
+      "case_id": "cache-001",
+      "degraded": false,
+      "duration_ms": 10.43,
+      "phase": "hot",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "02c280469a1339d082e26c93c7d1e1e3",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.9189692875448994,
+              "section": "型号与显示",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：型号与显示\n- 稳定型号 ID：`dell-u2723qe-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：3840x2160\n- 刷新率：60 Hz\n- 面板：IPS Black；OLED：否",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.8129604458808899
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "9dea57b803e7ca87c1acb0ca09b32e0a",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 2,
+              "region": "CN",
+              "rerank_score": 0.6082807639259438,
+              "section": "支架与机身",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：611.4 mm\n- 重量：6.64 kg",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7132952809333801
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "LG",
+              "chunk_id": "39da06eb654a553f5c81ec0750b4f16c",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-lg-27gs95qe-b-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-lg-27gs95qe-b-cn-product",
+                  "source_url": "https://www.lg.com/cn/monitors/lg-27gs95qe-b"
+                }
+              ],
+              "model_id": "lg-27gs95qe-b-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.5901158410624793,
+              "section": "型号与显示",
+              "snippet": "型号：LG UltraGear 27GS95QE-B（CN）\n章节：型号与显示\n- 稳定型号 ID：`lg-27gs95qe-b-cn`\n- 地区/版本：CN\n- 尺寸：26.5 英寸\n- 分辨率：2560x1440\n- 刷新率：240 Hz\n- 面板：OLED；OLED：是",
+              "source_id": "src-lg-27gs95qe-b-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.lg.com/cn/monitors/lg-27gs95qe-b",
+              "vector_score": 0.6693575382232666
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "4f74d8524d02aa2e4c989599cd471393",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.5850772678219351,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：90 W。",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7224576473236084
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "bcb6831ad1202f86b2d6fe45ff8f8546",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-resolution",
+                  "field": "resolution",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.580962235851214,
+              "section": "来源与未知项",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：来源与未知项\n- [Dell UltraSharp U2723QE 中国产品页](https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8)（CN，访问 2026-08-26T12:00:00+08:00）\n\n- 当前未知字段：release_date。\n- 不同地区版本不自动合并；动态价格不得当作长期事实。",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7505612969398499
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": true,
+      "case_id": "cache-002",
+      "degraded": false,
+      "duration_ms": 10.212,
+      "phase": "hot",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "9cb53dd641966fb67564bdac131b9aae",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.9427058651487172,
+              "section": "型号与显示",
+              "snippet": "型号：Dell G2724D（CN）\n章节：型号与显示\n- 稳定型号 ID：`dell-g2724d-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：2560x1440\n- 刷新率：165 Hz\n- 面板：Fast IPS；OLED：否",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.8040658235549927
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "ed5f391f753029ba909756314c982581",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-u2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2724d-cn",
+              "rank": 2,
+              "region": "CN",
+              "rerank_score": 0.8783375328923386,
+              "section": "型号与显示",
+              "snippet": "型号：Dell UltraSharp U2724D（CN）\n章节：型号与显示\n- 稳定型号 ID：`dell-u2724d-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：2560x1440\n- 刷新率：120 Hz\n- 面板：IPS Black；OLED：否",
+              "source_id": "src-dell-u2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6998305320739746
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "aa3a31b243ae56f309a4ae837d8b1180",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-u2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2724d-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.6530901583143108,
+              "section": "支架与机身",
+              "snippet": "型号：Dell UltraSharp U2724D（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：未知\n- 重量：未知",
+              "source_id": "src-dell-u2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.5937211513519287
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "8af2578ade2e368719607c9d1b6a0239",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.6273860404449947,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell G2724D（CN）\n章节：USB-C 与接口判断\n有 USB-C：否；USB-C 视频输入：否；USB-C 供电：未知。 随附或可用的 USB-C 转 DisplayPort 线材不等于显示器配有 USB-C 端口。",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.719994068145752
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "a6e9cbaa2d17c862b2ea0e2f14a8ebf4",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                  "field": "is_oled",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.615802093111567,
+              "section": "来源与未知项",
+              "snippet": "型号：Dell G2724D（CN）\n章节：来源与未知项\n- [Dell G2724D 中国产品页](https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8)（CN，访问 2026-08-26T12:00:00+08:00）\n- [Dell G2724D 手册与文档](https://www.dell.com/support/product-details/zh-cn/product/g2724d-monitor/resources/manuals)（CN，访问 2026-08-26T12:00:00+08:00）\n\n- 当前未知字段：weight_kg、release_date。\n- 不同地区版本不自动合并；动态价格不得当作长期事实。",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.7585799694061279
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": true,
+      "case_id": "cache-003",
+      "degraded": false,
+      "duration_ms": 10.512,
+      "phase": "hot",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "8534d977a2045fbb30be7c1a1bf728db",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-benq-pd2705u-us-spec",
+                  "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html"
+                },
+                {
+                  "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w-overview",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-benq-pd2705u-us-overview",
+                  "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u.html"
+                }
+              ],
+              "model_id": "benq-pd2705u-us",
+              "rank": 1,
+              "region": "US",
+              "rerank_score": 0.9764996705039852,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：BenQ PD2705U（US）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。 官方规格页给出 65W，官方介绍素材另有 60W 描述；主值采用更具体的规格页并保留冲突。 零售标题还出现 Thunderbolt 3 描述，但官方规格仅列 USB-C，因此零售说法不能覆盖官方字段。",
+              "source_id": "src-benq-pd2705u-us-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html",
+              "vector_score": 0.8595472574234009
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "5948627da2fb5eb241005df9aaf1fa68",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2725u-ca-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-benq-pd2725u-ca-spec",
+                  "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html"
+                }
+              ],
+              "model_id": "benq-pd2725u-ca",
+              "rank": 2,
+              "region": "CA",
+              "rerank_score": 0.8962536135719462,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：BenQ PD2725U（CA）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。",
+              "source_id": "src-benq-pd2725u-ca-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+              "vector_score": 0.7832751870155334
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "4f74d8524d02aa2e4c989599cd471393",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-u2723qe-cn-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-dell-u2723qe-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-u2723qe-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.6994056290466926,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell UltraSharp U2723QE（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：90 W。",
+              "source_id": "src-dell-u2723qe-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6940763592720032
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "751a47312f4f7ff921e12f7520a8e489",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa27jcv-cn-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-asus-pa27jcv-cn-manual",
+                  "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+                }
+              ],
+              "model_id": "asus-pa27jcv-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.6834555772819876,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：ASUS ProArt PA27JCV（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：96 W。",
+              "source_id": "src-asus-pa27jcv-cn-manual",
+              "source_type": "official_manual",
+              "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+              "vector_score": 0.6943904757499695
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "39cdcaa829c125ab06a43e35582ef468",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-s2722qc-cn-usb-c-power-delivery-w",
+                  "field": "usb_c_power_delivery_w",
+                  "source_id": "src-dell-s2722qc-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-s2722qc-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.68193783759524,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell S2722QC（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。",
+              "source_id": "src-dell-s2722qc-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6883631944656372
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": true,
+      "case_id": "cache-004",
+      "degraded": false,
+      "duration_ms": 10.303,
+      "phase": "hot",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "fbabf3c2ac59d2555fc9539abb9c16b9",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa279crv-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-asus-pa279crv-cn-spec",
+                  "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/"
+                }
+              ],
+              "model_id": "asus-pa279crv-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.9515430351150627,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：ASUS ProArt PA279CRV（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：96 W。",
+              "source_id": "src-asus-pa279crv-cn-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+              "vector_score": 0.8492578864097595
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "751a47312f4f7ff921e12f7520a8e489",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa27jcv-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-asus-pa27jcv-cn-manual",
+                  "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+                }
+              ],
+              "model_id": "asus-pa27jcv-cn",
+              "rank": 2,
+              "region": "CN",
+              "rerank_score": 0.7818832201100319,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：ASUS ProArt PA27JCV（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：96 W。",
+              "source_id": "src-asus-pa27jcv-cn-manual",
+              "source_type": "official_manual",
+              "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+              "vector_score": 0.7888096570968628
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "8e2b283c1b79d60cab174d0005fb325e",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa279crv-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-asus-pa279crv-cn-spec",
+                  "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/"
+                }
+              ],
+              "model_id": "asus-pa279crv-cn",
+              "rank": 3,
+              "region": "CN",
+              "rerank_score": 0.6629553367627044,
+              "section": "型号与显示",
+              "snippet": "型号：ASUS ProArt PA279CRV（CN）\n章节：型号与显示\n- 稳定型号 ID：`asus-pa279crv-cn`\n- 地区/版本：CN\n- 尺寸：27 英寸\n- 分辨率：3840x2160\n- 刷新率：60 Hz\n- 面板：IPS；OLED：否",
+              "source_id": "src-asus-pa279crv-cn-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+              "vector_score": 0.7664328217506409
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "8af2578ade2e368719607c9d1b6a0239",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-g2724d-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-dell-g2724d-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-g2724d-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.5919371102755826,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell G2724D（CN）\n章节：USB-C 与接口判断\n有 USB-C：否；USB-C 视频输入：否；USB-C 供电：未知。 随附或可用的 USB-C 转 DisplayPort 线材不等于显示器配有 USB-C 端口。",
+              "source_id": "src-dell-g2724d-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6752141714096069
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "Dell",
+              "chunk_id": "39cdcaa829c125ab06a43e35582ef468",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-dell-s2722qc-cn-usb-c-video",
+                  "field": "usb_c_video",
+                  "source_id": "src-dell-s2722qc-cn-product",
+                  "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8"
+                }
+              ],
+              "model_id": "dell-s2722qc-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.5764168794040851,
+              "section": "USB-C 与接口判断",
+              "snippet": "型号：Dell S2722QC（CN）\n章节：USB-C 与接口判断\n有 USB-C：是；USB-C 视频输入：是；USB-C 供电：65 W。",
+              "source_id": "src-dell-s2722qc-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+              "vector_score": 0.6886038780212402
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    },
+    {
+      "cache_hit": true,
+      "case_id": "cache-005",
+      "degraded": false,
+      "duration_ms": 10.721,
+      "phase": "hot",
+      "result": {
+        "data": {
+          "hit_count": 5,
+          "hits": [
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "LG",
+              "chunk_id": "29d7e479b399b32939cfb35b1e536184",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-lg-27up850k-w-cn-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-lg-27up850k-w-cn-product",
+                  "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w"
+                }
+              ],
+              "model_id": "lg-27up850k-w-cn",
+              "rank": 1,
+              "region": "CN",
+              "rerank_score": 0.7575039713646021,
+              "section": "支架与机身",
+              "snippet": "型号：LG 27UP850K-W（CN）\n章节：支架与机身\n- 支架：高度、俯仰、垂直旋转\n- 宽度：613.5 mm\n- 重量：5.9 kg",
+              "source_id": "src-lg-27up850k-w-cn-product",
+              "source_type": "official_product",
+              "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+              "vector_score": 0.6928129196166992
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "bef5e8c84026f5c42de7c67c786d2156",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2705u-us-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-benq-pd2705u-us-spec",
+                  "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html"
+                }
+              ],
+              "model_id": "benq-pd2705u-us",
+              "rank": 2,
+              "region": "US",
+              "rerank_score": 0.5642273363962707,
+              "section": "支架与机身",
+              "snippet": "型号：BenQ PD2705U（US）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：614 mm\n- 重量：9.3 kg",
+              "source_id": "src-benq-pd2705u-us-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html",
+              "vector_score": 0.68603515625
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "6c63c7561e9c94a86a27761834b3139d",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-pd2725u-ca-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-benq-pd2725u-ca-spec",
+                  "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html"
+                }
+              ],
+              "model_id": "benq-pd2725u-ca",
+              "rank": 3,
+              "region": "CA",
+              "rerank_score": 0.5633525191877031,
+              "section": "支架与机身",
+              "snippet": "型号：BenQ PD2725U（CA）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：614.8 mm\n- 重量：8.3 kg",
+              "source_id": "src-benq-pd2725u-ca-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+              "vector_score": 0.6839408874511719
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "BenQ",
+              "chunk_id": "d2edaeac91ee50140185f3ee25ea407e",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-benq-ex2710u-cn-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-benq-ex2710u-cn-spec",
+                  "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html"
+                }
+              ],
+              "model_id": "benq-ex2710u-cn",
+              "rank": 4,
+              "region": "CN",
+              "rerank_score": 0.5041763182840096,
+              "section": "支架与机身",
+              "snippet": "型号：BenQ MOBIUZ EX2710U（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转\n- 宽度：609 mm\n- 重量：8 kg",
+              "source_id": "src-benq-ex2710u-cn-spec",
+              "source_type": "official_product",
+              "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html",
+              "vector_score": 0.6440644860267639
+            },
+            {
+              "accessed_at": "2026-08-26T12:00:00+08:00",
+              "brand": "ASUS",
+              "chunk_id": "66b10f03f445db58cf7d11878cdb3d3d",
+              "evidence_bindings": [
+                {
+                  "evidence_id": "ev-asus-pa27jcv-cn-stand-adjustment",
+                  "field": "stand_adjustment",
+                  "source_id": "src-asus-pa27jcv-cn-manual",
+                  "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+                }
+              ],
+              "model_id": "asus-pa27jcv-cn",
+              "rank": 5,
+              "region": "CN",
+              "rerank_score": 0.5019599928898134,
+              "section": "支架与机身",
+              "snippet": "型号：ASUS ProArt PA27JCV（CN）\n章节：支架与机身\n- 支架：高度、俯仰、左右旋转、垂直旋转\n- 宽度：612.2 mm\n- 重量：5.91 kg",
+              "source_id": "src-asus-pa27jcv-cn-manual",
+              "source_type": "official_manual",
+              "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+              "vector_score": 0.5972899198532104
+            }
+          ],
+          "reranker_degraded": false
+        },
+        "degraded": false,
+        "error_code": null,
+        "retryable": false,
+        "status": "success",
+        "summary": "KB 命中 5 个证据片段；Reranker 成功。",
+        "tool": "kb_search"
+      },
+      "status": "success"
+    }
+  ],
+  "run_id": "stage6-cache-ad44f2859139",
+  "usage": {
+    "call_count": 10,
+    "estimated_cost_cny": 0.0087495,
+    "input_tokens": 17499,
+    "output_tokens": 0
+  }
+}

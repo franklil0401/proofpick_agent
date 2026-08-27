@@ -1,0 +1,60 @@
+{
+  "evaluation_version": "smartbuy-stage6-four-group-v1",
+  "frozen_at": "2026-08-27T00:00:00Z",
+  "as_of": "2026-08-27T00:00:00Z",
+  "timezone": "Asia/Shanghai",
+  "region": "CN",
+  "data_version": "monitor-cn-2026-08-26-v1",
+  "schema_version": "1.0.0",
+  "index_version": "monitor-fact-card-h2-v1",
+  "embedding_model": "text-embedding-v4",
+  "embedding_dimensions": 1024,
+  "reranker_model": "qwen3-rerank",
+  "reranker_instruct": "按用户问题对公开显示器事实卡的直接证据相关性排序。",
+  "chat_model": "qwen-plus",
+  "temperature": 0.0,
+  "top_p": null,
+  "seed": null,
+  "seed_note": "当前兼容接口与 Provider 未声明 seed；不虚构确定性。",
+  "max_output_tokens": 800,
+  "request_timeout_seconds": 30.0,
+  "vector_top_k": 30,
+  "fixed_rag_top_k": 5,
+  "agent_result_top_k": 8,
+  "agent_max_steps": 8,
+  "agent_max_tool_calls": 12,
+  "agent_tool_timeout_seconds": 20.0,
+  "agent_task_cost_limit_cny": 0.25,
+  "stage_cost_limit_cny": 20.0,
+  "repetitions": 3,
+  "groups": {
+    "A": "direct_llm",
+    "B": "fixed_rag",
+    "C": "agentic_rag",
+    "D": "agentic_rag_checker"
+  },
+  "dynamic_boundary": "不调用真实 Web Search；只允许带 observed_at 的离线价格观察。",
+  "cache_policy": {
+    "main_experiment": "cold/no-cache",
+    "ttl_seconds": 86400,
+    "max_entries": 2000,
+    "public_evaluation_only": true,
+    "never_cache": ["dynamic_price", "stock", "memory_write", "final_answer", "sensitive_request", "failed_or_incomplete_result"]
+  },
+  "dataset": {
+    "natural_case_count": 40,
+    "regression_count": 16,
+    "holdout_count": 24,
+    "natural_sha256": "6082ac83d72441fedf7ac3083a3c53f31d538ca54216f2cf99d3a9de5068e0ef",
+    "memory_case_count": 5,
+    "memory_sha256": "ac84cf52fab59ba3392e4d11e97f2572b16187eafc0e8d0a184079beb442f4c0",
+    "failure_case_count": 13,
+    "failure_sha256": "73946eaa9441832dec6fd083b88b168c6a5aca1ee0df8546d0eb2de6d240a999"
+  },
+  "source_hashes": {
+    "catalog_sha256": "b50fd4818575747dab00ffe922ea9720b3a7196e1a5162c0494cd6454a04210a",
+    "index_manifest_sha256": "b74d5022a7615676f9a3409fff68b30fd08f5c7d494757668e37bf332efedb8a"
+  },
+  "config_hash_semantics": "SHA-256 of this file before adding config_hash; the sealed payload is not edited after the first full run.",
+  "config_hash": "c5001c9707c5cb7302c26745407cf989676e832b6984109604dec829754ab096"
+}

@@ -79,3 +79,15 @@ async def test_empty_candidates_fail_closed(database):
     )
     assert result.status == "failed"
     assert result.error_code == "INVALID_EVIDENCE_REQUEST"
+
+
+@pytest.mark.asyncio
+async def test_resolution_minimum_uses_normalized_pixel_count(database):
+    result = await assess(
+        EvidenceCheckTool(database),
+        "asus-pa279crv-cn",
+        "resolution",
+        "gte",
+        "3840x2160",
+    )
+    assert result["status"] == "matched"

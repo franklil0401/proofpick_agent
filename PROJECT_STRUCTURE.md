@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-08-27 |
-| 当前阶段 | 阶段 5：确定性硬约束复核（已完成，等待用户验收） |
+| 当前阶段 | 阶段 6：评测、可观测性、缓存、错误恢复和降级（已完成，等待用户验收） |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -30,6 +30,10 @@ proofpick_agent/
 │  │  ├─ ranking.py
 │  │  ├─ react.py
 │  │  └─ reporting.py
+│  ├─ cache/
+│  │  ├─ __init__.py
+│  │  ├─ adapters.py
+│  │  └─ safe_cache.py
 │  ├─ constraints/
 │  │  ├─ __init__.py
 │  │  ├─ models.py
@@ -62,7 +66,8 @@ proofpick_agent/
 │  │  │  ├─ stage5_agent_e2e_results.json
 │  │  │  ├─ stage5_agent_regression_results.json
 │  │  │  ├─ stage5_agent_s4_012_regression_results.json
-│  │  │  └─ stage5_agent_s4_012_order_regression_results.json
+│  │  │  ├─ stage5_agent_s4_012_order_regression_results.json
+│  │  │  └─ stage6_*            # 冻结评测、首次失败、账本、缓存、故障与汇总结果
 │  │  ├─ raw/
 │  │  │  └─ README.md
 │  │  ├─ __init__.py
@@ -79,14 +84,16 @@ proofpick_agent/
 │  │  │  ├─ 0002-bailian-provider-and-index-contract.md
 │  │  │  ├─ 0003-governed-monitor-data-and-index.md
 │  │  │  ├─ 0004-bounded-react-evidence-and-memory.md
-│  │  │  └─ 0005-deterministic-constraint-gate.md
+│  │  │  ├─ 0005-deterministic-constraint-gate.md
+│  │  │  └─ 0006-reproducible-evaluation-cache-and-resilience.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
 │  │  ├─ stage2_bailian_verification.md
 │  │  ├─ stage3_data_and_retrieval_report.md
 │  │  ├─ stage4_agent_workflow_report.md
-│  │  └─ stage5_constraint_verification_report.md
+│  │  ├─ stage5_constraint_verification_report.md
+│  │  └─ stage6_evaluation_and_resilience_report.md
 │  ├─ domain/
 │  │  └─ models.py
 │  ├─ eval/
@@ -97,12 +104,24 @@ proofpick_agent/
 │  │  ├─ run_stage4_eval.py
 │  │  ├─ stage5_natural_cases.jsonl
 │  │  ├─ stage5_fault_cases.jsonl
-│  │  └─ run_stage5_eval.py
+│  │  ├─ run_stage5_eval.py
+│  │  ├─ stage6_config.json
+│  │  ├─ stage6_natural_cases.jsonl
+│  │  ├─ stage6_failure_cases.jsonl
+│  │  ├─ stage6_memory_cases.jsonl
+│  │  ├─ stage6_scoring.py
+│  │  ├─ run_stage6_eval.py
+│  │  ├─ run_stage6_resilience.py
+│  │  ├─ run_stage6_cache_benchmark.py
+│  │  ├─ run_stage6_checker_determinism.py
+│  │  ├─ merge_stage6_checkpoints.py
+│  │  └─ build_stage6_artifacts.py
 │  ├─ memory/
 │  │  └─ store.py
 │  ├─ observability/
 │  │  ├─ __init__.py
 │  │  ├─ agent_events.py
+│  │  ├─ eval_ledger.py
 │  │  └─ usage.py
 │  ├─ providers/
 │  │  ├─ __init__.py
@@ -143,7 +162,9 @@ proofpick_agent/
 │        ├─ test_stage4_text2sql.py
 │        ├─ test_stage5_agent_gate.py
 │        ├─ test_stage5_constraints.py
-│        └─ test_stage5_verifier.py
+│        ├─ test_stage5_verifier.py
+│        ├─ test_stage6_cache.py
+│        └─ test_stage6_eval_contract.py
 └─ vendor/
    └─ youtu-rag/
       ├─ configs/
@@ -180,6 +201,7 @@ proofpick_agent/
 | `smartbuy/agent/react.py` | qwen-plus 有界 Tool Calling、结构化状态、依赖门禁、预算与停止循环 |
 | `smartbuy/agent/ranking.py` | 仅对 Checker 合规候选执行软偏好排序，并由代码阻止增删资格 |
 | `smartbuy/agent/reporting.py` | 从工具观察确定性组装并渲染 Schema 校验报告 |
+| `smartbuy/cache/` | 仅缓存公开稳定中间结果的校验和、TTL、容量、版本失效和损坏绕过实现 |
 | `smartbuy/constraints/models.py` | 带来源约束、字段四态、候选复核和批次结果的 Pydantic 契约 |
 | `smartbuy/constraints/normalize.py` | 首批字段的别名、单位、否定、比较符、来源优先级和取消规则 |
 | `smartbuy/constraints/verifier.py` | 完整候选池的只读 SQLite/evidence 确定性复核与 fail-closed |
@@ -192,6 +214,7 @@ proofpick_agent/
 | `smartbuy/providers/bailian.py` | 普通/流式/工具 Chat、1024 维 Embedding、Rerank、有限重试与降级实现 |
 | `smartbuy/observability/usage.py` | 不记录正文或凭据的内存 Token、延迟和成本账本 |
 | `smartbuy/observability/agent_events.py` | 有界、脱敏的 Agent 运行摘要和 Monitor 聚合 |
+| `smartbuy/observability/eval_ledger.py` | 阶段 6 统一运行/步骤账本 Schema、脱敏校验与 JSONL 输出 |
 | `smartbuy/data/catalog/monitors_v1.json` | 12 个型号、来源、追加式价格和冲突证据的唯一 canonical 源数据 |
 | `smartbuy/data/loader.py` / `derive.py` / `quality.py` | 加载、派生证据/事实卡和执行确定性数据质量门 |
 | `smartbuy/data/demo/` | Clone 后可用的 12 份自制事实卡及文件哈希清单 |
@@ -203,11 +226,18 @@ proofpick_agent/
 | `smartbuy/eval/run_retrieval_eval.py` | Vector-only/Reranker 检索、Recall/nDCG/拒答/延迟/成本评测 |
 | `smartbuy/eval/stage4_cases.jsonl` / `run_stage4_eval.py` | 16 条 Agent 金标、4 条 dry run、真实 E2E 指标与成本 Runner |
 | `smartbuy/eval/stage5_*.jsonl` / `run_stage5_eval.py` | 10 条自然硬约束、12 条独立故障注入、固定池 A/B 和有界在线回归 Runner |
+| `smartbuy/eval/stage6_*.jsonl` / `stage6_config.json` | 40 条自然任务、13 条故障、5 条 Memory 任务及首次运行前冻结的公平配置 |
+| `smartbuy/eval/run_stage6_eval.py` / `stage6_scoring.py` | 四组公平 Runner、断点恢复、重复运行及精确分子/分母确定性评分 |
+| `smartbuy/eval/run_stage6_resilience.py` | 受控 Provider、存储、预算和 Checker 故障注入与 Memory 专项评测 |
+| `smartbuy/eval/run_stage6_cache_benchmark.py` | 公开稳定查询的冷/热缓存正确性、延迟和命中率基准 |
+| `smartbuy/eval/run_stage6_checker_determinism.py` | 同输入三次执行的 Checker 字节级一致性验证 |
+| `smartbuy/eval/merge_stage6_checkpoints.py` / `build_stage6_artifacts.py` | 分片审计合并、首见结果保留、指标 CSV 和统一账本生成 |
 | `smartbuy/docs/adr/0001-vendor-youtu-rag.md` | 上游纳入方式、固定 Commit、修改边界和更新流程决策 |
 | `smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md` | 百炼 Provider、1024 维索引、重试和降级契约 |
 | `smartbuy/docs/adr/0003-governed-monitor-data-and-index.md` | 数据许可边界、四实体 Schema、事实卡和索引版本决策 |
 | `smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md` | ReAct、SQL/Evidence、公开轨迹、停止和 Memory 决策 |
 | `smartbuy/docs/adr/0005-deterministic-constraint-gate.md` | 来源优先级、完整候选池、只读 Checker 和 LLM 权限决策 |
+| `smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md` | 四组公平性、冻结集、缓存边界、统一账本及故障注入决策 |
 | `smartbuy/docs/data_card.md` | 数据范围、来源、缺失、哈希语义、人工抽查和合规说明 |
 | `smartbuy/docs/runtime_manifest.md` | 目标主机、依赖、模型状态、索引契约、运行路径和服务结果 |
 | `smartbuy/docs/stage1_smoke_test.md` | 阶段 1 命令、耗时、通过/延后项、安全事件与退出结论 |
@@ -215,6 +245,7 @@ proofpick_agent/
 | `smartbuy/docs/stage3_data_and_retrieval_report.md` | 数据质量、SQLite、正式索引、40 条检索指标、成本和失败案例 |
 | `smartbuy/docs/stage4_agent_workflow_report.md` | Agent 工具链、E2E、Memory、成本、失败修复和真实服务冒烟 |
 | `smartbuy/docs/stage5_constraint_verification_report.md` | 固定池消融、故障注入、在线 E2E、Checker 延迟、成本和边界 |
+| `smartbuy/docs/stage6_evaluation_and_resilience_report.md` | 四组主实验、重复稳定性、缓存、故障降级、成本和首次失败的完整证据 |
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
 | `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
@@ -225,17 +256,12 @@ proofpick_agent/
 | `smartbuy/tests/unit/test_stage3_*` | 数据质量、评测集、SQLite 幂等和 chunk 元数据契约测试 |
 | `smartbuy/tests/unit/test_stage4_*` | SQL 安全/金标、Evidence 四态、Memory、Agent 上限和降级测试 |
 | `smartbuy/tests/unit/test_stage5_*` | 约束来源、别名/边界、完整池、fail-closed、s4-014、安全门和顺序回归 |
+| `smartbuy/tests/unit/test_stage6_*` | 冻结集、评分分母、账本脱敏、缓存正确性/损坏恢复和故障契约回归 |
 | `smartbuy/tests/integration/test_stage4_api.py` | SmartBuy HTTP/SSE、偏好生命周期和 WebUI 接线回归 |
 
 ## 计划结构
 
-以下内容尚不存在，只表示后续阶段的建议落点，不构成已实现能力：
-
-```text
-smartbuy/
-└─ eval/
-   └─ baselines/           # 阶段 6 四组完整消融与重复运行（计划）
-```
+阶段 7 的前端演示、发布整理与最终简历材料尚未开始；当前没有用计划文件名冒充已创建结构。
 
 ## 维护检查清单
 
@@ -259,5 +285,7 @@ smartbuy/
 - [ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)
 - [阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)
 - [ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)
+- [阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)
+- [ADR-0006](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)
 - [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)

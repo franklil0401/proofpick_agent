@@ -2,7 +2,7 @@
 
 多源消费决策研究 Agent：在 Youtu-RAG 基础上构建可追踪、可评测、可执行硬约束复核的消费决策系统。
 
-> 当前状态：**阶段 5 已完成，等待用户验收**。在阶段 4 有界 Agent 后新增不可由 LLM 绕过的确定性 Constraint Checker：自然硬约束 55/55 字段、10/10 任务，故障注入 12/12 候选拦截，unknown/conflict、unsupported 与重复执行均通过阻断门槛。首次在线 16 条 E2E 为 13/16，安全门完整性 16/16；3 个失败均保留并完成定向回归。
+> 当前状态：**阶段 6 已完成，等待用户验收**。冻结 40 条自然任务并完成四组公平对照与三次重复：首次 E2E 为 Direct 16/40、Fixed RAG 17/40、Agentic RAG 28/40、Agentic RAG + Constraint Checker 31/40；增强组将违规候选推荐从 10/38 降为 0/43。13/13 故障降级、5/5 Memory、40/40 Checker 同输入字节一致和 5/5 热缓存输出一致均通过。首次失败与后续修复分开保留。
 
 ## 项目场景
 
@@ -43,12 +43,16 @@ SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费�
 - Checker 从 SQL、KB 和 Evidence 阶段累计的完整候选池读取只读 SQLite 与同地区证据，逐字段输出 `passed/failed/unknown/conflict`；只有全部受支持硬约束通过才可推荐。
 - LLM 只能在完整合规集合内按软偏好排序；集合外新增项会被删除，遗漏合规项会由代码补回。SSE/Monitor 已展示 Checker 版本、字段状态、证据和降级。
 - 阶段 5 固定套件：自然用例 55/55 字段、10/10 任务；故障注入 21/21 字段、12/12 任务、12/12 拦截；合规候选误杀 0，Checker 不调用 API。
+- 阶段 6 冻结 16 条 regression + 24 条 holdout；四组各运行 3 次，共 480 个唯一预测。增强组首次/三次聚合 E2E 为 31/40、92/120，最终候选集合三次一致 40/40。
+- 统一脱敏账本覆盖模型、工具、父步骤、延迟、重试、缓存、Token、成本和错误类别；不保存 Prompt、隐藏思维链或凭据。
+- 公共评测缓存具备 TTL、容量、版本失效、校验和、手动清空与动态数据绕过；5 条冷/热查询输出一致 5/5，平均延迟从 1441.682ms 降至 10.436ms。主四组实验未使用热缓存。
+- 受控故障注入 13/13：包括 401/403 不重试、429/5xx 有界处理、Embedding 缓存、非法 SQL、SQLite/Chroma/Memory/Web/Checker/ReAct/缓存故障；Checker 异常始终 fail closed。
 
 ### 尚未实现或尚未验证
 
 - 真实 Web Search 与动态价格/库存补充；当前没有凭据，只验证 unavailable/degraded 接口。
-- 阶段 6 的 Direct LLM / Fixed RAG / Agentic RAG / + Constraint Check 四组完整消融与重复运行。
-- GraphRAG 不属于 MVP 或阶段 1～5 默认任务，不得视为已实现能力。
+- 阶段 7 的干净 Windows 复现、五分钟演示和发布材料整理。
+- GraphRAG 不属于 MVP 或阶段 1～6 默认任务，不得视为已实现能力。
 
 ## 上游原生能力与本项目贡献
 
@@ -60,7 +64,8 @@ SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费�
 | SmartBuy 阶段 3 新增 | 显示器数据治理、四实体 Schema、可重建 SQLite、自制事实卡、正式 Chroma 知识库、40 条检索集和 Vector/Reranker 基线 |
 | SmartBuy 阶段 4 新增 | 有界 ReAct、KB/只读 SQL/Evidence/Web 降级工具、分层 Memory、Schema 报告、SSE/Monitor 与 16 条 E2E |
 | SmartBuy 阶段 5 新增 | 来源门禁、完整候选池、只读确定性 Checker、软排序护栏、SSE/Monitor 字段审计、自然/故障注入消融 |
-| SmartBuy 后续计划 | 阶段 6 四组完整消融、重复运行与稳定性优化；阶段 7 发布演示整理 |
+| SmartBuy 阶段 6 新增 | 冻结四组 Runner、确定性 Scorer、三次稳定性、统一账本、隐私安全缓存、故障注入、Memory/Checker 专项与真实量化报告 |
+| SmartBuy 后续计划 | 阶段 7 干净 Windows 复现、演示和发布整理 |
 
 供应商目录差异见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，纳入决策见 [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)。
 
@@ -96,9 +101,9 @@ Youtu-RAG WebUI / FastAPI / SSE
 | 百炼 `qwen-plus` | 普通、流式、Tool Calling 已验证 |
 | 百炼 `text-embedding-v4`（1024 维） | 批量、契约校验、建库与 KB Search 已验证 |
 | 百炼 `qwen3-rerank` | 独立和 Youtu 二阶段排序、有限重试与降级已验证 |
-| Pytest 与项目 Eval Runner | 数据/索引、SQL/Evidence/Memory/Agent、Constraint Checker、API/SSE 回归已加入；检索、Agent、固定池和故障注入均有真实结果 |
+| Pytest 与项目 Eval Runner | 数据/索引、SQL/Evidence/Memory/Agent、Constraint Checker、缓存、账本、API/SSE 回归已加入；四组、重复稳定性和故障注入均有真实结果 |
 
-## 快速开始（阶段 5 已验证范围）
+## 快速开始（阶段 6 已验证范围）
 
 ### 1. 前置条件
 
@@ -194,6 +199,26 @@ uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage5_eval --full
 
 首次完整在线结果及后续定向回归分开保存，不用重跑覆盖失败。精确分母、延迟、成本和已知边界见[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)。
 
+### 9. 运行阶段 6 评测
+
+```powershell
+$env:PYTHONPATH = (Get-Location).Path
+
+# 离线冻结检查与故障/Memory 回归
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_eval --validate-freeze
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_resilience --all-local
+
+# 在线：先 smoke；完整三次会产生费用，checkpoint 支持续跑
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_eval --smoke
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_eval --full --repetitions 3 --checkpoint C:/ai/smartbuy-stage6/reproduction.jsonl
+
+# 独立缓存与本地 Checker 确定性
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_cache_benchmark
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_checker_determinism
+```
+
+完整命令、冻结哈希、首次失败、四组精确分母、缓存与成本口径见[阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)。当前价格仍是离线 `observed_at` 观察，不保证实时价格或库存。
+
 ## Windows 环境
 
 | 项目 | 配置 |
@@ -230,9 +255,9 @@ uv run --project vendor/youtu-rag --group dev python -m pytest `
   vendor/youtu-rag/tests/rag/api/test_config_security.py -q
 ```
 
-阶段 5 新增来源优先级、取消记忆、模型臆加/软转硬、别名与边界、null/conflict、错误/重复型号、Prompt 注入、完整池恢复、Checker 报告与 SSE/Monitor 回归。提交前完整回归为 `76 passed`、3 条上游弃用警告；`smartbuy/` Ruff、Python 编译和前端 JavaScript 语法检查通过。详见[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)。
+阶段 6 新增冻结/评分/账本契约、隐私安全缓存、checkpoint 合并、分辨率比较、故障注入和 Memory 回归。提交前全量回归为 `89 passed`；上游依赖仍有 3 条已知弃用警告。
 
-阶段 3 的 40 条任务只评估检索；阶段 4 的 16 条任务评估 Agent；阶段 5 的自然/故障注入固定套件评估硬约束安全门。阶段 5 首次完整在线 E2E 为 13/16，安全门完整性 16/16；三个失败保留并逐项定向回归。阶段 6 仍需完成 Direct LLM、Fixed RAG、Agentic RAG 和 Agentic RAG + Constraint Check 四组完整、重复运行对照。
+阶段 3 的 40 条任务只评估检索；阶段 4 的 16 条任务评估 Agent；阶段 5 的固定套件评估硬约束安全门；阶段 6 的 40 条自然集公平比较四组并各重复 3 次。首次结果中增强组 31/40，holdout 15/24；这不是生产 SLA。Fixed RAG JSON 格式失败、Agent 首次 ValueError、评分器修复和 checkpoint 重复调度均保留审计，详见阶段 6 报告。
 
 ## 文档导航
 
@@ -252,6 +277,8 @@ uv run --project vendor/youtu-rag --group dev python -m pytest `
 - [ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)：有界执行、SQL/Evidence、轨迹和 Memory 决策。
 - [阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)：固定池消融、故障注入、在线 E2E、Checker 延迟与成本。
 - [ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)：来源门禁、完整候选池、只读复核和 LLM 权限边界。
+- [阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)：四组首次/重复结果、失败、缓存、故障、成本和有效性威胁。
+- [ADR-0006](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)：冻结评测、缓存、账本和受控故障决策。
 - [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)：上游归属、许可和供应商目录差异。
 
 ## 上游参考与致谢

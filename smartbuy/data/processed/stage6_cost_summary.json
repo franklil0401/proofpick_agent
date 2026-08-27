@@ -1,0 +1,17 @@
+{
+  "accounting_note": "错误响应在旧解析失败路径中先发生调用、后丢失单条 usage，因此总计是可审计下限，不伪装为云账单精确值。结合各分片 Provider 最终进度与定向诊断，阶段总估算低于 13 元且低于 20 元上限。",
+  "auditable_lower_bound_cny": 11.4491691,
+  "components_cny": {
+    "cache_benchmark": 0.0087495,
+    "duplicate_checkpoint_rows_increment": 0.8508971,
+    "first_smoke_incomplete": 0.3276161,
+    "four_group_unique_predictions": 8.57293,
+    "stage4_current_code_regression": 0.7031718,
+    "targeted_diagnostic": 0.0246675,
+    "targeted_regression": 0.5805486,
+    "valid_smoke": 0.3805885
+  },
+  "conservative_estimated_total_cny_less_than": 13.0,
+  "stage_limit_cny": 20.0,
+  "within_stage_limit": true
+}

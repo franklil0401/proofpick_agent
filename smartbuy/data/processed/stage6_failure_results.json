@@ -1,0 +1,179 @@
+{
+  "case_count": 13,
+  "cases": [
+    {
+      "case_id": "f6-001",
+      "detail": "Reranker 503 后保留向量顺序并显式 degraded。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-002",
+      "detail": "429 最多三次尝试，超过上限明确失败。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": false
+    },
+    {
+      "case_id": "f6-003",
+      "detail": "401/403 均不重试且错误正文未进入结果。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": false
+    },
+    {
+      "case_id": "f6-004",
+      "detail": "Embedding Provider 不可用时命中已校验公共缓存继续。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-005",
+      "detail": "Embedding 无缓存时明确无法完成 KB 检索。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": false
+    },
+    {
+      "case_id": "f6-006",
+      "detail": "非法 SQL 执行前阻断并回退参数化模板。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-007",
+      "detail": "SQLite 不可用时 Checker 返回 unknown/fail-closed，不让模型心算。",
+      "expected_degradation_entered": true,
+      "fail_closed": true,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-008",
+      "detail": "Chroma 不可用时保留 SQL 候选，但不宣称文档事实已核验。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-009",
+      "detail": "损坏/关闭/删除的 Memory 回退为空，当前输入仍可处理。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-010",
+      "detail": "Web unavailable 明确展示，KB + SQL 主链路不被中断。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-011",
+      "detail": "Checker 异常时合规集合为空，不输出购买推荐。",
+      "expected_degradation_entered": true,
+      "fail_closed": true,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": false
+    },
+    {
+      "case_id": "f6-012",
+      "detail": "达到 ReAct 步骤上限后安全停止并列出未完成状态。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    },
+    {
+      "case_id": "f6-013",
+      "detail": "校验和不一致的缓存被丢弃，重新计算后才返回。",
+      "expected_degradation_entered": true,
+      "fail_closed": false,
+      "fault_recognized": true,
+      "passed": true,
+      "retry_policy_correct": true,
+      "sensitive_information_leaked": false,
+      "silently_masqueraded_as_normal": false,
+      "usable_output": true
+    }
+  ],
+  "degradation": {
+    "denominator": 13,
+    "numerator": 13
+  },
+  "evaluation_version": "smartbuy-stage6-fault-injection-v1",
+  "fault_recognition": {
+    "denominator": 13,
+    "numerator": 13
+  },
+  "fixture_ids_match": true,
+  "passed": true,
+  "passed_count": 13,
+  "retry_policy": {
+    "denominator": 13,
+    "numerator": 13
+  },
+  "sensitive_leak_count": 0,
+  "silent_normal_masquerade_count": 0
+}

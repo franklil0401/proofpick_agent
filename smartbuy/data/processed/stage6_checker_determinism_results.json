@@ -1,0 +1,214 @@
+{
+  "byte_equivalent": {
+    "denominator": 40,
+    "numerator": 40,
+    "rate": 1.0
+  },
+  "case_count": 40,
+  "cases": [
+    {
+      "candidate_pool_size": 1,
+      "case_id": "s4-001",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 3,
+      "case_id": "s4-002",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "s4-003",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 12,
+      "case_id": "s4-004",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 8,
+      "case_id": "s4-005",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 12,
+      "case_id": "s4-006",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 0,
+      "case_id": "s4-007",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 5,
+      "case_id": "s4-008",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 8,
+      "case_id": "s4-009",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "s4-010",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 0,
+      "case_id": "s4-011",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "s4-012",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "s4-013",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "s4-014",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "s4-015",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "s4-016",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-001",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-002",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "h6-003",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "h6-004",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-005",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "h6-006",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 0,
+      "case_id": "h6-007",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 0,
+      "case_id": "h6-008",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "h6-009",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 0,
+      "case_id": "h6-010",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "h6-011",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-012",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-013",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-014",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-015",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 2,
+      "case_id": "h6-016",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 12,
+      "case_id": "h6-017",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 12,
+      "case_id": "h6-018",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 7,
+      "case_id": "h6-019",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 7,
+      "case_id": "h6-020",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 0,
+      "case_id": "h6-021",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 1,
+      "case_id": "h6-022",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 0,
+      "case_id": "h6-023",
+      "three_run_byte_equivalent": true
+    },
+    {
+      "candidate_pool_size": 12,
+      "case_id": "h6-024",
+      "three_run_byte_equivalent": true
+    }
+  ],
+  "checker_api_calls": 0,
+  "checker_estimated_cost_cny": 0.0,
+  "evaluation_version": "smartbuy-stage6-checker-determinism-v1",
+  "input_policy": "每个 case 固定首次增强组 observed_model_ids 与冻结 query/as_of，连续执行三次。"
+}

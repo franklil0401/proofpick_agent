@@ -1,0 +1,13 @@
+{"case_id":"f6-001","fault":"reranker_timeout_or_5xx","expected_retry":"bounded","expected_degradation":"vector_order","fail_closed":false}
+{"case_id":"f6-002","fault":"qwen_429","expected_retry":"bounded","expected_degradation":"explicit_failure_after_limit","fail_closed":false}
+{"case_id":"f6-003","fault":"qwen_401_403","expected_retry":"none","expected_degradation":"explicit_failure","fail_closed":false}
+{"case_id":"f6-004","fault":"embedding_timeout_with_cache","expected_retry":"bounded","expected_degradation":"safe_cache_hit","fail_closed":false}
+{"case_id":"f6-005","fault":"embedding_timeout_without_cache","expected_retry":"bounded","expected_degradation":"kb_unavailable","fail_closed":false}
+{"case_id":"f6-006","fault":"illegal_text2sql","expected_retry":"none","expected_degradation":"parameterized_template","fail_closed":false}
+{"case_id":"f6-007","fault":"sqlite_unavailable","expected_retry":"none","expected_degradation":"unknown_no_llm_math","fail_closed":true}
+{"case_id":"f6-008","fault":"chroma_unavailable","expected_retry":"none","expected_degradation":"sql_only_unverified","fail_closed":false}
+{"case_id":"f6-009","fault":"memory_disabled_corrupt_deleted","expected_retry":"none","expected_degradation":"current_input_only","fail_closed":false}
+{"case_id":"f6-010","fault":"web_search_unavailable","expected_retry":"none","expected_degradation":"kb_sql_continue","fail_closed":false}
+{"case_id":"f6-011","fault":"constraint_checker_exception","expected_retry":"none","expected_degradation":"no_recommendation","fail_closed":true}
+{"case_id":"f6-012","fault":"react_step_or_tool_budget","expected_retry":"none","expected_degradation":"safe_stop","fail_closed":false}
+{"case_id":"f6-013","fault":"cache_corruption","expected_retry":"none","expected_degradation":"discard_and_recompute","fail_closed":false}

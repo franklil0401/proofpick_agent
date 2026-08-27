@@ -113,3 +113,17 @@ def test_explicit_unsupported_constraint_is_not_silently_dropped():
     assert {item.field for item in active} == {"camera", "face_recognition"}
     assert all(item.supported is False for item in active)
     assert all(item.operator == ConstraintOperator.EQ for item in active)
+
+
+def test_budget_change_and_stage6_unsupported_guarantee_are_normalized():
+    normalizer = ConstraintNormalizer()
+    first = normalizer.build("预算 3000 元", source_turn=1)
+    changed = normalizer.build("预算改成 2500 元", source_turn=2, previous=first)
+    budget = active_by_field(changed, "price_cny")
+    assert [(item.normalized_value, item.provenance) for item in budget] == [
+        (2500.0, ConstraintProvenance.CURRENT_INPUT)
+    ]
+
+    unsupported = normalizer.build("必须有终身零坏点保证", source_turn=1)
+    fields = {item.field: item for item in unsupported.active(hard_only=True)}
+    assert fields["lifetime_zero_dead_pixel_guarantee"].supported is False

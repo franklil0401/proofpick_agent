@@ -3,10 +3,12 @@
 from __future__ import annotations
 
 import sqlite3
+import re
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from smartbuy.constraints.normalize import normalize_resolution
 from smartbuy.domain import ConstraintOperator, ConstraintSpec, ConstraintStatus, EvidenceReference, FieldAssessment
 from smartbuy.tools.base import ToolResult
 
@@ -43,6 +45,19 @@ def _matches(actual: Any, constraint: ConstraintSpec | None) -> bool:
     if constraint is None:
         return True
     expected = constraint.value
+    if constraint.field == "resolution":
+        actual_resolution = normalize_resolution(actual)
+        expected_resolution = normalize_resolution(expected)
+        if constraint.operator == ConstraintOperator.EQ:
+            return actual_resolution == expected_resolution
+        if constraint.operator == ConstraintOperator.GTE:
+            actual_match = re.fullmatch(r"(\d{3,5})x(\d{3,5})", actual_resolution)
+            expected_match = re.fullmatch(r"(\d{3,5})x(\d{3,5})", expected_resolution)
+            if actual_match is None or expected_match is None:
+                return False
+            actual_pixels = int(actual_match.group(1)) * int(actual_match.group(2))
+            expected_pixels = int(expected_match.group(1)) * int(expected_match.group(2))
+            return actual_pixels >= expected_pixels
     actual = _coerce(actual, expected)
     if constraint.operator == ConstraintOperator.EQ:
         return str(actual).lower() == str(expected).lower() if isinstance(expected, str) else actual == expected

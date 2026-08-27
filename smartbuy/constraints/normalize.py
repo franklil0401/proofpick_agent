@@ -259,7 +259,10 @@ class ConstraintNormalizer:
             low, high = sorted((float(price_range.group(1)), float(price_range.group(2))))
             add("price_cny", ConstraintOperator.RANGE, [low, high], unit="CNY", source_text=price_range.group(0))
         else:
-            budget = re.search(r"(?:预算(?:上限)?|不超过|最多|控制在)(\d+(?:\.\d+)?)元", compact)
+            budget = re.search(
+                r"(?:预算(?:上限|改成|调整为)?|不超过|最多|控制在)(\d+(?:\.\d+)?)元",
+                compact,
+            )
             within = budget or re.search(r"(\d+(?:\.\d+)?)元(?:以内|以下)", compact)
             if within:
                 add("price_cny", ConstraintOperator.LTE, float(within.group(1)), unit="CNY", source_text=within.group(0))
@@ -376,6 +379,7 @@ class ConstraintNormalizer:
             "摄像头": "camera",
             "人脸识别": "face_recognition",
             "十年都不会烧屏": "ten_year_burn_in_guarantee",
+            "终身零坏点": "lifetime_zero_dead_pixel_guarantee",
             "hdr1000": "hdr_certification",
         }
         for marker, field in unsupported_markers.items():

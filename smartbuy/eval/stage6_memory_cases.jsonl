@@ -1,0 +1,5 @@
+{"case_id":"m6-001","category":"same_session_inherit","turns":["预算 3000 元，找中国版非 OLED 显示器。","再便宜一点，预算改成 2500 元。"],"expected_behavior":"第二轮保留非 OLED，并用 2500 覆盖旧预算。"}
+{"case_id":"m6-002","category":"same_session_cancel","turns":["只考虑 Dell，预算 3000 元。","品牌不限，预算改成 2500 元。"],"expected_behavior":"当前输入取消品牌限制并覆盖预算。"}
+{"case_id":"m6-003","category":"cross_session_recall","preferences":{"display_size_inch":27,"excluded_brands":["LG"],"primary_use":"办公"},"expected_behavior":"仅显式启用时在新会话召回。"}
+{"case_id":"m6-004","category":"delete_disable","preferences":{"display_size_inch":27,"excluded_brands":["LG"]},"expected_behavior":"删除字段或关闭记忆后不再召回。"}
+{"case_id":"m6-005","category":"dynamic_rejection","preferences":{"price_cny":2299,"stock_status":"available"},"expected_behavior":"动态价格与库存不能写入长期偏好。"}
