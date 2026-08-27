@@ -9,7 +9,7 @@ from pathlib import Path
 from smartbuy.data.derive import evidence_rows, source_rows
 from smartbuy.data.loader import CATALOG_PATH, load_catalog, stable_json_hash
 from smartbuy.data.quality import validate_catalog
-from smartbuy.scripts.build_stage3_data import DEMO_MANIFEST
+from smartbuy.scripts.build_stage3_data import DEMO_MANIFEST, _normalized_text_sha256
 
 
 def main() -> int:
@@ -25,7 +25,7 @@ def main() -> int:
         }
     )
     generated_errors: list[str] = []
-    if manifest["catalog_sha256"] != hashlib.sha256(CATALOG_PATH.read_bytes()).hexdigest():
+    if manifest["catalog_sha256"] != _normalized_text_sha256(CATALOG_PATH):
         generated_errors.append("catalog hash mismatch")
     if manifest["logical_data_sha256"] != expected_logical_hash:
         generated_errors.append("logical data hash mismatch")
