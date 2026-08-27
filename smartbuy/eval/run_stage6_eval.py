@@ -412,7 +412,7 @@ def _agent_prediction(
     checker = report.constraint_verification
     checker_fingerprint = checker.semantic_fingerprint if checker else None
     retrieved = list(dict.fromkeys(item.model_id for item in report.evidence))[:5]
-    unknown_or_conflict = any(
+    unknown_or_conflict = bool(report.unresolved_facts) or any(
         item.overall_status.value in {"unknown", "conflict"} for item in report.candidates
     )
     unsupported = list(
@@ -456,7 +456,7 @@ def _agent_prediction(
         "degraded_states": report.degraded_states,
         "degradation_visible": bool(report.degraded_states),
         "limit_reached": any(token in report.stop_reason for token in ("最大", "预算", "上限")),
-        "schema_pass": report.report_version == "smartbuy-decision-v2",
+        "schema_pass": report.report_version in {"smartbuy-decision-v2", "smartbuy-decision-v3"},
         "latency_ms": report.latency_ms,
         "usage": report.usage,
         "usage_records": usage_records,

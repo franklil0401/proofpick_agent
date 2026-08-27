@@ -11,8 +11,38 @@ from smartbuy.domain import (
     DecisionReport,
     EvidenceReference,
     FieldAssessment,
+    UnresolvedFact,
 )
 from smartbuy.constraints import VerificationStatus
+
+
+_FIELD_QUERY_MARKERS: dict[str, tuple[str, ...]] = {
+    "price_cny": ("价格", "预算", "元以内", "元内"),
+    "stock_status": ("库存", "有货", "缺货"),
+    "display_size_inch": ("尺寸", "英寸", "寸"),
+    "resolution": ("分辨率", "4k", "5k", "8k", "uhd", "qhd", "wqhd", "2k"),
+    "refresh_rate_hz": ("刷新率", "hz", "赫兹"),
+    "panel_type": ("面板", "ips", "va", "tn"),
+    "is_oled": ("oled", "非 oled", "不要 oled"),
+    "has_usb_c": ("usb-c", "usb c", "type-c", "type c"),
+    "usb_c_video": ("usb-c 视频", "usb c 视频", "type-c 视频", "视频输入"),
+    "usb_c_power_delivery_w": ("供电", "pd", "瓦"),
+    "stand_adjustment": ("支架", "升降", "旋转", "俯仰"),
+    "width_mm": ("宽度", "机身宽", "桌面空间"),
+    "weight_kg": ("重量", "多重"),
+    "warranty": ("保修", "质保"),
+    "region": ("地区", "版本", "中国版", "国行", "美国版", "加拿大版"),
+    "brand": ("品牌", "排除 dell", "排除华硕", "只考虑"),
+}
+
+
+def _query_relevant_fields(query: str) -> set[str]:
+    normalized = query.casefold()
+    return {
+        field
+        for field, markers in _FIELD_QUERY_MARKERS.items()
+        if any(marker in normalized for marker in markers)
+    }
 
 
 def _overall(fields: list[FieldAssessment]) -> ConstraintStatus:
@@ -24,6 +54,18 @@ def _overall(fields: list[FieldAssessment]) -> ConstraintStatus:
     if not fields or ConstraintStatus.UNKNOWN in statuses:
         return ConstraintStatus.UNKNOWN
     return ConstraintStatus.MATCHED
+
+
+def _merge_status(*statuses: ConstraintStatus) -> ConstraintStatus:
+    """Fail closed when the verifier and field evidence disagree."""
+
+    priority = {
+        ConstraintStatus.MATCHED: 0,
+        ConstraintStatus.UNKNOWN: 1,
+        ConstraintStatus.CONFLICT: 2,
+        ConstraintStatus.NOT_MATCHED: 3,
+    }
+    return max(statuses, key=priority.__getitem__)
 
 
 def build_report(
@@ -41,6 +83,13 @@ def build_report(
         item.model_id: item
         for item in (state.constraint_verification.candidates if state.constraint_verification else [])
     }
+    active_fields = {item.field for item in state.constraint_set.active()}
+    relevant_fields = set(state.requirements.required_fields)
+    if state.requirements.task_type == "filter":
+        # The planning model may request broad catalog columns for internal ranking.
+        # Public output stays scoped to explicit query concepts and provenance-gated constraints.
+        relevant_fields &= _query_relevant_fields(state.query)
+    relevant_fields.update(active_fields)
     model_ids = (
         list(verification_by_model)
         if verification_by_model
@@ -61,7 +110,11 @@ def build_report(
         if model_id in state.requirements.excluded_model_ids:
             continue
         row = rows.get(model_id, {})
-        fields = state.assessments.get(model_id, [])
+        fields = [
+            item
+            for item in state.assessments.get(model_id, [])
+            if not relevant_fields or item.field in relevant_fields
+        ]
         verification = verification_by_model.get(model_id)
         status_mapping = {
             VerificationStatus.PASSED: ConstraintStatus.MATCHED,
@@ -70,7 +123,12 @@ def build_report(
             VerificationStatus.CONFLICT: ConstraintStatus.CONFLICT,
         }
         if recommendation_task and verification:
-            overall = status_mapping[verification.overall_status]
+            verifier_overall = status_mapping[verification.overall_status]
+            overall = (
+                _merge_status(verifier_overall, _overall(fields))
+                if fields
+                else verifier_overall
+            )
         elif fields:
             overall = _overall(fields)
         else:
@@ -98,7 +156,7 @@ def build_report(
             overall_status=overall,
             fields=fields,
             eligible=(
-                bool(verification.eligible)
+                bool(verification.eligible and overall == ConstraintStatus.MATCHED)
                 if verification
                 else recommendation_task and overall == ConstraintStatus.MATCHED
             ),
@@ -131,13 +189,73 @@ def build_report(
     eliminated = [item.model_id for item in candidates if not item.eligible] if verification_by_model else [
         item.model_id for item in candidates if item.overall_status == ConstraintStatus.NOT_MATCHED
     ]
+    candidate_ids = {item.model_id for item in candidates}
     unique_evidence: list[EvidenceReference] = []
     seen: set[tuple[str, str | None, str]] = set()
     for item in all_evidence:
+        if candidate_ids and item.model_id not in candidate_ids:
+            continue
+        if relevant_fields and item.field not in relevant_fields:
+            continue
         key = (item.source_id, item.evidence_id, item.model_id)
         if key not in seen:
             seen.add(key)
             unique_evidence.append(item)
+    unresolved_facts: list[UnresolvedFact] = []
+    unresolved_keys: set[tuple[str | None, str, str]] = set()
+    observed_fields: set[str] = set()
+    for candidate in candidates:
+        observed_fields.update(item.field for item in candidate.fields)
+        observed_fields.update(item.constraint.field for item in candidate.constraint_results)
+        for field in candidate.fields:
+            if field.status not in {ConstraintStatus.UNKNOWN, ConstraintStatus.CONFLICT}:
+                continue
+            key = (candidate.model_id, field.field, field.status.value)
+            if key in unresolved_keys:
+                continue
+            unresolved_keys.add(key)
+            values = (
+                list(field.actual_value)
+                if isinstance(field.actual_value, (list, tuple, set))
+                else ([field.actual_value] if field.actual_value is not None else [])
+            )
+            unresolved_facts.append(
+                UnresolvedFact(
+                    model_id=candidate.model_id,
+                    field=field.field,
+                    status=field.status.value,
+                    values=values,
+                    reason=field.reason,
+                    evidence=field.evidence,
+                )
+            )
+    for constraint in state.constraint_set.active():
+        if constraint.supported and not constraint.ambiguous:
+            continue
+        key = (None, constraint.field, ConstraintStatus.UNKNOWN.value)
+        if key in unresolved_keys:
+            continue
+        unresolved_keys.add(key)
+        observed_fields.add(constraint.field)
+        unresolved_facts.append(
+            UnresolvedFact(
+                field=constraint.field,
+                status=ConstraintStatus.UNKNOWN.value,
+                reason=constraint.note or "该约束不在当前支持范围或表达有歧义，需要用户确认。",
+            )
+        )
+    for field in sorted(relevant_fields - observed_fields):
+        key = (None, field, ConstraintStatus.UNKNOWN.value)
+        if key in unresolved_keys:
+            continue
+        unresolved_keys.add(key)
+        unresolved_facts.append(
+            UnresolvedFact(
+                field=field,
+                status=ConstraintStatus.UNKNOWN.value,
+                reason="未获得该字段的可核验证据；工具不可用、候选为空或本轮未完成核验。",
+            )
+        )
     tools = list(
         dict.fromkeys(
             trace.tool
@@ -169,6 +287,7 @@ def build_report(
         recommended_model_ids=recommended,
         eliminated_model_ids=eliminated,
         evidence=unique_evidence,
+        unresolved_facts=unresolved_facts,
         degraded_states=list(dict.fromkeys(state.degraded_states)),
         pending_questions=state.requirements.pending_questions,
         abstained=not evidence_sufficient,

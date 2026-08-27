@@ -1846,6 +1846,11 @@ function handleDone(event) {
       });
     }
 
+    // Show a compact, auditable SmartBuy summary before the detailed Markdown.
+    if (event.report) {
+      renderSmartBuyReport(event.report);
+    }
+
     // Show final answer
     addFinalAnswerBubble(event.final_output);
   } else {
@@ -1857,6 +1862,189 @@ function handleDone(event) {
       lastActiveCard = null;
     }
   }
+}
+
+function smartBuyText(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  element.textContent = text == null ? '' : String(text);
+  return element;
+}
+
+function smartBuyStatusLabel(status) {
+  const normalized = String(status || 'unknown').replaceAll('_', '-');
+  const label = smartBuyText('span', `smartbuy-status smartbuy-status-${normalized}`, status || 'unknown');
+  return label;
+}
+
+function smartBuyValue(value) {
+  if (value === null || value === undefined || value === '') return 'unknown';
+  if (Array.isArray(value)) return value.join(' / ');
+  if (typeof value === 'object') return JSON.stringify(value);
+  return String(value);
+}
+
+function renderSmartBuyReport(report) {
+  const messagesContainer = document.getElementById('chat-messages');
+  if (!messagesContainer || !report || typeof report !== 'object') return;
+
+  const panel = document.createElement('section');
+  panel.className = 'smartbuy-report-panel';
+
+  const header = document.createElement('div');
+  header.className = 'smartbuy-report-header';
+  const titleBox = document.createElement('div');
+  titleBox.appendChild(smartBuyText('h3', '', 'SmartBuy 决策摘要'));
+  titleBox.appendChild(smartBuyText('p', '', report.request_summary || '显示器消费决策'));
+  header.appendChild(titleBox);
+  const meta = document.createElement('div');
+  meta.className = 'smartbuy-report-meta';
+  meta.appendChild(smartBuyText('span', 'smartbuy-mvp-badge', '可复现 MVP'));
+  const memoryEnabled = !!document.getElementById('memory-switch')?.checked;
+  meta.appendChild(smartBuyText('span', 'smartbuy-memory-state', `Memory：${memoryEnabled ? '本次启用' : '本次关闭'}`));
+  header.appendChild(meta);
+  panel.appendChild(header);
+
+  const constraints = (report.constraint_set?.constraints || []).filter(item => item.active);
+  if (constraints.length) {
+    const section = document.createElement('div');
+    section.className = 'smartbuy-report-section';
+    section.appendChild(smartBuyText('h4', '', '约束与偏好'));
+    const chips = document.createElement('div');
+    chips.className = 'smartbuy-chip-row';
+    constraints.forEach(item => {
+      const support = item.supported && !item.ambiguous ? '' : ' · 待确认';
+      chips.appendChild(smartBuyText(
+        'span', `smartbuy-chip smartbuy-chip-${item.hard_or_soft || 'soft'}`,
+        `${item.field} ${item.operator} ${smartBuyValue(item.normalized_value)} · ${item.hard_or_soft}${support}`
+      ));
+    });
+    section.appendChild(chips);
+    panel.appendChild(section);
+  }
+
+  const candidates = Array.isArray(report.candidates) ? report.candidates : [];
+  const candidateSection = document.createElement('div');
+  candidateSection.className = 'smartbuy-report-section';
+  candidateSection.appendChild(smartBuyText('h4', '', '候选与确定性复核'));
+  if (!candidates.length) {
+    candidateSection.appendChild(smartBuyText('div', 'smartbuy-empty-state', '没有可被完整验证的候选；本次保持拒答。'));
+  } else {
+    const grid = document.createElement('div');
+    grid.className = 'smartbuy-candidate-grid';
+    const ordered = [...candidates].sort((a, b) => Number(!!b.eligible) - Number(!!a.eligible));
+    ordered.slice(0, 8).forEach(candidate => {
+      const card = document.createElement('article');
+      card.className = `smartbuy-candidate-card ${candidate.eligible ? 'is-eligible' : ''}`;
+      const cardHeader = document.createElement('div');
+      cardHeader.className = 'smartbuy-candidate-header';
+      const name = candidate.model_name || candidate.model_id;
+      cardHeader.appendChild(smartBuyText('strong', '', name));
+      cardHeader.appendChild(smartBuyStatusLabel(candidate.overall_status));
+      card.appendChild(cardHeader);
+      card.appendChild(smartBuyText('div', 'smartbuy-candidate-subtitle', `${candidate.model_id} · ${candidate.region || '地区未知'}`));
+      if (candidate.price_cny != null) {
+        card.appendChild(smartBuyText(
+          'div', 'smartbuy-price',
+          `价格观察 ¥${Number(candidate.price_cny).toFixed(2)} · ${candidate.price_observed_at || 'observed_at 未知'}`
+        ));
+      }
+      const issues = [
+        ...(candidate.violated_fields || []).map(field => `${field}=failed`),
+        ...(candidate.unknown_fields || []).map(field => `${field}=unknown`),
+        ...(candidate.conflict_fields || []).map(field => `${field}=conflict`),
+        ...(candidate.unsupported_constraints || []).map(field => `${field}=unsupported`)
+      ];
+      if (issues.length) card.appendChild(smartBuyText('div', 'smartbuy-candidate-issues', issues.join(' · ')));
+      const checks = candidate.constraint_results || [];
+      if (checks.length) {
+        const list = document.createElement('ul');
+        list.className = 'smartbuy-check-list';
+        checks.slice(0, 5).forEach(check => {
+          const item = document.createElement('li');
+          item.appendChild(smartBuyStatusLabel(check.status));
+          item.appendChild(smartBuyText(
+            'span', '',
+            `${check.constraint?.field || 'field'}：实际 ${smartBuyValue(check.actual_value)} / 要求 ${smartBuyValue(check.constraint?.normalized_value)}`
+          ));
+          list.appendChild(item);
+        });
+        card.appendChild(list);
+      }
+      if (candidate.recommendation_reason) card.appendChild(smartBuyText('p', 'smartbuy-reason', candidate.recommendation_reason));
+      if (candidate.elimination_reason) card.appendChild(smartBuyText('p', 'smartbuy-elimination', candidate.elimination_reason));
+      grid.appendChild(card);
+    });
+    candidateSection.appendChild(grid);
+    if (ordered.length > 8) candidateSection.appendChild(smartBuyText('p', 'smartbuy-more', `另有 ${ordered.length - 8} 个候选，请在详细报告中查看。`));
+  }
+  panel.appendChild(candidateSection);
+
+  const unresolved = Array.isArray(report.unresolved_facts) ? report.unresolved_facts : [];
+  if (unresolved.length) {
+    const section = document.createElement('div');
+    section.className = 'smartbuy-report-section smartbuy-unresolved-section';
+    section.appendChild(smartBuyText('h4', '', '未知与冲突'));
+    unresolved.forEach(item => {
+      const row = document.createElement('div');
+      row.className = 'smartbuy-unresolved-row';
+      row.appendChild(smartBuyStatusLabel(item.status));
+      row.appendChild(smartBuyText(
+        'span', '',
+        `${item.model_id ? `${item.model_id} · ` : ''}${item.field}${item.values?.length ? ` · ${item.values.join(' / ')}` : ''}：${item.reason}`
+      ));
+      section.appendChild(row);
+    });
+    panel.appendChild(section);
+  }
+
+  const evidence = Array.isArray(report.evidence) ? report.evidence : [];
+  if (evidence.length) {
+    const details = document.createElement('details');
+    details.className = 'smartbuy-details';
+    details.appendChild(smartBuyText('summary', '', `证据来源（${evidence.length}）`));
+    const list = document.createElement('ul');
+    evidence.slice(0, 12).forEach(item => {
+      const row = document.createElement('li');
+      const link = document.createElement('a');
+      link.href = item.source_url;
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+      link.textContent = `${item.model_id} · ${item.field || '片段'} · ${item.region}`;
+      row.appendChild(link);
+      if (item.effective_time) row.appendChild(smartBuyText('span', '', ` · ${item.effective_time}`));
+      list.appendChild(row);
+    });
+    details.appendChild(list);
+    panel.appendChild(details);
+  }
+
+  const trace = Array.isArray(report.trace) ? report.trace : [];
+  if (trace.length) {
+    const details = document.createElement('details');
+    details.className = 'smartbuy-details';
+    details.appendChild(smartBuyText('summary', '', `可审计工具轨迹（${trace.length} 步）`));
+    const list = document.createElement('ol');
+    list.className = 'smartbuy-trace-list';
+    trace.forEach(item => {
+      const row = document.createElement('li');
+      row.appendChild(smartBuyStatusLabel(item.status));
+      const parent = item.parent_step == null ? '' : ` ← 父步骤 #${item.parent_step}`;
+      row.appendChild(smartBuyText('strong', '', `${item.tool}${parent}`));
+      const sql = item.arguments_summary?.sql;
+      row.appendChild(smartBuyText('span', '', sql ? `SQL：${sql}` : item.result_summary));
+      list.appendChild(row);
+    });
+    details.appendChild(list);
+    panel.appendChild(details);
+  }
+
+  if (report.degraded_states?.length) {
+    panel.appendChild(smartBuyText('div', 'smartbuy-degraded', `降级：${report.degraded_states.join('；')}`));
+  }
+  panel.appendChild(smartBuyText('div', 'smartbuy-stop-reason', `停止原因：${report.stop_reason || '达到有界停止条件'}`));
+  messagesContainer.appendChild(panel);
+  messagesContainer.scrollTop = messagesContainer.scrollHeight;
 }
 
 // ========== Event Dispatcher ==========

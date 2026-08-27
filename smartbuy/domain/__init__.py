@@ -11,6 +11,7 @@ from .models import (
     EvidenceReference,
     FieldAssessment,
     ToolTrace,
+    UnresolvedFact,
     UserRequirements,
 )
 
@@ -25,5 +26,6 @@ __all__ = [
     "EvidenceReference",
     "FieldAssessment",
     "ToolTrace",
+    "UnresolvedFact",
     "UserRequirements",
 ]

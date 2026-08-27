@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SmartBuy 脱敏结果回放</title>
+  <style>
+    :root { color-scheme: light; --ink:#15211d; --muted:#60716a; --line:#dce8e2; --mint:#e9f7ef;
+      --green:#126b45; --red:#a13a36; --amber:#8b5c13; --navy:#183a5a; --paper:#fbfdfc; }
+    * { box-sizing:border-box; }
+    body { margin:0; background:linear-gradient(135deg,#edf8f2,#f8fbfa 45%,#eef4f7); color:var(--ink);
+      font:15px/1.5 "Segoe UI","Microsoft YaHei",sans-serif; }
+    main { width:min(1180px,calc(100% - 48px)); margin:28px auto; }
+    header { display:flex; align-items:center; justify-content:space-between; padding:20px 24px; border:1px solid var(--line);
+      border-radius:18px; background:rgba(255,255,255,.92); box-shadow:0 16px 40px rgba(22,71,50,.08); }
+    h1 { font-size:27px; margin:0; letter-spacing:-.4px; } h2 { margin:0 0 14px; font-size:20px; }
+    .eyebrow { color:var(--green); font-weight:700; font-size:12px; text-transform:uppercase; letter-spacing:1.4px; }
+    .badge { border-radius:999px; padding:7px 12px; color:var(--green); background:var(--mint); font-weight:700; }
+    .notice { margin:14px 0 20px; color:var(--muted); font-size:13px; }
+    .grid { display:grid; grid-template-columns:1.05fr .95fr; gap:18px; }
+    .panel { background:var(--paper); border:1px solid var(--line); border-radius:16px; padding:20px;
+      box-shadow:0 10px 28px rgba(20,55,41,.06); }
+    .wide { grid-column:1/-1; }
+    .query { padding:15px 17px; border-left:4px solid var(--green); background:#f1f8f4; border-radius:8px; font-size:17px; }
+    .chips { display:flex; flex-wrap:wrap; gap:8px; margin:12px 0; }
+    .chip { border:1px solid #bed9ca; border-radius:999px; padding:5px 9px; background:white; font-size:13px; }
+    .chip.good { color:var(--green); background:var(--mint); } .chip.bad { color:var(--red); background:#fff0ef; }
+    .chip.warn { color:var(--amber); background:#fff7e6; }
+    .timeline { display:grid; gap:10px; }
+    .step { position:relative; padding:12px 14px 12px 54px; border:1px solid var(--line); border-radius:12px; background:white; }
+    .step::before { content:attr(data-step); position:absolute; left:14px; top:12px; width:27px; height:27px; display:grid;
+      place-items:center; border-radius:50%; color:white; background:var(--navy); font-weight:700; }
+    .step strong { display:block; } .meta { color:var(--muted); font-size:13px; }
+    .candidate { border:1px solid #bad9c8; background:white; border-radius:13px; padding:15px; }
+    .candidate h3 { display:flex; justify-content:space-between; gap:12px; margin:0 0 10px; font-size:18px; }
+    .status { font-size:12px; border-radius:999px; padding:4px 8px; background:var(--mint); color:var(--green); }
+    table { width:100%; border-collapse:collapse; } th,td { padding:9px 10px; border-bottom:1px solid var(--line); text-align:left; }
+    th { color:var(--muted); font-size:12px; text-transform:uppercase; }
+    a { color:#0b5a86; } .ok { color:var(--green); font-weight:700; } .danger { color:var(--red); font-weight:700; }
+    .view { display:none; } body[data-view="home"] .home, body[data-view="trace"] .trace,
+    body[data-view="checker"] .checker, body[data-view="memory"] .memory,
+    body[data-view="conflict"] .conflict { display:grid; }
+    footer { margin:18px 0; color:var(--muted); font-size:12px; text-align:center; }
+  </style>
+</head>
+<body data-view="home">
+<main>
+  <header>
+    <div><div class="eyebrow">ProofPick / SmartBuy</div><h1>多源显示器消费决策 Agent</h1></div>
+    <span class="badge">可复现作品集 / MVP 原型</span>
+  </header>
+  <p class="notice">脱敏结果回放｜数据来自已保存的 Stage 7 本地 API 验证；不是实时模型调用，不包含 Prompt、密钥、Workspace ID 或私人路径。</p>
+
+  <section class="view home grid">
+    <article class="panel wide"><h2>从需求到可审计推荐</h2><div class="query">预算、尺寸、分辨率、OLED、USB-C 视频与供电要求，会分别进入结构化查询、证据核验和不可绕过的 Constraint Checker。</div></article>
+    <article class="panel"><h2>核心链路</h2><div class="chips"><span class="chip">有界 ReAct</span><span class="chip">Text2SQL</span><span class="chip">KB Search</span><span class="chip">qwen3-rerank</span><span class="chip">Evidence Check</span><span class="chip good">Constraint Checker</span></div></article>
+    <article class="panel"><h2>真实发布边界</h2><p>单一显示器品类；12 个治理型号；4 条离线价格观察；Web Search 当前为 unavailable/degraded；不保证实时价格或库存。</p></article>
+    <article class="panel wide"><h2>可审计输出</h2><table><tr><th>候选</th><th>证据四态</th><th>确定性复核</th><th>结果</th></tr><tr><td>Dell U2723QE（CN）</td><td>matched / unknown / conflict</td><td class="ok">passed</td><td>只在全部硬约束通过后推荐</td></tr></table></article>
+  </section>
+
+  <section class="view trace grid">
+    <article class="panel wide"><h2>Demo 2｜复杂组合筛选与依赖式多跳</h2><div class="query" id="trace-query"></div></article>
+    <article class="panel wide"><h2>公开工具轨迹</h2><div class="timeline" id="trace-steps"></div></article>
+    <article class="panel"><h2>工具覆盖</h2><div class="chips" id="trace-tools"></div></article>
+    <article class="panel"><h2>停止条件</h2><p id="trace-stop"></p></article>
+  </section>
+
+  <section class="view checker grid">
+    <article class="panel wide"><h2>Constraint Checker｜LLM 无权覆盖</h2><p>Checker 从完整候选池读取只读 SQLite 与 evidence_records；只有全部硬约束 passed 才能 eligible=true。</p></article>
+    <article class="panel"><h2>推荐候选</h2><div class="candidate"><h3><span id="checker-model"></span><span class="status">eligible=true</span></h3><div class="chips"><span class="chip good">4K passed</span><span class="chip good">27 英寸 passed</span><span class="chip good">USB-C 视频 passed</span><span class="chip good">≥90W passed</span></div><p class="meta" id="checker-version"></p></div></article>
+    <article class="panel"><h2>安全门结果</h2><table><tr><th>检查</th><th>结果</th></tr><tr><td>违规推荐</td><td class="ok">无</td></tr><tr><td>Checker 降级</td><td class="ok">false</td></tr><tr><td>外部模型调用</td><td class="ok">0</td></tr></table></article>
+    <article class="panel wide"><h2>来源与时间</h2><div id="checker-evidence"></div></article>
+  </section>
+
+  <section class="view memory grid">
+    <article class="panel wide"><h2>Demo 3｜分层 Memory</h2><div class="query">第一轮：预算 3500 元、办公、27 英寸 4K → 第二轮：再便宜一点，改为 2500 元以内并排除 OLED。</div></article>
+    <article class="panel"><h2>短期会话</h2><table id="memory-session"></table></article>
+    <article class="panel"><h2>长期偏好</h2><table id="memory-long"></table></article>
+    <article class="panel wide"><h2>隐私边界</h2><p>只保存用户明确确认的稳定偏好；商品事实、动态价格、库存与模型推测不会写入长期记忆。删除后再次查看为空。</p></article>
+  </section>
+
+  <section class="view conflict grid">
+    <article class="panel wide"><h2>Demo 4｜来源冲突时拒答</h2><div class="query" id="conflict-query"></div></article>
+    <article class="panel"><h2>冲突值</h2><div class="chips"><span class="chip warn">60W</span><span class="chip warn">65W</span></div><p class="danger">conflict → 不输出购买推荐</p></article>
+    <article class="panel"><h2>执行结果</h2><table><tr><td>推荐型号</td><td>空</td></tr><tr><td>abstained</td><td class="ok">true</td></tr><tr><td>降级伪装</td><td class="ok">无</td></tr></table></article>
+    <article class="panel wide"><h2>冲突来源</h2><div id="conflict-evidence"></div></article>
+  </section>
+  <footer>SmartBuy Stage 7 · saved sanitized replay · generated from automated local API verification</footer>
+</main>
+<script>
+  const requested = new URLSearchParams(location.search).get("view") || "home";
+  document.body.dataset.view = ["home","trace","checker","memory","conflict"].includes(requested) ? requested : "home";
+  const el = id => document.getElementById(id);
+  const appendText = (parent, tag, text, cls="") => { const node=document.createElement(tag); node.textContent=text; if(cls) node.className=cls; parent.appendChild(node); return node; };
+  fetch("../../data/processed/stage7_demo_results.json").then(r => r.json()).then(data => {
+    const byId = Object.fromEntries(data.results.map(item => [item.demo_id,item]));
+    const multi = byId["demo-2-multihop"];
+    el("trace-query").textContent = multi.input;
+    multi.report.trace.filter(t => !["set_requirements","finish_decision"].includes(t.tool)).slice(0,8).forEach(t => {
+      const box=document.createElement("div"); box.className="step"; box.dataset.step=t.step;
+      appendText(box,"strong",`${t.tool} · ${t.status}`); appendText(box,"span",t.result_summary,"meta");
+      if(t.parent_step!==null) appendText(box,"span",`父步骤 ${t.parent_step} → ${t.next_action}`,"meta");
+      el("trace-steps").appendChild(box);
+    });
+    multi.report.tools_used.forEach(tool => appendText(el("trace-tools"),"span",tool,"chip good"));
+    el("trace-stop").textContent=multi.report.stop_reason;
+    el("checker-model").textContent=multi.report.recommended_model_ids[0] || "无合规候选";
+    el("checker-version").textContent=`版本：${multi.report.constraint_checker_version || "未执行"}`;
+    const relevantEvidence = new Set(["display_size_inch","resolution","has_usb_c","usb_c_video","usb_c_power_delivery_w","region"]);
+    multi.report.evidence.filter(e => relevantEvidence.has(e.field)).slice(0,5).forEach(e => { const p=appendText(el("checker-evidence"),"p",`${e.model_id} · ${e.field || "证据"} · ${e.region}`); const a=appendText(p,"a",` ${e.source_id}`); a.href=e.source_url; });
+    const memory=byId["demo-3-memory"];
+    Object.entries(memory.checks).slice(0,2).forEach(([k,v]) => { const row=el("memory-session").insertRow(); appendText(row.insertCell(),"span",k); appendText(row.insertCell(),"span",v?"PASS":"FAIL",v?"ok":"danger"); });
+    Object.entries(memory.checks).slice(2).forEach(([k,v]) => { const row=el("memory-long").insertRow(); appendText(row.insertCell(),"span",k); appendText(row.insertCell(),"span",v?"PASS":"FAIL",v?"ok":"danger"); });
+    const conflict=byId["demo-4-conflict"];
+    el("conflict-query").textContent=conflict.input;
+    const unresolved=conflict.report.unresolved_facts.find(x=>x.status==="conflict");
+    (unresolved?.evidence || []).forEach(e => { const p=appendText(el("conflict-evidence"),"p",`${e.value}W · ${e.source_id}`); const a=appendText(p,"a"," 查看公开来源"); a.href=e.source_url; });
+  }).catch(() => { document.querySelector(".notice").textContent += "｜结果文件加载失败，请从仓库根目录启动静态服务器。"; });
+</script>
+</body>
+</html>

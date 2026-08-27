@@ -1,0 +1,1485 @@
+{
+  "aggregate_metrics": {
+    "agentic_rag_checker": {
+      "agent_capability": {
+        "average_tool_calls": 2.0,
+        "degradation_visibility": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "dependent_multihop_completion": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "limit_reached_tasks": 0,
+        "necessary_tool_coverage": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "tool_order_accuracy": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "tool_selection_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unauthorized_or_out_of_order_block_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      },
+      "case_count": 1,
+      "cases": [
+        {
+          "abstention_pass": true,
+          "actual_model_ids": [],
+          "candidate_exact": true,
+          "case_id": "h6-018",
+          "end_to_end_pass": true,
+          "expected_model_ids": [],
+          "schema_pass": true,
+          "split": "holdout"
+        }
+      ],
+      "engineering": {
+        "api_error_distribution": {},
+        "average_cost_cny_per_task": 0.012548,
+        "average_input_tokens_per_task": 13355.0,
+        "average_latency_ms": 21695.931,
+        "average_output_tokens_per_task": 932.0,
+        "cache_hit_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "estimated_cost_cny": 0.012548,
+        "input_tokens": 13355,
+        "model_latency_breakdown": {
+          "qwen-plus": {
+            "duration_ms": 21687.461,
+            "share": 1.0
+          }
+        },
+        "output_tokens": 932,
+        "p50_latency_ms": 21695.931,
+        "p95_latency_ms": 21695.931,
+        "retry_count": 0,
+        "tool_latency_breakdown": {
+          "set_requirements": {
+            "duration_ms": 2.476,
+            "share": 0.601117
+          },
+          "text2sql": {
+            "duration_ms": 1.643,
+            "share": 0.398883
+          }
+        }
+      },
+      "evidence_quality": {
+        "citation_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "critical_evidence_coverage": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "ndcg_at_5": {
+          "denominator": 0,
+          "status": "N/A",
+          "value": null
+        },
+        "recall_at_5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "source_conflict_preservation": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unsupported_external_fact_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "wrong_model_or_region_reference_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      },
+      "task_quality": {
+        "abstention_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "abstention_f1": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_precision": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_recall": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "compliant_candidate_false_kill_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "correct_candidate_recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "end_to_end_task_completion": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "field_level_hard_constraint_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "recommended_candidate_precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "task_level_hard_constraint_satisfaction": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unknown_conflict_handling": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unsupported_constraint_identification": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "violating_candidate_recommendation_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      }
+    }
+  },
+  "aggregate_split_metrics": {
+    "holdout": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": 2.0,
+          "degradation_visibility": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "case_count": 1,
+        "cases": [
+          {
+            "abstention_pass": true,
+            "actual_model_ids": [],
+            "candidate_exact": true,
+            "case_id": "h6-018",
+            "end_to_end_pass": true,
+            "expected_model_ids": [],
+            "schema_pass": true,
+            "split": "holdout"
+          }
+        ],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": 0.012548,
+          "average_input_tokens_per_task": 13355.0,
+          "average_latency_ms": 21695.931,
+          "average_output_tokens_per_task": 932.0,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0.012548,
+          "input_tokens": 13355,
+          "model_latency_breakdown": {
+            "qwen-plus": {
+              "duration_ms": 21687.461,
+              "share": 1.0
+            }
+          },
+          "output_tokens": 932,
+          "p50_latency_ms": 21695.931,
+          "p95_latency_ms": 21695.931,
+          "retry_count": 0,
+          "tool_latency_breakdown": {
+            "set_requirements": {
+              "duration_ms": 2.476,
+              "share": 0.601117
+            },
+            "text2sql": {
+              "duration_ms": 1.643,
+              "share": 0.398883
+            }
+          }
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "abstention_f1": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_precision": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_recall": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    },
+    "regression": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": null,
+          "degradation_visibility": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "case_count": 0,
+        "cases": [],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": null,
+          "average_input_tokens_per_task": null,
+          "average_latency_ms": null,
+          "average_output_tokens_per_task": null,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0,
+          "input_tokens": 0,
+          "model_latency_breakdown": {},
+          "output_tokens": 0,
+          "p50_latency_ms": null,
+          "p95_latency_ms": null,
+          "retry_count": 0,
+          "tool_latency_breakdown": {}
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "abstention_f1": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_precision": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_recall": {
+            "status": "N/A",
+            "value": null
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    }
+  },
+  "case_count": 1,
+  "cost": {
+    "estimated_cost_cny": 0.012548,
+    "stage_limit_cny": 20.0,
+    "within_limit": true
+  },
+  "evaluation_version": "smartbuy-stage6-four-group-v1",
+  "experiment_groups": [
+    "agentic_rag_checker"
+  ],
+  "first_run_metrics": {
+    "agentic_rag_checker": {
+      "agent_capability": {
+        "average_tool_calls": 2.0,
+        "degradation_visibility": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "dependent_multihop_completion": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "limit_reached_tasks": 0,
+        "necessary_tool_coverage": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "tool_order_accuracy": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "tool_selection_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unauthorized_or_out_of_order_block_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      },
+      "case_count": 1,
+      "cases": [
+        {
+          "abstention_pass": true,
+          "actual_model_ids": [],
+          "candidate_exact": true,
+          "case_id": "h6-018",
+          "end_to_end_pass": true,
+          "expected_model_ids": [],
+          "schema_pass": true,
+          "split": "holdout"
+        }
+      ],
+      "engineering": {
+        "api_error_distribution": {},
+        "average_cost_cny_per_task": 0.012548,
+        "average_input_tokens_per_task": 13355.0,
+        "average_latency_ms": 21695.931,
+        "average_output_tokens_per_task": 932.0,
+        "cache_hit_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "estimated_cost_cny": 0.012548,
+        "input_tokens": 13355,
+        "model_latency_breakdown": {
+          "qwen-plus": {
+            "duration_ms": 21687.461,
+            "share": 1.0
+          }
+        },
+        "output_tokens": 932,
+        "p50_latency_ms": 21695.931,
+        "p95_latency_ms": 21695.931,
+        "retry_count": 0,
+        "tool_latency_breakdown": {
+          "set_requirements": {
+            "duration_ms": 2.476,
+            "share": 0.601117
+          },
+          "text2sql": {
+            "duration_ms": 1.643,
+            "share": 0.398883
+          }
+        }
+      },
+      "evidence_quality": {
+        "citation_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "critical_evidence_coverage": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "ndcg_at_5": {
+          "denominator": 0,
+          "status": "N/A",
+          "value": null
+        },
+        "recall_at_5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "source_conflict_preservation": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unsupported_external_fact_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "wrong_model_or_region_reference_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      },
+      "task_quality": {
+        "abstention_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "abstention_f1": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_precision": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_recall": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "compliant_candidate_false_kill_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "correct_candidate_recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "end_to_end_task_completion": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "field_level_hard_constraint_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "recommended_candidate_precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "task_level_hard_constraint_satisfaction": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unknown_conflict_handling": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unsupported_constraint_identification": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "violating_candidate_recommendation_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      }
+    }
+  },
+  "first_run_split_metrics": {
+    "holdout": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": 2.0,
+          "degradation_visibility": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "case_count": 1,
+        "cases": [
+          {
+            "abstention_pass": true,
+            "actual_model_ids": [],
+            "candidate_exact": true,
+            "case_id": "h6-018",
+            "end_to_end_pass": true,
+            "expected_model_ids": [],
+            "schema_pass": true,
+            "split": "holdout"
+          }
+        ],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": 0.012548,
+          "average_input_tokens_per_task": 13355.0,
+          "average_latency_ms": 21695.931,
+          "average_output_tokens_per_task": 932.0,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0.012548,
+          "input_tokens": 13355,
+          "model_latency_breakdown": {
+            "qwen-plus": {
+              "duration_ms": 21687.461,
+              "share": 1.0
+            }
+          },
+          "output_tokens": 932,
+          "p50_latency_ms": 21695.931,
+          "p95_latency_ms": 21695.931,
+          "retry_count": 0,
+          "tool_latency_breakdown": {
+            "set_requirements": {
+              "duration_ms": 2.476,
+              "share": 0.601117
+            },
+            "text2sql": {
+              "duration_ms": 1.643,
+              "share": 0.398883
+            }
+          }
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "abstention_f1": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_precision": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_recall": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    },
+    "regression": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": null,
+          "degradation_visibility": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "case_count": 0,
+        "cases": [],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": null,
+          "average_input_tokens_per_task": null,
+          "average_latency_ms": null,
+          "average_output_tokens_per_task": null,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0,
+          "input_tokens": 0,
+          "model_latency_breakdown": {},
+          "output_tokens": 0,
+          "p50_latency_ms": null,
+          "p95_latency_ms": null,
+          "retry_count": 0,
+          "tool_latency_breakdown": {}
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "abstention_f1": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_precision": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_recall": {
+            "status": "N/A",
+            "value": null
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    }
+  },
+  "freeze_validation": {
+    "config_hash": "c5001c9707c5cb7302c26745407cf989676e832b6984109604dec829754ab096",
+    "errors": [],
+    "natural_case_count": 40,
+    "natural_sha256": "6082ac83d72441fedf7ac3083a3c53f31d538ca54216f2cf99d3a9de5068e0ef",
+    "passed": true,
+    "split_counts": {
+      "holdout": 24,
+      "regression": 16
+    }
+  },
+  "frozen_config": {
+    "agent_max_steps": 8,
+    "agent_max_tool_calls": 12,
+    "agent_result_top_k": 8,
+    "agent_task_cost_limit_cny": 0.25,
+    "agent_tool_timeout_seconds": 20.0,
+    "as_of": "2026-08-27T00:00:00Z",
+    "cache_policy": {
+      "main_experiment": "cold/no-cache",
+      "max_entries": 2000,
+      "never_cache": [
+        "dynamic_price",
+        "stock",
+        "memory_write",
+        "final_answer",
+        "sensitive_request",
+        "failed_or_incomplete_result"
+      ],
+      "public_evaluation_only": true,
+      "ttl_seconds": 86400
+    },
+    "chat_model": "qwen-plus",
+    "config_hash": "c5001c9707c5cb7302c26745407cf989676e832b6984109604dec829754ab096",
+    "config_hash_semantics": "SHA-256 of this file before adding config_hash; the sealed payload is not edited after the first full run.",
+    "data_version": "monitor-cn-2026-08-26-v1",
+    "dataset": {
+      "failure_case_count": 13,
+      "failure_sha256": "73946eaa9441832dec6fd083b88b168c6a5aca1ee0df8546d0eb2de6d240a999",
+      "holdout_count": 24,
+      "memory_case_count": 5,
+      "memory_sha256": "ac84cf52fab59ba3392e4d11e97f2572b16187eafc0e8d0a184079beb442f4c0",
+      "natural_case_count": 40,
+      "natural_sha256": "6082ac83d72441fedf7ac3083a3c53f31d538ca54216f2cf99d3a9de5068e0ef",
+      "regression_count": 16
+    },
+    "dynamic_boundary": "不调用真实 Web Search；只允许带 observed_at 的离线价格观察。",
+    "embedding_dimensions": 1024,
+    "embedding_model": "text-embedding-v4",
+    "evaluation_version": "smartbuy-stage6-four-group-v1",
+    "fixed_rag_top_k": 5,
+    "frozen_at": "2026-08-27T00:00:00Z",
+    "groups": {
+      "A": "direct_llm",
+      "B": "fixed_rag",
+      "C": "agentic_rag",
+      "D": "agentic_rag_checker"
+    },
+    "index_version": "monitor-fact-card-h2-v1",
+    "max_output_tokens": 800,
+    "region": "CN",
+    "repetitions": 3,
+    "request_timeout_seconds": 30.0,
+    "reranker_instruct": "按用户问题对公开显示器事实卡的直接证据相关性排序。",
+    "reranker_model": "qwen3-rerank",
+    "schema_version": "1.0.0",
+    "seed": null,
+    "seed_note": "当前兼容接口与 Provider 未声明 seed；不虚构确定性。",
+    "source_hashes": {
+      "catalog_sha256": "b50fd4818575747dab00ffe922ea9720b3a7196e1a5162c0494cd6454a04210a",
+      "index_manifest_sha256": "b74d5022a7615676f9a3409fff68b30fd08f5c7d494757668e37bf332efedb8a"
+    },
+    "stage_cost_limit_cny": 20.0,
+    "temperature": 0.0,
+    "timezone": "Asia/Shanghai",
+    "top_p": null,
+    "vector_top_k": 30
+  },
+  "mode": "full",
+  "prediction_count": 1,
+  "predictions": [
+    {
+      "abstained": true,
+      "blocked_unauthorized_or_out_of_order": [],
+      "case_id": "h6-018",
+      "checker_fingerprint": "42b8d9a525413f67728598773b2b1ab11083a974e71c67b15aa9657f82c6b8ad",
+      "citation_pairs": [],
+      "claims": [],
+      "degradation_visible": false,
+      "degraded_states": [],
+      "error_category": null,
+      "evidence_ids": [],
+      "experiment_group": "agentic_rag_checker",
+      "hard_constraint_checks": [],
+      "has_hard_constraints": false,
+      "latency_ms": 21695.931,
+      "limit_reached": false,
+      "multihop_pass": false,
+      "observed_model_ids": [
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "public_trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 0,
+            "required_fields": [
+              "model_id",
+              "model_name",
+              "display_size_inch",
+              "brand"
+            ],
+            "summary": "寻找 27 英寸左右的显示器，尺寸暂不作为硬约束"
+          },
+          "duration_ms": 2.476,
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已由 provenance gate 建立带来源约束；active=2，rejected_model_fields=0。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "寻找 27 英寸左右的显示器，尺寸暂不作为硬约束",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "filter_count": 0,
+            "reason": "初步获取中国大陆市场在售显示器样本，用于后续按软偏好 display_size_inch ~ 27 筛选",
+            "sql": "SELECT model_id, model_name, brand, display_size_inch, panel_type, refresh_rate_hz, resolution, has_usb_c, usb_c_video, usb_c_power_delivery_w, region FROM products WHERE region = 'CN' LIMIT 10"
+          },
+          "duration_ms": 1.643,
+          "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+          "parent_step": null,
+          "result_summary": "确定性只读模板返回 12 个完整候选；缺失字段 6 类。",
+          "status": "success",
+          "step": 3,
+          "stop_or_degrade_reason": null,
+          "task_summary": "寻找 27 英寸左右的显示器，尺寸暂不作为硬约束",
+          "tool": "text2sql"
+        }
+      ],
+      "recommended_candidate_verifications": [],
+      "recommended_model_ids": [],
+      "repetition": 1,
+      "retrieved_model_ids": [],
+      "schema_pass": true,
+      "source_ids": [],
+      "tool_call_count": 2,
+      "tool_order_pass": false,
+      "tools_used": [
+        "text2sql"
+      ],
+      "unknown_or_conflict_reported": true,
+      "unsupported_constraints": [
+        "display_size_inch"
+      ],
+      "usage": {
+        "call_count": 4,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.012548,
+        "input_tokens": 13355,
+        "output_tokens": 932,
+        "successful_calls": 4
+      },
+      "usage_records": [
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0019344000000000002,
+          "input_tokens": 2028,
+          "item_count": 0,
+          "latency_ms": 3703.152,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 156,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0026715999999999997,
+          "input_tokens": 2667,
+          "item_count": 0,
+          "latency_ms": 6188.719,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 269,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0026088,
+          "input_tokens": 2956,
+          "item_count": 0,
+          "latency_ms": 2852.025,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 122,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0053332,
+          "input_tokens": 5704,
+          "item_count": 0,
+          "latency_ms": 8943.565,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 385,
+          "status_code": null,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "repetition_start": 1,
+  "repetitions": 1,
+  "run_id": "stage6-72c30b4874dd",
+  "stability": {
+    "agentic_rag_checker": {
+      "abstention_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      },
+      "checker_workflow_fingerprint_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      },
+      "cost_coefficient_of_variation": null,
+      "final_candidate_set_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      },
+      "latency_coefficient_of_variation": null,
+      "ranking_jaccard": null,
+      "three_run_case_count": 0,
+      "tool_path_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      }
+    }
+  }
+}

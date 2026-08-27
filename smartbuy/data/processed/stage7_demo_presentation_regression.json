@@ -1,0 +1,828 @@
+{
+  "version": "stage7-demo-presentation-regression-v1",
+  "passed": true,
+  "results": [
+    {
+      "case": "demo-2-presentation",
+      "elapsed_ms": 45668.313,
+      "unresolved_fields": [],
+      "report": {
+        "request_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+        "task_type": "filter",
+        "tools_used": [
+          "text2sql",
+          "kb_search",
+          "evidence_check"
+        ],
+        "hard_constraints": [
+          {
+            "field": "region",
+            "operator": "eq",
+            "value": "CN",
+            "hard": true
+          },
+          {
+            "field": "display_size_inch",
+            "operator": "eq",
+            "value": 27.0,
+            "hard": true
+          },
+          {
+            "field": "resolution",
+            "operator": "eq",
+            "value": "3840x2160",
+            "hard": true
+          },
+          {
+            "field": "usb_c_video",
+            "operator": "eq",
+            "value": true,
+            "hard": true
+          },
+          {
+            "field": "has_usb_c",
+            "operator": "eq",
+            "value": true,
+            "hard": true
+          },
+          {
+            "field": "usb_c_power_delivery_w",
+            "operator": "gte",
+            "value": 90.0,
+            "hard": true
+          }
+        ],
+        "candidates": [
+          {
+            "model_id": "dell-u2723qe-cn",
+            "region": "CN",
+            "overall_status": "matched",
+            "eligible": true,
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "price_cny": 3608.99,
+            "price_observed_at": null
+          },
+          {
+            "model_id": "asus-pa279crv-cn",
+            "region": "CN",
+            "overall_status": "matched",
+            "eligible": true,
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "price_cny": null,
+            "price_observed_at": null
+          },
+          {
+            "model_id": "lg-27up850k-w-cn",
+            "region": "CN",
+            "overall_status": "matched",
+            "eligible": true,
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "price_cny": null,
+            "price_observed_at": null
+          }
+        ],
+        "recommended_model_ids": [
+          "dell-u2723qe-cn",
+          "asus-pa279crv-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "abstained": false,
+        "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+        "constraint_checker_version": "smartbuy-constraint-checker-v1",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "set_requirements",
+            "arguments_summary": {
+              "summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+              "required_fields": [
+                "model_id",
+                "model_name",
+                "brand",
+                "panel_type",
+                "refresh_rate_hz",
+                "price_cny",
+                "warranty"
+              ],
+              "constraint_count": 5
+            },
+            "status": "success",
+            "result_summary": "已由 provenance gate 建立带来源约束；active=6，rejected_model_fields=2。",
+            "next_action": "按问题类型选择 KB 或只读 SQL。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 2.29
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "text2sql",
+            "arguments_summary": {
+              "sql": "SELECT model_id, model_name, brand, panel_type, refresh_rate_hz, price_cny, warranty FROM products WHERE region = 'CN' AND display_size_inch = 27.0 AND resolution = '3840x2160' AND usb_c_video = 1 AND has_usb_c = 1 AND usb_c_power_delivery_w >= 90.0",
+              "filter_count": 6,
+              "reason": "执行硬约束筛选：中国版、27英寸、4K、USB-C视频输入、具备USB-C接口、供电≥90W"
+            },
+            "status": "success",
+            "result_summary": "确定性只读模板返回 3 个完整候选；缺失字段 4 类。",
+            "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 1.515
+          },
+          {
+            "step": 3,
+            "parent_step": 2,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "evidence_check",
+            "arguments_summary": {
+              "model_ids": [
+                "dell-u2723qe-cn",
+                "asus-pa279crv-cn",
+                "lg-27up850k-w-cn"
+              ],
+              "required_fields": [
+                "model_id",
+                "model_name",
+                "brand",
+                "panel_type",
+                "refresh_rate_hz",
+                "price_cny",
+                "warranty",
+                "region",
+                "display_size_inch",
+                "resolution",
+                "usb_c_video",
+                "has_usb_c",
+                "usb_c_power_delivery_w"
+              ],
+              "constraint_count": 6,
+              "reason": "核验全部候选型号的关键字段是否满足硬约束及完整性要求"
+            },
+            "status": "failed",
+            "result_summary": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+            "next_action": "根据错误码选择受控降级或安全停止。",
+            "stop_or_degrade_reason": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+            "duration_ms": 0.067
+          },
+          {
+            "step": 4,
+            "parent_step": 2,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "kb_search",
+            "arguments_summary": {
+              "query_summary": "Dell UltraSharp U2723QE 中国版官方规格",
+              "model_ids": [
+                "dell-u2723qe-cn",
+                "asus-pa279crv-cn",
+                "lg-27up850k-w-cn"
+              ],
+              "required_fields": [
+                "model_id",
+                "model_name",
+                "brand",
+                "panel_type",
+                "refresh_rate_hz",
+                "price_cny",
+                "warranty",
+                "region",
+                "display_size_inch",
+                "resolution",
+                "usb_c_video",
+                "has_usb_c",
+                "usb_c_power_delivery_w"
+              ],
+              "reason": "为 Dell U2723QE-CN 补全缺失字段，特别是 warranty 和 price_cny 官方信息"
+            },
+            "status": "success",
+            "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+            "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 372.188
+          },
+          {
+            "step": 5,
+            "parent_step": 2,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "kb_search",
+            "arguments_summary": {
+              "query_summary": "ASUS ProArt PA279CRV 中国版官方规格",
+              "model_ids": [
+                "dell-u2723qe-cn",
+                "asus-pa279crv-cn",
+                "lg-27up850k-w-cn"
+              ],
+              "required_fields": [
+                "model_id",
+                "model_name",
+                "brand",
+                "panel_type",
+                "refresh_rate_hz",
+                "price_cny",
+                "warranty",
+                "region",
+                "display_size_inch",
+                "resolution",
+                "usb_c_video",
+                "has_usb_c",
+                "usb_c_power_delivery_w"
+              ],
+              "reason": "为 ASUS PA279CRV-CN 补全缺失字段，特别是 warranty 和 price_cny 官方信息"
+            },
+            "status": "success",
+            "result_summary": "KB 命中 6 个证据片段；Reranker 成功。",
+            "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 241.161
+          },
+          {
+            "step": 6,
+            "parent_step": 2,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "kb_search",
+            "arguments_summary": {
+              "query_summary": "LG 27UP850K-W 中国版官方规格",
+              "model_ids": [
+                "dell-u2723qe-cn",
+                "asus-pa279crv-cn",
+                "lg-27up850k-w-cn"
+              ],
+              "required_fields": [
+                "model_id",
+                "model_name",
+                "brand",
+                "panel_type",
+                "refresh_rate_hz",
+                "price_cny",
+                "warranty",
+                "region",
+                "display_size_inch",
+                "resolution",
+                "usb_c_video",
+                "has_usb_c",
+                "usb_c_power_delivery_w"
+              ],
+              "reason": "为 LG 27UP850K-W-CN 补全缺失字段，特别是 warranty 和 price_cny 官方信息"
+            },
+            "status": "success",
+            "result_summary": "KB 命中 8 个证据片段；Reranker 成功。",
+            "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 258.992
+          },
+          {
+            "step": 7,
+            "parent_step": 6,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "evidence_check",
+            "arguments_summary": {
+              "model_ids": [
+                "dell-u2723qe-cn",
+                "asus-pa279crv-cn",
+                "lg-27up850k-w-cn"
+              ],
+              "required_fields": [
+                "region",
+                "display_size_inch",
+                "resolution",
+                "usb_c_video",
+                "has_usb_c",
+                "usb_c_power_delivery_w",
+                "price_cny"
+              ],
+              "constraint_count": 6,
+              "reason": "核验全部候选型号的关键字段是否满足硬约束及完整性要求"
+            },
+            "status": "success",
+            "result_summary": "核验 3 个型号、7 个字段；matched=19，not_matched=0，unknown=2，conflict=0。",
+            "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 3.931
+          },
+          {
+            "step": 8,
+            "parent_step": null,
+            "task_summary": "中国版27英寸4K USB-C视频+90W供电显示器",
+            "tool": "finish_decision",
+            "arguments_summary": {
+              "agent_requested_stop": true
+            },
+            "status": "success",
+            "result_summary": "已满足显式停止条件。",
+            "next_action": "停止并生成经过 Schema 校验的报告。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.094
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "ev-dell-u2723qe-cn-region",
+            "source_id": "src-dell-u2723qe-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-u2723qe-cn",
+            "region": "CN",
+            "field": "region",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-u2723qe-cn-display-size-inch",
+            "source_id": "src-dell-u2723qe-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-u2723qe-cn",
+            "region": "CN",
+            "field": "display_size_inch",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-u2723qe-cn-resolution",
+            "source_id": "src-dell-u2723qe-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-u2723qe-cn",
+            "region": "CN",
+            "field": "resolution",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-u2723qe-cn-usb-c-video",
+            "source_id": "src-dell-u2723qe-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-u2723qe-cn",
+            "region": "CN",
+            "field": "usb_c_video",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-u2723qe-cn-has-usb-c",
+            "source_id": "src-dell-u2723qe-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-u2723qe-cn",
+            "region": "CN",
+            "field": "has_usb_c",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-u2723qe-cn-usb-c-power-delivery-w",
+            "source_id": "src-dell-u2723qe-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-u2723qe-cn",
+            "region": "CN",
+            "field": "usb_c_power_delivery_w",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-pa279crv-cn-region",
+            "source_id": "src-asus-pa279crv-cn-spec",
+            "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-pa279crv-cn",
+            "region": "CN",
+            "field": "region",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-pa279crv-cn-display-size-inch",
+            "source_id": "src-asus-pa279crv-cn-spec",
+            "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-pa279crv-cn",
+            "region": "CN",
+            "field": "display_size_inch",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-pa279crv-cn-resolution",
+            "source_id": "src-asus-pa279crv-cn-spec",
+            "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-pa279crv-cn",
+            "region": "CN",
+            "field": "resolution",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-pa279crv-cn-usb-c-video",
+            "source_id": "src-asus-pa279crv-cn-spec",
+            "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-pa279crv-cn",
+            "region": "CN",
+            "field": "usb_c_video",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-pa279crv-cn-has-usb-c",
+            "source_id": "src-asus-pa279crv-cn-spec",
+            "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-pa279crv-cn",
+            "region": "CN",
+            "field": "has_usb_c",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-pa279crv-cn-usb-c-power-delivery-w",
+            "source_id": "src-asus-pa279crv-cn-spec",
+            "source_url": "https://www.asus.com.cn/displays-desktops/monitors/proart/proart-display-pa279crv/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-pa279crv-cn",
+            "region": "CN",
+            "field": "usb_c_power_delivery_w",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lg-27up850k-w-cn-region",
+            "source_id": "src-lg-27up850k-w-cn-product",
+            "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+            "source_type": "official_product",
+            "model_id": "lg-27up850k-w-cn",
+            "region": "CN",
+            "field": "region",
+            "value": null,
+            "location": "支架与机身",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lg-27up850k-w-cn-display-size-inch",
+            "source_id": "src-lg-27up850k-w-cn-product",
+            "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+            "source_type": "official_product",
+            "model_id": "lg-27up850k-w-cn",
+            "region": "CN",
+            "field": "display_size_inch",
+            "value": null,
+            "location": "支架与机身",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lg-27up850k-w-cn-resolution",
+            "source_id": "src-lg-27up850k-w-cn-product",
+            "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+            "source_type": "official_product",
+            "model_id": "lg-27up850k-w-cn",
+            "region": "CN",
+            "field": "resolution",
+            "value": null,
+            "location": "支架与机身",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lg-27up850k-w-cn-usb-c-video",
+            "source_id": "src-lg-27up850k-w-cn-product",
+            "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+            "source_type": "official_product",
+            "model_id": "lg-27up850k-w-cn",
+            "region": "CN",
+            "field": "usb_c_video",
+            "value": null,
+            "location": "支架与机身",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lg-27up850k-w-cn-has-usb-c",
+            "source_id": "src-lg-27up850k-w-cn-product",
+            "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+            "source_type": "official_product",
+            "model_id": "lg-27up850k-w-cn",
+            "region": "CN",
+            "field": "has_usb_c",
+            "value": null,
+            "location": "支架与机身",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lg-27up850k-w-cn-usb-c-power-delivery-w",
+            "source_id": "src-lg-27up850k-w-cn-product",
+            "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+            "source_type": "official_product",
+            "model_id": "lg-27up850k-w-cn",
+            "region": "CN",
+            "field": "usb_c_power_delivery_w",
+            "value": null,
+            "location": "支架与机身",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          }
+        ],
+        "usage": {
+          "call_count": 14,
+          "successful_calls": 14,
+          "degraded_calls": 0,
+          "input_tokens": 119764,
+          "output_tokens": 1688,
+          "estimated_cost_cny": 0.0984669
+        }
+      }
+    },
+    {
+      "case": "demo-3-presentation",
+      "elapsed_ms": 51912.709,
+      "unresolved_fields": [],
+      "report": {
+        "request_summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+        "task_type": "filter",
+        "tools_used": [
+          "text2sql",
+          "kb_search",
+          "evidence_check"
+        ],
+        "hard_constraints": [
+          {
+            "field": "display_size_inch",
+            "operator": "eq",
+            "value": 27.0,
+            "hard": true
+          },
+          {
+            "field": "resolution",
+            "operator": "eq",
+            "value": "3840x2160",
+            "hard": true
+          },
+          {
+            "field": "price_cny",
+            "operator": "lte",
+            "value": 2500.0,
+            "hard": true
+          },
+          {
+            "field": "is_oled",
+            "operator": "eq",
+            "value": false,
+            "hard": true
+          }
+        ],
+        "candidates": [
+          {
+            "model_id": "dell-s2722qc-cn",
+            "region": "CN",
+            "overall_status": "matched",
+            "eligible": true,
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "price_cny": 2299.0,
+            "price_observed_at": "2026-08-26T12:00:00+08:00"
+          }
+        ],
+        "recommended_model_ids": [
+          "dell-s2722qc-cn"
+        ],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "abstained": false,
+        "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+        "constraint_checker_version": "smartbuy-constraint-checker-v1",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+            "tool": "set_requirements",
+            "arguments_summary": {
+              "summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+              "required_fields": [
+                "model_id",
+                "model_name",
+                "brand",
+                "panel_type",
+                "refresh_rate_hz",
+                "has_usb_c",
+                "warranty",
+                "region",
+                "price_cny",
+                "display_size_inch",
+                "resolution"
+              ],
+              "constraint_count": 4
+            },
+            "status": "success",
+            "result_summary": "已由 provenance gate 建立带来源约束；active=5，rejected_model_fields=0。",
+            "next_action": "按问题类型选择 KB 或只读 SQL。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.409
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+            "tool": "text2sql",
+            "arguments_summary": {
+              "sql": "SELECT model_id, model_name, brand, panel_type, refresh_rate_hz, has_usb_c, warranty, region, price_cny, display_size_inch, resolution, is_oled FROM products WHERE display_size_inch = 27.0 AND resolution = '3840x2160' AND price_cny <= 2500.0 AND is_oled = 0",
+              "filter_count": 4,
+              "reason": "按新硬约束筛选27英寸4K非OLED且价格≤2500元的候选型号"
+            },
+            "status": "success",
+            "result_summary": "确定性只读模板返回 1 个完整候选；缺失字段 0 类。",
+            "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.863
+          },
+          {
+            "step": 3,
+            "parent_step": 2,
+            "task_summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+            "tool": "evidence_check",
+            "arguments_summary": {
+              "model_ids": [
+                "dell-s2722qc-cn"
+              ],
+              "required_fields": [
+                "model_id",
+                "model_name",
+                "brand",
+                "panel_type",
+                "refresh_rate_hz",
+                "has_usb_c",
+                "warranty",
+                "region",
+                "price_cny",
+                "display_size_inch",
+                "resolution",
+                "is_oled"
+              ],
+              "constraint_count": 4,
+              "reason": "核验 Dell S2722QC-CN 是否满足全部硬约束及关键字段完整性"
+            },
+            "status": "failed",
+            "result_summary": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+            "next_action": "根据错误码选择受控降级或安全停止。",
+            "stop_or_degrade_reason": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+            "duration_ms": 0.057
+          },
+          {
+            "step": 4,
+            "parent_step": 2,
+            "task_summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+            "tool": "kb_search",
+            "arguments_summary": {
+              "query_summary": "Dell S2722QC 中国大陆官方规格与保修政策",
+              "model_ids": [
+                "dell-s2722qc-cn"
+              ],
+              "required_fields": [
+                "warranty",
+                "panel_type",
+                "refresh_rate_hz",
+                "has_usb_c",
+                "model_name",
+                "brand",
+                "region"
+              ],
+              "reason": "补全 Dell S2722QC-CN 的 warranty 等缺失字段，支撑 evidence_check"
+            },
+            "status": "success",
+            "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+            "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 272.829
+          },
+          {
+            "step": 5,
+            "parent_step": 4,
+            "task_summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+            "tool": "evidence_check",
+            "arguments_summary": {
+              "model_ids": [
+                "dell-s2722qc-cn"
+              ],
+              "required_fields": [
+                "display_size_inch",
+                "resolution",
+                "price_cny",
+                "is_oled"
+              ],
+              "constraint_count": 4,
+              "reason": "再次核验 Dell S2722QC-CN 是否满足全部硬约束及关键字段完整性，使用 KB 补全的 warranty 等字段"
+            },
+            "status": "success",
+            "result_summary": "核验 1 个型号、4 个字段；matched=4，not_matched=0，unknown=0，conflict=0。",
+            "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 1.329
+          },
+          {
+            "step": 6,
+            "parent_step": null,
+            "task_summary": "预算2500元内，27英寸4K办公显示器，非OLED",
+            "tool": "finish_decision",
+            "arguments_summary": {
+              "agent_requested_stop": true
+            },
+            "status": "success",
+            "result_summary": "已满足显式停止条件。",
+            "next_action": "停止并生成经过 Schema 校验的报告。",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.052
+          }
+        ],
+        "evidence": [
+          {
+            "evidence_id": "ev-dell-s2722qc-cn-region",
+            "source_id": "src-dell-s2722qc-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-s2722qc-cn",
+            "region": "CN",
+            "field": "region",
+            "value": null,
+            "location": "型号与显示",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-s2722qc-cn-display-size-inch",
+            "source_id": "src-dell-s2722qc-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-s2722qc-cn",
+            "region": "CN",
+            "field": "display_size_inch",
+            "value": "27.0",
+            "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+            "effective_time": "2026-08-26"
+          },
+          {
+            "evidence_id": "ev-dell-s2722qc-cn-resolution",
+            "source_id": "src-dell-s2722qc-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-s2722qc-cn",
+            "region": "CN",
+            "field": "resolution",
+            "value": "\"3840x2160\"",
+            "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+            "effective_time": "2026-08-26"
+          },
+          {
+            "evidence_id": null,
+            "source_id": "price-dell-s2722qc-20260826",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "retail_price",
+            "model_id": "dell-s2722qc-cn",
+            "region": "CN",
+            "field": "price_cny",
+            "value": 2299.0,
+            "location": "price_observations latest append-only record",
+            "effective_time": "2026-08-26T12:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-s2722qc-cn-is-oled",
+            "source_id": "src-dell-s2722qc-cn-product",
+            "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+            "source_type": "official_product",
+            "model_id": "dell-s2722qc-cn",
+            "region": "CN",
+            "field": "is_oled",
+            "value": "false",
+            "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+            "effective_time": "2026-08-26"
+          }
+        ],
+        "usage": {
+          "call_count": 8,
+          "successful_calls": 8,
+          "degraded_calls": 0,
+          "input_tokens": 40949,
+          "output_tokens": 1124,
+          "estimated_cost_cny": 0.0348116
+        }
+      }
+    }
+  ]
+}

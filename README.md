@@ -1,299 +1,238 @@
-# SmartBuy Research Agent
+# ProofPick / SmartBuy Agent
 
-多源消费决策研究 Agent：在 Youtu-RAG 基础上构建可追踪、可评测、可执行硬约束复核的消费决策系统。
+**基于 Agentic RAG 的多源显示器消费决策 Agent。** 它把自然语言需求转为有来源的约束，通过只读 SQL、知识库检索、证据四态判断和不可被 LLM 覆盖的确定性安全门，输出候选、淘汰原因、冲突、未知项与可审计轨迹。
 
-> 当前状态：**阶段 6 已完成，等待用户验收**。冻结 40 条自然任务并完成四组公平对照与三次重复：首次 E2E 为 Direct 16/40、Fixed RAG 17/40、Agentic RAG 28/40、Agentic RAG + Constraint Checker 31/40；增强组将违规候选推荐从 10/38 降为 0/43。13/13 故障降级、5/5 Memory、40/40 Checker 同输入字节一致和 5/5 热缓存输出一致均通过。首次失败与后续修复分开保留。
+> 当前状态：**可复现的作品集 / MVP 原型**。单一中国大陆显示器场景、12 个治理型号、40 条冻结自然任务；不是生产级系统、实时电商搜索平台或全品类购物助手。
 
-## 项目场景
+![Youtu-RAG WebUI 中的 SmartBuy 入口](smartbuy/docs/assets/webui-home.png)
 
-SmartBuy 面向参数复杂、资料分散且信息可能过期的真实消费选择。MVP 聚焦显示器：用户给出预算、用途、尺寸、接口、面板等要求，系统计划组合官方资料知识库、SQLite 参数查询和可选动态网页信息，输出候选、淘汰原因、证据、冲突、未知项和降级状态。
+截图来自本地实际 WebUI。工具轨迹、Checker、Memory 与冲突案例截图使用已保存的脱敏 API 结果回放，并在页面中明确标注“不是实时模型调用”；详见 [Demo 指南](smartbuy/docs/demo_guide.md)。
 
-目标用户是希望减少手工查证的普通消费者、需要严谨比较型号的数码爱好者，以及希望复用长期偏好的重复使用者。本项目用于展示一个真实 Agent 工程，不是秋招流程辅助工具。
+## 项目解决的问题
 
-## 当前能力
+显示器选购的稳定规格分散在官方说明书、支持页面与产品页，价格又有地区和时间边界。普通搜索难以同时核验型号版本与多项硬条件；普通聊天模型可能依赖过时知识或遗漏约束；固定 RAG 能找证据，却不擅长先筛候选、再按缺失字段多跳补查，也不能阻止模型推荐已违反预算或接口要求的商品。
 
-### 已实现并验证
+SmartBuy 面向希望减少手工查证的普通消费者和数码爱好者。用户可以提出“27 英寸、4K、非 OLED、USB-C 视频且至少 90W 供电”等组合需求，系统区分硬约束、软偏好、未知和冲突，并保留可追溯来源。
 
-- 将 Youtu-RAG 上游 Commit `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066` 以 `git subtree --squash` 固定纳入 `vendor/youtu-rag/`。
-- 在 Windows 11、Python 3.12.3、uv 0.12.3 上完成 `uv sync --frozen`，锁文件无需修改。
-- 本机回环地址启动 MinIO、FastAPI、Youtu-RAG WebUI 和 `/monitor`，相关入口均返回 HTTP 200。
-- 上传自制 Markdown 测试文件、查看文件列表、创建知识库并关联文件。
-- `qwen-plus` 普通调用、SSE 流式和 Tool Calling 均通过有界真实调用。
-- `text-embedding-v4` 批量返回数量与顺序正确，每条严格为 1024 维。
-- 阶段 1 自制文档已重建为 2 chunks；API 状态与目标 Chroma collection 实际计数一致。
-- KB Search 能召回夹具事实，`qwen3-rerank` 在向量召回后完成二阶段排序；失败时可显式回退向量顺序。
-- 401 不重试；429、5xx 和超时有限退避；错误 Embedding 维度阻断索引写入。
-- 使用无 Web Search 工具的基础 Agent，缺少 Serper 凭据不影响默认启动、Chat 或 KB 主链路。
-- OCR、HiChunk、本地模型和 Memory 在当前文本基线中保持关闭。
-- 修复上游配置接口返回解析后凭据的风险；递归脱敏单测和真实接口回归通过。
-- 修复上游 Toolkit 配置日志泄露、Windows UTF-8、向量路径分裂和 `force_rebuild` 仍被跳过的问题。
-- 建立 12 型号、4 品牌、16 来源、4 条价格观察、180 条字段级证据和 12 张自制事实卡的显示器数据 v1。
-- SQLite 可由源 JSON 原子重建；连续重建逻辑哈希一致，0 外键违规且 `integrity=ok`，运行数据库不进入 Git。
-- 正式知识库构建状态 `completed`，60 文档/60 chunks 与 Chroma 一致；每块保留型号、地区、来源、时间、切分和 Embedding 契约元数据。
-- 40 条检索任务中，Vector-only / Reranker Recall@5 为 0.8912 / 0.9838，nDCG@5 为 0.8170 / 0.9541；相似型号 Top-1 错误率从 50% 降至 0%。
-- Reranker 强制降级保留向量结果；固定阈值无证据拒答为 0/4，已明确记录为后续边界。
-- 实现最多 8 步、12 次工具调用的 qwen-plus Tool Calling 循环；依赖门禁保证组合任务按 SQL → KB → Evidence 观察链推进，轨迹不记录隐藏思维链。
-- Text2SQL 使用只读 SQLite、单 SELECT、表列白名单、SQLite authorizer、超时与最大行数；非法 SQL 可受控模板降级，禁止无条件全表降级。
-- Evidence Check 按字段证据、型号/地区、时效和冲突输出 `matched/not_matched/unknown/conflict`，不再以固定 Reranker 阈值拒答。
-- Web Search 标准工具当前返回 `unavailable`；无凭据时 KB + SQLite 主链路仍可完成稳定 Demo，未宣称动态搜索已实现。
-- 短期会话约束和候选可继承/覆盖；长期偏好须明确确认，支持查看、覆盖、删除和关闭，且拒绝保存价格、库存和商品事实。
-- 结构化报告经 Pydantic Schema 校验并渲染 Markdown；WebUI 展示工具卡片，`/monitor` 展示脱敏运行摘要。
-- 最终 16 条 E2E：工具选择 16/16、正例型号召回 7/7、9 条应拒答样本 9/9、多跳 8/8、Schema 16/16、端到端 15/16；修复后失败用例独立回归 1/1。
-- 建立带来源 `ConstraintSet`：当前输入 > 会话确认 > 已启用长期偏好 > 系统默认；模型推测、工具结果和商品资料不能反向成为用户硬约束。
-- Checker 从 SQL、KB 和 Evidence 阶段累计的完整候选池读取只读 SQLite 与同地区证据，逐字段输出 `passed/failed/unknown/conflict`；只有全部受支持硬约束通过才可推荐。
-- LLM 只能在完整合规集合内按软偏好排序；集合外新增项会被删除，遗漏合规项会由代码补回。SSE/Monitor 已展示 Checker 版本、字段状态、证据和降级。
-- 阶段 5 固定套件：自然用例 55/55 字段、10/10 任务；故障注入 21/21 字段、12/12 任务、12/12 拦截；合规候选误杀 0，Checker 不调用 API。
-- 阶段 6 冻结 16 条 regression + 24 条 holdout；四组各运行 3 次，共 480 个唯一预测。增强组首次/三次聚合 E2E 为 31/40、92/120，最终候选集合三次一致 40/40。
-- 统一脱敏账本覆盖模型、工具、父步骤、延迟、重试、缓存、Token、成本和错误类别；不保存 Prompt、隐藏思维链或凭据。
-- 公共评测缓存具备 TTL、容量、版本失效、校验和、手动清空与动态数据绕过；5 条冷/热查询输出一致 5/5，平均延迟从 1441.682ms 降至 10.436ms。主四组实验未使用热缓存。
-- 受控故障注入 13/13：包括 401/403 不重试、429/5xx 有界处理、Embedding 缓存、非法 SQL、SQLite/Chroma/Memory/Web/Checker/ReAct/缓存故障；Checker 异常始终 fail closed。
+## 核心能力
 
-### 尚未实现或尚未验证
+- 最多 8 步、12 次工具调用的有界 qwen-plus ReAct 循环，不记录隐藏思维链。
+- 只读安全 Text2SQL、KB Search、qwen3-rerank 二阶段重排与 Evidence Check 协同。
+- SQL 候选 → 分型号 KB 核验 → 缺失/冲突补查的依赖式多跳。
+- 短期会话条件继承/覆盖；长期偏好须明确确认，支持查看、关闭和删除。
+- `matched/not_matched/unknown/conflict` 四态证据模型。
+- 从完整工具候选池独立复核的 Constraint Checker；LLM 不能修改资格集合。
+- Web Search 标准接口在无凭据时显式 `unavailable/degraded`，KB + SQL 主链路仍可工作。
+- 脱敏 SSE/Monitor、统一评测账本、安全缓存和受控故障注入。
 
-- 真实 Web Search 与动态价格/库存补充；当前没有凭据，只验证 unavailable/degraded 接口。
-- 阶段 7 的干净 Windows 复现、五分钟演示和发布材料整理。
-- GraphRAG 不属于 MVP 或阶段 1～6 默认任务，不得视为已实现能力。
+## 系统架构
 
-## 上游原生能力与本项目贡献
-
-| 范围 | 内容 |
-|---|---|
-| Youtu-RAG 上游 | FastAPI/WebUI、文件管理、知识库框架、Agent 配置、检索与监控基础设施 |
-| SmartBuy 阶段 1 新增 | 固定版本 subtree、Windows 云 API 启动脚本、运行清单、许可证/差异记录、阶段测试夹具、配置接口凭据脱敏及回归测试 |
-| SmartBuy 阶段 2 新增 | 统一百炼配置与 Provider、1024 维索引契约、用量账本、Youtu Embedding/Reranker 适配、有限重试/降级和日志安全回归 |
-| SmartBuy 阶段 3 新增 | 显示器数据治理、四实体 Schema、可重建 SQLite、自制事实卡、正式 Chroma 知识库、40 条检索集和 Vector/Reranker 基线 |
-| SmartBuy 阶段 4 新增 | 有界 ReAct、KB/只读 SQL/Evidence/Web 降级工具、分层 Memory、Schema 报告、SSE/Monitor 与 16 条 E2E |
-| SmartBuy 阶段 5 新增 | 来源门禁、完整候选池、只读确定性 Checker、软排序护栏、SSE/Monitor 字段审计、自然/故障注入消融 |
-| SmartBuy 阶段 6 新增 | 冻结四组 Runner、确定性 Scorer、三次稳定性、统一账本、隐私安全缓存、故障注入、Memory/Checker 专项与真实量化报告 |
-| SmartBuy 后续计划 | 阶段 7 干净 Windows 复现、演示和发布整理 |
-
-供应商目录差异见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)，纳入决策见 [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)。
-
-## 技术路线
-
-当前主线是 Agentic RAG，不是 GraphRAG：
-
-```text
-用户需求与偏好
-      ↓
-Youtu-RAG WebUI / FastAPI / SSE
-      ↓
-有界 Agent 规划、工具观察与继续规划（阶段 4 已实现）
-      ├─ KB Search：官方文档事实
-      ├─ Text2SQL：SQLite 参数、硬约束与计算
-      └─ Web Search：当前价格、库存和近期变化（有凭据时）
-      ↓
-向量召回 → qwen3-rerank 二阶段重排 → 字段 Evidence Check（阶段 4 已实现）
-      ↓
-最终确定性 Constraint Checker（阶段 5 已实现）
-      ↓
-推荐、淘汰原因、证据、冲突、未知项和降级状态
+```mermaid
+flowchart TD
+    U[用户需求 / 已确认偏好] --> P[来源门禁与 ConstraintSet]
+    P --> R[有界 ReAct]
+    R --> SQL[只读 Text2SQL]
+    R --> KB[向量召回 + qwen3-rerank]
+    R --> EV[Evidence Check 四态]
+    R --> WEB[Web Search unavailable / degraded]
+    SQL --> POOL[完整候选池]
+    KB --> POOL
+    EV --> POOL
+    POOL --> CHECK[确定性 Constraint Checker]
+    CHECK -->|passed only| RANK[LLM 仅按软偏好排序与解释]
+    CHECK -->|failed / unknown / conflict| OUT[淘汰、拒答或待确认]
+    RANK --> REPORT[结构化报告 + Markdown + SSE / Monitor]
+    OUT --> REPORT
 ```
 
-## 技术栈
+LLM 负责理解、规划、工具调用与解释；SQLite/证据记录提供事实；Checker 负责硬约束资格。Checker 不在 LLM 工具白名单中，异常时 fail closed。
 
-| 技术 | 当前状态 |
-|---|---|
-| Python 3.12、uv | 阶段 1 已验证 |
-| Youtu-RAG / Youtu-Agent | 固定上游版本已纳入；基线已验证 |
-| FastAPI、原生 WebUI、Monitor | 阶段 1 已验证 |
-| MinIO、SQLite、Chroma、FAISS | MinIO 基线已运行；SQLite 可重建；Chroma 60-chunk 正式索引已验证；FAISS 未作为当前主链路 |
-| 百炼 `qwen-plus` | 普通、流式、Tool Calling 已验证 |
-| 百炼 `text-embedding-v4`（1024 维） | 批量、契约校验、建库与 KB Search 已验证 |
-| 百炼 `qwen3-rerank` | 独立和 Youtu 二阶段排序、有限重试与降级已验证 |
-| Pytest 与项目 Eval Runner | 数据/索引、SQL/Evidence/Memory/Agent、Constraint Checker、缓存、账本、API/SSE 回归已加入；四组、重复稳定性和故障注入均有真实结果 |
+## Agent 执行流程
 
-## 快速开始（阶段 6 已验证范围）
+1. 从当前输入、会话确认、启用的长期偏好和系统默认中构建带 provenance 的约束，优先级依次降低。
+2. Agent 按任务选择 KB、SQL、Evidence 或不可用 Web 工具；依赖门禁阻止越序和越权。
+3. 根据候选数量、缺失字段、来源冲突与工具状态继续多跳，达到步骤/预算上限时安全停止。
+4. Checker 读取完整稳定 `model_id` 候选池、只读 SQLite 与同地区证据，逐字段生成 passed/failed/unknown/conflict。
+5. 只有全部受支持硬约束 passed 的候选可进入软偏好排序；报告展示证据、时间、地区、降级和停止原因。
 
-### 1. 前置条件
+## 四个稳定 Demo
 
-- Windows 11、Python 3.12、uv。
-- 从 MinIO 官方发行渠道取得 Windows Server 二进制，放在短 ASCII 仓库外路径，例如 `C:/ai/minio/minio.exe`。
-- 在 Windows 系统环境变量中配置 `Qianwen_api_key` 和 `Qianwen_workspace_id`，然后重启终端/IDE/服务，使新进程继承变量。正式程序只通过 `os.getenv` 读取当前进程；不要打印值，也不要创建真实 `.env`。
+| Demo | 固定场景 | 实测结果 | 主要展示 |
+|---|---|---:|---|
+| 1 单文档事实 | U2723QE 尺寸与分辨率 | 通过，13.741s | KB 与官方证据；不调用 SQL/Web |
+| 2 组合多跳 | 27 英寸、4K、USB-C 视频、≥90W | 通过，41.668s | SQL → KB → Evidence → Checker |
+| 3 分层 Memory | 3500 元改为 2500 元并排除 OLED | 5/5，三轮 83.903s | 会话覆盖、跨会话召回、删除 |
+| 4 冲突拒答 | PD2705U 官方 60W/65W 冲突 | 4/4，19.947s | 双方来源、conflict、无推荐 |
 
-### 2. 同步依赖
+首次本地 API 演示验证为 **4/4**，6 次 Agent 调用估算 ¥0.2202436。完整输入、预期轨迹、备用步骤和截图见 [Demo 指南](smartbuy/docs/demo_guide.md)。
+
+![依赖式工具轨迹回放](smartbuy/docs/assets/react-tool-trace.png)
+
+## Windows 快速开始
+
+### 前置条件
+
+- Windows 11、Python 3.12、Git、[uv](https://docs.astral.sh/uv/)。
+- 从 MinIO 官方渠道取得 Windows Server 二进制，默认放在仓库外 `C:/ai/minio/minio.exe`；二进制不进入 Git。
+- 在 Windows 系统环境变量配置 `Qianwen_api_key` 与 `Qianwen_workspace_id`，然后重启终端/IDE，使新进程继承。不要创建真实 `.env`。
+- 为本地 MinIO 在当前 PowerShell 进程输入凭据，不写入脚本或系统环境：
 
 ```powershell
-Set-Location vendor/youtu-rag
-uv sync --frozen
-Set-Location ../..
+$env:MINIO_ROOT_USER = Read-Host "MinIO local user"
+$securePassword = Read-Host "MinIO local password" -AsSecureString
+$passwordPointer = [Runtime.InteropServices.Marshal]::SecureStringToBSTR($securePassword)
+try {
+    $env:MINIO_ROOT_PASSWORD = [Runtime.InteropServices.Marshal]::PtrToStringBSTR($passwordPointer)
+} finally {
+    [Runtime.InteropServices.Marshal]::ZeroFreeBSTR($passwordPointer)
+}
 ```
 
-该命令已在目标主机验证。若 `uv.lock` 被意外修改，应先查明原因，不要把非必要锁文件变化混入阶段提交。
-
-### 3. 启动本地服务
-
-MinIO 和 Youtu-RAG 必须使用一致的当前进程 MinIO 凭据。真实值只放在本地进程环境，不写入仓库、脚本或命令示例；开发服务只绑定 `127.0.0.1`。
+### 克隆、构建与启动
 
 ```powershell
-# 在当前 PowerShell 中安全设置 MINIO_ROOT_USER、MINIO_ROOT_PASSWORD、
-# MINIO_ACCESS_KEY、MINIO_SECRET_KEY 后，启动仓库外 MinIO Server。
-# 随后在继承同一环境的终端运行：
-./smartbuy/scripts/start_youtu_rag.ps1
+git clone <本仓库的 SSH 或 HTTPS 地址> C:\ai\proofpick
+Set-Location C:\ai\proofpick
+
+./smartbuy/scripts/preflight.ps1
+./smartbuy/scripts/bootstrap.ps1
+./smartbuy/scripts/start.ps1
 ```
 
-阶段 2 验证入口：
+`bootstrap.ps1` 会执行冻结依赖同步、治理数据校验、仓库外 SQLite 幂等重建和 Chroma 校验；新环境首次构建 1024 维知识库会产生少量 Embedding 费用。脚本不会自动创建收费资源或修改系统环境变量。
 
-- WebUI：`http://127.0.0.1:8000/`
-- 健康检查：`http://127.0.0.1:8000/health`
-- Monitor：`http://127.0.0.1:8000/monitor`
-- MinIO Console：`http://127.0.0.1:9001/`
+访问入口：
 
-阶段 2 服务链路可验证上传、文件管理、知识库创建/关联、基础 Chat、文本建库、KB Search 和二阶段 Rerank；该服务冒烟仍只使用一个自制文档。阶段 3 的检索质量由独立 12 型号/40 任务语料测量，不能把两套证据混为一谈。完整版本和路径见 [Runtime Manifest](smartbuy/docs/runtime_manifest.md)。
+- WebUI：`http://127.0.0.1:8000/`，在聊天页启用 **SmartBuy**。
+- 健康检查：`http://127.0.0.1:8000/health`。
+- Monitor：`http://127.0.0.1:8000/monitor`。
+- MinIO Console：`http://127.0.0.1:9001/`。
 
-聊天页勾选 **SmartBuy** 后会调用 `/api/smartbuy/chat`，在现有工具卡片中展示脱敏步骤，并在最终卡片渲染结构化 Markdown 报告。Memory 开关只控制按需召回已确认的长期偏好；不会保存本轮价格、库存或模型推测。
-
-### 4. 有界 Provider 验证（会产生少量费用）
+完成后停止：
 
 ```powershell
-uv run --project vendor/youtu-rag python -m smartbuy.scripts.verify_bailian_stage2
+./smartbuy/scripts/stop.ps1
 ```
 
-该脚本只输出配置状态、计数、维度、Token、延迟和估算成本，不输出 Key 或模型正文。它不是默认 CI 测试；运行前应确认阶段预算。
-
-### 5. 重建阶段 3 数据与 SQLite（离线）
-
-```powershell
-python -m smartbuy.scripts.build_stage3_data
-python -m smartbuy.scripts.validate_stage3_data
-python -m smartbuy.db.build_database --output C:\ai\smartbuy-stage3\smartbuy_monitors_v1.sqlite
-```
-
-命令从版本化源数据生成 processed JSONL、12 张事实卡和工作区外 SQLite。当前应得到 products 12、prices 4、sources 16、evidence 180，且连续重建逻辑哈希一致。数据范围和许可边界见[数据卡](smartbuy/docs/data_card.md)。
-
-### 6. 重建正式知识库与运行检索评测（会产生少量费用）
-
-```powershell
-$env:PYTHONPATH="$PWD;$PWD\vendor\youtu-rag"
-vendor\youtu-rag\.venv\Scripts\python.exe -m smartbuy.scripts.build_stage3_index --mode pilot
-vendor\youtu-rag\.venv\Scripts\python.exe -m smartbuy.scripts.build_stage3_index --mode full
-vendor\youtu-rag\.venv\Scripts\python.exe -m smartbuy.scripts.verify_stage3_index
-vendor\youtu-rag\.venv\Scripts\python.exe -m smartbuy.eval.run_retrieval_eval
-```
-
-先跑 3 个型号的小样本，再全量构建；输入未变化时不要重复全量向量化。真实索引和评测结果见[阶段 3 报告](smartbuy/docs/stage3_data_and_retrieval_report.md)。Chroma 默认位于 `C:/ai/smartbuy-stage3/`，不进入 Git。
-
-### 7. 运行阶段 4 Agent 评测（会产生费用）
-
-```powershell
-$env:PYTHONPATH="$PWD;$PWD\vendor\youtu-rag"
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage4_eval --dry-run
-# 只有 dry run 通过且预算允许时再运行：
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage4_eval
-```
-
-脚本先支持 4 条 dry run，再运行 16 条完整集合；每任务有步骤、工具调用和成本硬上限。真实指标、失败样本和成本见[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)。
-
-### 8. 运行阶段 5 Constraint Checker 评测
-
-```powershell
-$env:PYTHONPATH="$PWD;$PWD\vendor\youtu-rag"
-
-# 纯本地：固定候选池、自然硬约束与独立故障注入，不调用 API
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage5_eval --fixed
-
-# 在线命令会产生费用；只有本地门槛和 4 条 dry run 通过后才运行 full
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage5_eval --dry-run
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage5_eval --full
-```
-
-首次完整在线结果及后续定向回归分开保存，不用重跑覆盖失败。精确分母、延迟、成本和已知边界见[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)。
-
-### 9. 运行阶段 6 评测
-
-```powershell
-$env:PYTHONPATH = (Get-Location).Path
-
-# 离线冻结检查与故障/Memory 回归
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_eval --validate-freeze
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_resilience --all-local
-
-# 在线：先 smoke；完整三次会产生费用，checkpoint 支持续跑
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_eval --smoke
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_eval --full --repetitions 3 --checkpoint C:/ai/smartbuy-stage6/reproduction.jsonl
-
-# 独立缓存与本地 Checker 确定性
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_cache_benchmark
-uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_checker_determinism
-```
-
-完整命令、冻结哈希、首次失败、四组精确分母、缓存与成本口径见[阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)。当前价格仍是离线 `observed_at` 观察，不保证实时价格或库存。
-
-## Windows 环境
-
-| 项目 | 配置 |
-|---|---|
-| 操作系统 | Windows 11 |
-| Python | 3.12.3 |
-| CPU | Intel i5-10400F |
-| 内存 | 32 GB |
-| GPU | GTX 960 2 GB |
-
-GTX 960 2 GB 不作为本地大模型或 Embedding 的主要在线推理设备，云端 API 是主方案。本地模型仅可作为后续实验或明确降级。仓库依赖可位于 `vendor/youtu-rag/.venv/`，运行数据库、对象存储和索引统一放在仓库外短 ASCII 路径。
+`stop.ps1` 只停止 `start.ps1` 记录的进程树。自定义 MinIO 路径或运行目录可通过脚本参数覆盖；运行数据库、索引、对象存储、Memory 和日志始终位于 Git 仓库外。
 
 ## 环境变量
 
-仓库只记录变量名，不保存真实值：
-
-| 变量名 | 用途 | 规则 |
+| 名称 | 用途 | 安全规则 |
 |---|---|---|
-| `Qianwen_api_key` | 百炼三模型共用 API Key | 敏感；仅从继承后的 Process 环境读取，禁止输出或持久化 |
-| `Qianwen_workspace_id` | 百炼业务空间 ID | 配置项；由统一配置层读取，不在业务代码散落硬编码 |
-| `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` | 本地 MinIO Server | 仅本地进程环境；不得提交 |
-| `MINIO_ACCESS_KEY` / `MINIO_SECRET_KEY` | Youtu-RAG 访问本地 MinIO | 与 Server 当前进程配置一致；不得提交 |
+| `Qianwen_api_key` | qwen-plus、Embedding、Reranker 共用 Key | 敏感；只从当前进程读取，禁止输出或持久化 |
+| `Qianwen_workspace_id` | 百炼业务空间 | 统一配置层读取，不散落硬编码 |
+| `MINIO_ROOT_USER` / `MINIO_ROOT_PASSWORD` | 本地 MinIO Server | 仅当前进程；不得提交 |
+| `MINIO_ACCESS_KEY` / `MINIO_SECRET_KEY` | Youtu-RAG 访问 MinIO | 启动脚本只在子进程映射 |
+| `SMARTBUY_DB_PATH` / `SMARTBUY_INDEX_PATH` / `SMARTBUY_MEMORY_PATH` | 仓库外运行资产 | `start.ps1` 自动设置，不需写 `.env` |
 
-启动脚本在子进程中映射 `UTU_LLM_*`、`UTU_EMBEDDING_*` 和 `UTU_RERANKER_*`，不会写 `.env`。Embedding 模型、维度或预处理发生变化后必须建立新索引并全量重建。
+轮换 Key 后必须重启长期运行进程。Embedding 模型、维度或预处理变化后必须使用新索引并全量重建。
+
+## 数据与知识库
+
+当前公开 Demo 数据为 12 型号、4 品牌、16 来源、4 条离线价格观察、180 条字段证据和 12 份自制事实卡。SQLite 由 JSON/JSONL 和脚本生成，不手工维护；Chroma 索引含 60 chunks，每块记录型号、地区、来源、访问时间、切分版本、Embedding 模型和 1024 维契约。
+
+离线重建与校验：
+
+```powershell
+$env:PYTHONPATH = (Get-Location).Path
+uv run --project vendor/youtu-rag python -m smartbuy.scripts.build_stage3_data
+uv run --project vendor/youtu-rag python -m smartbuy.scripts.validate_stage3_data
+uv run --project vendor/youtu-rag python -m smartbuy.db.build_database `
+  --output C:\ai\smartbuy-stage3\smartbuy_monitors_v1.sqlite
+```
+
+数据许可、缺失和冲突见 [数据卡](smartbuy/docs/data_card.md)。价格只能解释为带 `observed_at` 的历史观察，不保证实时价格或库存。
 
 ## 测试与评测
 
-当前阶段相关回归命令：
+本地自动化：
 
 ```powershell
-uv run --project vendor/youtu-rag --group dev python -m pytest `
-  smartbuy/tests/unit `
-  smartbuy/tests/integration/test_youtu_bailian_adapters.py `
-  vendor/youtu-rag/tests/rag/api/test_config_security.py -q
+$env:PYTHONPATH = (Get-Location).Path
+uv run --project vendor/youtu-rag --group dev python -m pytest smartbuy/tests -q
+uv run --project vendor/youtu-rag ruff check smartbuy
 ```
 
-阶段 6 新增冻结/评分/账本契约、隐私安全缓存、checkpoint 合并、分辨率比较、故障注入和 Memory 回归。提交前全量回归为 `89 passed`；上游依赖仍有 3 条已知弃用警告。
+冻结和韧性检查：
 
-阶段 3 的 40 条任务只评估检索；阶段 4 的 16 条任务评估 Agent；阶段 5 的固定套件评估硬约束安全门；阶段 6 的 40 条自然集公平比较四组并各重复 3 次。首次结果中增强组 31/40，holdout 15/24；这不是生产 SLA。Fixed RAG JSON 格式失败、Agent 首次 ValueError、评分器修复和 checkpoint 重复调度均保留审计，详见阶段 6 报告。
+```powershell
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_eval --validate-freeze
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_resilience --all-local
+uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_checker_determinism
+```
 
-## 文档导航
+在线四组完整三次评测成本较高，默认不运行。可复现命令、配置哈希、首次失败和 checkpoint 规则见 [阶段 6 报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)。
 
-- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)：主要开发依据、阶段计划、验收指标和 DoD。
-- [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)：当前真实项目结构事实来源。
-- [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)：原始范围和总体调研结论。
-- [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)：百炼安全、端点与适配规则。
-- [Runtime Manifest](smartbuy/docs/runtime_manifest.md)：固定版本、依赖和运行状态。
-- [阶段 1 冒烟记录](smartbuy/docs/stage1_smoke_test.md)：通过项、边界和安全修复。
-- [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)：Youtu-RAG 纳入决策。
-- [阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)：三模型、建库、KB Search、错误矩阵与成本。
-- [ADR-0002](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md)：百炼 Provider 与索引契约。
-- [阶段 3 数据卡](smartbuy/docs/data_card.md)：数据范围、字段、来源、缺失、许可和质量检查。
-- [阶段 3 验证报告](smartbuy/docs/stage3_data_and_retrieval_report.md)：SQLite、知识库、检索指标、成本和失败案例。
-- [ADR-0003](smartbuy/docs/adr/0003-governed-monitor-data-and-index.md)：数据治理、Schema 和索引版本决策。
-- [阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)：ReAct、工具、Memory、E2E、成本、失败与服务冒烟。
-- [ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)：有界执行、SQL/Evidence、轨迹和 Memory 决策。
-- [阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)：固定池消融、故障注入、在线 E2E、Checker 延迟与成本。
-- [ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)：来源门禁、完整候选池、只读复核和 LLM 权限边界。
-- [阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)：四组首次/重复结果、失败、缓存、故障、成本和有效性威胁。
-- [ADR-0006](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)：冻结评测、缓存、账本和受控故障决策。
-- [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)：上游归属、许可和供应商目录差异。
+## 四组实验结果
 
-## 上游参考与致谢
+40 条冻结自然任务中包含 16 条 regression 与 24 条首次完整运行前冻结的 holdout；每组重复 3 次。主实验 cold/no-cache，不能与热缓存混比。
 
-项目基于腾讯开源 [TencentCloudADP/youtu-rag](https://github.com/TencentCloudADP/youtu-rag)，并参考 [TencentCloudADP/youtu-agent](https://github.com/TencentCloudADP/youtu-agent)。感谢上游维护者。上游能力与本项目贡献必须保持可追溯边界。
+| 组 | 三次聚合 E2E | 当前能力边界 |
+|---|---:|---|
+| Direct LLM | 46/120 | 仅 qwen-plus；无数据与工具 |
+| Fixed RAG | 51/120 | 固定向量 + Reranker + LLM |
+| Agentic RAG | 81/120 | ReAct、SQL、KB、Evidence；无最终 Checker |
+| Agentic RAG + Checker | **92/120** | 完整增强链路 |
 
-## 许可证
+增强组相对 Fixed RAG 高 **34.17 个百分点**，相对 Agentic RAG 高 **9.17 个百分点**。但增强组聚合仍只有 **92/120（76.67%）**，阶段 6 首次 holdout 为 **15/24（62.5%）**，不能解释为生产准确率或 SLA。
 
-本项目自行开发的代码采用 [MIT License](LICENSE)。Youtu-RAG 保留其[上游 MIT License](vendor/youtu-rag/LICENSE)。代码许可证不自动覆盖数据；每份数据必须单独记录来源、获取时间、哈希和再分发许可。
+阶段 7 当前代码的独立单次发布候选为 **34/40**（regression 16/16、holdout 18/24）；它不替换或合并阶段 6 历史结果。详见 [发布报告](smartbuy/docs/release_report.md)。
 
-## 安全说明
+## Constraint Checker 消融
 
-- 绝不提交或展示 API Key、Authorization 请求头、真实 `.env` 或其他凭据。
-- 配置接口必须在返回前递归脱敏；不得把解析后的原始配置写入日志或测试快照。
-- 模型请求只由后端发起，密钥不得进入前端 JavaScript。
-- Python Executor 不是安全沙箱，只能本地处理可信文件，不能暴露公网。
-- 不提交受限 PDF、个人隐私、登录后内容、运行数据库、模型权重、缓存或未经检查的日志。
-- 怀疑凭据泄露时立即停止服务、轮换凭据、扫描工作区与 Git，并只记录不含原值的处置事实。
+- 阶段 6 首次自然任务中，违规候选推荐由 Agentic RAG 的 **10/38** 降为增强组 **0/43**；两组分母不同。
+- 增强组最终候选集合三次一致 **40/40**。
+- 固定同一输入、候选池、SQLite、证据和 as_of 时，Checker 三次字节一致 **40/40**，额外模型调用和成本为 0。
+- 该结论只适用于当前数据版本和首批受支持约束字段，不表示生产环境零违规。
+
+## 缓存与错误恢复
+
+- 13 类受控故障注入 **13/13** 进入预期重试、降级或 fail-closed 路径；401/403 不重试，429/5xx/超时有界退避。
+- Checker 异常时不输出购买推荐；SQLite/Chroma 不可用时不让 LLM 心算硬约束或伪装证据核验。
+- 5 条公共 KB 查询热缓存输出一致 **5/5**，平均延迟从 1441.682ms 降至 10.436ms；仅是小样本稳定查询，不代表系统整体或生产性能。
+- 动态价格、库存、Memory 写入、最终自由文本、敏感请求和失败结果默认不缓存。
+
+## 上游与本项目贡献边界
+
+| 范围 | 能力 |
+|---|---|
+| Youtu-RAG 上游原生 | FastAPI/WebUI、文件与知识库基础设施、基础 Agent/RAG 组件 |
+| 本项目新增 | 百炼 LLM/Embedding/Reranker Provider；治理显示器数据与证据模型；有界 ReAct；安全 Text2SQL；四态 Evidence Check；分层 Memory；确定性 Checker；四组评测、缓存、故障注入、统一账本；Windows 脚本与消费决策展示 |
+
+上游固定 Commit 为 `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066`，以 `git subtree --squash` 纳入 `vendor/youtu-rag/`。详细差异、归属和 MIT 许可见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md) 与 [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)。本项目没有把上游能力描述为从零实现。
+
+## 安全、数据许可与隐私
+
+- 禁止提交或展示 API Key、Workspace ID 值、Authorization、私钥、真实 `.env`、完整 Prompt 或隐藏思维链。
+- 长期 Memory 只保存用户明确确认的稳定偏好；不保存价格、库存、商品事实或模型推测。
+- 事实卡是基于公开来源自行表述的短摘要；受限 PDF、网页全文、大量评论、Cookie 与个人信息不进入仓库。
+- SQL 只读、单 SELECT、表列白名单、authorizer、行数和超时受限；不执行模型生成代码。
+- 服务默认只绑定 `127.0.0.1`；本项目未实现公网多租户安全边界。
+
+## 已知限制
+
+- 只有显示器一个品类、12 个治理型号；不支持全品类。
+- Web Search 只有 unavailable/degraded 接口；没有实时网页搜索。
+- 只有 4 条离线价格观察；不保证实时价格或库存。
+- 阶段 7 发布候选仍有 6/40 E2E 未完成，unknown/conflict 的首次完整结果为 2/5。
+- 上游 LLM 路由和结构化输出并非完全确定，延迟也不是生产 SLA。
+- GraphRAG、Neo4j、第二品类、自动下单、生产级高并发与公网部署未实现。
+
+## 项目结构与文档导航
+
+- [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)：当前真实文件结构事实来源。
+- [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md)：开发路线、验收指标、DoD 与风险。
+- [Runtime Manifest](smartbuy/docs/runtime_manifest.md)：环境、版本、运行路径与实测状态。
+- [Demo 指南](smartbuy/docs/demo_guide.md)：四个五分钟案例、备用步骤和截图。
+- [发布报告](smartbuy/docs/release_report.md)：发布候选、修复、复现、成本和边界。
+- [作品集指标](smartbuy/docs/portfolio_metrics.md)：每个数字的分母、Commit 与允许/禁止表述。
+- [发布检查清单](smartbuy/docs/release_checklist.md)：质量、安全、许可与远端状态。
+- [阶段 6 报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)：四组实验、缓存、故障与历史失败。
+- [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md) 与 [百炼 API 说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)。
+
+更多阶段报告与 ADR 见 [`smartbuy/docs/`](smartbuy/docs/)。
+
+## License 与致谢
+
+本项目自行开发代码采用 [MIT License](LICENSE)。数据许可独立记录，不自动沿用代码许可。感谢 TencentCloudADP 的 [Youtu-RAG](https://github.com/TencentCloudADP/youtu-rag)；供应商目录保留上游 MIT License 和归属说明。

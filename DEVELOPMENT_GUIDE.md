@@ -6,8 +6,8 @@
 |---|---|
 | 项目名称 | SmartBuy Research Agent（多源消费决策研究 Agent） |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 6：评测、可观测性、缓存、错误恢复和降级（已完成，等待用户验收） |
-| 当前状态 | 40 条冻结自然集、四组各三次对照、统一脱敏账本、隐私安全缓存、13 类故障注入、Memory 与 Checker 确定性专项均已完成；阶段 7 尚未开始 |
+| 当前阶段 | 阶段 7：前端展示、演示数据、README 和发布整理（进行中） |
+| 当前状态 | 40 条增强组发布候选 34/40、四个真实 Demo 4/4、必要前端/报告收敛与 Windows 脚本已完成；等待全新短路径复现和最终发布检查 |
 | 最后更新时间 | 2026-08-27 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
@@ -325,7 +325,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 | GPU | GTX 960，2 GB |
 | 在线模型 | 云端百炼 API 为主要方案 |
 | 本地模型 | 仅可选实验或降级；不下载/运行 2B Embedding 作为主方案 |
-| 路径 | 仓库为 `E:/Agent_project/proofpick_agent`；上游固定在 `vendor/youtu-rag/`，运行数据放在短 ASCII 仓库外路径 `C:/ai/` |
+| 路径 | 仓库可 clone 到任意短 ASCII 路径；上游固定在 `vendor/youtu-rag/`，运行数据放在仓库外 `C:/ai/` 等明确目录 |
 
 强制约束：
 
@@ -458,7 +458,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 6：评测、可观测性、缓存、错误恢复和降级
 
-- 阶段状态：**已完成（2026-08-27，等待用户验收）**。
+- 阶段状态：**已完成并通过用户验收（Commit `5fcb05fa5e9fda7a2b9d7b1c4c9df507301081af`）**。
 - 阶段目标：用可复现实验证明能力边界，并提高稳定性和成本透明度。
 - 前置依赖：阶段 4～5 可运行；40 条自然金标与工作区外 SQLite/Chroma 可用；均满足。
 - 实际开发：四组 Baseline Runner、冻结/哈希验证、确定性 Scorer、三次重复、split 指标、统一账本、TTL/容量/版本/完整性安全缓存、受控 Provider/存储故障、Memory 和 Checker 确定性专项、checkpoint 合并审计。
@@ -475,15 +475,17 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 7：前端展示、演示数据、README 和发布整理
 
+- 阶段状态：**进行中（2026-08-27）**。
 - 阶段目标：形成可复现、可演示、无夸大的发布版本。
-- 前置依赖：阶段 6 结果通过；数据许可和许可证决定完成。
-- 开发任务：消费决策卡片（若必要）、五分钟演示、备用视频、干净 Windows 复现、README 最终化、数据/许可/安全检查。
-- 预计模块：前端增强、`smartbuy/docs/`、演示素材、发布清单（计划）。
-- 交付物：至少 4 个稳定案例、架构图、截图/视频、最终 README、可复核简历数字。
-- 测试方法：从干净目录执行 README；演示脚本计时；断网/无 Web 备用流程；Git 历史敏感扫描。
-- 退出条件：Windows 核心步骤 100% 通过；四类 Demo 完成；许可证和数据再分发边界明确；远端发布提交存在。
-- 风险与回退：现场网络或动态结果；预构建知识库、稳定 KB + SQL 主案例和备用录屏。
-- 文档更新：三份根文档、数据卡、限制、Runtime Manifest 和发布记录全部同步。
+- 前置依赖：阶段 6 已验收；数据许可、MIT 许可证和上游归属已确认。
+- 实际开发：冻结 40 条最终 D 组发布候选；收敛 Evidence conflict/unknown 与冗余字段；消费决策卡、Checker/Memory/降级展示；四个固定 Demo；Windows preflight/bootstrap/start/stop；脱敏截图回放；最终 README、发布报告、指标口径和检查清单。
+- 实际模块：`smartbuy/agent/reporting.py`、DecisionReport v3、`smartbuy/api/router.py` 仓库外路径注入、WebUI CSS/JS、四个 PowerShell 脚本、Demo 验证器、Stage 7 测试/结果与 `smartbuy/docs/assets/`。
+- 当前交付物：发布候选 34/40（regression 16/16、holdout 18/24）；四个 Demo 4/4；5 张脱敏截图；README 架构/启动/实验/边界；Demo/Release/Portfolio/Checklist 文档。
+- 测试方法：首次 40 条结果只保存一次；发现问题后只跑 3 条定向任务与 2 条展示回归；本地脚本启动/停止；随后从全新短 ASCII clone 执行 README；最后做完整回归、静态/链接/敏感/历史扫描。
+- 当前量化结果：字段级硬约束 183/183、违规推荐 0/56、工具选择 36/40、多跳 23/23；四个 Demo 4/4；阶段 7 当前可审计在线成本 ¥1.8577429，低于 ¥5。
+- 待完成退出项：全新短路径的冻结依赖、SQLite、Chroma、HTTP 200、Demo 核心步骤与 stop；最终 QA、提交和 origin/main 推送。
+- 风险与回退：首次发布候选仍有 6/40 未完成，首次 unknown/conflict 2/5；项目保持实验性 MVP。现场网络失败时可展示明确标注的脱敏结果回放；Checker 异常始终 fail closed。
+- 文档更新：[阶段 7 发布报告](smartbuy/docs/release_report.md)、[Demo 指南](smartbuy/docs/demo_guide.md)、[作品集指标](smartbuy/docs/portfolio_metrics.md) 和 [发布清单](smartbuy/docs/release_checklist.md)。
 - 建议 Commit Message：`docs(stage7): prepare reproducible demo and release`。
 
 ## 11. 每阶段 Definition of Done

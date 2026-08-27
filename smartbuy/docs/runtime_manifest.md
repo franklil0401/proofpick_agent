@@ -1,8 +1,8 @@
 # SmartBuy Runtime Manifest
 
 最后更新：2026-08-27
-当前阶段：阶段 6 已完成，等待用户验收
-运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界多工具 Agent + 确定性 Constraint Checker + 可复现评测/缓存/故障降级
+当前阶段：阶段 7 发布整理进行中
+运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界多工具 Agent + 确定性 Constraint Checker + 可复现评测/缓存/故障降级 + 作品集 Demo
 
 ## 代码与纳入方式
 
@@ -47,6 +47,8 @@
 - 阶段 4 长期偏好（本地运行时）：`C:/ai/smartbuy-stage4/preferences.json`；评测偏好使用独立文件，不进入 Git。
 - 阶段 5 在线评测偏好：`C:/ai/smartbuy-stage5/eval_preferences.json`；只含评测生命周期数据，不进入 Git。
 - 阶段 6 分片检查点和临时缓存：`C:/ai/smartbuy-stage6/`；仅用于可恢复运行，原始检查点不进入 Git，合并审计和脱敏汇总进入仓库。
+- 阶段 7 服务状态、日志和截图浏览器临时数据：`C:/ai/smartbuy-stage7/`；不进入 Git。
+- 发布脚本通过 `SMARTBUY_DB_PATH`、`SMARTBUY_INDEX_PATH`、`SMARTBUY_MEMORY_PATH` 将实际服务绑定到明确的仓库外短路径。
 - API/WebUI：`127.0.0.1:8000`；MinIO API/Console：`127.0.0.1:9000` / `127.0.0.1:9001`。
 - 运行数据库、向量索引、MinIO 数据和日志均在仓库外，不进入 Git。
 
@@ -100,7 +102,7 @@
 - 入口：ReAct 有界循环结束后由运行时强制调用；不在 LLM 工具白名单中，输入为 SQL/KB/Evidence 累计的完整稳定 `model_id` 池。
 - 数据：复用 `monitor-cn-2026-08-26-v1`、Schema `1.0.0` 和工作区外只读 SQLite；价格最大年龄 30 天，固定评测 `as_of=2026-08-27T00:00:00Z`。
 - 契约：`smartbuy-constraint-checker-v1`；只有全部受支持硬约束 passed 才 eligible，unknown/conflict/unsupported/ambiguous 和 Checker 异常均 fail closed。
-- 输出：`DecisionReport smartbuy-decision-v2` 含 ConstraintSet、完整 VerificationBatch、证据/来源 ID、语义指纹和 Checker 延迟。
+- 输出：`DecisionReport smartbuy-decision-v3` 含 ConstraintSet、完整 VerificationBatch、证据/来源 ID、显式 unknown/conflict、语义指纹和 Checker 延迟。
 - 前端：SSE 增加 `constraint_check_started/completed`；WebUI 和 `/monitor` 展示脱敏候选字段状态、版本和延迟。
 
 阶段 6 评测与韧性：
@@ -114,6 +116,15 @@
 - 受控故障注入 13/13 正确识别、重试或降级，静默伪装 0；Checker 异常 fail closed。Memory 修复前 4/5，修复后 5/5，首次结果保留。
 - 当前阶段 4 全量回归 16/16；阶段 4 原始 15/16、阶段 5 首次 13/16 和后续定向修复保持为独立历史记录。
 - 详细精确分母、首次失败、缓存、故障、Token/成本和有效性威胁见[阶段 6 报告](stage6_evaluation_and_resilience_report.md)。
+
+阶段 7 发布候选与 Demo：
+
+- 相同冻结配置仅运行 D 组一次：E2E 34/40、regression 16/16、holdout 18/24；字段硬约束 183/183、违规推荐 0/56、多跳 23/23。
+- 首次 unknown/conflict 为 2/5；三条问题定向回归各 1/1，两个报告展示收敛回归 2/2。首次 40 条结果未覆盖。
+- 四个固定本地 API Demo 4/4；6 次 Agent 调用估算 ¥0.2202436；WebUI 首页与 4 张脱敏回放截图进入仓库。
+- Windows 发布脚本在当前开发仓库完成 11/11 preflight、294 个冻结包检查、SQLite 12/4/16/180、Chroma 60 chunks、WebUI/health/monitor HTTP 200 与 stop 后端口释放。
+- 阶段 7当前可审计在线成本 ¥1.8577429，低于 ¥5；全新短路径复现与最终 QA 尚待完成。
+- 详细证据见[阶段 7 发布报告](release_report.md)与[Demo 指南](demo_guide.md)。
 
 ## 测试与成本
 

@@ -1,0 +1,1647 @@
+{
+  "aggregate_metrics": {
+    "agentic_rag_checker": {
+      "agent_capability": {
+        "average_tool_calls": 6.0,
+        "degradation_visibility": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "dependent_multihop_completion": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "limit_reached_tasks": 0,
+        "necessary_tool_coverage": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "tool_order_accuracy": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "tool_selection_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unauthorized_or_out_of_order_block_rate": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0,
+          "status": "measured"
+        }
+      },
+      "case_count": 1,
+      "cases": [
+        {
+          "abstention_pass": true,
+          "actual_model_ids": [],
+          "candidate_exact": true,
+          "case_id": "s4-011",
+          "end_to_end_pass": true,
+          "expected_model_ids": [],
+          "schema_pass": true,
+          "split": "regression"
+        }
+      ],
+      "engineering": {
+        "api_error_distribution": {},
+        "average_cost_cny_per_task": 0.0147804,
+        "average_input_tokens_per_task": 17053.0,
+        "average_latency_ms": 13986.674,
+        "average_output_tokens_per_task": 569.0,
+        "cache_hit_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "estimated_cost_cny": 0.0147804,
+        "input_tokens": 17053,
+        "model_latency_breakdown": {
+          "qwen-plus": {
+            "duration_ms": 13980.224,
+            "share": 1.0
+          }
+        },
+        "output_tokens": 569,
+        "p50_latency_ms": 13986.674,
+        "p95_latency_ms": 13986.674,
+        "retry_count": 0,
+        "tool_latency_breakdown": {
+          "evidence_check": {
+            "duration_ms": 0.072,
+            "share": 0.015584
+          },
+          "finish_decision": {
+            "duration_ms": 0.068,
+            "share": 0.014719
+          },
+          "kb_search": {
+            "duration_ms": 0.047,
+            "share": 0.010173
+          },
+          "set_requirements": {
+            "duration_ms": 2.085,
+            "share": 0.451299
+          },
+          "text2sql": {
+            "duration_ms": 2.279,
+            "share": 0.49329
+          },
+          "web_search": {
+            "duration_ms": 0.069,
+            "share": 0.014935
+          }
+        }
+      },
+      "evidence_quality": {
+        "citation_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "critical_evidence_coverage": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "ndcg_at_5": {
+          "denominator": 0,
+          "status": "N/A",
+          "value": null
+        },
+        "recall_at_5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "source_conflict_preservation": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unsupported_external_fact_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "wrong_model_or_region_reference_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      },
+      "task_quality": {
+        "abstention_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "abstention_f1": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_precision": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_recall": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "compliant_candidate_false_kill_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "correct_candidate_recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "end_to_end_task_completion": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "field_level_hard_constraint_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "recommended_candidate_precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "task_level_hard_constraint_satisfaction": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unknown_conflict_handling": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unsupported_constraint_identification": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "violating_candidate_recommendation_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      }
+    }
+  },
+  "aggregate_split_metrics": {
+    "holdout": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": null,
+          "degradation_visibility": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "case_count": 0,
+        "cases": [],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": null,
+          "average_input_tokens_per_task": null,
+          "average_latency_ms": null,
+          "average_output_tokens_per_task": null,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0,
+          "input_tokens": 0,
+          "model_latency_breakdown": {},
+          "output_tokens": 0,
+          "p50_latency_ms": null,
+          "p95_latency_ms": null,
+          "retry_count": 0,
+          "tool_latency_breakdown": {}
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "abstention_f1": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_precision": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_recall": {
+            "status": "N/A",
+            "value": null
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    },
+    "regression": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": 6.0,
+          "degradation_visibility": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0,
+            "status": "measured"
+          }
+        },
+        "case_count": 1,
+        "cases": [
+          {
+            "abstention_pass": true,
+            "actual_model_ids": [],
+            "candidate_exact": true,
+            "case_id": "s4-011",
+            "end_to_end_pass": true,
+            "expected_model_ids": [],
+            "schema_pass": true,
+            "split": "regression"
+          }
+        ],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": 0.0147804,
+          "average_input_tokens_per_task": 17053.0,
+          "average_latency_ms": 13986.674,
+          "average_output_tokens_per_task": 569.0,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0.0147804,
+          "input_tokens": 17053,
+          "model_latency_breakdown": {
+            "qwen-plus": {
+              "duration_ms": 13980.224,
+              "share": 1.0
+            }
+          },
+          "output_tokens": 569,
+          "p50_latency_ms": 13986.674,
+          "p95_latency_ms": 13986.674,
+          "retry_count": 0,
+          "tool_latency_breakdown": {
+            "evidence_check": {
+              "duration_ms": 0.072,
+              "share": 0.015584
+            },
+            "finish_decision": {
+              "duration_ms": 0.068,
+              "share": 0.014719
+            },
+            "kb_search": {
+              "duration_ms": 0.047,
+              "share": 0.010173
+            },
+            "set_requirements": {
+              "duration_ms": 2.085,
+              "share": 0.451299
+            },
+            "text2sql": {
+              "duration_ms": 2.279,
+              "share": 0.49329
+            },
+            "web_search": {
+              "duration_ms": 0.069,
+              "share": 0.014935
+            }
+          }
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "abstention_f1": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_precision": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_recall": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    }
+  },
+  "case_count": 1,
+  "cost": {
+    "estimated_cost_cny": 0.0147804,
+    "stage_limit_cny": 20.0,
+    "within_limit": true
+  },
+  "evaluation_version": "smartbuy-stage6-four-group-v1",
+  "experiment_groups": [
+    "agentic_rag_checker"
+  ],
+  "first_run_metrics": {
+    "agentic_rag_checker": {
+      "agent_capability": {
+        "average_tool_calls": 6.0,
+        "degradation_visibility": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "dependent_multihop_completion": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "limit_reached_tasks": 0,
+        "necessary_tool_coverage": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "tool_order_accuracy": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "tool_selection_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unauthorized_or_out_of_order_block_rate": {
+          "denominator": 2,
+          "numerator": 2,
+          "rate": 1.0,
+          "status": "measured"
+        }
+      },
+      "case_count": 1,
+      "cases": [
+        {
+          "abstention_pass": true,
+          "actual_model_ids": [],
+          "candidate_exact": true,
+          "case_id": "s4-011",
+          "end_to_end_pass": true,
+          "expected_model_ids": [],
+          "schema_pass": true,
+          "split": "regression"
+        }
+      ],
+      "engineering": {
+        "api_error_distribution": {},
+        "average_cost_cny_per_task": 0.0147804,
+        "average_input_tokens_per_task": 17053.0,
+        "average_latency_ms": 13986.674,
+        "average_output_tokens_per_task": 569.0,
+        "cache_hit_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "estimated_cost_cny": 0.0147804,
+        "input_tokens": 17053,
+        "model_latency_breakdown": {
+          "qwen-plus": {
+            "duration_ms": 13980.224,
+            "share": 1.0
+          }
+        },
+        "output_tokens": 569,
+        "p50_latency_ms": 13986.674,
+        "p95_latency_ms": 13986.674,
+        "retry_count": 0,
+        "tool_latency_breakdown": {
+          "evidence_check": {
+            "duration_ms": 0.072,
+            "share": 0.015584
+          },
+          "finish_decision": {
+            "duration_ms": 0.068,
+            "share": 0.014719
+          },
+          "kb_search": {
+            "duration_ms": 0.047,
+            "share": 0.010173
+          },
+          "set_requirements": {
+            "duration_ms": 2.085,
+            "share": 0.451299
+          },
+          "text2sql": {
+            "duration_ms": 2.279,
+            "share": 0.49329
+          },
+          "web_search": {
+            "duration_ms": 0.069,
+            "share": 0.014935
+          }
+        }
+      },
+      "evidence_quality": {
+        "citation_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "critical_evidence_coverage": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "ndcg_at_5": {
+          "denominator": 0,
+          "status": "N/A",
+          "value": null
+        },
+        "recall_at_5": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "source_conflict_preservation": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unsupported_external_fact_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "wrong_model_or_region_reference_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      },
+      "task_quality": {
+        "abstention_accuracy": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "abstention_f1": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_precision": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "abstention_recall": {
+          "status": "measured",
+          "value": 1.0
+        },
+        "compliant_candidate_false_kill_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "correct_candidate_recall": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "end_to_end_task_completion": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "field_level_hard_constraint_correctness": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "recommended_candidate_precision": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "task_level_hard_constraint_satisfaction": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "unknown_conflict_handling": {
+          "denominator": 1,
+          "numerator": 1,
+          "rate": 1.0,
+          "status": "measured"
+        },
+        "unsupported_constraint_identification": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        },
+        "violating_candidate_recommendation_rate": {
+          "denominator": 0,
+          "numerator": 0,
+          "rate": null,
+          "status": "N/A"
+        }
+      }
+    }
+  },
+  "first_run_split_metrics": {
+    "holdout": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": null,
+          "degradation_visibility": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "case_count": 0,
+        "cases": [],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": null,
+          "average_input_tokens_per_task": null,
+          "average_latency_ms": null,
+          "average_output_tokens_per_task": null,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0,
+          "input_tokens": 0,
+          "model_latency_breakdown": {},
+          "output_tokens": 0,
+          "p50_latency_ms": null,
+          "p95_latency_ms": null,
+          "retry_count": 0,
+          "tool_latency_breakdown": {}
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "abstention_f1": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_precision": {
+            "status": "N/A",
+            "value": null
+          },
+          "abstention_recall": {
+            "status": "N/A",
+            "value": null
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    },
+    "regression": {
+      "agentic_rag_checker": {
+        "agent_capability": {
+          "average_tool_calls": 6.0,
+          "degradation_visibility": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "dependent_multihop_completion": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "limit_reached_tasks": 0,
+          "necessary_tool_coverage": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "tool_order_accuracy": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "tool_selection_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unauthorized_or_out_of_order_block_rate": {
+            "denominator": 2,
+            "numerator": 2,
+            "rate": 1.0,
+            "status": "measured"
+          }
+        },
+        "case_count": 1,
+        "cases": [
+          {
+            "abstention_pass": true,
+            "actual_model_ids": [],
+            "candidate_exact": true,
+            "case_id": "s4-011",
+            "end_to_end_pass": true,
+            "expected_model_ids": [],
+            "schema_pass": true,
+            "split": "regression"
+          }
+        ],
+        "engineering": {
+          "api_error_distribution": {},
+          "average_cost_cny_per_task": 0.0147804,
+          "average_input_tokens_per_task": 17053.0,
+          "average_latency_ms": 13986.674,
+          "average_output_tokens_per_task": 569.0,
+          "cache_hit_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "estimated_cost_cny": 0.0147804,
+          "input_tokens": 17053,
+          "model_latency_breakdown": {
+            "qwen-plus": {
+              "duration_ms": 13980.224,
+              "share": 1.0
+            }
+          },
+          "output_tokens": 569,
+          "p50_latency_ms": 13986.674,
+          "p95_latency_ms": 13986.674,
+          "retry_count": 0,
+          "tool_latency_breakdown": {
+            "evidence_check": {
+              "duration_ms": 0.072,
+              "share": 0.015584
+            },
+            "finish_decision": {
+              "duration_ms": 0.068,
+              "share": 0.014719
+            },
+            "kb_search": {
+              "duration_ms": 0.047,
+              "share": 0.010173
+            },
+            "set_requirements": {
+              "duration_ms": 2.085,
+              "share": 0.451299
+            },
+            "text2sql": {
+              "duration_ms": 2.279,
+              "share": 0.49329
+            },
+            "web_search": {
+              "duration_ms": 0.069,
+              "share": 0.014935
+            }
+          }
+        },
+        "evidence_quality": {
+          "citation_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "critical_evidence_coverage": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "ndcg_at_5": {
+            "denominator": 0,
+            "status": "N/A",
+            "value": null
+          },
+          "recall_at_5": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "source_conflict_preservation": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unsupported_external_fact_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "wrong_model_or_region_reference_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        },
+        "task_quality": {
+          "abstention_accuracy": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "abstention_f1": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_precision": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "abstention_recall": {
+            "status": "measured",
+            "value": 1.0
+          },
+          "compliant_candidate_false_kill_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "correct_candidate_recall": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "end_to_end_task_completion": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "field_level_hard_constraint_correctness": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "recommended_candidate_precision": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "task_level_hard_constraint_satisfaction": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "unknown_conflict_handling": {
+            "denominator": 1,
+            "numerator": 1,
+            "rate": 1.0,
+            "status": "measured"
+          },
+          "unsupported_constraint_identification": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          },
+          "violating_candidate_recommendation_rate": {
+            "denominator": 0,
+            "numerator": 0,
+            "rate": null,
+            "status": "N/A"
+          }
+        }
+      }
+    }
+  },
+  "freeze_validation": {
+    "config_hash": "c5001c9707c5cb7302c26745407cf989676e832b6984109604dec829754ab096",
+    "errors": [],
+    "natural_case_count": 40,
+    "natural_sha256": "6082ac83d72441fedf7ac3083a3c53f31d538ca54216f2cf99d3a9de5068e0ef",
+    "passed": true,
+    "split_counts": {
+      "holdout": 24,
+      "regression": 16
+    }
+  },
+  "frozen_config": {
+    "agent_max_steps": 8,
+    "agent_max_tool_calls": 12,
+    "agent_result_top_k": 8,
+    "agent_task_cost_limit_cny": 0.25,
+    "agent_tool_timeout_seconds": 20.0,
+    "as_of": "2026-08-27T00:00:00Z",
+    "cache_policy": {
+      "main_experiment": "cold/no-cache",
+      "max_entries": 2000,
+      "never_cache": [
+        "dynamic_price",
+        "stock",
+        "memory_write",
+        "final_answer",
+        "sensitive_request",
+        "failed_or_incomplete_result"
+      ],
+      "public_evaluation_only": true,
+      "ttl_seconds": 86400
+    },
+    "chat_model": "qwen-plus",
+    "config_hash": "c5001c9707c5cb7302c26745407cf989676e832b6984109604dec829754ab096",
+    "config_hash_semantics": "SHA-256 of this file before adding config_hash; the sealed payload is not edited after the first full run.",
+    "data_version": "monitor-cn-2026-08-26-v1",
+    "dataset": {
+      "failure_case_count": 13,
+      "failure_sha256": "73946eaa9441832dec6fd083b88b168c6a5aca1ee0df8546d0eb2de6d240a999",
+      "holdout_count": 24,
+      "memory_case_count": 5,
+      "memory_sha256": "ac84cf52fab59ba3392e4d11e97f2572b16187eafc0e8d0a184079beb442f4c0",
+      "natural_case_count": 40,
+      "natural_sha256": "6082ac83d72441fedf7ac3083a3c53f31d538ca54216f2cf99d3a9de5068e0ef",
+      "regression_count": 16
+    },
+    "dynamic_boundary": "不调用真实 Web Search；只允许带 observed_at 的离线价格观察。",
+    "embedding_dimensions": 1024,
+    "embedding_model": "text-embedding-v4",
+    "evaluation_version": "smartbuy-stage6-four-group-v1",
+    "fixed_rag_top_k": 5,
+    "frozen_at": "2026-08-27T00:00:00Z",
+    "groups": {
+      "A": "direct_llm",
+      "B": "fixed_rag",
+      "C": "agentic_rag",
+      "D": "agentic_rag_checker"
+    },
+    "index_version": "monitor-fact-card-h2-v1",
+    "max_output_tokens": 800,
+    "region": "CN",
+    "repetitions": 3,
+    "request_timeout_seconds": 30.0,
+    "reranker_instruct": "按用户问题对公开显示器事实卡的直接证据相关性排序。",
+    "reranker_model": "qwen3-rerank",
+    "schema_version": "1.0.0",
+    "seed": null,
+    "seed_note": "当前兼容接口与 Provider 未声明 seed；不虚构确定性。",
+    "source_hashes": {
+      "catalog_sha256": "b50fd4818575747dab00ffe922ea9720b3a7196e1a5162c0494cd6454a04210a",
+      "index_manifest_sha256": "b74d5022a7615676f9a3409fff68b30fd08f5c7d494757668e37bf332efedb8a"
+    },
+    "stage_cost_limit_cny": 20.0,
+    "temperature": 0.0,
+    "timezone": "Asia/Shanghai",
+    "top_p": null,
+    "vector_top_k": 30
+  },
+  "mode": "full",
+  "prediction_count": 1,
+  "predictions": [
+    {
+      "abstained": true,
+      "blocked_unauthorized_or_out_of_order": [
+        {
+          "blocked": true,
+          "tool": "kb_search"
+        },
+        {
+          "blocked": true,
+          "tool": "evidence_check"
+        }
+      ],
+      "case_id": "s4-011",
+      "checker_fingerprint": "4faac4b3a9de2b75b3c26a76e53be65a4bc558c2eea583e3b9a9e18e8d04a6be",
+      "citation_pairs": [],
+      "claims": [],
+      "degradation_visible": true,
+      "degraded_states": [
+        "web_search: Web Search 未配置凭据；继续使用 KB 与只读 SQLite。"
+      ],
+      "error_category": null,
+      "evidence_ids": [],
+      "experiment_group": "agentic_rag_checker",
+      "hard_constraint_checks": [],
+      "has_hard_constraints": false,
+      "latency_ms": 13986.674,
+      "limit_reached": false,
+      "multihop_pass": false,
+      "observed_model_ids": [],
+      "public_trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 1,
+            "required_fields": [
+              "price_cny",
+              "stock_status"
+            ],
+            "summary": "查询 LG 27UP850K-W 当前价格和库存"
+          },
+          "duration_ms": 2.085,
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已由 provenance gate 建立带来源约束；active=1，rejected_model_fields=0。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查询 LG 27UP850K-W 当前价格和库存",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "filter_count": 1,
+            "reason": "查询 LG 27UP850K-W 在中国大陆市场的价格和库存状态",
+            "sql": "SELECT model_id, price_cny, stock_status, region FROM products WHERE model_id = 'LG 27UP850K-W' AND region = 'CN'"
+          },
+          "duration_ms": 2.279,
+          "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+          "parent_step": null,
+          "result_summary": "确定性只读模板返回 0 个完整候选；缺失字段 0 类。",
+          "status": "success",
+          "step": 2,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查询 LG 27UP850K-W 当前价格和库存",
+          "tool": "text2sql"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "LG 27UP850K-W"
+            ],
+            "query_summary": "LG 27UP850K-W 官方规格与价格",
+            "reason": "SQL 未返回结果，改用 KB 检索官方资料",
+            "required_fields": [
+              "price_cny",
+              "stock_status",
+              "region"
+            ]
+          },
+          "duration_ms": 0.047,
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": 2,
+          "result_summary": "动态价格或库存必须先观察 Web Search 的可用状态。",
+          "status": "failed",
+          "step": 3,
+          "stop_or_degrade_reason": "动态价格或库存必须先观察 Web Search 的可用状态。",
+          "task_summary": "查询 LG 27UP850K-W 当前价格和库存",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [],
+            "query_summary": "LG 27UP850K-W 中国大陆当前价格和库存",
+            "reason": "KB 检索失败，需通过 Web Search 获取动态价格与库存信息",
+            "required_fields": []
+          },
+          "duration_ms": 0.069,
+          "next_action": "Web 不可用，回到 KB + SQL 稳定链路。",
+          "parent_step": null,
+          "result_summary": "Web Search 未配置凭据；继续使用 KB 与只读 SQLite。",
+          "status": "unavailable",
+          "step": 4,
+          "stop_or_degrade_reason": "Web Search 未配置凭据；继续使用 KB 与只读 SQLite。",
+          "task_summary": "查询 LG 27UP850K-W 当前价格和库存",
+          "tool": "web_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 1,
+            "model_ids": [
+              "LG 27UP850K-W"
+            ],
+            "reason": "KB 和 SQL 均未返回价格与库存，需用 evidence_check 核验字段完整性",
+            "required_fields": [
+              "price_cny",
+              "stock_status",
+              "region"
+            ]
+          },
+          "duration_ms": 0.072,
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": 3,
+          "result_summary": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "status": "failed",
+          "step": 5,
+          "stop_or_degrade_reason": "Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "task_summary": "查询 LG 27UP850K-W 当前价格和库存",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "agent_requested_stop": true
+          },
+          "duration_ms": 0.068,
+          "next_action": "停止并生成经过 Schema 校验的报告。",
+          "parent_step": null,
+          "result_summary": "已满足显式停止条件。",
+          "status": "success",
+          "step": 6,
+          "stop_or_degrade_reason": null,
+          "task_summary": "查询 LG 27UP850K-W 当前价格和库存",
+          "tool": "finish_decision"
+        }
+      ],
+      "recommended_candidate_verifications": [],
+      "recommended_model_ids": [],
+      "repetition": 1,
+      "retrieved_model_ids": [],
+      "schema_pass": true,
+      "source_ids": [],
+      "tool_call_count": 6,
+      "tool_order_pass": false,
+      "tools_used": [
+        "text2sql",
+        "web_search"
+      ],
+      "unknown_or_conflict_reported": true,
+      "unsupported_constraints": [],
+      "usage": {
+        "call_count": 6,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0147804,
+        "input_tokens": 17053,
+        "output_tokens": 569,
+        "successful_calls": 6
+      },
+      "usage_records": [
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0018372000000000002,
+          "input_tokens": 2024,
+          "item_count": 0,
+          "latency_ms": 2658.353,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 109,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0022028,
+          "input_tokens": 2436,
+          "item_count": 0,
+          "latency_ms": 3008.318,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 127,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0024992,
+          "input_tokens": 2909,
+          "item_count": 0,
+          "latency_ms": 2133.089,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 86,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0025632000000000003,
+          "input_tokens": 3064,
+          "item_count": 0,
+          "latency_ms": 1441.598,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 56,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0028004,
+          "input_tokens": 3213,
+          "item_count": 0,
+          "latency_ms": 2835.372,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 115,
+          "status_code": null,
+          "success": true
+        },
+        {
+          "attempts": 1,
+          "degraded": false,
+          "estimated_cost_cny": 0.0028776,
+          "input_tokens": 3407,
+          "item_count": 0,
+          "latency_ms": 1903.494,
+          "model": "qwen-plus",
+          "operation": "chat_tool",
+          "output_tokens": 76,
+          "status_code": null,
+          "success": true
+        }
+      ]
+    }
+  ],
+  "repetition_start": 1,
+  "repetitions": 1,
+  "run_id": "stage6-3ced61922646",
+  "stability": {
+    "agentic_rag_checker": {
+      "abstention_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      },
+      "checker_workflow_fingerprint_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      },
+      "cost_coefficient_of_variation": null,
+      "final_candidate_set_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      },
+      "latency_coefficient_of_variation": null,
+      "ranking_jaccard": null,
+      "three_run_case_count": 0,
+      "tool_path_consistency": {
+        "denominator": 0,
+        "numerator": 0,
+        "rate": null,
+        "status": "N/A"
+      }
+    }
+  }
+}

@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-08-27 |
-| 当前阶段 | 阶段 6：评测、可观测性、缓存、错误恢复和降级（已完成，等待用户验收） |
+| 当前阶段 | 阶段 7：前端展示、演示数据、README 和发布整理（进行中） |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -67,7 +67,8 @@ proofpick_agent/
 │  │  │  ├─ stage5_agent_regression_results.json
 │  │  │  ├─ stage5_agent_s4_012_regression_results.json
 │  │  │  ├─ stage5_agent_s4_012_order_regression_results.json
-│  │  │  └─ stage6_*            # 冻结评测、首次失败、账本、缓存、故障与汇总结果
+│  │  │  ├─ stage6_*            # 冻结评测、首次失败、账本、缓存、故障与汇总结果
+│  │  │  └─ stage7_*            # 发布候选、定向修复与 Demo 脱敏结果
 │  │  ├─ raw/
 │  │  │  └─ README.md
 │  │  ├─ __init__.py
@@ -79,6 +80,7 @@ proofpick_agent/
 │  │  ├─ build_database.py
 │  │  └─ schema_v1.sql
 │  ├─ docs/
+│  │  ├─ assets/                 # WebUI 实图、脱敏结果回放 HTML 与截图
 │  │  ├─ adr/
 │  │  │  ├─ 0001-vendor-youtu-rag.md
 │  │  │  ├─ 0002-bailian-provider-and-index-contract.md
@@ -93,7 +95,11 @@ proofpick_agent/
 │  │  ├─ stage3_data_and_retrieval_report.md
 │  │  ├─ stage4_agent_workflow_report.md
 │  │  ├─ stage5_constraint_verification_report.md
-│  │  └─ stage6_evaluation_and_resilience_report.md
+│  │  ├─ stage6_evaluation_and_resilience_report.md
+│  │  ├─ demo_guide.md
+│  │  ├─ portfolio_metrics.md
+│  │  ├─ release_checklist.md
+│  │  └─ release_report.md
 │  ├─ domain/
 │  │  └─ models.py
 │  ├─ eval/
@@ -137,11 +143,16 @@ proofpick_agent/
 │  │  └─ web_search.py
 │  ├─ scripts/
 │  │  ├─ __init__.py
+│  │  ├─ bootstrap.ps1
 │  │  ├─ build_stage3_data.py
 │  │  ├─ build_stage3_index.py
+│  │  ├─ preflight.ps1
+│  │  ├─ start.ps1
 │  │  ├─ start_youtu_rag.ps1
+│  │  ├─ stop.ps1
 │  │  ├─ validate_stage3_data.py
 │  │  ├─ verify_bailian_stage2.py
+│  │  ├─ verify_stage7_demos.py
 │  │  └─ verify_stage3_index.py
 │  └─ tests/
 │     ├─ fixtures/
@@ -164,7 +175,8 @@ proofpick_agent/
 │        ├─ test_stage5_constraints.py
 │        ├─ test_stage5_verifier.py
 │        ├─ test_stage6_cache.py
-│        └─ test_stage6_eval_contract.py
+│        ├─ test_stage6_eval_contract.py
+│        └─ test_stage7_reporting.py
 └─ vendor/
    └─ youtu-rag/
       ├─ configs/
@@ -246,10 +258,18 @@ proofpick_agent/
 | `smartbuy/docs/stage4_agent_workflow_report.md` | Agent 工具链、E2E、Memory、成本、失败修复和真实服务冒烟 |
 | `smartbuy/docs/stage5_constraint_verification_report.md` | 固定池消融、故障注入、在线 E2E、Checker 延迟、成本和边界 |
 | `smartbuy/docs/stage6_evaluation_and_resilience_report.md` | 四组主实验、重复稳定性、缓存、故障降级、成本和首次失败的完整证据 |
+| `smartbuy/docs/demo_guide.md` | 四个五分钟固定 Demo 的输入、轨迹、结果、备用步骤和截图入口 |
+| `smartbuy/docs/release_report.md` | 发布候选、定向修复、Windows 复现、成本与最终发布边界 |
+| `smartbuy/docs/portfolio_metrics.md` | 简历数字的分子/分母、数据、Commit 和允许/禁止表述 |
+| `smartbuy/docs/release_checklist.md` | 评测、运行、数据许可、安全、工程质量和推送清单 |
+| `smartbuy/docs/assets/` | 实际 WebUI 首页与明确标注非实时的脱敏结果回放材料 |
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
 | `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
 | `smartbuy/scripts/build_stage3_index.py` / `verify_stage3_index.py` | 有界真实建库和不调用模型的 Chroma 契约复核 |
+| `smartbuy/scripts/preflight.ps1` / `bootstrap.ps1` | Windows 依赖与脱敏配置预检、冻结依赖、数据/SQLite/Chroma 幂等构建 |
+| `smartbuy/scripts/start.ps1` / `stop.ps1` | 仓库外运行目录中的 MinIO/FastAPI 启停、HTTP 检查和精确进程树清理 |
+| `smartbuy/scripts/verify_stage7_demos.py` | 调用本地 API 验证四个固定 Demo 并保存脱敏摘要 |
 | `smartbuy/tests/fixtures/stage1_baseline.md` | 自制、无隐私的 Markdown 上传与知识库配置冒烟夹具 |
 | `smartbuy/tests/unit/` | 百炼统一配置、请求契约、重试、维度与降级单元测试 |
 | `smartbuy/tests/integration/` | Youtu Embedding/Reranker 和 Toolkit 日志安全适配回归 |
@@ -257,11 +277,12 @@ proofpick_agent/
 | `smartbuy/tests/unit/test_stage4_*` | SQL 安全/金标、Evidence 四态、Memory、Agent 上限和降级测试 |
 | `smartbuy/tests/unit/test_stage5_*` | 约束来源、别名/边界、完整池、fail-closed、s4-014、安全门和顺序回归 |
 | `smartbuy/tests/unit/test_stage6_*` | 冻结集、评分分母、账本脱敏、缓存正确性/损坏恢复和故障契约回归 |
+| `smartbuy/tests/unit/test_stage7_reporting.py` | 报告冲突 fail-closed、unknown、证据/字段收敛回归 |
 | `smartbuy/tests/integration/test_stage4_api.py` | SmartBuy HTTP/SSE、偏好生命周期和 WebUI 接线回归 |
 
 ## 计划结构
 
-阶段 7 的前端演示、发布整理与最终简历材料尚未开始；当前没有用计划文件名冒充已创建结构。
+当前没有未创建却被列入“当前真实结构”的阶段 7 文件。可选 GraphRAG、Neo4j、第二品类与真实 Web Search 仍未创建。
 
 ## 维护检查清单
 
@@ -287,5 +308,8 @@ proofpick_agent/
 - [ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)
 - [阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)
 - [ADR-0006](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)
+- [阶段 7 发布报告](smartbuy/docs/release_report.md)
+- [Demo 指南](smartbuy/docs/demo_guide.md)
+- [作品集指标](smartbuy/docs/portfolio_metrics.md)
 - [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)

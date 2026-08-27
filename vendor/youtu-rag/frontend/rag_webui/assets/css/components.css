@@ -1710,3 +1710,105 @@
 .lightbox-btn:active {
   transform: translateY(0);
 }
+
+/* SmartBuy portfolio/MVP decision summary. Uses only public report fields. */
+.smartbuy-report-panel {
+  align-self: stretch;
+  margin: 14px 48px 8px;
+  padding: 20px;
+  border: 1px solid #dbe4f0;
+  border-radius: 16px;
+  background: linear-gradient(145deg, #f8fbff 0%, #ffffff 65%);
+  box-shadow: 0 8px 28px rgba(31, 65, 114, 0.08);
+  color: #1f2937;
+}
+
+.smartbuy-report-header,
+.smartbuy-candidate-header,
+.smartbuy-report-meta,
+.smartbuy-unresolved-row,
+.smartbuy-check-list li,
+.smartbuy-trace-list li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.smartbuy-report-header { justify-content: space-between; align-items: flex-start; }
+.smartbuy-report-header h3 { margin: 0; font-size: 20px; }
+.smartbuy-report-header p { margin: 5px 0 0; color: #607087; }
+.smartbuy-report-meta { flex-wrap: wrap; justify-content: flex-end; }
+.smartbuy-mvp-badge,
+.smartbuy-memory-state,
+.smartbuy-chip,
+.smartbuy-status {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  font-size: 12px;
+  line-height: 1.4;
+  padding: 3px 9px;
+  white-space: nowrap;
+}
+.smartbuy-mvp-badge { background: #1d4ed8; color: #fff; font-weight: 700; }
+.smartbuy-memory-state { background: #e8eef8; color: #38516f; }
+.smartbuy-report-section { margin-top: 18px; }
+.smartbuy-report-section h4 { margin: 0 0 10px; font-size: 15px; }
+.smartbuy-chip-row { display: flex; flex-wrap: wrap; gap: 7px; }
+.smartbuy-chip { background: #eef3f8; color: #34465a; }
+.smartbuy-chip-hard { background: #fff0e8; color: #a04414; }
+.smartbuy-chip-soft { background: #eef3ff; color: #3956a5; }
+.smartbuy-candidate-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 12px;
+}
+.smartbuy-candidate-card {
+  border: 1px solid #dde4ec;
+  border-left: 4px solid #9ca3af;
+  border-radius: 12px;
+  background: #fff;
+  padding: 13px;
+}
+.smartbuy-candidate-card.is-eligible { border-left-color: #1f9d62; }
+.smartbuy-candidate-header { justify-content: space-between; }
+.smartbuy-candidate-subtitle,
+.smartbuy-price,
+.smartbuy-more { margin-top: 5px; color: #64748b; font-size: 12px; }
+.smartbuy-candidate-issues,
+.smartbuy-elimination { margin-top: 8px; color: #b45309; font-size: 12px; }
+.smartbuy-reason { margin: 8px 0 0; color: #166534; font-size: 12px; }
+.smartbuy-check-list { list-style: none; padding: 0; margin: 10px 0 0; }
+.smartbuy-check-list li { align-items: flex-start; margin: 5px 0; font-size: 12px; }
+.smartbuy-status-matched,
+.smartbuy-status-passed,
+.smartbuy-status-success { background: #dcfce7; color: #166534; }
+.smartbuy-status-not-matched,
+.smartbuy-status-failed { background: #fee2e2; color: #991b1b; }
+.smartbuy-status-unknown,
+.smartbuy-status-unavailable,
+.smartbuy-status-degraded { background: #fef3c7; color: #92400e; }
+.smartbuy-status-conflict { background: #ffedd5; color: #9a3412; }
+.smartbuy-empty-state,
+.smartbuy-unresolved-section,
+.smartbuy-degraded {
+  padding: 11px 13px;
+  border-radius: 10px;
+  background: #fff7ed;
+  color: #9a3412;
+}
+.smartbuy-unresolved-row { align-items: flex-start; margin: 7px 0; }
+.smartbuy-details { margin-top: 14px; border-top: 1px solid #e5e7eb; padding-top: 10px; }
+.smartbuy-details summary { cursor: pointer; color: #334155; font-weight: 600; }
+.smartbuy-details a { color: #2563eb; word-break: break-all; }
+.smartbuy-trace-list li { align-items: flex-start; margin: 8px 0; flex-wrap: wrap; }
+.smartbuy-trace-list span:last-child { flex-basis: 100%; color: #64748b; font-size: 12px; }
+.smartbuy-degraded { margin-top: 14px; }
+.smartbuy-stop-reason { margin-top: 14px; font-size: 12px; color: #475569; }
+
+@media (max-width: 760px) {
+  .smartbuy-report-panel { margin: 10px 8px; padding: 14px; }
+  .smartbuy-report-header { flex-direction: column; gap: 10px; }
+  .smartbuy-report-meta { justify-content: flex-start; }
+  .smartbuy-candidate-grid { grid-template-columns: 1fr; }
+}

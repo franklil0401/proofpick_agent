@@ -115,10 +115,21 @@ class ToolTrace(BaseModel):
     duration_ms: float = Field(default=0.0, ge=0)
 
 
+class UnresolvedFact(BaseModel):
+    """Public, evidence-bound unknown or conflict that blocks a stronger claim."""
+
+    model_id: str | None = None
+    field: str
+    status: Literal["unknown", "conflict"]
+    values: list[Any] = Field(default_factory=list)
+    reason: str
+    evidence: list[EvidenceReference] = Field(default_factory=list)
+
+
 class DecisionReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    report_version: str = "smartbuy-decision-v2"
+    report_version: str = "smartbuy-decision-v3"
     request_summary: str
     task_type: Literal["fact", "filter", "comparison", "dynamic", "unrelated"] = "fact"
     constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
@@ -130,6 +141,7 @@ class DecisionReport(BaseModel):
     recommended_model_ids: list[str] = Field(default_factory=list)
     eliminated_model_ids: list[str] = Field(default_factory=list)
     evidence: list[EvidenceReference] = Field(default_factory=list)
+    unresolved_facts: list[UnresolvedFact] = Field(default_factory=list)
     degraded_states: list[str] = Field(default_factory=list)
     pending_questions: list[str] = Field(default_factory=list)
     abstained: bool = False
@@ -193,11 +205,30 @@ class DecisionReport(BaseModel):
                         f"实际值 `{result.actual_value}`；要求 `{result.constraint.normalized_value}`；{result.reason}"
                     )
             for field in candidate.fields:
-                lines.append(f"- `{field.field}`：**{field.status.value}** — {field.reason}")
+                value_text = f"；值 `{field.actual_value}`" if field.actual_value is not None else ""
+                lines.append(
+                    f"- `{field.field}`：**{field.status.value}**{value_text} — {field.reason}"
+                )
             if candidate.recommendation_reason:
                 lines.append(f"- 推荐理由：{candidate.recommendation_reason}")
             if candidate.elimination_reason:
                 lines.append(f"- 淘汰理由：{candidate.elimination_reason}")
+            lines.append("")
+        if self.unresolved_facts:
+            lines.extend(["## 未知与冲突", ""])
+            for item in self.unresolved_facts:
+                subject = f"{item.model_id} / " if item.model_id else ""
+                values = f"；观测值：{', '.join(str(value) for value in item.values)}" if item.values else ""
+                lines.append(
+                    f"- `{subject}{item.field}`：**{item.status}**{values}；{item.reason}"
+                )
+                for evidence in item.evidence:
+                    evidence_value = (
+                        f"（值：{evidence.value}）" if evidence.value is not None else ""
+                    )
+                    lines.append(
+                        f"  - [{evidence.source_id}]({evidence.source_url}){evidence_value}"
+                    )
             lines.append("")
         lines.extend(["## 证据来源", ""])
         if not self.evidence:
@@ -210,7 +241,8 @@ class DecisionReport(BaseModel):
                     continue
                 seen.add(key)
                 label = f"{item.model_id} / {item.field or '检索片段'} / {item.region}"
-                lines.append(f"- [{label}]({item.source_url})")
+                observed = f" / {item.effective_time}" if item.effective_time else ""
+                lines.append(f"- [{label}{observed}]({item.source_url})")
         lines.append("")
         if self.degraded_states:
             lines.extend(["## 降级状态", "", *[f"- {item}" for item in self.degraded_states], ""])

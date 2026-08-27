@@ -4,6 +4,8 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
+from pathlib import Path
 from typing import Any, AsyncIterator
 
 from fastapi import APIRouter, HTTPException
@@ -16,6 +18,7 @@ from smartbuy.db.build_database import DEFAULT_OUTPUT
 from smartbuy.memory import LongTermPreferenceStore
 from smartbuy.observability import UsageLedger, agent_monitor
 from smartbuy.providers import BailianProvider
+from smartbuy.retrieval.knowledge_base import DEFAULT_INDEX_DIR
 from smartbuy.tools import EvidenceCheckTool, KBSearchTool, Text2SQLTool, WebSearchTool
 
 
@@ -49,13 +52,22 @@ def get_smartbuy_agent() -> PurchaseDecisionAgent:
     if _agent is None:
         settings = load_bailian_settings()
         provider = BailianProvider(settings, ledger=UsageLedger(), timeout_seconds=30.0)
+        database_path = Path(os.getenv("SMARTBUY_DB_PATH", str(DEFAULT_OUTPUT)))
+        index_path = Path(os.getenv("SMARTBUY_INDEX_PATH", str(DEFAULT_INDEX_DIR)))
+        memory_path = Path(
+            os.getenv("SMARTBUY_MEMORY_PATH", "C:/ai/smartbuy-stage4/preferences.json")
+        )
         tools = {
-            "text2sql": Text2SQLTool(DEFAULT_OUTPUT),
-            "kb_search": KBSearchTool(settings, provider),
-            "evidence_check": EvidenceCheckTool(DEFAULT_OUTPUT),
+            "text2sql": Text2SQLTool(database_path),
+            "kb_search": KBSearchTool(settings, provider, index_dir=index_path),
+            "evidence_check": EvidenceCheckTool(database_path),
             "web_search": WebSearchTool(),
         }
-        _agent = PurchaseDecisionAgent(provider, tools)
+        _agent = PurchaseDecisionAgent(
+            provider,
+            tools,
+            preference_memory=LongTermPreferenceStore(memory_path),
+        )
     return _agent
 
 
