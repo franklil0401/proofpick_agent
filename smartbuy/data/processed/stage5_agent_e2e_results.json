@@ -1,0 +1,900 @@
+{
+  "cases": [
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "case_id": "s4-001",
+      "category": "simple_fact",
+      "constraint_check_latency_ms": 0.895,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "expected_tools": [
+        "kb_search"
+      ],
+      "latency_ms": 16714.465,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "候选字段四态核验完成，达到显式停止条件。",
+      "tool_call_count": 4,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 6,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0130316,
+        "input_tokens": 15447,
+        "output_tokens": 436,
+        "successful_calls": 6
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "case_id": "s4-002",
+      "category": "combined_filter",
+      "constraint_check_latency_ms": 2.371,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [
+        "asus-pa279crv-cn",
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 42755.811,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 14,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0532969,
+        "input_tokens": 63314,
+        "output_tokens": 1683,
+        "successful_calls": 14
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn"
+      ],
+      "case_id": "s4-003",
+      "category": "similar_model",
+      "constraint_check_latency_ms": 1.508,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 27342.363,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn"
+      ],
+      "recommended_model_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+      "tool_call_count": 7,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 9,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0298602,
+        "input_tokens": 35097,
+        "output_tokens": 1092,
+        "successful_calls": 9
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "case_id": "s4-004",
+      "category": "insufficient_evidence",
+      "constraint_check_latency_ms": 2.939,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": false,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search"
+      ],
+      "latency_ms": 26388.977,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 8,
+      "tool_selection_pass": false,
+      "usage": {
+        "call_count": 18,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.067695,
+        "input_tokens": 89077,
+        "output_tokens": 887,
+        "successful_calls": 18
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-u2724d-cn",
+        "benq-pd2705u-us",
+        "dell-g2724d-cn",
+        "asus-pa279crv-cn",
+        "lg-27up850k-w-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn"
+      ],
+      "case_id": "s4-005",
+      "category": "usb_c_trap",
+      "constraint_check_latency_ms": 3.671,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "text2sql"
+      ],
+      "latency_ms": 30091.103,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 12,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.042646,
+        "input_tokens": 52810,
+        "output_tokens": 1126,
+        "successful_calls": 12
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "case_id": "s4-006",
+      "category": "insufficient_evidence",
+      "constraint_check_latency_ms": 2.59,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "kb_search"
+      ],
+      "latency_ms": 25631.78,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 18,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0666883,
+        "input_tokens": 87801,
+        "output_tokens": 875,
+        "successful_calls": 18
+      }
+    },
+    {
+      "abstention_pass": false,
+      "actual_abstain": false,
+      "actual_tools": [
+        "kb_search"
+      ],
+      "candidate_pool_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-s2722qc-cn",
+        "benq-pd2705u-us",
+        "dell-u2723qe-cn"
+      ],
+      "case_id": "s4-007",
+      "category": "unrelated",
+      "constraint_check_latency_ms": 1.547,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "lg-27up850k-w-cn",
+        "lg-27gs95qe-b-cn",
+        "dell-s2722qc-cn",
+        "benq-pd2705u-us",
+        "dell-u2723qe-cn"
+      ],
+      "end_to_end_pass": false,
+      "expected_model_ids": [],
+      "expected_tools": [],
+      "latency_ms": 20318.416,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "benq-pd2705u-us",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "知识库证据检索完成，达到显式停止条件。",
+      "tool_call_count": 6,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 8,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0181515,
+        "input_tokens": 22001,
+        "output_tokens": 814,
+        "successful_calls": 8
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search"
+      ],
+      "candidate_pool_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us",
+        "lg-27up850k-w-cn",
+        "dell-u2723qe-cn",
+        "dell-s2722qc-cn"
+      ],
+      "case_id": "s4-008",
+      "category": "hard_negative_no_candidate",
+      "constraint_check_latency_ms": 3.801,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "text2sql"
+      ],
+      "latency_ms": 33881.1,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 18,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0576513,
+        "input_tokens": 72987,
+        "output_tokens": 1275,
+        "successful_calls": 18
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search"
+      ],
+      "candidate_pool_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "lg-27up850k-w-cn",
+        "dell-u2723qe-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn"
+      ],
+      "case_id": "s4-009",
+      "category": "hard_negative_no_candidate",
+      "constraint_check_latency_ms": 4.975,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "text2sql"
+      ],
+      "latency_ms": 49200.249,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 14,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0540429,
+        "input_tokens": 66237,
+        "output_tokens": 1971,
+        "successful_calls": 14
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-u2724d-cn"
+      ],
+      "case_id": "s4-010",
+      "category": "hard_negative_not_matched",
+      "constraint_check_latency_ms": 1.151,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 26899.697,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "dell-u2724d-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 7,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 9,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0260943,
+        "input_tokens": 30174,
+        "output_tokens": 1080,
+        "successful_calls": 9
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "web_search"
+      ],
+      "candidate_pool_model_ids": [],
+      "case_id": "s4-011",
+      "category": "hard_negative_dynamic_unknown",
+      "constraint_check_latency_ms": 0.342,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "text2sql",
+        "web_search"
+      ],
+      "latency_ms": 20310.356,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 6,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 6,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0156896,
+        "input_tokens": 17602,
+        "output_tokens": 804,
+        "successful_calls": 6
+      }
+    },
+    {
+      "abstention_pass": false,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "case_id": "s4-012",
+      "category": "source_conflict",
+      "constraint_check_latency_ms": 0.835,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "end_to_end_pass": false,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 18012.474,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "recommended_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+      "tool_call_count": 6,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 8,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.018961,
+        "input_tokens": 22228,
+        "output_tokens": 697,
+        "successful_calls": 8
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "web_search",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "case_id": "s4-013",
+      "category": "price_filter",
+      "constraint_check_latency_ms": 1.434,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 34701.699,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "recommended_model_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 10,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.030761,
+        "input_tokens": 35156,
+        "output_tokens": 1415,
+        "successful_calls": 10
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "case_id": "s4-014",
+      "category": "combined_filter",
+      "constraint_check_latency_ms": 1.172,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 28663.441,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "recommended_model_ids": [
+        "dell-g2724d-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+      "tool_call_count": 6,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 8,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0255838,
+        "input_tokens": 29316,
+        "output_tokens": 1175,
+        "successful_calls": 8
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "case_id": "s4-015",
+      "category": "multi_model",
+      "constraint_check_latency_ms": 1.517,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 26229.585,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "recommended_model_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+      "tool_call_count": 7,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 11,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0337409,
+        "input_tokens": 40294,
+        "output_tokens": 1005,
+        "successful_calls": 11
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": false,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "case_id": "s4-016",
+      "category": "combined_filter",
+      "constraint_check_latency_ms": 1.476,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 30876.335,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "recommended_model_ids": [
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn"
+      ],
+      "schema_pass": true,
+      "should_abstain": false,
+      "stop_reason": "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。",
+      "tool_call_count": 6,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 8,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0283327,
+        "input_tokens": 32774,
+        "output_tokens": 1257,
+        "successful_calls": 8
+      }
+    }
+  ],
+  "evaluation_version": "smartbuy-stage5-agent-e2e-v1",
+  "metrics": {
+    "abstention_accuracy": 0.875,
+    "average_constraint_check_latency_ms": 2.014,
+    "average_latency_ms": 28626.116,
+    "case_count": 16,
+    "checker_api_call_count": 0,
+    "checker_api_cost_cny": 0.0,
+    "constraint_gate_integrity_rate": 1.0,
+    "end_to_end_pass_rate": 0.8125,
+    "model_recall": 1.0,
+    "multihop_completion_rate": 1.0,
+    "p95_constraint_check_latency_ms": 4.975,
+    "p95_latency_ms": 49200.249,
+    "schema_pass_rate": 1.0,
+    "tool_selection_accuracy": 0.9375
+  },
+  "mode": "full",
+  "usage": {
+    "call_count": 177,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 0.582227,
+    "input_tokens": 712315,
+    "output_tokens": 17592,
+    "successful_calls": 177
+  }
+}

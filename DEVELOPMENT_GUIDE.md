@@ -6,8 +6,8 @@
 |---|---|
 | 项目名称 | SmartBuy Research Agent（多源消费决策研究 Agent） |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 4：核心消费决策 Agent 工作流（已完成，等待用户验收） |
-| 当前状态 | 有界 ReAct、KB/只读 SQL/Evidence/Web 降级工具、分层 Memory、Schema 报告、WebUI/SSE/Monitor 和 16 条 E2E 已实现；阶段 5 最终 Constraint Checker 尚未开始 |
+| 当前阶段 | 阶段 5：确定性硬约束复核（已完成，等待用户验收） |
+| 当前状态 | 带来源 ConstraintSet、完整候选池、只读 Checker、软排序护栏、SSE/Monitor 字段审计和自然/故障注入消融已实现；阶段 6 尚未开始 |
 | 最后更新时间 | 2026-08-27 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
@@ -256,7 +256,7 @@ flowchart LR
 - Embedding `text-embedding-v4`（固定 1024 维）：把文档块和查询映射到同一向量空间，负责高召回候选生成；不直接证明事实正确。
 - Reranker `qwen3-rerank`：结合查询对召回候选二次排序，减少无关上下文；其分数只在同次请求内比较，不等于正确概率。
 - SQLite/Text2SQL：执行硬条件筛选、排序和计算；生成 SQL 必须可审计并与人工 SQL 对照。
-- 硬约束复核器：在最终输出前做确定性验证，是首选项目核心增强点。
+- 硬约束复核器：阶段 5 已实现；在最终输出前对完整工具候选池做确定性验证，LLM 不能覆盖结果。
 
 ### Agentic RAG 与 GraphRAG
 
@@ -265,6 +265,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 ### 工具、状态、记忆、存储和展示
 
 - 工具：阶段 4 已实现 KB Search、只读 Text2SQL、Evidence Check 和 Web Search `unavailable` 接口；Meta Retrieval、Excel Agent 和真实 Web Search 仍是增强能力。
+- 安全门：阶段 5 已实现来源优先级、模型臆加拒绝、完整候选池累计、只读 SQLite/evidence 独立复核和合规集合保护；Checker 不是 LLM 可选工具。
 - 状态：当前沿用单用户、单进程边界，服务只绑定 `127.0.0.1`；结构化 Agent 状态保存需求、候选、工具观察和公开轨迹，进程级状态/环境变量不适合多租户。
 - 记忆：短期会话已支持约束和候选继承/覆盖；长期仅在用户明确确认后保存白名单内的稳定偏好，支持查看、覆盖、删除和关闭，不保存商品事实、价格、库存或模型推测。
 - 存储：MinIO 保存上传文档，Chroma 保存向量，SQLite 保存产品/价格/来源，长期偏好和临时执行文件位于仓库外专用目录。
@@ -344,7 +345,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 | 端到端任务完成率 | 满足预先定义行为的任务数 / 全部 E2E 任务 | ≥85% | 计划 `uv run python smartbuy/eval/run_eval.py --suite e2e` | 分类别定位数据、路由、生成失败，修复后重跑 |
 | Recall@K | Top-K 型号集合覆盖金标型号的比例，按可评估问题取平均 | Recall@5 ≥90% | `python -m smartbuy.eval.run_retrieval_eval`（真实调用、有费用） | 调整切分、元数据、查询和 K，禁止只挑成功样本 |
 | nDCG@K / MRR | 按二元型号相关度计算 nDCG@5；只有单一金标时可补充 MRR | nDCG@5 ≥0.85 或 MRR ≥0.80 | 同一 Runner 比较 Vector-only 与 Reranker | 校准候选数和重排适配；保留向量基线 |
-| 硬约束满足率 | 推荐候选满足的硬约束数 / 应满足总数；任务级任一违规即失败 | 字段级与任务级均 100% | 计划 constraint scorer + 人工 SQL 抽查 | 阶段 4/5 不完成；违规候选确定性移除 |
+| 硬约束满足率 | 推荐候选满足的硬约束数 / 应满足总数；任务级任一违规即失败 | 字段级与任务级均 100% | `python -m smartbuy.eval.run_stage5_eval --fixed` | 阶段 5 不完成；缩小支持词表或修正规则，违规候选确定性移除 |
 | 证据引用正确率 | 引用内容直接支持对应原子事实数 / 全部引用事实数 | ≥95% | 计划 evidence scorer，人工复核至少 20% | 降低声明粒度、修复来源绑定或拒答 |
 | 无依据结论比例 | 无可访问证据支持的外部事实数 / 全部外部事实数 | ≤5%，关键硬约束为 0 | 计划 unsupported-claim scorer + 人工抽查 | 增加引用校验，无法支持的结论删除或标未知 |
 | API 调用成功率 | 排除主动故障注入后成功请求 / 全部有效请求，按模型分开 | 每类 ≥98%（建议） | 最少每类 30 次可控测试并统计状态码 | 检查权限、端点、限流和退避；外部故障单列 |
@@ -360,6 +361,8 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 阶段 3 固定 40 条检索任务的真实结果：36 条有金标任务上，Vector-only / Vector + Reranker 的 Recall@5 分别为 0.8912 / 0.9838，nDCG@5 分别为 0.8170 / 0.9541；4 条无依据或无关问题的固定阈值拒答为 0/4。
 
 阶段 4 固定 16 条 Agent E2E 的真实结果：工具选择 16/16，7 条正例任务型号召回 7/7，9 条应拒答任务 9/9，8 条依赖式多跳 8/8，Schema 16/16，端到端 15/16；平均/P95 为 25.900/40.195 秒。唯一失败由模型臆加用户未提出的显示尺寸约束造成；改为仅接受用户显式给值的资格字段后，该样本独立回归 1/1。该结果证明阶段 4 字段拒答有效，但不等同于阶段 5 最终硬约束满足率已验收。
+
+阶段 5 的真实阻断结果：自然硬约束用例 55/55 字段、10/10 任务；独立故障注入 21/21 字段、12/12 任务、12/12 违规拦截；unknown/conflict 6/6、unsupported 2/2、重复执行 12/12、合规候选误杀 0。阶段 4 固定候选池 A/B 的任务级正确率由 10/12 提升到 12/12并恢复 3 个合规候选。首次在线 16 条 E2E 为 13/16，安全门完整性 16/16；三个失败均保留并定向修复，不虚报为同一次 16/16。详见[阶段 5 报告](smartbuy/docs/stage5_constraint_verification_report.md)。
 
 ## 10. 分阶段开发计划
 
@@ -425,7 +428,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ### 阶段 4：核心消费决策 Agent 工作流
 
-- 阶段状态：**已完成（2026-08-27，等待用户验收）**。
+- 阶段状态：**已完成并通过用户验收（Commit `ceaa042acc53496615002e742543e0b8c7b5ccc9`）**。
 - 阶段目标：形成 KB + Text2SQL + Evidence Check + 可选 Web 的真实多源决策闭环。
 - 前置依赖：阶段 3 数据、工作区外 SQLite/Chroma 和阶段 2 百炼 Provider；均满足。
 - 实际开发：任务类型/显式约束解析；最多 8 步的 qwen-plus Tool Calling；工具白名单、超时、预算和停止门；只读 Text2SQL；KB 二阶段检索；字段四态 Evidence；Web unavailable 降级；会话/长期偏好 Memory；Pydantic/Markdown 报告；SSE 与 Monitor 展示。
@@ -434,21 +437,23 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 测试方法：提交前完整项目回归 56 passed；4 条 dry run 后 16 条真实 E2E；失败用例独立复现/修复；回环地址 WebUI/SSE/Monitor 人工冒烟；Ruff/编译/JS 语法与敏感扫描。
 - 量化退出结果：工具选择 16/16，正例型号召回 7/7，9 条应拒答 9/9，多跳 8/8，Schema 16/16，端到端 15/16；失败修复后定向 1/1；最终全量成本 ¥0.4073413，阶段累计严格上界 <¥2.3159403，低于 10 元。
 - 风险与回退：Tool Calling 路径仍有非确定性，执行器门禁阻止越序和越权；Web 无凭据返回 unavailable；Reranker 失败保留向量顺序；SQL 不支持字段转 KB/Evidence；最大步数时安全停止。平均 25.900 秒、P95 40.195 秒，阶段 6 再优化。
-- 阶段边界：阶段 4 Evidence Check 不是阶段 5 最终 Constraint Checker；未实现真实 Web Search、GraphRAG、第二品类或四组消融。
+- 阶段边界：阶段 4 Evidence Check 当时不是最终 Constraint Checker；阶段 5 已补齐该边界。真实 Web Search、GraphRAG、第二品类和四组完整消融仍未实现。
 - 文档更新：[ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)、[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`feat(stage4): implement multi-source purchase decision workflow`。
 
 ### 阶段 5：Agentic RAG 核心增强点
 
-- 阶段目标：完成可量化的硬约束确定性复核；GraphRAG 只保留为经批准的可选实验。
-- 前置依赖：阶段 4 工作流和硬约束金标样本。
-- 开发任务：规范化硬约束；从 SQLite 复核候选；输出违规字段；比较 Agentic RAG 与增强版本；可选优化专用 worker 提示词。
-- 预计模块：约束模型、`verify_candidates`、Scorer、消融配置和测试（计划）。
-- 交付物：约束复核器、失败前后案例、真实提升或无提升结论。
-- 测试方法：预算/尺寸/OLED/接口组合、未知字段、边界值和故意违规候选。
-- 退出条件：任务级硬约束满足率 100%；无已知绕过；结果可由 SQL 和日志复核。
-- 风险与回退：规则与自然语言映射不一致；缩小支持的约束词表并显式返回不支持项。
-- 文档更新：支持字段、限制、实验设置和真实数字；若考虑 GraphRAG，先新增 ADR 并取得用户确认。
+- 阶段状态：**已完成（2026-08-27，等待用户验收）**。
+- 阶段目标：完成不可被 LLM 绕过、可量化且可审计的硬约束确定性复核；GraphRAG 继续后置。
+- 前置依赖：阶段 4 工作流、阶段 3 只读 SQLite/evidence 和硬约束金标；均满足。
+- 实际开发：带来源约束归一化与优先级；会话/长期偏好覆盖和取消；完整候选池累计；只读 `verify_candidates`；价格时效、地区、证据冲突和 fail-closed；LLM 合规集合排序护栏；SSE/Monitor 字段结果；固定池 A/B、自然用例和独立故障注入 Scorer。
+- 实际模块：`smartbuy/constraints/`、`agent/ranking.py`、Agent/报告/Domain 集成、`run_stage5_eval.py`、阶段 5 JSONL/结果、三类测试、ADR-0005 和技术报告；供应商 WebUI/Monitor 只增加 Checker 展示。
+- 交付物：ConstraintSet、Checker v1、自然 10 条、故障注入 12 条、固定池 A/B、在线 4 条 dry run/16 条完整结果/定向回归及脱敏工具轨迹。
+- 测试方法：先纯本地 76 项回归和固定套件，再 4 条在线 dry run、一次 16 条完整 E2E，最后只复测保留的失败用例；Ruff、编译、JS 语法和敏感扫描。
+- 量化退出结果：自然 55/55 字段、10/10 任务；故障注入 21/21 字段、12/12 任务、12/12 拦截；unknown/conflict、unsupported、重复执行和 s4-014 均 100%；Checker API/成本为 0，在线平均 Checker 延迟 2.014ms。
+- 风险与回退：首批词表有意收窄；unsupported/ambiguous、null、冲突和 Checker 异常均 fail closed。首次在线 E2E 13/16，失败原样保留并定向修复；阶段 6 需完整重复评测。
+- 阶段边界：未实现真实 Web Search、GraphRAG、第二品类、自动下单、四组完整重复消融或公网多租户。
+- 文档更新：[ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)、[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`feat(stage5): add deterministic constraint verification`。
 
 ### 阶段 6：评测、可观测性、缓存、错误恢复和降级
@@ -521,7 +526,9 @@ docs: initialize development guide and project map
 | 百炼 Embedding `/model_id` 兼容 | 已修复；Youtu 实际建库和检索均通过，返回向量严格为 1024 维 | OpenAI-compatible Provider 显式传 `dimensions=1024`，验证数量、顺序和维度；模型或维度变更时重建索引 | 否；已验证 |
 | Reranker `/rerank` 与 `/reranks` | 已适配完整 `/reranks` 端点和顶层 `results`；Youtu 二阶段排序已通过 | 保留完整端点；有限重试后保留向量顺序并显式标记降级 | 否；已验证 |
 | API 调用成本和配额 | 阶段 2 上限 5 元；阶段 3～5 各建议不超 10 元；累计上限 50 元 | 先用 3～5 条样本；记录调用/Token/估算成本；可能超限立即停止 | 否 |
-| Web Search 凭据 | 当前未提供，且已确认不阻塞阶段 1～3 | KB + SQLite/Text2SQL 为稳定主链路；无凭据时返回可演示降级结果 | 否 |
+| Web Search 凭据 | 当前未提供，阶段 1～5 均以 unavailable 降级完成 | KB + SQLite/Text2SQL 为稳定主链路；无凭据时返回可演示降级结果 | 否 |
+| 约束自然语言覆盖 | 阶段 5 只承诺首批 11 个字段和已声明表达；模糊/未支持表达不猜测 | provenance gate + `unsupported/ambiguous` + fail closed；阶段 6 只扩展有金标的表达 | 否；实际边界已记录 |
+| 在线 E2E 波动 | 阶段 5 首次完整 13/16，安全门 16/16；三个失败保留并定向修复 | 阶段 6 固定配置做完整重复运行；执行器继续限制依赖、步骤、工具和成本 | 否；阻塞阶段 6 宣称稳定性提升 |
 | 数据版权与再分发 | 官方 PDF 逐份许可未知 | 只提交来源清单、校验值和自制摘要 | 否；阻塞对应原文公开发布 |
 | 动态价格和页面变化 | 不可完全复现 | 记录地区/时间，保留快照或历史观察 | 否 |
 | Windows 路径和依赖 | 阶段 1 已通过；运行数据需避开深路径 | 保持 `C:/ai/` 短 ASCII 路径，逐服务回归 | 否 |
@@ -544,3 +551,7 @@ docs: initialize development guide and project map
 - [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)
 - [阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)
 - [ADR-0002：百炼 Provider 与索引契约](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md)
+- [阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)
+- [ADR-0004：有界 ReAct、字段证据与分层记忆](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)
+- [阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)
+- [ADR-0005：确定性硬约束安全门](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)

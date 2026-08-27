@@ -1,0 +1,222 @@
+{
+  "cases": [
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "case_id": "s4-004",
+      "category": "insufficient_evidence",
+      "constraint_check_latency_ms": 2.62,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search"
+      ],
+      "latency_ms": 32387.485,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。",
+      "tool_call_count": 9,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 18,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0678191,
+        "input_tokens": 89152,
+        "output_tokens": 915,
+        "successful_calls": 18
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "case_id": "s4-007",
+      "category": "unrelated",
+      "constraint_check_latency_ms": 3.458,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2724d-cn",
+        "dell-u2723qe-cn",
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [],
+      "latency_ms": 45656.297,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": false,
+      "observed_model_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-g2724d-cn",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "dell-u2724d-cn",
+        "lg-27gs95qe-b-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "达到最大 ReAct 步骤数，安全停止。",
+      "tool_call_count": 8,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 8,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0272384,
+        "input_tokens": 29263,
+        "output_tokens": 1914,
+        "successful_calls": 8
+      }
+    },
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "candidate_pool_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "case_id": "s4-012",
+      "category": "source_conflict",
+      "constraint_check_latency_ms": 0.889,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": false,
+      "eligible_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "end_to_end_pass": false,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 15851.295,
+      "model_recall": 1.0,
+      "multihop_pass": false,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "字段级证据存在 unknown 或 conflict，已停止并拒绝标记为完全满足。",
+      "tool_call_count": 5,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 7,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0163994,
+        "input_tokens": 19338,
+        "output_tokens": 574,
+        "successful_calls": 7
+      }
+    }
+  ],
+  "evaluation_version": "smartbuy-stage5-agent-e2e-v1",
+  "metrics": {
+    "abstention_accuracy": 1.0,
+    "average_constraint_check_latency_ms": 2.322,
+    "average_latency_ms": 31298.359,
+    "case_count": 3,
+    "checker_api_call_count": 0,
+    "checker_api_cost_cny": 0.0,
+    "constraint_gate_integrity_rate": 0.666667,
+    "end_to_end_pass_rate": 0.666667,
+    "model_recall": 1.0,
+    "multihop_completion_rate": 0.0,
+    "p95_constraint_check_latency_ms": 3.458,
+    "p95_latency_ms": 45656.297,
+    "schema_pass_rate": 1.0,
+    "tool_selection_accuracy": 1.0
+  },
+  "mode": "targeted_regression",
+  "passed": false,
+  "usage": {
+    "call_count": 33,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 0.1114569,
+    "input_tokens": 137753,
+    "output_tokens": 3403,
+    "successful_calls": 33
+  }
+}

@@ -7,6 +7,13 @@ from typing import Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
 
+from smartbuy.constraints.models import (
+    ConstraintResult as DeterministicConstraintResult,
+    ConstraintSet,
+    VerificationBatch,
+    VerificationStatus,
+)
+
 
 class ConstraintStatus(StrEnum):
     MATCHED = "matched"
@@ -83,6 +90,14 @@ class CandidateDecision(BaseModel):
     price_observed_at: str | None = None
     overall_status: ConstraintStatus
     fields: list[FieldAssessment] = Field(default_factory=list)
+    eligible: bool = False
+    verifier_status: VerificationStatus | None = None
+    constraint_results: list[DeterministicConstraintResult] = Field(default_factory=list)
+    violated_fields: list[str] = Field(default_factory=list)
+    unknown_fields: list[str] = Field(default_factory=list)
+    conflict_fields: list[str] = Field(default_factory=list)
+    unsupported_constraints: list[str] = Field(default_factory=list)
+    verifier_version: str | None = None
     recommendation_reason: str | None = None
     elimination_reason: str | None = None
 
@@ -102,8 +117,11 @@ class ToolTrace(BaseModel):
 class DecisionReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
-    report_version: str = "smartbuy-decision-v1"
+    report_version: str = "smartbuy-decision-v2"
     request_summary: str
+    task_type: Literal["fact", "filter", "comparison", "dynamic", "unrelated"] = "fact"
+    constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
+    constraint_verification: VerificationBatch | None = None
     hard_constraints: list[ConstraintSpec] = Field(default_factory=list)
     soft_preferences: list[str] = Field(default_factory=list)
     tools_used: list[str] = Field(default_factory=list)
@@ -118,14 +136,28 @@ class DecisionReport(BaseModel):
     trace: list[ToolTrace] = Field(default_factory=list)
     latency_ms: float = 0.0
     tool_call_count: int = 0
+    constraint_check_latency_ms: float = 0.0
     usage: dict[str, Any] = Field(default_factory=dict)
 
     def to_markdown(self) -> str:
-        lines = ["# SmartBuy 消费决策报告", "", f"**需求摘要：** {self.request_summary}", ""]
+        lines = [
+            "# SmartBuy 消费决策报告", "", f"**需求摘要：** {self.request_summary}",
+            f"**任务类型：** {self.task_type}", "",
+        ]
         if self.hard_constraints:
             lines.extend(["## 硬约束", ""])
             for item in self.hard_constraints:
                 lines.append(f"- `{item.field} {item.operator.value} {item.value}`")
+            lines.append("")
+        active_constraints = self.constraint_set.active()
+        if active_constraints:
+            lines.extend(["## 带来源的约束集合", ""])
+            for item in active_constraints:
+                support = "supported" if item.supported and not item.ambiguous else "unsupported/ambiguous"
+                lines.append(
+                    f"- `{item.field} {item.operator.value} {item.normalized_value}` "
+                    f"（{item.hard_or_soft.value}；{item.provenance.value}；{support}；turn {item.source_turn}）"
+                )
             lines.append("")
         if self.soft_preferences:
             lines.extend(["## 软偏好", "", *[f"- {item}" for item in self.soft_preferences], ""])
@@ -141,6 +173,24 @@ class DecisionReport(BaseModel):
                 lines.append(f"- 型号：{title}")
             if candidate.price_cny is not None:
                 lines.append(f"- 价格观测：¥{candidate.price_cny:.2f}（{candidate.price_observed_at or '时间未知'}）")
+            if candidate.verifier_status is not None:
+                lines.append(
+                    f"- Constraint Checker：**{candidate.verifier_status.value}**；"
+                    f"eligible={str(candidate.eligible).lower()}；version={candidate.verifier_version}"
+                )
+                if candidate.violated_fields:
+                    lines.append(f"- 违规字段：{', '.join(candidate.violated_fields)}")
+                if candidate.unknown_fields:
+                    lines.append(f"- 未知字段：{', '.join(candidate.unknown_fields)}")
+                if candidate.conflict_fields:
+                    lines.append(f"- 冲突字段：{', '.join(candidate.conflict_fields)}")
+                if candidate.unsupported_constraints:
+                    lines.append(f"- 未支持约束：{', '.join(candidate.unsupported_constraints)}")
+                for result in candidate.constraint_results:
+                    lines.append(
+                        f"- 复核 `{result.constraint.field}`：**{result.status.value}**；"
+                        f"实际值 `{result.actual_value}`；要求 `{result.constraint.normalized_value}`；{result.reason}"
+                    )
             for field in candidate.fields:
                 lines.append(f"- `{field.field}`：**{field.status.value}** — {field.reason}")
             if candidate.recommendation_reason:
@@ -168,6 +218,21 @@ class DecisionReport(BaseModel):
         if self.abstained:
             lines.extend(["## 结论", "", "证据不足或存在冲突，本次不输出完全满足条件的推荐。", ""])
         lines.extend(["## 停止原因", "", self.stop_reason, ""])
+        if self.constraint_verification is not None:
+            lines.extend(
+                [
+                    "## Constraint Checker 审计",
+                    "",
+                    f"- 版本：`{self.constraint_verification.verifier_version}`",
+                    f"- 复核时间策略：`{self.constraint_verification.checked_at}`",
+                    f"- 完整候选池：{', '.join(self.constraint_verification.candidate_pool_model_ids) or '空'}",
+                    f"- 合规候选：{', '.join(self.constraint_verification.eligible_model_ids) or '空'}",
+                    f"- Checker 延迟：{self.constraint_check_latency_ms:.3f} ms（不调用模型）",
+                    f"- 语义指纹：`{self.constraint_verification.semantic_fingerprint}`",
+                    f"- 降级：{str(self.constraint_verification.degraded).lower()}",
+                    "",
+                ]
+            )
         return "\n".join(lines)
 
 
@@ -175,8 +240,12 @@ class AgentState(BaseModel):
     session_id: str
     user_id: str | None = None
     query: str
+    turn_number: int = Field(default=1, ge=1)
     requirements: UserRequirements = Field(default_factory=UserRequirements)
+    constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
     candidate_rows: list[dict[str, Any]] = Field(default_factory=list)
+    candidate_pool_rows: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    candidate_pool_sources: dict[str, list[str]] = Field(default_factory=dict)
     assessments: dict[str, list[FieldAssessment]] = Field(default_factory=dict)
     kb_hits: list[EvidenceReference] = Field(default_factory=list)
     traces: list[ToolTrace] = Field(default_factory=list)
@@ -185,3 +254,7 @@ class AgentState(BaseModel):
     tool_call_count: int = 0
     stop_reason: str | None = None
     finished: bool = False
+    constraint_verification: VerificationBatch | None = None
+    constraint_check_latency_ms: float = 0.0
+    ranked_eligible_model_ids: list[str] = Field(default_factory=list)
+    candidate_explanations: dict[str, str] = Field(default_factory=dict)

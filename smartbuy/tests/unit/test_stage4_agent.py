@@ -87,7 +87,7 @@ def tools(database):
 
 def test_task_type_and_explicit_constraints_are_normalized():
     assert PurchaseDecisionAgent._infer_task_type("U2724D 是否有 90W 供电？", "fact") == "filter"
-    assert PurchaseDecisionAgent._infer_task_type("PD2705U 到底是 60W 还是 65W？", "fact") == "comparison"
+    assert PurchaseDecisionAgent._infer_task_type("PD2705U 到底是 60W 还是 65W？", "fact") == "fact"
     requirements = PurchaseDecisionAgent._augment_requirements(
         "中国版 QHD、至少 120Hz、非 OLED 且没有 USB-C",
         UserRequirements(summary="组合筛选", task_type="filter"),
@@ -168,8 +168,15 @@ async def test_agent_executes_dependent_sql_kb_evidence_chain(database, tmp_path
         FakeProvider(responses), tools(database),
         preference_memory=LongTermPreferenceStore(tmp_path / "preferences.json"),
     )
-    report = await agent.run("帮我找符合条件的显示器", session_id="s1")
-    assert report.recommended_model_ids == ["dell-u2723qe-cn"]
+    report = await agent.run(
+        "帮我找中国版 27 英寸 4K、支持 USB-C 视频且至少 90W 供电的显示器",
+        session_id="s1",
+    )
+    assert set(report.recommended_model_ids) == {
+        "dell-u2723qe-cn", "asus-pa279crv-cn", "lg-27up850k-w-cn"
+    }
+    assert report.constraint_verification is not None
+    assert set(report.constraint_verification.eligible_model_ids) == set(report.recommended_model_ids)
     assert report.abstained is False
     assert report.tools_used == ["text2sql", "kb_search", "evidence_check"]
     assert [item.parent_step for item in report.trace if item.tool in {"kb_search", "evidence_check"}] == [2, 3]

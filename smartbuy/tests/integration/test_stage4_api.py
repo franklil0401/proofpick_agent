@@ -33,6 +33,24 @@ class StubAgent:
                     },
                 }
             )
+            await event_callback(
+                {
+                    "type": "constraint_check_started",
+                    "verifier_version": "smartbuy-constraint-checker-v1",
+                    "candidate_pool_count": 1,
+                }
+            )
+            await event_callback(
+                {
+                    "type": "constraint_check_completed",
+                    "verification": {
+                        "verifier_version": "smartbuy-constraint-checker-v1",
+                        "eligible_model_ids": ["dell-u2723qe-cn"],
+                        "candidates": [],
+                        "degraded": False,
+                    },
+                }
+            )
         return DecisionReport(
             request_summary=query,
             tools_used=["kb_search"],
@@ -81,6 +99,8 @@ def test_sse_contains_public_tool_cards_and_markdown(tmp_path):
     assert response.status_code == 200
     assert '"type": "tool_call"' in response.text
     assert '"type": "tool_output"' in response.text
+    assert '"type": "constraint_check_started"' in response.text
+    assert '"type": "constraint_check_completed"' in response.text
     assert '"type": "done"' in response.text
     assert "SmartBuy 消费决策报告" in response.text
     assert "Authorization" not in response.text
@@ -93,4 +113,6 @@ def test_upstream_webui_is_wired_to_smartbuy_endpoint():
     html = (PROJECT_ROOT / "vendor/youtu-rag/frontend/rag_webui/pages/chat.html").read_text(encoding="utf-8")
     assert "/api/smartbuy/chat" in javascript
     assert "tool_call" in javascript and "tool_output" in javascript
+    assert "constraint_check_started" in javascript
+    assert "constraint_check_completed" in javascript
     assert 'id="smartbuy-mode"' in html

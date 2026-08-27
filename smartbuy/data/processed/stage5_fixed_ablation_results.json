@@ -1,0 +1,2058 @@
+{
+  "as_of": "2026-08-27T00:00:00Z",
+  "blocking_failures": [],
+  "controlled_stage4_ablation": {
+    "cases": [
+      {
+        "candidate_pool_model_ids": [
+          "dell-u2723qe-cn",
+          "asus-pa279crv-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "case_id": "s4-002",
+        "expected_eligible_model_ids": [
+          "asus-pa279crv-cn",
+          "dell-u2723qe-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "recovered_model_ids": [
+          "asus-pa279crv-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "9eff338b156e613035a1cdd7426ed0699c13a933ffc27e2a4bfe8baa4f44830f",
+        "stage4_recommended_model_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "stage4_task_pass": false,
+        "stage5_recommended_model_ids": [
+          "dell-u2723qe-cn",
+          "asus-pa279crv-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "dell-u2724d-cn",
+          "dell-u2723qe-cn"
+        ],
+        "case_id": "s4-003",
+        "expected_eligible_model_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "2898788bc18c57826bdf05ab8aa6c3c28245d78fcfc31eebfb84c107e406b250",
+        "stage4_recommended_model_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "benq-pd2725u-ca",
+          "benq-pd2705u-us",
+          "dell-g2724d-cn",
+          "dell-s2722qc-cn",
+          "dell-u2723qe-cn",
+          "dell-u2724d-cn",
+          "benq-ex2710u-cn"
+        ],
+        "case_id": "s4-004",
+        "expected_eligible_model_ids": [],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "08b8f0e6b438e6f1bc319070a1fc1b97fcd1b35d798efb16e33b564ed9905f65",
+        "stage4_recommended_model_ids": [],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "dell-u2723qe-cn",
+          "dell-s2722qc-cn",
+          "asus-pa279crv-cn",
+          "asus-pa27jcv-cn",
+          "lg-27up850k-w-cn",
+          "benq-pd2705u-us",
+          "benq-pd2725u-ca"
+        ],
+        "case_id": "s4-005",
+        "expected_eligible_model_ids": [],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "736978ffef3f6e7c9a21ff0ac2e45d553e2793a6b50671a6223b36e4a5c98559",
+        "stage4_recommended_model_ids": [],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "benq-pd2725u-ca",
+          "lg-27up850k-w-cn",
+          "dell-u2723qe-cn",
+          "benq-ex2710u-cn",
+          "asus-pg27aqdm-cn",
+          "asus-pa279crv-cn"
+        ],
+        "case_id": "s4-006",
+        "expected_eligible_model_ids": [],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "3ca02a453568d266d63a40196f207bd09080ec9f8b31546e5852b171f255ba87",
+        "stage4_recommended_model_ids": [],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [],
+        "case_id": "s4-008",
+        "expected_eligible_model_ids": [],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "ef43432a6a870ad491e2d2591da6a8f9e0975b4997c9cbf5c722d58ace5e3e9e",
+        "stage4_recommended_model_ids": [],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [],
+        "case_id": "s4-009",
+        "expected_eligible_model_ids": [],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "d67857ab315c6cd47cfe8c17f3312473695d4426dcabf57440c2767eb6bcd805",
+        "stage4_recommended_model_ids": [],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "dell-u2724d-cn"
+        ],
+        "case_id": "s4-010",
+        "expected_eligible_model_ids": [],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "5ea413251c629fc68a06807ca023eab50357c663eaf2b6400cd48401236f9721",
+        "stage4_recommended_model_ids": [],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "dell-s2722qc-cn"
+        ],
+        "case_id": "s4-013",
+        "expected_eligible_model_ids": [
+          "dell-s2722qc-cn"
+        ],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "1ac981fdadcf73596667fe3b2c7368ce5e1562f1da9e804607098c5c14ab5e40",
+        "stage4_recommended_model_ids": [
+          "dell-s2722qc-cn"
+        ],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [
+          "dell-s2722qc-cn"
+        ],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "case_id": "s4-014",
+        "expected_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "recovered_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "8882e57a571da67aee902fa7bc729f3f4eb6f2f115a5d8b02703bb7ce57fd4ca",
+        "stage4_recommended_model_ids": [],
+        "stage4_task_pass": false,
+        "stage5_recommended_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "case_id": "s4-015",
+        "expected_eligible_model_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "4e7702051e9ff1c53793bd46c8775762f65957768cb8ed8ecf361f9e27da281f",
+        "stage4_recommended_model_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "stage5_task_pass": true
+      },
+      {
+        "candidate_pool_model_ids": [
+          "dell-u2723qe-cn",
+          "dell-s2722qc-cn"
+        ],
+        "case_id": "s4-016",
+        "expected_eligible_model_ids": [
+          "dell-s2722qc-cn",
+          "dell-u2723qe-cn"
+        ],
+        "recovered_model_ids": [],
+        "removed_model_ids": [],
+        "same_candidate_pool": true,
+        "semantic_fingerprint": "b669526867284a4d3bb8ff6cd9a976ad70f07c2631805a29621f7098543b822b",
+        "stage4_recommended_model_ids": [
+          "dell-s2722qc-cn",
+          "dell-u2723qe-cn"
+        ],
+        "stage4_task_pass": true,
+        "stage5_recommended_model_ids": [
+          "dell-u2723qe-cn",
+          "dell-s2722qc-cn"
+        ],
+        "stage5_task_pass": true
+      }
+    ],
+    "definition": "A 使用阶段 4 已保存输出；B 对完全相同的已保存工具候选池运行 Checker。只纳入存在当前输入硬约束的阶段 4 用例，未重跑或削弱 A。",
+    "metrics": {
+      "applicable_task_count": 12,
+      "candidate_recovery_count": 3,
+      "checker_api_call_count": 0,
+      "checker_api_cost_cny": 0.0,
+      "incorrect_recommendation_removal_count": 0,
+      "same_candidate_pool_rate": 1.0,
+      "stage4_compliant_false_kill_rate": 0.3,
+      "stage4_field_checks_passed": 30,
+      "stage4_field_checks_total": 30,
+      "stage4_field_level_hard_constraint_rate": 1.0,
+      "stage4_task_level_hard_constraint_rate": 0.833333,
+      "stage5_compliant_false_kill_rate": 0.0,
+      "stage5_field_checks_passed": 47,
+      "stage5_field_checks_total": 47,
+      "stage5_field_level_hard_constraint_rate": 1.0,
+      "stage5_task_level_hard_constraint_rate": 1.0
+    }
+  },
+  "data_version": "monitor-cn-2026-08-26-v1",
+  "evaluation_version": "smartbuy-stage5-fixed-ablation-v1",
+  "fault_injection_cases": {
+    "cases": [
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1899.0,
+                "evidence_id": "price-dell-g2724d-20260826",
+                "expected_value": 1800.0,
+                "field": "price_cny",
+                "source_id": "price_observation:price-dell-g2724d-20260826",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "price_cny"
+            ]
+          }
+        ],
+        "case_id": "s5f-001",
+        "checker_latency_ms": 0.829,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "over_budget",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "1253bd73dfe5e4d99011c320ccc99d72f351e684357a7e65574ba9c1c883b7a6"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 27.0,
+                "evidence_id": "ev-dell-g2724d-cn-display-size-inch",
+                "expected_value": 32.0,
+                "field": "display_size_inch",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "display_size_inch"
+            ]
+          }
+        ],
+        "case_id": "s5f-002",
+        "checker_latency_ms": 1.056,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "wrong_size",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "d4f7f2bcf0332ddabbced8c8a41ff853ad7024d3a9fd2d6ae3477fb7b6e01238"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "asus-pg27aqdm-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-asus-pg27aqdm-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-asus-pg27aqdm-cn-is-oled",
+                "expected_value": false,
+                "field": "is_oled",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "asus-pg27aqdm-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "is_oled"
+            ]
+          }
+        ],
+        "case_id": "s5f-003",
+        "checker_latency_ms": 1.068,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "oled_exclusion",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "95563c493c23ad95c07c480c72b7e0db24005e46ff5d288791b8cc375a12c5d3"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-dell-g2724d-cn-resolution",
+                "expected_value": "3840x2160",
+                "field": "resolution",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "resolution"
+            ]
+          }
+        ],
+        "case_id": "s5f-004",
+        "checker_latency_ms": 1.071,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "resolution_mismatch",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "2d6be79fae4d061fc2529e4e188075f453fddedc329a98aef3602fdfa358adb2"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-dell-g2724d-cn-has-usb-c",
+                "expected_value": true,
+                "field": "has_usb_c",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "has_usb_c"
+            ]
+          }
+        ],
+        "case_id": "s5f-005",
+        "checker_latency_ms": 1.107,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "usb_c_missing",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "f569fdf9280e86b05f55787b9bbb70bf3098fc6a91ca03341f131dda0ca7e2cd"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-u2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-dell-u2724d-cn-has-usb-c",
+                "expected_value": true,
+                "field": "has_usb_c",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-dell-u2724d-cn-usb-c-video",
+                "expected_value": true,
+                "field": "usb_c_video",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-u2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "usb_c_video"
+            ]
+          }
+        ],
+        "case_id": "s5f-006",
+        "checker_latency_ms": 1.175,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "usb_c_no_video",
+        "field_checks_correct": 2,
+        "field_checks_total": 2,
+        "semantic_fingerprint": "d0d4acfff9c1a05774696e4f11adb1ca405b4188ea248b2272c6a5cd2c95790b"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-u2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 15.0,
+                "evidence_id": "ev-dell-u2724d-cn-usb-c-power-delivery-w",
+                "expected_value": 90.0,
+                "field": "usb_c_power_delivery_w",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-u2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "usb_c_power_delivery_w"
+            ]
+          }
+        ],
+        "case_id": "s5f-007",
+        "checker_latency_ms": 1.049,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "power_insufficient",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "dc2a71eb9d4b04456ece38079cb2a2d85e94fb99b5b5144aa3c794058ee63d31"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "lg-27up850k-w-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-lg-27up850k-w-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 613.5,
+                "evidence_id": "ev-lg-27up850k-w-cn-width-mm",
+                "expected_value": 612.0,
+                "field": "width_mm",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "lg-27up850k-w-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "width_mm"
+            ]
+          }
+        ],
+        "case_id": "s5f-008",
+        "checker_latency_ms": 0.777,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "too_wide",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "116b709e18cde30d65a330daa5c8787051e153947ceb3be0dd6f5cf799ff7eca"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-u2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": null,
+                "evidence_id": null,
+                "expected_value": 612.0,
+                "field": "width_mm",
+                "source_id": null,
+                "status": "unknown"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-u2724d-cn",
+            "overall_status": "unknown",
+            "unknown_fields": [
+              "width_mm"
+            ],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          }
+        ],
+        "case_id": "s5f-009",
+        "checker_latency_ms": 0.692,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "unknown_field",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "8448ee58e28ab3451f6082f892699f2f19f830ef3432fb14f22756611d4d1bbf"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "benq-pd2705u-us"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [
+              "usb_c_power_delivery_w"
+            ],
+            "constraint_results": [
+              {
+                "actual_value": "US",
+                "evidence_id": "ev-benq-pd2705u-us-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-benq-pd2705u-us-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": 65.0,
+                "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w",
+                "expected_value": 60.0,
+                "field": "usb_c_power_delivery_w",
+                "source_id": "src-benq-pd2705u-us-spec",
+                "status": "conflict"
+              }
+            ],
+            "eligible": false,
+            "model_id": "benq-pd2705u-us",
+            "overall_status": "conflict",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          }
+        ],
+        "case_id": "s5f-010",
+        "checker_latency_ms": 0.706,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "source_conflict",
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "f0ada3dab68f90d9177b4c44f67f5d2744dd9c74a7f57cb05f4c899877891c1b"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "asus-pg27aqdm-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-asus-pg27aqdm-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": null,
+                "evidence_id": null,
+                "expected_value": 2000.0,
+                "field": "price_cny",
+                "source_id": null,
+                "status": "unknown"
+              },
+              {
+                "actual_value": 26.5,
+                "evidence_id": "ev-asus-pg27aqdm-cn-display-size-inch",
+                "expected_value": 27.0,
+                "field": "display_size_inch",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-asus-pg27aqdm-cn-resolution",
+                "expected_value": "3840x2160",
+                "field": "resolution",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-asus-pg27aqdm-cn-is-oled",
+                "expected_value": false,
+                "field": "is_oled",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-asus-pg27aqdm-cn-has-usb-c",
+                "expected_value": true,
+                "field": "has_usb_c",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-asus-pg27aqdm-cn-usb-c-video",
+                "expected_value": true,
+                "field": "usb_c_video",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": null,
+                "evidence_id": null,
+                "expected_value": 90.0,
+                "field": "usb_c_power_delivery_w",
+                "source_id": null,
+                "status": "unknown"
+              },
+              {
+                "actual_value": 605.0,
+                "evidence_id": "ev-asus-pg27aqdm-cn-width-mm",
+                "expected_value": 600.0,
+                "field": "width_mm",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "asus-pg27aqdm-cn",
+            "overall_status": "failed",
+            "unknown_fields": [
+              "price_cny",
+              "usb_c_power_delivery_w"
+            ],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "display_size_inch",
+              "resolution",
+              "is_oled",
+              "has_usb_c",
+              "usb_c_video",
+              "width_mm"
+            ]
+          }
+        ],
+        "case_id": "s5f-011",
+        "checker_latency_ms": 1.402,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "multiple_violations",
+        "field_checks_correct": 8,
+        "field_checks_total": 8,
+        "semantic_fingerprint": "6209eaeec626d797d8873358bb8d7938b97ef5f9f45c855ca76fb3c38d69b761"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2723qe-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": null,
+                "evidence_id": null,
+                "expected_value": true,
+                "field": "camera",
+                "source_id": null,
+                "status": "unknown"
+              },
+              {
+                "actual_value": null,
+                "evidence_id": null,
+                "expected_value": true,
+                "field": "face_recognition",
+                "source_id": null,
+                "status": "unknown"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-u2723qe-cn",
+            "overall_status": "unknown",
+            "unknown_fields": [
+              "camera",
+              "face_recognition"
+            ],
+            "unsupported_constraints": [
+              "camera",
+              "face_recognition"
+            ],
+            "violated_fields": []
+          }
+        ],
+        "case_id": "s5f-012",
+        "checker_latency_ms": 0.657,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": "unsupported_constraint",
+        "field_checks_correct": 2,
+        "field_checks_total": 2,
+        "semantic_fingerprint": "c416fd30d38b1a50297b81f1aa5a6c69a837d8a2814d3ce0f8b7d0604f354d57"
+      }
+    ],
+    "metrics": {
+      "average_checker_latency_ms": 0.966,
+      "case_count": 12,
+      "checker_api_call_count": 0,
+      "checker_api_cost_cny": 0.0,
+      "compliant_candidate_false_kill_rate": 0.0,
+      "compliant_candidates_retained": 0,
+      "compliant_candidates_total": 0,
+      "deterministic_repeat_rate": 1.0,
+      "field_checks_correct": 21,
+      "field_checks_total": 21,
+      "field_level_hard_constraint_rate": 1.0,
+      "p95_checker_latency_ms": 1.402,
+      "task_level_hard_constraint_rate": 1.0,
+      "tasks_correct": 12,
+      "tasks_total": 12,
+      "unknown_conflict_correct": 6,
+      "unknown_conflict_handling_rate": 1.0,
+      "unknown_conflict_total": 6,
+      "unsupported_correct": 2,
+      "unsupported_identification_rate": 1.0,
+      "unsupported_total": 2,
+      "violation_interception_rate": 1.0,
+      "violations_intercepted": 12,
+      "violations_total": 12
+    }
+  },
+  "new_natural_hard_cases": {
+    "cases": [
+      {
+        "actual_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn",
+          "dell-u2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1899.0,
+                "evidence_id": "price-dell-g2724d-20260826",
+                "expected_value": 1899.0,
+                "field": "price_cny",
+                "source_id": "price_observation:price-dell-g2724d-20260826",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 2799.0,
+                "evidence_id": "price-dell-u2724d-20260826",
+                "expected_value": 1899.0,
+                "field": "price_cny",
+                "source_id": "price_observation:price-dell-u2724d-20260826",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-u2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "price_cny"
+            ]
+          }
+        ],
+        "case_id": "s5n-001",
+        "checker_latency_ms": 1.604,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "fault_type": null,
+        "field_checks_correct": 2,
+        "field_checks_total": 2,
+        "semantic_fingerprint": "0faee6a95dc01311746e2db481e41c147faf8140b41e1eb5fb8be9c0dc21bbd8"
+      },
+      {
+        "actual_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn",
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 27.0,
+                "evidence_id": "ev-dell-g2724d-cn-display-size-inch",
+                "expected_value": [
+                  26.5,
+                  27.0
+                ],
+                "field": "display_size_inch",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-dell-g2724d-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 165.0,
+                "evidence_id": "ev-dell-g2724d-cn-refresh-rate-hz",
+                "expected_value": 120.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                "expected_value": false,
+                "field": "is_oled",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-asus-pg27aqdm-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 26.5,
+                "evidence_id": "ev-asus-pg27aqdm-cn-display-size-inch",
+                "expected_value": [
+                  26.5,
+                  27.0
+                ],
+                "field": "display_size_inch",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-asus-pg27aqdm-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 240.0,
+                "evidence_id": "ev-asus-pg27aqdm-cn-refresh-rate-hz",
+                "expected_value": 120.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-asus-pg27aqdm-cn-is-oled",
+                "expected_value": false,
+                "field": "is_oled",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "asus-pg27aqdm-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "is_oled"
+            ]
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-lg-27gs95qe-b-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 26.5,
+                "evidence_id": "ev-lg-27gs95qe-b-cn-display-size-inch",
+                "expected_value": [
+                  26.5,
+                  27.0
+                ],
+                "field": "display_size_inch",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-lg-27gs95qe-b-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 240.0,
+                "evidence_id": "ev-lg-27gs95qe-b-cn-refresh-rate-hz",
+                "expected_value": 120.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-lg-27gs95qe-b-cn-is-oled",
+                "expected_value": false,
+                "field": "is_oled",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "lg-27gs95qe-b-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "is_oled"
+            ]
+          }
+        ],
+        "case_id": "s5n-002",
+        "checker_latency_ms": 1.914,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "fault_type": null,
+        "field_checks_correct": 12,
+        "field_checks_total": 12,
+        "semantic_fingerprint": "9115bdb233dcf091e1275d54ae1fe346e02659ba9100a2ced4d0ab1c7832d967"
+      },
+      {
+        "actual_eligible_model_ids": [
+          "dell-s2722qc-cn",
+          "asus-pa27jcv-cn"
+        ],
+        "candidate_pool_model_ids": [
+          "dell-s2722qc-cn",
+          "dell-g2724d-cn",
+          "asus-pa27jcv-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-s2722qc-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "3840x2160",
+                "evidence_id": "ev-dell-s2722qc-cn-resolution",
+                "expected_value": "3840x2160",
+                "field": "resolution",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "dell-s2722qc-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-dell-g2724d-cn-resolution",
+                "expected_value": "3840x2160",
+                "field": "resolution",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "resolution"
+            ]
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-asus-pa27jcv-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-asus-pa27jcv-cn-manual",
+                "status": "passed"
+              },
+              {
+                "actual_value": "5120x2880",
+                "evidence_id": "ev-asus-pa27jcv-cn-resolution",
+                "expected_value": "3840x2160",
+                "field": "resolution",
+                "source_id": "src-asus-pa27jcv-cn-manual",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "asus-pa27jcv-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          }
+        ],
+        "case_id": "s5n-003",
+        "checker_latency_ms": 1.42,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [
+          "asus-pa27jcv-cn",
+          "dell-s2722qc-cn"
+        ],
+        "fault_type": null,
+        "field_checks_correct": 3,
+        "field_checks_total": 3,
+        "semantic_fingerprint": "0b4a1c0fab6e98ddf1df78600e9a11175697855c6b3ab342964b8834f90cae0e"
+      },
+      {
+        "actual_eligible_model_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "candidate_pool_model_ids": [
+          "dell-u2723qe-cn",
+          "dell-u2724d-cn",
+          "dell-s2722qc-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2723qe-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-dell-u2723qe-cn-has-usb-c",
+                "expected_value": true,
+                "field": "has_usb_c",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-dell-u2723qe-cn-usb-c-video",
+                "expected_value": true,
+                "field": "usb_c_video",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 90.0,
+                "evidence_id": "ev-dell-u2723qe-cn-usb-c-power-delivery-w",
+                "expected_value": 90.0,
+                "field": "usb_c_power_delivery_w",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "dell-u2723qe-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-dell-u2724d-cn-has-usb-c",
+                "expected_value": true,
+                "field": "has_usb_c",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-dell-u2724d-cn-usb-c-video",
+                "expected_value": true,
+                "field": "usb_c_video",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "failed"
+              },
+              {
+                "actual_value": 15.0,
+                "evidence_id": "ev-dell-u2724d-cn-usb-c-power-delivery-w",
+                "expected_value": 90.0,
+                "field": "usb_c_power_delivery_w",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-u2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "usb_c_video",
+              "usb_c_power_delivery_w"
+            ]
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-s2722qc-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-dell-s2722qc-cn-has-usb-c",
+                "expected_value": true,
+                "field": "has_usb_c",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-dell-s2722qc-cn-usb-c-video",
+                "expected_value": true,
+                "field": "usb_c_video",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 65.0,
+                "evidence_id": "ev-dell-s2722qc-cn-usb-c-power-delivery-w",
+                "expected_value": 90.0,
+                "field": "usb_c_power_delivery_w",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-s2722qc-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "usb_c_power_delivery_w"
+            ]
+          }
+        ],
+        "case_id": "s5n-004",
+        "checker_latency_ms": 1.595,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "fault_type": null,
+        "field_checks_correct": 9,
+        "field_checks_total": 9,
+        "semantic_fingerprint": "f134bf7dbc4bf6693a49d82d4e62e3a040e53b14ee7a3f3c8e577a1952f21caa"
+      },
+      {
+        "actual_eligible_model_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "candidate_pool_model_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn",
+          "dell-g2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-asus-pg27aqdm-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-asus-pg27aqdm-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 240.0,
+                "evidence_id": "ev-asus-pg27aqdm-cn-refresh-rate-hz",
+                "expected_value": 240.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-asus-pg27aqdm-cn-is-oled",
+                "expected_value": true,
+                "field": "is_oled",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": "ASUS",
+                "evidence_id": "ev-asus-pg27aqdm-cn-brand",
+                "expected_value": [
+                  "Dell"
+                ],
+                "field": "brand",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "asus-pg27aqdm-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-lg-27gs95qe-b-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-lg-27gs95qe-b-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 240.0,
+                "evidence_id": "ev-lg-27gs95qe-b-cn-refresh-rate-hz",
+                "expected_value": 240.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-lg-27gs95qe-b-cn-is-oled",
+                "expected_value": true,
+                "field": "is_oled",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "LG",
+                "evidence_id": "ev-lg-27gs95qe-b-cn-brand",
+                "expected_value": [
+                  "Dell"
+                ],
+                "field": "brand",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "lg-27gs95qe-b-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-dell-g2724d-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 165.0,
+                "evidence_id": "ev-dell-g2724d-cn-refresh-rate-hz",
+                "expected_value": 240.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "failed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                "expected_value": true,
+                "field": "is_oled",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "failed"
+              },
+              {
+                "actual_value": "Dell",
+                "evidence_id": "ev-dell-g2724d-cn-brand",
+                "expected_value": [
+                  "Dell"
+                ],
+                "field": "brand",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "failed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "refresh_rate_hz",
+              "is_oled",
+              "brand"
+            ]
+          }
+        ],
+        "case_id": "s5n-005",
+        "checker_latency_ms": 1.994,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "fault_type": null,
+        "field_checks_correct": 12,
+        "field_checks_total": 12,
+        "semantic_fingerprint": "bf29935c4c9a27ad56e08e23e4b0ce724f3081f94fc50ce0b6744a0563433743"
+      },
+      {
+        "actual_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 611.9,
+                "evidence_id": "ev-dell-g2724d-cn-width-mm",
+                "expected_value": 612.0,
+                "field": "width_mm",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "高度、俯仰、左右旋转、垂直旋转",
+                "evidence_id": "ev-dell-g2724d-cn-stand-adjustment",
+                "expected_value": [
+                  "高度",
+                  "垂直旋转"
+                ],
+                "field": "stand_adjustment",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-lg-27up850k-w-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 613.5,
+                "evidence_id": "ev-lg-27up850k-w-cn-width-mm",
+                "expected_value": 612.0,
+                "field": "width_mm",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "status": "failed"
+              },
+              {
+                "actual_value": "高度、俯仰、垂直旋转",
+                "evidence_id": "ev-lg-27up850k-w-cn-stand-adjustment",
+                "expected_value": [
+                  "高度",
+                  "垂直旋转"
+                ],
+                "field": "stand_adjustment",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "status": "passed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "lg-27up850k-w-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "width_mm"
+            ]
+          }
+        ],
+        "case_id": "s5n-006",
+        "checker_latency_ms": 1.123,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "fault_type": null,
+        "field_checks_correct": 4,
+        "field_checks_total": 4,
+        "semantic_fingerprint": "82a4787bb364dcb336a669b15a999543465e05d9bc14a35618bdc4a620d702d7"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "dell-u2724d-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-u2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-u2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": null,
+                "evidence_id": null,
+                "expected_value": 612.0,
+                "field": "width_mm",
+                "source_id": null,
+                "status": "unknown"
+              }
+            ],
+            "eligible": false,
+            "model_id": "dell-u2724d-cn",
+            "overall_status": "unknown",
+            "unknown_fields": [
+              "width_mm"
+            ],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          }
+        ],
+        "case_id": "s5n-007",
+        "checker_latency_ms": 0.755,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": null,
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "8448ee58e28ab3451f6082f892699f2f19f830ef3432fb14f22756611d4d1bbf"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "benq-pd2705u-us"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [
+              "usb_c_power_delivery_w"
+            ],
+            "constraint_results": [
+              {
+                "actual_value": "US",
+                "evidence_id": "ev-benq-pd2705u-us-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-benq-pd2705u-us-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": 65.0,
+                "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w",
+                "expected_value": 60.0,
+                "field": "usb_c_power_delivery_w",
+                "source_id": "src-benq-pd2705u-us-spec",
+                "status": "conflict"
+              }
+            ],
+            "eligible": false,
+            "model_id": "benq-pd2705u-us",
+            "overall_status": "conflict",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          }
+        ],
+        "case_id": "s5n-008",
+        "checker_latency_ms": 0.723,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": null,
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "f0ada3dab68f90d9177b4c44f67f5d2744dd9c74a7f57cb05f4c899877891c1b"
+      },
+      {
+        "actual_eligible_model_ids": [],
+        "candidate_pool_model_ids": [
+          "asus-pa279crv-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-asus-pa279crv-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-asus-pa279crv-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": null,
+                "evidence_id": null,
+                "expected_value": 4000.0,
+                "field": "price_cny",
+                "source_id": null,
+                "status": "unknown"
+              }
+            ],
+            "eligible": false,
+            "model_id": "asus-pa279crv-cn",
+            "overall_status": "unknown",
+            "unknown_fields": [
+              "price_cny"
+            ],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          }
+        ],
+        "case_id": "s5n-009",
+        "checker_latency_ms": 0.716,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [],
+        "fault_type": null,
+        "field_checks_correct": 1,
+        "field_checks_total": 1,
+        "semantic_fingerprint": "f478848be69caad32de92bdd9a86c7f604d7a2ad9165da6bdc6efa383e8231cd"
+      },
+      {
+        "actual_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "candidate_pool_model_ids": [
+          "dell-g2724d-cn",
+          "asus-pg27aqdm-cn"
+        ],
+        "candidate_results": [
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-dell-g2724d-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 165.0,
+                "evidence_id": "ev-dell-g2724d-cn-refresh-rate-hz",
+                "expected_value": 120.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-dell-g2724d-cn-is-oled",
+                "expected_value": false,
+                "field": "is_oled",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-dell-g2724d-cn-has-usb-c",
+                "expected_value": false,
+                "field": "has_usb_c",
+                "source_id": "src-dell-g2724d-cn-product",
+                "status": "passed"
+              }
+            ],
+            "eligible": true,
+            "model_id": "dell-g2724d-cn",
+            "overall_status": "passed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": []
+          },
+          {
+            "conflict_fields": [],
+            "constraint_results": [
+              {
+                "actual_value": "CN",
+                "evidence_id": "ev-asus-pg27aqdm-cn-region",
+                "expected_value": "CN",
+                "field": "region",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": "2560x1440",
+                "evidence_id": "ev-asus-pg27aqdm-cn-resolution",
+                "expected_value": "2560x1440",
+                "field": "resolution",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 240.0,
+                "evidence_id": "ev-asus-pg27aqdm-cn-refresh-rate-hz",
+                "expected_value": 120.0,
+                "field": "refresh_rate_hz",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              },
+              {
+                "actual_value": 1,
+                "evidence_id": "ev-asus-pg27aqdm-cn-is-oled",
+                "expected_value": false,
+                "field": "is_oled",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "failed"
+              },
+              {
+                "actual_value": 0,
+                "evidence_id": "ev-asus-pg27aqdm-cn-has-usb-c",
+                "expected_value": false,
+                "field": "has_usb_c",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "status": "passed"
+              }
+            ],
+            "eligible": false,
+            "model_id": "asus-pg27aqdm-cn",
+            "overall_status": "failed",
+            "unknown_fields": [],
+            "unsupported_constraints": [],
+            "violated_fields": [
+              "is_oled"
+            ]
+          }
+        ],
+        "case_id": "s5n-010",
+        "checker_latency_ms": 1.473,
+        "deterministic_repeat_pass": true,
+        "eligibility_pass": true,
+        "expected_eligible_model_ids": [
+          "dell-g2724d-cn"
+        ],
+        "fault_type": null,
+        "field_checks_correct": 10,
+        "field_checks_total": 10,
+        "semantic_fingerprint": "d33131e02d457e72e1505b0f3fdb3706b6a4c0081c034f1415075c4eda3f1a61"
+      }
+    ],
+    "metrics": {
+      "average_checker_latency_ms": 1.332,
+      "case_count": 10,
+      "checker_api_call_count": 0,
+      "checker_api_cost_cny": 0.0,
+      "compliant_candidate_false_kill_rate": 0.0,
+      "compliant_candidates_retained": 9,
+      "compliant_candidates_total": 9,
+      "deterministic_repeat_rate": 1.0,
+      "field_checks_correct": 55,
+      "field_checks_total": 55,
+      "field_level_hard_constraint_rate": 1.0,
+      "p95_checker_latency_ms": 1.994,
+      "task_level_hard_constraint_rate": 1.0,
+      "tasks_correct": 10,
+      "tasks_total": 10,
+      "unknown_conflict_correct": 3,
+      "unknown_conflict_handling_rate": 1.0,
+      "unknown_conflict_total": 3,
+      "unsupported_correct": 0,
+      "unsupported_identification_rate": 1.0,
+      "unsupported_total": 0,
+      "violation_interception_rate": 1.0,
+      "violations_intercepted": 12,
+      "violations_total": 12
+    }
+  },
+  "passed": true,
+  "schema_version": "1.0.0"
+}

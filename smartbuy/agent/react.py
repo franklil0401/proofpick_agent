@@ -13,7 +13,16 @@ from typing import Any
 
 from pydantic import ValidationError
 
+from smartbuy.agent.ranking import rank_compliant_candidates
 from smartbuy.agent.reporting import build_report
+from smartbuy.constraints import (
+    CandidateConstraintVerifier,
+    ConstraintNormalizer,
+    ConstraintOperator as GateOperator,
+    ConstraintSet,
+    ConstraintStrength,
+    VERIFIER_VERSION,
+)
 from smartbuy.domain import (
     AgentLimits,
     AgentState,
@@ -44,6 +53,8 @@ SYSTEM_PROMPT = """你是 SmartBuy 显示器消费决策 Agent。你必须通过
 6. 候选存在但未执行 evidence_check 时不得 finish。关键字段 unknown/conflict 时不得声称完全满足。
 7. 不输出隐藏思维链。工具 reason 只写一句可公开的行动理由，不超过 200 字。
 8. 必须在预算和最大步骤内调用 finish_decision；若证据不足应明确拒答。
+9. 你提出的约束只是建议；只有 provenance gate 从用户当前输入、会话确认或已启用偏好中确定的约束有效。
+10. finish_decision 后系统仍会对完整工具候选池强制运行 Constraint Checker；你不能跳过、覆盖或修改其结果。
 可查询表：products、price_observations、source_records、evidence_records。SQL 只能是一条 SELECT。
 """
 
@@ -117,16 +128,23 @@ class PurchaseDecisionAgent:
         limits: AgentLimits | None = None,
         session_memory: SessionMemoryStore | None = None,
         preference_memory: LongTermPreferenceStore | None = None,
+        constraint_normalizer: ConstraintNormalizer | None = None,
+        constraint_verifier: CandidateConstraintVerifier | None = None,
     ) -> None:
         self.provider = provider
         self.tools = tools
         self.limits = limits or AgentLimits()
         self.session_memory = session_memory or SessionMemoryStore()
         self.preference_memory = preference_memory or LongTermPreferenceStore()
+        self.constraint_normalizer = constraint_normalizer or ConstraintNormalizer()
         expected = {"text2sql", "kb_search", "evidence_check", "web_search"}
         missing = expected - set(tools)
         if missing:
             raise ValueError(f"missing required tools: {sorted(missing)}")
+        database_path = getattr(tools["text2sql"], "database_path", None)
+        if constraint_verifier is None and database_path is None:
+            raise ValueError("constraint_verifier is required when Text2SQL has no database_path")
+        self.constraint_verifier = constraint_verifier or CandidateConstraintVerifier(database_path)
 
     @property
     def tool_schemas(self) -> list[dict[str, Any]]:
@@ -178,19 +196,126 @@ class PurchaseDecisionAgent:
         if inspect.isawaitable(result):
             await result
 
-    def _start_state(self, query: str, session_id: str, user_id: str | None) -> tuple[AgentState, UserRequirements | None]:
+    @staticmethod
+    def _legacy_constraints(constraint_set: ConstraintSet) -> list[ConstraintSpec]:
+        output: list[ConstraintSpec] = []
+        operator_map = {
+            GateOperator.EQ: ConstraintOperator.EQ,
+            GateOperator.LTE: ConstraintOperator.LTE,
+            GateOperator.GTE: ConstraintOperator.GTE,
+            GateOperator.IN: ConstraintOperator.IN,
+            GateOperator.NOT_IN: ConstraintOperator.NOT_IN,
+        }
+        for item in constraint_set.active(hard_only=True, supported_only=True):
+            if item.operator == GateOperator.RANGE and isinstance(item.normalized_value, list):
+                output.extend(
+                    [
+                        ConstraintSpec(
+                            field=item.field,
+                            operator=ConstraintOperator.GTE,
+                            value=item.normalized_value[0],
+                        ),
+                        ConstraintSpec(
+                            field=item.field,
+                            operator=ConstraintOperator.LTE,
+                            value=item.normalized_value[1],
+                        ),
+                    ]
+                )
+            elif item.operator in operator_map:
+                output.append(
+                    ConstraintSpec(
+                        field=item.field,
+                        operator=operator_map[item.operator],
+                        value=item.normalized_value,
+                    )
+                )
+        return output
+
+    @staticmethod
+    def _gated_locators(query: str, constraints: list[ConstraintSpec]) -> list[ConstraintSpec]:
+        compact = re.sub(r"[^a-z0-9]", "", query.lower())
+        output: list[ConstraintSpec] = []
+        for item in constraints:
+            if item.field not in {"model_id", "model_name"}:
+                continue
+            values = item.value if isinstance(item.value, list) else [item.value]
+            accepted = []
+            for value in values:
+                tokens = [token for token in re.split(r"[^a-z0-9]+", str(value).lower()) if len(token) >= 4]
+                if any(token in compact for token in tokens):
+                    accepted.append(value)
+            if accepted:
+                output.append(
+                    ConstraintSpec(
+                        field=item.field,
+                        operator=ConstraintOperator.IN if len(accepted) > 1 else ConstraintOperator.EQ,
+                        value=accepted if len(accepted) > 1 else accepted[0],
+                    )
+                )
+        return output
+
+    @staticmethod
+    def _deterministic_filters(constraint_set: ConstraintSet) -> list[dict[str, Any]]:
+        filters: list[dict[str, Any]] = []
+        for item in constraint_set.active(hard_only=True, supported_only=True):
+            if item.operator == GateOperator.RANGE and isinstance(item.normalized_value, list):
+                filters.extend(
+                    [
+                        {"field": item.field, "operator": "gte", "value": item.normalized_value[0]},
+                        {"field": item.field, "operator": "lte", "value": item.normalized_value[1]},
+                    ]
+                )
+            elif item.operator == GateOperator.CONTAINS_ALL:
+                continue
+            elif item.field == "resolution" and item.operator == GateOperator.GTE:
+                continue
+            elif item.operator.value in {"eq", "lte", "gte", "in", "not_in"}:
+                filters.append(
+                    {
+                        "field": item.field,
+                        "operator": item.operator.value,
+                        "value": item.normalized_value,
+                    }
+                )
+        return filters
+
+    @staticmethod
+    def _remember_candidate(
+        state: AgentState, model_id: str, row: dict[str, Any], source: str
+    ) -> None:
+        if not model_id:
+            return
+        existing = state.candidate_pool_rows.get(model_id, {})
+        state.candidate_pool_rows[model_id] = {
+            **existing,
+            **{key: value for key, value in row.items() if value is not None},
+            "model_id": model_id,
+        }
+        sources = state.candidate_pool_sources.setdefault(model_id, [])
+        if source not in sources:
+            sources.append(source)
+
+    def _start_state(
+        self, query: str, session_id: str, user_id: str | None
+    ) -> tuple[AgentState, UserRequirements | None, ConstraintSet | None]:
         previous = self.session_memory.get(session_id)
         if previous is None:
-            return AgentState(session_id=session_id, user_id=user_id, query=query), None
+            return AgentState(session_id=session_id, user_id=user_id, query=query), None, None
         previous_requirements = previous.requirements.model_copy(deep=True)
+        previous_constraints = previous.constraint_set.model_copy(deep=True)
         previous.query = query
         previous.user_id = user_id or previous.user_id
+        previous.turn_number += 1
         previous.traces = []
         previous.degraded_states = []
         previous.tool_call_count = 0
         previous.stop_reason = None
         previous.finished = False
-        return previous, previous_requirements
+        previous.constraint_verification = None
+        previous.ranked_eligible_model_ids = []
+        previous.candidate_explanations = {}
+        return previous, previous_requirements, previous_constraints
 
     async def _invoke_tool(
         self,
@@ -198,6 +323,8 @@ class PurchaseDecisionAgent:
         arguments: dict[str, Any],
         state: AgentState,
         previous_requirements: UserRequirements | None,
+        previous_constraints: ConstraintSet | None,
+        preferences: dict[str, Any],
     ) -> ToolResult:
         if name == "set_requirements":
             try:
@@ -208,14 +335,59 @@ class PurchaseDecisionAgent:
                     summary="需求结构未通过 Schema 校验。",
                 )
             current.task_type = self._infer_task_type(state.query, current.task_type)
-            current = self._augment_requirements(state.query, current)
-            state.requirements = (
+            model_proposals = [item.model_dump(mode="json") for item in current.hard_constraints]
+            state.constraint_set = self.constraint_normalizer.build(
+                state.query,
+                source_turn=state.turn_number,
+                previous=previous_constraints,
+                preferences=preferences,
+                model_proposals=model_proposals,
+            )
+            current_locators = self._gated_locators(state.query, current.hard_constraints)
+            previous_locators = (
+                [
+                    item
+                    for item in previous_requirements.hard_constraints
+                    if item.field in {"model_id", "model_name"}
+                ]
+                if previous_requirements else []
+            )
+            locators = current_locators or previous_locators
+            current.hard_constraints = [*locators, *self._legacy_constraints(state.constraint_set)]
+            current.required_fields = list(
+                dict.fromkeys(
+                    [
+                        *current.required_fields,
+                        *(item.field for item in state.constraint_set.active()),
+                    ]
+                )
+            )
+            for item in state.constraint_set.active():
+                if item.ambiguous or not item.supported:
+                    current.pending_questions.append(item.note or f"无法确定性处理约束：{item.field}")
+                if item.hard_or_soft == ConstraintStrength.SOFT and item.source_text not in current.soft_preferences:
+                    current.soft_preferences.append(item.source_text)
+            merged = (
                 self.session_memory.merge_requirements(previous_requirements, current)
                 if previous_requirements else current
             )
+            merged.hard_constraints = [*locators, *self._legacy_constraints(state.constraint_set)]
+            merged.required_fields = list(
+                dict.fromkeys([*merged.required_fields, *(item.field for item in state.constraint_set.active())])
+            )
+            state.requirements = merged
             return ToolResult(
-                tool=name, status="success", summary="已区分硬约束、软偏好、必要字段和待确认项。",
-                data=state.requirements.model_dump(mode="json"),
+                tool=name,
+                status="success",
+                summary=(
+                    "已由 provenance gate 建立带来源约束；"
+                    f"active={len(state.constraint_set.active())}，"
+                    f"rejected_model_fields={len(state.constraint_set.rejected_model_constraints)}。"
+                ),
+                data={
+                    "requirements": state.requirements.model_dump(mode="json"),
+                    "constraint_set": state.constraint_set.model_dump(mode="json"),
+                },
             )
         if name == "finish_decision":
             observed = {
@@ -264,8 +436,20 @@ class PurchaseDecisionAgent:
                 summary="必须先调用 set_requirements。",
             )
         hard_flow = state.requirements.task_type in {"filter", "comparison", "dynamic"}
+        structured_fact_check = bool(
+            state.requirements.task_type == "fact"
+            and re.search(
+                r"\d+(?:\.\d+)?\s*(?:w|hz|mm|kg|英寸).*还是.*\d+(?:\.\d+)?",
+                state.query.lower(),
+            )
+        )
         sql_attempted = any(trace.tool == "text2sql" for trace in state.traces)
         sql_succeeded = "text2sql" in observed
+        if name == "kb_search" and structured_fact_check and not sql_succeeded:
+            return ToolResult(
+                tool=name, status="failed", error_code="STRUCTURED_FACT_REQUIRED",
+                summary="数值来源冲突问题必须先读取结构化字段，再检索原始来源。",
+            )
         if name == "kb_search" and hard_flow and not sql_succeeded and not sql_attempted:
             return ToolResult(
                 tool=name, status="failed", error_code="SQL_CANDIDATES_REQUIRED",
@@ -302,6 +486,13 @@ class PurchaseDecisionAgent:
                     summary="Evidence Check 必须依赖 SQL 候选和针对候选的 KB 证据。",
                 )
         if name == "evidence_check" and not hard_flow:
+            if structured_fact_check and (
+                not sql_succeeded or not state.candidate_rows or "kb_search" not in observed
+            ):
+                return ToolResult(
+                    tool=name, status="failed", error_code="DEPENDENT_EVIDENCE_REQUIRED",
+                    summary="数值来源冲突核验必须依赖 SQL 候选和针对候选的 KB 证据。",
+                )
             fact_fields = {
                 "model_id", "model_name", "brand", "display_size_inch", "resolution", "refresh_rate_hz",
                 "panel_type", "width_mm", "weight_kg",
@@ -316,7 +507,6 @@ class PurchaseDecisionAgent:
                     ),
                 )
         if name == "text2sql":
-            filters = [dict(item) for item in arguments.get("filters", []) if isinstance(item, dict)]
             state_constraints = state.requirements.hard_constraints
             locator_constraints = [item for item in state_constraints if item.field in {"model_id", "model_name"}]
             if locator_constraints:
@@ -324,11 +514,10 @@ class PurchaseDecisionAgent:
                 # Evidence Check, not SQL, decides whether each requested property is satisfied.
                 filters = [item.model_dump(mode="json", exclude={"hard"}) for item in locator_constraints]
             else:
-                by_field = {str(item.get("field")): item for item in filters}
-                for constraint in state_constraints:
-                    by_field[constraint.field] = constraint.model_dump(mode="json", exclude={"hard"})
-                filters = list(by_field.values())
+                filters = self._deterministic_filters(state.constraint_set)
             arguments["filters"] = filters
+            arguments["_deterministic_filters"] = True
+            arguments["_allow_full_pool"] = True
         elif name == "evidence_check":
             eligibility_constraints = [
                 item for item in state.requirements.hard_constraints if item.field not in {"model_id", "model_name"}
@@ -349,6 +538,8 @@ class PurchaseDecisionAgent:
             arguments["constraints"] = [
                 item.model_dump(mode="json") for item in eligibility_constraints
             ]
+        if name in {"kb_search", "evidence_check"} and hard_flow and state.candidate_pool_rows:
+            arguments["model_ids"] = list(state.candidate_pool_rows)[:10]
         try:
             result = await asyncio.wait_for(tool.invoke(arguments), timeout=self.limits.tool_timeout_seconds)
         except TimeoutError:
@@ -357,6 +548,9 @@ class PurchaseDecisionAgent:
             )
         if name == "text2sql" and result.data.get("rows") is not None:
             state.candidate_rows = result.data["rows"]
+            for row in state.candidate_rows:
+                model_id = str(row.get("model_id", ""))
+                self._remember_candidate(state, model_id, row, "text2sql")
         elif name == "kb_search":
             for hit in result.data.get("hits", []):
                 if not all(hit.get(key) for key in ("source_id", "source_url", "model_id", "region")):
@@ -368,10 +562,17 @@ class PurchaseDecisionAgent:
                         region=hit["region"], location=hit.get("section"), effective_time=hit.get("accessed_at"),
                     )
                 )
+                self._remember_candidate(
+                    state,
+                    str(hit["model_id"]),
+                    {"model_id": hit["model_id"], "region": hit["region"]},
+                    "kb_search",
+                )
         elif name == "evidence_check":
             for model_id, items in result.data.get("models", {}).items():
                 state.assessments[model_id] = [FieldAssessment.model_validate(item) for item in items]
                 state.verified_fields[model_id] = [item.field for item in state.assessments[model_id]]
+                self._remember_candidate(state, str(model_id), {"model_id": model_id}, "evidence_check")
         if result.degraded or result.status in {"degraded", "unavailable"}:
             state.degraded_states.append(f"{name}: {result.summary}")
         return result
@@ -385,7 +586,12 @@ class PurchaseDecisionAgent:
             return "unrelated"
         if any(token in normalized for token in ("当前价格", "现在", "库存", "多少钱")):
             return "dynamic"
-        if "还是" in normalized or "到底" in normalized or (
+        # “60W 还是 65W” asks for one factual field; it is not a product
+        # comparison and must retain Evidence Check's conflict/unknown state.
+        factual_alternative = bool(
+            re.search(r"\d+(?:\.\d+)?\s*(?:w|hz|mm|kg|英寸).*还是.*\d+(?:\.\d+)?", normalized)
+        )
+        if ("还是" in normalized and not factual_alternative) or (
             any(token in normalized for token in ("比较", "中，哪", "中哪", "哪个", "哪台"))
             and any(token in normalized for token in (" 和 ", "与", "和", "中"))
         ):
@@ -490,7 +696,7 @@ class PurchaseDecisionAgent:
     ) -> DecisionReport:
         started = time.perf_counter()
         session_id = session_id or str(uuid.uuid4())
-        state, previous_requirements = self._start_state(query, session_id, user_id)
+        state, previous_requirements, previous_constraints = self._start_state(query, session_id, user_id)
         preferences = (
             self.preference_memory.recall(user_id, requested=use_long_term_memory) if user_id else {}
         )
@@ -550,7 +756,14 @@ class PurchaseDecisionAgent:
                         summary="工具参数不是有效 JSON 对象。",
                     )
                 else:
-                    result = await self._invoke_tool(name, arguments, state, previous_requirements)
+                    result = await self._invoke_tool(
+                        name,
+                        arguments,
+                        state,
+                        previous_requirements,
+                        previous_constraints,
+                        preferences,
+                    )
                 state.tool_call_count += 1
                 parent_step = arguments.get("parent_step") if isinstance(arguments.get("parent_step"), int) else None
                 if name == "kb_search":
@@ -613,6 +826,114 @@ class PurchaseDecisionAgent:
         if not state.stop_reason:
             state.stop_reason = "达到最大 ReAct 步骤数，安全停止。"
             state.degraded_states.append("agent: maximum step limit reached")
+        # Evidence sufficiency is a runtime invariant. If the model exhausted its
+        # bounded loop after obtaining KB candidates but skipped Evidence Check,
+        # execute one deterministic, whitelisted fallback instead of fabricating
+        # a conclusion. This does not call the LLM and remains fully auditable.
+        if (
+            state.requirements.task_type in {"filter", "comparison", "dynamic"}
+            and state.candidate_pool_rows
+            and state.kb_hits
+            and not state.assessments
+            and state.tool_call_count < self.limits.max_tool_calls
+        ):
+            fallback_arguments = {
+                "model_ids": list(state.candidate_pool_rows)[:10],
+                "required_fields": list(state.requirements.required_fields),
+                "constraints": [
+                    item.model_dump(mode="json")
+                    for item in state.requirements.hard_constraints
+                    if item.field not in {"model_id", "model_name"}
+                ],
+                "reason": "有界循环结束前未完成字段证据核验，执行确定性白名单回退。",
+            }
+            fallback = await self._invoke_tool(
+                "evidence_check",
+                fallback_arguments,
+                state,
+                previous_requirements,
+                previous_constraints,
+                preferences,
+            )
+            state.tool_call_count += 1
+            parent_step = next(
+                (item.step for item in reversed(state.traces) if item.tool == "kb_search"),
+                None,
+            )
+            fallback_trace = ToolTrace(
+                step=self.limits.max_steps + 1,
+                parent_step=parent_step,
+                task_summary=state.requirements.summary or query[:160],
+                tool="evidence_check",
+                arguments_summary=self._safe_arguments("evidence_check", fallback_arguments),
+                status=fallback.status,
+                result_summary=fallback.summary,
+                next_action="将字段四态结果交给确定性复核器；不再请求模型规划。",
+                stop_or_degrade_reason=(
+                    "模型在有界循环内未完成 Evidence Check；运行时执行白名单回退。"
+                ),
+            )
+            state.traces.append(fallback_trace)
+            state.degraded_states.append(
+                "agent: bounded loop omitted evidence_check; deterministic fallback executed"
+            )
+            await self._emit(
+                event_callback,
+                {"type": "tool_observation", "trace": fallback_trace.model_dump(mode="json")},
+            )
+        pool_model_ids = list(state.candidate_pool_rows)
+        await self._emit(
+            event_callback,
+            {
+                "type": "constraint_check_started",
+                "verifier_version": VERIFIER_VERSION,
+                "candidate_pool_count": len(pool_model_ids),
+            },
+        )
+        constraint_started = time.perf_counter()
+        try:
+            state.constraint_verification = self.constraint_verifier.verify_candidates(
+                state.constraint_set, pool_model_ids
+            )
+        except Exception:
+            state.constraint_verification = self.constraint_verifier.fail_closed(
+                state.constraint_set,
+                pool_model_ids,
+                "Constraint Checker 异常，已 fail closed；敏感错误细节未记录。",
+            )
+        state.constraint_check_latency_ms = round(
+            (time.perf_counter() - constraint_started) * 1000, 3
+        )
+        await self._emit(
+            event_callback,
+            {
+                "type": "constraint_check_completed",
+                "verification": state.constraint_verification.model_dump(mode="json"),
+                "latency_ms": state.constraint_check_latency_ms,
+            },
+        )
+        pre_rank_usage = self._usage(self.provider, ledger_start)
+        if float(pre_rank_usage["estimated_cost_cny"]) >= self.limits.max_task_cost_cny:
+            order = list(state.constraint_verification.eligible_model_ids)
+            explanations: dict[str, str] = {}
+            ranking_degraded = False
+        else:
+            order, explanations, ranking_degraded = await rank_compliant_candidates(
+                self.provider,
+                state.constraint_verification,
+                state.constraint_set.active(),
+            )
+        state.ranked_eligible_model_ids = order
+        state.candidate_explanations = explanations
+        if ranking_degraded:
+            state.degraded_states.append("soft ranking: model unavailable; preserved verifier order")
+        if state.requirements.task_type in {"filter", "comparison", "dynamic"}:
+            if state.constraint_verification.degraded:
+                state.stop_reason = "Constraint Checker 降级并 fail closed，本次不输出合规推荐。"
+            elif state.constraint_verification.eligible_model_ids:
+                state.stop_reason = "Constraint Checker 已独立复核完整工具候选池，最终推荐仅来自合规集合。"
+            else:
+                state.stop_reason = "Constraint Checker 未找到所有硬约束均通过的候选，已安全停止。"
         self.session_memory.save(state)
         usage = self._usage(self.provider, ledger_start)
         report = build_report(state, latency_ms=(time.perf_counter() - started) * 1000, usage=usage)
@@ -626,6 +947,34 @@ class PurchaseDecisionAgent:
                 "stop_reason": report.stop_reason,
                 "abstained": report.abstained,
                 "estimated_cost_cny": usage.get("estimated_cost_cny", 0.0),
+                "constraint_checker_version": state.constraint_verification.verifier_version,
+                "constraint_statuses": [
+                    item.overall_status.value for item in state.constraint_verification.candidates
+                ],
+                "constraint_degraded": state.constraint_verification.degraded,
+                "constraint_check_latency_ms": state.constraint_check_latency_ms,
+                "constraint_candidates": [
+                    {
+                        "model_id": item.model_id,
+                        "status": item.overall_status.value,
+                        "eligible": item.eligible,
+                        "violated_fields": item.violated_fields,
+                        "unknown_fields": item.unknown_fields,
+                        "conflict_fields": item.conflict_fields,
+                        "constraint_results": [
+                            {
+                                "field": result.constraint.field,
+                                "status": result.status.value,
+                                "actual_value": result.actual_value,
+                                "required_value": result.constraint.normalized_value,
+                                "evidence_id": result.evidence_id,
+                                "source_id": result.source_id,
+                            }
+                            for result in item.constraint_results
+                        ],
+                    }
+                    for item in state.constraint_verification.candidates
+                ],
             }
         )
         await self._emit(event_callback, {"type": "report", "report": report.model_dump(mode="json")})

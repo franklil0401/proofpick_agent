@@ -1,0 +1,190 @@
+{
+  "cases": [
+    {
+      "abstention_pass": true,
+      "actual_abstain": true,
+      "actual_tools": [
+        "text2sql",
+        "kb_search",
+        "evidence_check"
+      ],
+      "candidate_pool_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "case_id": "s4-012",
+      "category": "source_conflict",
+      "constraint_check_latency_ms": 0.91,
+      "constraint_checker_degraded": false,
+      "constraint_gate_integrity_pass": true,
+      "eligible_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "end_to_end_pass": true,
+      "expected_model_ids": [],
+      "expected_tools": [
+        "evidence_check",
+        "kb_search",
+        "text2sql"
+      ],
+      "latency_ms": 21757.335,
+      "model_recall": 1.0,
+      "multihop_pass": true,
+      "multihop_required": true,
+      "observed_model_ids": [
+        "benq-pd2705u-us"
+      ],
+      "public_trace": [
+        {
+          "arguments_summary": {
+            "constraint_count": 1,
+            "required_fields": [
+              "usb_c_power_delivery_w"
+            ],
+            "summary": "确认 PD2705U 的 USB-C 供电功率"
+          },
+          "next_action": "按问题类型选择 KB 或只读 SQL。",
+          "parent_step": null,
+          "result_summary": "已由 provenance gate 建立带来源约束；active=1，rejected_model_fields=0。",
+          "status": "success",
+          "step": 1,
+          "stop_or_degrade_reason": null,
+          "task_summary": "确认 PD2705U 的 USB-C 供电功率",
+          "tool": "set_requirements"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 1,
+            "model_ids": [
+              "PD2705U"
+            ],
+            "reason": "核验 PD2705U 的 USB-C 供电功率是否明确且无冲突",
+            "required_fields": [
+              "usb_c_power_delivery_w",
+              "region"
+            ]
+          },
+          "next_action": "根据错误码选择受控降级或安全停止。",
+          "parent_step": 1,
+          "result_summary": "数值来源冲突核验必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "status": "failed",
+          "step": 2,
+          "stop_or_degrade_reason": "数值来源冲突核验必须依赖 SQL 候选和针对候选的 KB 证据。",
+          "task_summary": "确认 PD2705U 的 USB-C 供电功率",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "filter_count": 1,
+            "reason": "先从产品表中提取 PD2705U 的 USB-C 供电功率和区域信息",
+            "sql": "SELECT model_id, usb_c_power_delivery_w, region FROM products WHERE model_id = 'PD2705U'"
+          },
+          "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+          "parent_step": null,
+          "result_summary": "确定性只读模板返回 1 个完整候选；缺失字段 4 类。",
+          "status": "success",
+          "step": 3,
+          "stop_or_degrade_reason": null,
+          "task_summary": "确认 PD2705U 的 USB-C 供电功率",
+          "tool": "text2sql"
+        },
+        {
+          "arguments_summary": {
+            "model_ids": [
+              "benq-pd2705u-us"
+            ],
+            "query_summary": "BenQ PD2705U USB-C power delivery specification",
+            "reason": "检索官方资料确认 PD2705U 的 USB-C 供电功率，聚焦 US 市场型号",
+            "required_fields": [
+              "usb_c_power_delivery_w",
+              "region"
+            ]
+          },
+          "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+          "parent_step": 3,
+          "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+          "status": "success",
+          "step": 4,
+          "stop_or_degrade_reason": null,
+          "task_summary": "确认 PD2705U 的 USB-C 供电功率",
+          "tool": "kb_search"
+        },
+        {
+          "arguments_summary": {
+            "constraint_count": 0,
+            "model_ids": [
+              "benq-pd2705u-us"
+            ],
+            "reason": "核验 US 版本 PD2705U 的 USB-C 供电功率是否明确且无冲突；KB 显示规格页标 65W，介绍页有 60W 描述，存在冲突",
+            "required_fields": [
+              "usb_c_power_delivery_w",
+              "region"
+            ]
+          },
+          "next_action": "根据四态结果补查 unknown/conflict，或明确结束/拒答。",
+          "parent_step": 4,
+          "result_summary": "核验 1 个型号、2 个字段；matched=1，not_matched=0，unknown=0，conflict=1。",
+          "status": "success",
+          "step": 5,
+          "stop_or_degrade_reason": null,
+          "task_summary": "确认 PD2705U 的 USB-C 供电功率",
+          "tool": "evidence_check"
+        },
+        {
+          "arguments_summary": {
+            "agent_requested_stop": true
+          },
+          "next_action": "停止并生成经过 Schema 校验的报告。",
+          "parent_step": null,
+          "result_summary": "已满足显式停止条件。",
+          "status": "success",
+          "step": 6,
+          "stop_or_degrade_reason": null,
+          "task_summary": "确认 PD2705U 的 USB-C 供电功率",
+          "tool": "finish_decision"
+        }
+      ],
+      "recommended_model_ids": [],
+      "schema_pass": true,
+      "should_abstain": true,
+      "stop_reason": "字段级证据存在 unknown 或 conflict，已停止并拒绝标记为完全满足。",
+      "task_type": "fact",
+      "tool_call_count": 6,
+      "tool_selection_pass": true,
+      "usage": {
+        "call_count": 8,
+        "degraded_calls": 0,
+        "estimated_cost_cny": 0.0187166,
+        "input_tokens": 22080,
+        "output_tokens": 634,
+        "successful_calls": 8
+      }
+    }
+  ],
+  "evaluation_version": "smartbuy-stage5-agent-e2e-v1",
+  "metrics": {
+    "abstention_accuracy": 1.0,
+    "average_constraint_check_latency_ms": 0.91,
+    "average_latency_ms": 21757.335,
+    "case_count": 1,
+    "checker_api_call_count": 0,
+    "checker_api_cost_cny": 0.0,
+    "constraint_gate_integrity_rate": 1.0,
+    "end_to_end_pass_rate": 1.0,
+    "model_recall": 1.0,
+    "multihop_completion_rate": 1.0,
+    "p95_constraint_check_latency_ms": 0.91,
+    "p95_latency_ms": 21757.335,
+    "schema_pass_rate": 1.0,
+    "tool_selection_accuracy": 1.0
+  },
+  "mode": "targeted_regression",
+  "passed": true,
+  "usage": {
+    "call_count": 8,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 0.0187166,
+    "input_tokens": 22080,
+    "output_tokens": 634,
+    "successful_calls": 8
+  }
+}

@@ -1899,6 +1899,45 @@ function dispatchEvent(event) {
       handleReasoningNormal(event);
     }
   }
+  else if (event.type === 'constraint_check_started') {
+    handleToolCallNormal({
+      type: 'tool_call',
+      tool_name: 'constraint_checker',
+      arguments: JSON.stringify({
+        verifier_version: event.verifier_version,
+        candidate_pool_count: event.candidate_pool_count
+      })
+    });
+  }
+  else if (event.type === 'constraint_check_completed') {
+    const verification = event.verification || {};
+    const candidates = (verification.candidates || []).map(candidate => ({
+      model_id: candidate.model_id,
+      status: candidate.overall_status,
+      eligible: candidate.eligible,
+      violated_fields: candidate.violated_fields,
+      unknown_fields: candidate.unknown_fields,
+      conflict_fields: candidate.conflict_fields,
+      checks: (candidate.constraint_results || []).map(item => ({
+        field: item.constraint?.field,
+        actual_value: item.actual_value,
+        required_value: item.constraint?.normalized_value,
+        status: item.status,
+        evidence_id: item.evidence_id,
+        source_id: item.source_id
+      }))
+    }));
+    handleToolOutputNormal({
+      type: 'tool_output',
+      title: `Constraint Checker ${verification.verifier_version || ''}`,
+      output: JSON.stringify({
+        degraded: verification.degraded,
+        latency_ms: event.latency_ms,
+        eligible_model_ids: verification.eligible_model_ids,
+        candidates
+      }, null, 2)
+    });
+  }
   // Tool calls
   else if (event.type === 'tool_call') {
     if (shouldRouteToParallel(event)) {

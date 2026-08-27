@@ -14,6 +14,13 @@ class AgentMonitor:
         self._lock = Lock()
 
     def record(self, payload: dict[str, Any]) -> None:
+        def bounded_value(value: Any) -> Any:
+            if value is None or isinstance(value, (bool, int, float)):
+                return value
+            if isinstance(value, list):
+                return [bounded_value(item) for item in value[:8]]
+            return str(value)[:120]
+
         allowed = {
             "session_id": str(payload.get("session_id", ""))[:64],
             "latency_ms": float(payload.get("latency_ms", 0.0)),
@@ -23,6 +30,34 @@ class AgentMonitor:
             "stop_reason": str(payload.get("stop_reason", ""))[:200],
             "abstained": bool(payload.get("abstained", False)),
             "estimated_cost_cny": float(payload.get("estimated_cost_cny", 0.0)),
+            "constraint_checker_version": str(payload.get("constraint_checker_version", ""))[:80],
+            "constraint_statuses": list(payload.get("constraint_statuses", []))[:20],
+            "constraint_degraded": bool(payload.get("constraint_degraded", False)),
+            "constraint_check_latency_ms": float(payload.get("constraint_check_latency_ms", 0.0)),
+            "constraint_candidates": [
+                {
+                    "model_id": str(item.get("model_id", ""))[:80],
+                    "status": str(item.get("status", ""))[:20],
+                    "eligible": bool(item.get("eligible", False)),
+                    "violated_fields": list(item.get("violated_fields", []))[:12],
+                    "unknown_fields": list(item.get("unknown_fields", []))[:12],
+                    "conflict_fields": list(item.get("conflict_fields", []))[:12],
+                    "constraint_results": [
+                        {
+                            "field": str(result.get("field", ""))[:80],
+                            "status": str(result.get("status", ""))[:20],
+                            "actual_value": bounded_value(result.get("actual_value")),
+                            "required_value": bounded_value(result.get("required_value")),
+                            "evidence_id": str(result.get("evidence_id") or "")[:120] or None,
+                            "source_id": str(result.get("source_id") or "")[:120] or None,
+                        }
+                        for result in list(item.get("constraint_results", []))[:16]
+                        if isinstance(result, dict)
+                    ],
+                }
+                for item in list(payload.get("constraint_candidates", []))[:20]
+                if isinstance(item, dict)
+            ],
         }
         with self._lock:
             self._runs.append(allowed)
@@ -39,6 +74,11 @@ class AgentMonitor:
             "average_latency_ms": round(sum(latencies) / len(latencies), 3) if latencies else 0.0,
             "p95_latency_ms": round(latencies[p95_index], 3) if latencies else 0.0,
             "estimated_cost_cny": round(sum(item["estimated_cost_cny"] for item in runs), 8),
+            "constraint_checked_run_count": sum(bool(item["constraint_checker_version"]) for item in runs),
+            "constraint_degraded_run_count": sum(item["constraint_degraded"] for item in runs),
+            "average_constraint_check_latency_ms": round(
+                sum(item["constraint_check_latency_ms"] for item in runs) / len(runs), 3
+            ) if runs else 0.0,
             "recent_runs": runs[-10:],
         }
 

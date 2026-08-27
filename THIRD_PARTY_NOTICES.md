@@ -1,6 +1,6 @@
 # 第三方软件声明
 
-最后更新：2026-08-27（阶段 4）
+最后更新：2026-08-27（阶段 5）
 
 ## Youtu-RAG
 
@@ -64,6 +64,17 @@ Youtu-RAG 的版权归原权利人所有。本项目根目录 [LICENSE](LICENSE)
 | `vendor/youtu-rag/frontend/rag_webui/assets/js/components/chat.js` | SmartBuy 模式切换到独立 SSE 端点，复用上游工具卡片和最终 Markdown 渲染 |
 
 业务 Agent、工具、Memory、Schema、评测和报告均未写入供应商目录。设计与边界见 [ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md) 和[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)。上游更新时，应先尝试把这四处接线改为无需修改供应商源码的扩展机制。
+
+### 本项目对供应商目录的阶段 5 修改
+
+阶段 5 的 ConstraintSet、Checker、完整候选池、Scorer、评测和报告实现仍全部位于 `smartbuy/`。供应商目录只更新两个既有阶段 4 展示文件：
+
+| 文件 | 变更原因 |
+|---|---|
+| `vendor/youtu-rag/frontend/rag_webui/assets/js/components/chat.js` | 渲染 `constraint_check_started/completed` 及候选 passed/failed/unknown/conflict、实际/要求值和证据 ID；不显示隐藏思维链 |
+| `vendor/youtu-rag/utu/rag/api/routes/monitor.py` | 在既有 Monitor 面板显示 Checker 运行数、降级数和平均延迟，数据来自脱敏有界摘要 |
+
+设计与验证见 [ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md) 和[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)。上游更新时需逐项复核这两个展示补丁；不得把业务约束规则迁入供应商目录。
 
 ## 本地开发依赖
 

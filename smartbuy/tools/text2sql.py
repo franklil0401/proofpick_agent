@@ -209,8 +209,11 @@ class Text2SQLTool:
             if field not in mapping:
                 continue
             if operator in operators:
-                clauses.append(f"{mapping[field]} {operators[operator]} ?")
-                parameters.append(value)
+                if operator == "eq" and value is None:
+                    clauses.append(f"{mapping[field]} IS NULL")
+                else:
+                    clauses.append(f"{mapping[field]} {operators[operator]} ?")
+                    parameters.append(value)
             elif operator in {"in", "not_in"} and isinstance(value, list) and value:
                 placeholders = ", ".join("?" for _ in value)
                 clauses.append(f"{mapping[field]} {'NOT IN' if operator == 'not_in' else 'IN'} ({placeholders})")
@@ -226,28 +229,14 @@ class Text2SQLTool:
         filters = self._normalize_model_filters(filters)
         degraded = False
         executed_sql = sql
-        try:
-            rows, columns = self._execute(sql)
-            if "model_id" not in columns:
-                raise SQLValidationError("candidate query must return model_id")
-            if not rows and filters:
-                raise SQLValidationError("zero rows require controlled-filter confirmation")
-        except (SQLValidationError, FileNotFoundError):
-            degraded = True
-            if not filters:
-                return ToolResult(
-                    tool=self.name,
-                    status="failed",
-                    summary="生成 SQL 未返回 model_id，且没有可用的结构化筛选条件。",
-                    error_code="MODEL_ID_REQUIRED",
-                    data={"executed": False, "row_count": 0},
-                )
+        deterministic_template = bool(arguments.get("_deterministic_filters", False))
+        if deterministic_template:
             executed_sql, parameters, applied_filter_count = self._template(filters)
-            if applied_filter_count == 0:
+            if applied_filter_count == 0 and not bool(arguments.get("_allow_full_pool", False)):
                 return ToolResult(
                     tool=self.name,
                     status="failed",
-                    summary="结构化条件不属于治理字段，不能退化为全表查询。",
+                    summary="没有可由确定性模板执行的受支持条件。",
                     error_code="UNSUPPORTED_FILTERS",
                     data={"executed": False, "row_count": 0},
                 )
@@ -257,10 +246,46 @@ class Text2SQLTool:
                 return ToolResult(
                     tool=self.name,
                     status="failed",
-                    summary="只读 SQL 与受控模板均未能执行。",
+                    summary="确定性只读筛选模板未能执行。",
                     error_code="SQL_EXECUTION_FAILED",
                     data={"executed": False, "row_count": 0},
                 )
+        else:
+            try:
+                rows, columns = self._execute(sql)
+                if "model_id" not in columns:
+                    raise SQLValidationError("candidate query must return model_id")
+                if not rows and filters:
+                    raise SQLValidationError("zero rows require controlled-filter confirmation")
+            except (SQLValidationError, FileNotFoundError):
+                degraded = True
+                if not filters:
+                    return ToolResult(
+                        tool=self.name,
+                        status="failed",
+                        summary="生成 SQL 未返回 model_id，且没有可用的结构化筛选条件。",
+                        error_code="MODEL_ID_REQUIRED",
+                        data={"executed": False, "row_count": 0},
+                    )
+                executed_sql, parameters, applied_filter_count = self._template(filters)
+                if applied_filter_count == 0:
+                    return ToolResult(
+                        tool=self.name,
+                        status="failed",
+                        summary="结构化条件不属于治理字段，不能退化为全表查询。",
+                        error_code="UNSUPPORTED_FILTERS",
+                        data={"executed": False, "row_count": 0},
+                    )
+                try:
+                    rows, columns = self._execute(executed_sql, parameters)
+                except (SQLValidationError, FileNotFoundError):
+                    return ToolResult(
+                        tool=self.name,
+                        status="failed",
+                        summary="只读 SQL 与受控模板均未能执行。",
+                        error_code="SQL_EXECUTION_FAILED",
+                        data={"executed": False, "row_count": 0},
+                    )
         missing_fields = {
             column: sum(row.get(column) is None for row in rows)
             for column in columns
@@ -270,7 +295,11 @@ class Text2SQLTool:
             tool=self.name,
             status="degraded" if degraded else "success",
             degraded=degraded,
-            summary=f"只读查询返回 {len(rows)} 个候选；缺失字段 {len(missing_fields)} 类。",
+            summary=(
+                f"确定性只读模板返回 {len(rows)} 个完整候选；缺失字段 {len(missing_fields)} 类。"
+                if deterministic_template
+                else f"只读查询返回 {len(rows)} 个候选；缺失字段 {len(missing_fields)} 类。"
+            ),
             data={
                 "executed": True,
                 "sql": executed_sql,
@@ -279,5 +308,6 @@ class Text2SQLTool:
                 "columns": columns,
                 "missing_fields": missing_fields,
                 "fallback_used": degraded,
+                "deterministic_template": deterministic_template,
             },
         )

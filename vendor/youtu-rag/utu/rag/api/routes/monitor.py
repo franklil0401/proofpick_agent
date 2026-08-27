@@ -62,6 +62,10 @@ async def get_storage_monitor_dashboard():
           <p>运行数：{snapshot['run_count']} ｜ 降级运行：{snapshot['degraded_run_count']} ｜
              拒答数：{snapshot['abstain_count']} ｜ 平均延迟：{snapshot['average_latency_ms']} ms ｜
              P95：{snapshot['p95_latency_ms']} ms ｜ 估算成本：¥{snapshot['estimated_cost_cny']}</p>
+          <p>Constraint Checker 运行：{snapshot['constraint_checked_run_count']} ｜
+             Checker 降级：{snapshot['constraint_degraded_run_count']} ｜
+             Checker 平均延迟：{snapshot['average_constraint_check_latency_ms']} ms；候选字段状态、实际/要求值和证据 ID 见
+             <code>/api/smartbuy/monitor</code> 的 recent_runs。</p>
           <p>详细的可审计步骤请查看 WebUI 工具卡片或 <code>/api/smartbuy/monitor</code>；
              这里不显示 Prompt、密钥或隐藏思维链。</p>
         </section>

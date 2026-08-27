@@ -12,6 +12,7 @@ from smartbuy.domain import (
     EvidenceReference,
     FieldAssessment,
 )
+from smartbuy.constraints import VerificationStatus
 
 
 def _overall(fields: list[FieldAssessment]) -> ConstraintStatus:
@@ -31,8 +32,29 @@ def build_report(
     latency_ms: float,
     usage: dict[str, Any],
 ) -> DecisionReport:
-    rows = {str(row.get("model_id")): row for row in state.candidate_rows if row.get("model_id")}
-    model_ids = list(dict.fromkeys([*rows, *state.assessments]))
+    recommendation_task = state.requirements.task_type in {"filter", "comparison", "dynamic"}
+    rows = {
+        **state.candidate_pool_rows,
+        **{str(row.get("model_id")): row for row in state.candidate_rows if row.get("model_id")},
+    }
+    verification_by_model = {
+        item.model_id: item
+        for item in (state.constraint_verification.candidates if state.constraint_verification else [])
+    }
+    model_ids = (
+        list(verification_by_model)
+        if verification_by_model
+        else list(dict.fromkeys([*rows, *state.assessments]))
+    )
+    if state.ranked_eligible_model_ids:
+        model_ids = list(
+            dict.fromkeys(
+                [
+                    *state.ranked_eligible_model_ids,
+                    *model_ids,
+                ]
+            )
+        )
     candidates: list[CandidateDecision] = []
     all_evidence: list[EvidenceReference] = list(state.kb_hits)
     for model_id in model_ids:
@@ -40,31 +62,71 @@ def build_report(
             continue
         row = rows.get(model_id, {})
         fields = state.assessments.get(model_id, [])
-        overall = _overall(fields)
+        verification = verification_by_model.get(model_id)
+        status_mapping = {
+            VerificationStatus.PASSED: ConstraintStatus.MATCHED,
+            VerificationStatus.FAILED: ConstraintStatus.NOT_MATCHED,
+            VerificationStatus.UNKNOWN: ConstraintStatus.UNKNOWN,
+            VerificationStatus.CONFLICT: ConstraintStatus.CONFLICT,
+        }
+        if recommendation_task and verification:
+            overall = status_mapping[verification.overall_status]
+        elif fields:
+            overall = _overall(fields)
+        else:
+            overall = status_mapping[verification.overall_status] if verification else _overall(fields)
         for field in fields:
             all_evidence.extend(field.evidence)
         blocking = [field for field in fields if field.status != ConstraintStatus.MATCHED]
+        price_result = next(
+            (
+                result
+                for result in (verification.constraint_results if verification else [])
+                if result.constraint.field == "price_cny"
+            ),
+            None,
+        )
         candidate = CandidateDecision(
             model_id=model_id,
             brand=row.get("brand"),
             model_name=row.get("model_name"),
             region=row.get("region"),
-            price_cny=row.get("price_cny"),
-            price_observed_at=row.get("observed_at"),
+            price_cny=(price_result.actual_value if price_result else row.get("price_cny")),
+            price_observed_at=(
+                verification.price_observed_at if verification else row.get("observed_at")
+            ),
             overall_status=overall,
             fields=fields,
+            eligible=bool(verification and verification.eligible),
+            verifier_status=verification.overall_status if verification else None,
+            constraint_results=verification.constraint_results if verification else [],
+            violated_fields=verification.violated_fields if verification else [],
+            unknown_fields=verification.unknown_fields if verification else [],
+            conflict_fields=verification.conflict_fields if verification else [],
+            unsupported_constraints=verification.unsupported_constraints if verification else [],
+            verifier_version=verification.verifier_version if verification else None,
             recommendation_reason=(
-                "本阶段核验的字段均有证据且满足当前条件；阶段 5 仍会进行最终确定性复核。"
-                if overall == ConstraintStatus.MATCHED else None
+                state.candidate_explanations.get(model_id)
+                or "Constraint Checker 已确认全部受支持硬约束通过；软偏好只能影响排序，不能改变资格。"
+                if verification and verification.eligible else None
             ),
             elimination_reason=(
-                "；".join(f"{item.field}={item.status.value}" for item in blocking)
+                "；".join(
+                    [
+                        *[f"{field}=failed" for field in (verification.violated_fields if verification else [])],
+                        *[f"{field}=unknown" for field in (verification.unknown_fields if verification else [])],
+                        *[f"{field}=conflict" for field in (verification.conflict_fields if verification else [])],
+                        *[f"{item.field}={item.status.value}" for item in blocking],
+                    ]
+                )
                 if overall != ConstraintStatus.MATCHED else None
             ),
         )
         candidates.append(candidate)
-    recommended = [item.model_id for item in candidates if item.overall_status == ConstraintStatus.MATCHED]
-    eliminated = [item.model_id for item in candidates if item.overall_status == ConstraintStatus.NOT_MATCHED]
+    recommended = [item.model_id for item in candidates if item.eligible] if recommendation_task else []
+    eliminated = [item.model_id for item in candidates if not item.eligible] if verification_by_model else [
+        item.model_id for item in candidates if item.overall_status == ConstraintStatus.NOT_MATCHED
+    ]
     unique_evidence: list[EvidenceReference] = []
     seen: set[tuple[str, str | None, str]] = set()
     for item in all_evidence:
@@ -80,16 +142,22 @@ def build_report(
             and trace.status in {"success", "degraded", "unavailable"}
         )
     )
-    used_structured_candidates = any(
-        trace.tool == "text2sql" and trace.status in {"success", "degraded"} for trace in state.traces
-    )
-    evidence_sufficient = (
-        bool(recommended)
-        if used_structured_candidates or bool(state.assessments)
-        else bool(state.kb_hits)
-    )
+    evidence_statuses = {
+        item.status for assessments in state.assessments.values() for item in assessments
+    }
+    if state.requirements.task_type == "unrelated":
+        evidence_sufficient = False
+    elif recommendation_task:
+        evidence_sufficient = bool(recommended)
+    else:
+        evidence_sufficient = bool(state.kb_hits) and not (
+            {ConstraintStatus.UNKNOWN, ConstraintStatus.CONFLICT} & evidence_statuses
+        )
     return DecisionReport(
         request_summary=state.requirements.summary or state.query[:200],
+        task_type=state.requirements.task_type,
+        constraint_set=state.constraint_set,
+        constraint_verification=state.constraint_verification,
         hard_constraints=state.requirements.hard_constraints,
         soft_preferences=state.requirements.soft_preferences,
         tools_used=tools,
@@ -104,5 +172,6 @@ def build_report(
         trace=state.traces,
         latency_ms=round(latency_ms, 3),
         tool_call_count=state.tool_call_count,
+        constraint_check_latency_ms=state.constraint_check_latency_ms,
         usage=usage,
     )

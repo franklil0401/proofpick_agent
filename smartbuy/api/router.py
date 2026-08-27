@@ -90,6 +90,10 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
                     "output": f"[{trace['status']}] {trace['result_summary']}\n下一步：{trace['next_action']}",
                 }
             )
+        elif event["type"] == "constraint_check_started":
+            await queue.put(event)
+        elif event["type"] == "constraint_check_completed":
+            await queue.put(event)
 
     async def execute() -> Any:
         try:
