@@ -1,0 +1,4 @@
+.gitattributes text eol=lf
+smartbuy/data/demo/*.json text eol=lf
+smartbuy/data/demo/fact_cards/*.md text eol=lf
+smartbuy/data/processed/* text eol=lf

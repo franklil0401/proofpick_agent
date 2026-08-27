@@ -83,7 +83,12 @@
 
 ## 7. 干净 Windows 复现
 
-待从阶段 7 本地提交创建全新短 ASCII 路径 clone 后补充。此处不会用当前开发目录冒充干净复现。
+首次从本地阶段提交 `404b1d3c5ace32f6d997e35e911832d65a036f4f` clone 到全新短 ASCII 路径。vendor subtree、冻结安装 294 packages、SQLite 12/4/16/180、Chroma 60 chunks 均成功；但 bootstrap 后 `git status` 出现 18 个路径，其中 16 个只有 Windows LF/CRLF 工作树差异，两个真实差异是：
+
+1. `catalog_sha256` 对原始 checkout 字节求哈希，随 LF/CRLF 改变。
+2. 在线建库把本次延迟写回仓库内 `index_manifest.json`。
+
+该次不计为干净复现通过。修复方案是为版本化数据/事实卡固定 LF、对 catalog 文本规范化换行后哈希、bootstrap 默认只校验已提交的治理数据，并将本次索引运行清单写到仓库外 RuntimeRoot。修复后的第二个全新 clone 结果待补充；不会删除第一个失败目录或覆盖记录。
 
 ## 8. 数据、许可与安全边界
 

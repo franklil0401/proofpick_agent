@@ -6,6 +6,7 @@ from pathlib import Path
 from smartbuy.data.derive import evidence_rows, source_rows
 from smartbuy.data.loader import load_catalog
 from smartbuy.data.quality import validate_catalog
+from smartbuy.scripts.build_stage3_data import _normalized_text_sha256
 
 
 def test_catalog_scope_and_quality_gate() -> None:
@@ -17,6 +18,15 @@ def test_catalog_scope_and_quality_gate() -> None:
     assert len({product["brand"] for product in catalog.products}) == 4
     assert 10 <= len(catalog.source_records) <= 20
     assert report.metrics["critical_missing_rate"] == 0.0
+
+
+def test_catalog_hash_is_stable_across_windows_line_endings(tmp_path: Path) -> None:
+    lf = tmp_path / "lf.json"
+    crlf = tmp_path / "crlf.json"
+    lf.write_bytes(b'{\n  "value": 1\n}\n')
+    crlf.write_bytes(b'{\r\n  "value": 1\r\n}\r\n')
+
+    assert _normalized_text_sha256(lf) == _normalized_text_sha256(crlf)
 
 
 def test_every_normalized_product_fact_has_traceable_evidence() -> None:

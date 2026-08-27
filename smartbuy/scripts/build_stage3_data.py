@@ -23,6 +23,13 @@ def _write(path: Path, content: str) -> None:
     path.write_text(content, encoding="utf-8", newline="\n")
 
 
+def _normalized_text_sha256(path: Path) -> str:
+    """Keep the catalog hash stable across Git LF/CRLF checkout policies."""
+
+    normalized = path.read_text(encoding="utf-8").replace("\r\n", "\n").replace("\r", "\n")
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()
+
+
 def build_assets(catalog_path: Path = CATALOG_PATH) -> dict[str, object]:
     catalog = load_catalog(catalog_path)
     quality = validate_catalog(catalog)
@@ -51,7 +58,7 @@ def build_assets(catalog_path: Path = CATALOG_PATH) -> dict[str, object]:
     manifest = {
         "schema_version": catalog.schema_version,
         "data_version": catalog.data_version,
-        "catalog_sha256": hashlib.sha256(catalog_path.read_bytes()).hexdigest(),
+        "catalog_sha256": _normalized_text_sha256(catalog_path),
         "logical_data_sha256": stable_json_hash(
             {
                 "products": catalog.products,

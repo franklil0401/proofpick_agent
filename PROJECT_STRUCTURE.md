@@ -16,6 +16,7 @@
 
 ```text
 proofpick_agent/
+├─ .gitattributes
 ├─ .gitignore
 ├─ DEVELOPMENT_GUIDE.md
 ├─ FINAL_多源消费决策研究Agent开发交接总文档.md
@@ -196,6 +197,7 @@ proofpick_agent/
 | 路径 | 职责 |
 |---|---|
 | `.gitignore` | 排除凭据文件、虚拟环境、缓存、日志、运行数据库、向量索引和模型文件 |
+| `.gitattributes` | 固定版本化数据与事实卡为 LF，避免 Windows checkout 改变哈希或制造重建差异 |
 | `README.md` | 面向首次访问者的真实状态、快速开始、安全边界与文档入口 |
 | `DEVELOPMENT_GUIDE.md` | 项目范围、架构、数据、模型、指标、阶段计划、DoD 和 Git 工作流的主要依据 |
 | `PROJECT_STRUCTURE.md` | 当前真实结构和职责的事实来源 |

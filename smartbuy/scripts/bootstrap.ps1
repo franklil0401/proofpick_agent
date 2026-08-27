@@ -13,6 +13,7 @@ $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "../.."))
 $vendorRoot = Join-Path $projectRoot "vendor/youtu-rag"
 $databasePath = Join-Path $RuntimeRoot "smartbuy_monitors_v1.sqlite"
 $indexPath = Join-Path $RuntimeRoot "vector_store_text_embedding_v4_1024"
+$runtimeManifestPath = Join-Path $RuntimeRoot "index_manifest.json"
 
 & (Join-Path $PSScriptRoot "preflight.ps1") -MinioPath $MinioPath -RuntimeRoot $RuntimeRoot
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
@@ -24,9 +25,7 @@ Write-Host "[1/5] Syncing the frozen Youtu-RAG environment"
 & uv sync --project $vendorRoot --frozen
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "[2/5] Rebuilding governed public demo data"
-& uv run --project $vendorRoot python -m smartbuy.scripts.build_stage3_data
-if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+Write-Host "[2/5] Validating governed public demo data"
 & uv run --project $vendorRoot python -m smartbuy.scripts.validate_stage3_data
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
@@ -46,7 +45,7 @@ if (-not $indexReady) {
     }
     else {
         Write-Host "Building the public fact-card index with text-embedding-v4 (small API cost)."
-        & uv run --project $vendorRoot python -m smartbuy.scripts.build_stage3_index --mode full --index-dir $indexPath
+        & uv run --project $vendorRoot python -m smartbuy.scripts.build_stage3_index --mode full --index-dir $indexPath --manifest-output $runtimeManifestPath
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
         & uv run --project $vendorRoot python -m smartbuy.scripts.verify_stage3_index --index-dir $indexPath
         if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }

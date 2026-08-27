@@ -483,7 +483,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 当前交付物：发布候选 34/40（regression 16/16、holdout 18/24）；四个 Demo 4/4；5 张脱敏截图；README 架构/启动/实验/边界；Demo/Release/Portfolio/Checklist 文档。
 - 测试方法：首次 40 条结果只保存一次；发现问题后只跑 3 条定向任务与 2 条展示回归；本地脚本启动/停止；随后从全新短 ASCII clone 执行 README；最后做完整回归、静态/链接/敏感/历史扫描。
 - 当前量化结果：字段级硬约束 183/183、违规推荐 0/56、工具选择 36/40、多跳 23/23；四个 Demo 4/4；阶段 7 当前可审计在线成本 ¥1.8577429，低于 ¥5。
-- 待完成退出项：全新短路径的冻结依赖、SQLite、Chroma、HTTP 200、Demo 核心步骤与 stop；最终 QA、提交和 origin/main 推送。
+- 待完成退出项：首次短路径 clone 已完成依赖/SQLite/Chroma但暴露 CRLF 哈希与运行清单写回差异；已修复，需用第二个全新 clone 验证工作树干净、HTTP 200、Demo 核心步骤与 stop，再做最终 QA 和 origin/main 推送。
 - 风险与回退：首次发布候选仍有 6/40 未完成，首次 unknown/conflict 2/5；项目保持实验性 MVP。现场网络失败时可展示明确标注的脱敏结果回放；Checker 异常始终 fail closed。
 - 文档更新：[阶段 7 发布报告](smartbuy/docs/release_report.md)、[Demo 指南](smartbuy/docs/demo_guide.md)、[作品集指标](smartbuy/docs/portfolio_metrics.md) 和 [发布清单](smartbuy/docs/release_checklist.md)。
 - 建议 Commit Message：`docs(stage7): prepare reproducible demo and release`。

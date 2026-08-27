@@ -8,13 +8,18 @@ import json
 from pathlib import Path
 
 from smartbuy.config import load_bailian_settings
-from smartbuy.retrieval.knowledge_base import DEFAULT_INDEX_DIR, build_knowledge_base, write_index_manifest
+from smartbuy.retrieval.knowledge_base import (
+    DEFAULT_INDEX_DIR,
+    INDEX_MANIFEST_PATH,
+    build_knowledge_base,
+    write_index_manifest,
+)
 
 
 PILOT_MODELS = {"dell-u2723qe-cn", "dell-u2724d-cn", "asus-pg27aqdm-cn"}
 
 
-async def _run(mode: str, index_dir: Path) -> dict[str, object]:
+async def _run(mode: str, index_dir: Path, manifest_output: Path) -> dict[str, object]:
     settings = load_bailian_settings()
     if mode == "pilot":
         manifest, _ = await build_knowledge_base(
@@ -26,7 +31,7 @@ async def _run(mode: str, index_dir: Path) -> dict[str, object]:
         )
     else:
         manifest, _ = await build_knowledge_base(settings, index_dir=index_dir, rebuild=True)
-        write_index_manifest(manifest)
+        write_index_manifest(manifest, manifest_output)
     return manifest
 
 
@@ -34,8 +39,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--mode", choices=("pilot", "full"), required=True)
     parser.add_argument("--index-dir", type=Path, default=DEFAULT_INDEX_DIR)
+    parser.add_argument("--manifest-output", type=Path, default=INDEX_MANIFEST_PATH)
     args = parser.parse_args()
-    manifest = asyncio.run(_run(args.mode, args.index_dir))
+    manifest = asyncio.run(_run(args.mode, args.index_dir, args.manifest_output))
     safe = {
         "status": manifest["status"],
         "collection_name": manifest["collection_name"],
