@@ -1,7 +1,7 @@
 # SmartBuy Runtime Manifest
 
 最后更新：2026-08-27
-当前阶段：阶段 7 发布整理进行中
+当前阶段：阶段 7 已完成；等待最终提交推送后交付
 运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界多工具 Agent + 确定性 Constraint Checker + 可复现评测/缓存/故障降级 + 作品集 Demo
 
 ## 代码与纳入方式
@@ -123,9 +123,9 @@
 - 首次 unknown/conflict 为 2/5；三条问题定向回归各 1/1，两个报告展示收敛回归 2/2。首次 40 条结果未覆盖。
 - 四个固定本地 API Demo 4/4；6 次 Agent 调用估算 ¥0.2202436；WebUI 首页与 4 张脱敏回放截图进入仓库。
 - Windows 发布脚本在当前开发仓库完成 11/11 preflight、294 个冻结包检查、SQLite 12/4/16/180、Chroma 60 chunks、WebUI/health/monitor HTTP 200 与 stop 后端口释放。
-- 首次全新 clone 的依赖、SQLite 和索引虽通过，但暴露 CRLF 原始字节哈希与仓库内索引运行清单造成的工作树差异；该次未宣称复现成功，已加入 LF 契约、规范化哈希和仓库外运行清单修复，等待第二个全新 clone。
-- 第二个 clone 的预检/冻结安装通过，但旧校验器仍按原始字节复核 catalog 并主动阻断；已统一构建/校验哈希语义，等待第三个全新 clone。
-- 阶段 7当前可审计在线成本 ¥1.8577429，低于 ¥5；全新短路径复现与最终 QA 尚待完成。
+- 首次全新 clone 的依赖、SQLite 和索引虽通过，但暴露 CRLF 原始字节哈希与仓库内索引运行清单造成的工作树差异；第二个 clone 的预检/冻结安装通过，但旧校验器仍按原始字节复核 catalog 并主动阻断。两次均保留且未宣称成功。
+- 第三个全新 clone 在 Commit `79e5575198919d323d22b6cb23719540610ea966` 通过 11/11 preflight、294 包、SQLite、60-chunk Chroma、三页面 HTTP 200、四 Demo 4/4、stop 端口释放与工作区 0 变化。
+- 阶段 7 可审计在线成本 ¥2.1072924，低于 ¥5；最终自动化 95 passed，静态/语法/冻结/数据质量门通过。
 - 详细证据见[阶段 7 发布报告](release_report.md)与[Demo 指南](demo_guide.md)。
 
 ## 测试与成本

@@ -52,7 +52,7 @@
 
 审计说明：第一次定向命令误复用了阶段 6 默认 checkpoint，没有发生新调用；识别后丢弃该无效输出，使用独立 Stage 7 checkpoint 重新运行。无效输出未计入结果或费用。首次发布候选文件未覆盖。
 
-阶段 7 可审计在线估算费用当前合计 **¥1.8577429**，包括 40 条发布候选、三条定向修复、首次 4 Demo 验证和两条展示回归，低于 ¥5 上限。
+阶段 7 可审计在线估算费用合计 **¥2.1072924**，包括 40 条发布候选、三条定向修复、首次 4 Demo 验证、两条展示回归、第一次与第三次 clean clone 索引重建，以及第三次 clean clone Demo，低于 ¥5 上限。第二次在数据校验阶段失败，没有发生模型调用。
 
 ## 4. 四个真实 Demo
 
@@ -90,7 +90,19 @@
 
 该次不计为干净复现通过。修复方案是为版本化数据/事实卡固定 LF、对 catalog 文本规范化换行后哈希、bootstrap 默认只校验已提交的治理数据，并将本次索引运行清单写到仓库外 RuntimeRoot。
 
-第二个全新 clone 的 11/11 preflight 和冻结安装成功，但数据校验器仍沿用原始字节哈希，与已规范化的构建器不一致，因此在 SQLite/索引前主动失败。该次同样不计为通过；已把伴随校验改为同一规范化函数，并为 catalog 固定 LF。第三个全新 clone 结果待补充；前两个失败目录均保留，未覆盖记录。
+第二个全新 clone 的 11/11 preflight 和冻结安装成功，但数据校验器仍沿用原始字节哈希，与已规范化的构建器不一致，因此在 SQLite/索引前主动失败。该次同样不计为通过；已把伴随校验改为同一规范化函数，并为 catalog 固定 LF。
+
+第三个全新 clone 在 `C:/ai/sb7rc-79e5575`、Commit `79e5575198919d323d22b6cb23719540610ea966` 完成验收：
+
+- 普通 clone 后 vendor lock 与上游 LICENSE 均存在，初始 `git status` 为 0。
+- preflight 11/11；Python 3.12.3、uv 0.12.3、Git 2.54.0.windows.1；百炼与 MinIO 变量只显示 configured。
+- `uv sync --frozen` 在新建 `.venv` 安装/检查 294 packages，无锁文件修改。
+- 数据校验 12 型号/4 品牌/16 来源/4 价格/180 证据，错误和警告为 0。
+- 仓库外 SQLite 12/4/16/180、外键 0、`integrity=ok`；仓库外 Chroma 60/60 chunks、12 型号、1024 维。
+- MinIO、`/health`、WebUI、`/monitor` 均 HTTP 200；四个 Demo 4/4，估算 ¥0.2443245。
+- stop 后 8000/9000/9001 均未监听；构建及 Demo 输出均在仓库外，最终 `git status` 为 0。
+
+前两个失败目录均保留，未删除或覆盖；第三次成功不是在已污染目录上重试。
 
 ## 8. 数据、许可与安全边界
 
@@ -99,8 +111,12 @@
 - 本项目代码 MIT；Youtu-RAG 固定 subtree 保留上游 MIT 与第三方说明。
 - Web Search 只有 unavailable/degraded 接口；价格不实时；GraphRAG、Neo4j、第二品类、公网多租户与生产 SLA 未实现。
 
-## 9. 尚待最终提交前完成
+## 9. 最终质量门
 
-- 全新短 ASCII 路径 clone、bootstrap、服务、4 Demo 核心步骤与 stop 复现。
-- 完整自动化、Ruff、compileall、JavaScript、PowerShell、文档链接、禁止文件和敏感历史扫描。
-- 同步 README、开发指南、结构、Runtime Manifest，记录最终 Commit 和 origin/main 状态。
+- 自动化：95 passed，3 条已知上游依赖弃用警告。
+- Ruff：`smartbuy/` 与两类核心 Youtu Provider 通过；未用阶段 7 批量修复上游既有 lint 债务。
+- Python compileall、前端 JavaScript、PowerShell 5/5 语法、冻结集哈希和数据质量通过。
+- 21 份维护 Markdown 的相对链接为 0 失效。
+- 当前候选文件敏感扫描与 72 个历史 Commit 扫描均为 0；最终 Commit 后会再次复核历史计数。
+- 禁止文件为 0；唯一白名单是固定上游 subtree 自带的 `bnss_ai_incoming.db` 测试夹具，不是 SmartBuy 运行数据库。
+- 最终 Commit 与 origin/main 推送结果以本次交付报告为准；未创建 Tag 或 GitHub Release。

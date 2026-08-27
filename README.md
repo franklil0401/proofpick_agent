@@ -2,7 +2,7 @@
 
 **基于 Agentic RAG 的多源显示器消费决策 Agent。** 它把自然语言需求转为有来源的约束，通过只读 SQL、知识库检索、证据四态判断和不可被 LLM 覆盖的确定性安全门，输出候选、淘汰原因、冲突、未知项与可审计轨迹。
 
-> 当前状态：**可复现的作品集 / MVP 原型**。单一中国大陆显示器场景、12 个治理型号、40 条冻结自然任务；不是生产级系统、实时电商搜索平台或全品类购物助手。
+> 当前状态：**可复现的作品集 / MVP 原型**。单一中国大陆显示器场景、12 个治理型号、40 条冻结自然任务；已在全新 Windows 短路径 clone 完成冻结安装、数据/索引重建、服务、四 Demo 与停止验证。它不是生产级系统、实时电商搜索平台或全品类购物助手。
 
 ![Youtu-RAG WebUI 中的 SmartBuy 入口](smartbuy/docs/assets/webui-home.png)
 
@@ -100,6 +100,8 @@ Set-Location C:\ai\proofpick
 ```
 
 `bootstrap.ps1` 会执行冻结依赖同步、治理数据校验、仓库外 SQLite 幂等重建和 Chroma 校验；新环境首次构建 1024 维知识库会产生少量 Embedding 费用。脚本不会自动创建收费资源或修改系统环境变量。
+
+发布复现使用 Commit `79e5575198919d323d22b6cb23719540610ea966` 从第三个全新短 ASCII clone 验证：11/11 preflight、294 包、SQLite 12/4/16/180、Chroma 60 chunks，且构建后工作区无变化。前两次失败及修复过程没有被删除，见 [发布报告](smartbuy/docs/release_report.md)。
 
 访问入口：
 

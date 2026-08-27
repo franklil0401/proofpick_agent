@@ -67,6 +67,8 @@ uv run --project vendor/youtu-rag python -m smartbuy.scripts.verify_stage7_demos
 
 本次真实验证为 4/4，通过 6 次 Agent 调用，`/monitor` 记录估算费用 ¥0.2202436。完成演示后执行：
 
+第三个全新 Windows 短路径 clone 也独立通过 4/4，估算费用 ¥0.2443245；结果写入仓库外运行目录，源码工作区保持 0 变化。
+
 ```powershell
 ./smartbuy/scripts/stop.ps1
 ```

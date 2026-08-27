@@ -20,21 +20,22 @@
 - [x] bootstrap 在开发仓库幂等通过。
 - [x] MinIO、FastAPI、WebUI、health、monitor 通过。
 - [x] stop 只停止 SmartBuy 记录的进程并释放端口。
-- [ ] 全新短 ASCII clone 完成冻结依赖、SQLite、Chroma、服务与 Demo 核心步骤。
+- [x] 第三个全新短 ASCII clone 完成冻结依赖、SQLite、Chroma、服务与 Demo 4/4；前两次失败已保留。
 
 ## 数据、许可与安全
 
 - [x] 12 份事实卡是自制总结；原始受限内容未提交。
 - [x] 16 来源与 4 条价格观察包含必要溯源/时间字段。
 - [x] MIT LICENSE、THIRD_PARTY_NOTICES 与 vendor 上游 LICENSE 保留。
-- [ ] 当前提交和 Git 历史敏感扫描通过。
-- [ ] `.env`、私钥、运行数据库、索引、MinIO 数据、缓存、日志、私人路径和个人信息扫描通过。
+- [x] 当前候选文件和 Git 历史敏感扫描通过；不输出匹配正文或环境变量值。
+- [x] `.env`、私钥、运行数据库、索引、MinIO 数据、缓存、日志、私人路径和个人信息扫描通过。
+- [x] 唯一数据库白名单是固定上游 subtree 的测试夹具，不是 SmartBuy 运行数据。
 
 ## 工程质量与文档
 
-- [ ] 完整 Pytest 通过并记录分母。
-- [ ] Ruff、compileall、JavaScript 和 PowerShell 语法检查通过。
-- [ ] Markdown 相对链接检查通过。
-- [ ] README、DEVELOPMENT_GUIDE、PROJECT_STRUCTURE、Runtime Manifest 已同步最终状态。
-- [ ] `git diff`、暂存区与待推送 Commit 已复核。
-- [ ] 已推送 origin/main，且本地 HEAD 与远端一致。
+- [x] 完整 Pytest 95/95 通过，3 条已知上游依赖弃用警告。
+- [x] Ruff、compileall、JavaScript 和 PowerShell 5/5 语法检查通过。
+- [x] 21 份维护 Markdown 相对链接检查通过，失效 0。
+- [x] README、DEVELOPMENT_GUIDE、PROJECT_STRUCTURE、Runtime Manifest 已同步最终状态。
+- [x] `git diff`、暂存区与待推送 Commit 已复核，未发现无关文件。
+- [ ] origin/main 推送是阶段提交后的最后一步，实际结果以最终交付报告为准。
