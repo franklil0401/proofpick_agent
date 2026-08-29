@@ -4,6 +4,7 @@
 
 ProofPick 把自然语言需求转为可追溯约束，由有界 ReAct 自主编排只读 SQL、知识库与证据检查，再用不可被 LLM 覆盖的确定性安全门阻止违规推荐。
 
+[![CI](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml/badge.svg?branch=chore%2Fportfolio-polish)](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml?query=branch%3Achore%2Fportfolio-polish)
 [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
 [![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?logo=windows11&logoColor=white)](https://www.microsoft.com/windows/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE)
