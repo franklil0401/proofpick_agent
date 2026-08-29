@@ -1,13 +1,13 @@
-# SmartBuy Research Agent 开发指南
+# ProofPick Agent 开发指南
 
 ## 1. 文档信息
 
 | 项目 | 内容 |
 |---|---|
-| 项目名称 | ProofPick Agent；SmartBuy 为首个显示器消费决策场景与 Python 业务模块 |
+| 项目名称 | ProofPick；SmartBuy 为当前显示器消费决策演示场景与 Python 业务模块 |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 0～7 与发布后 GitHub 作品集展示优化均已完成 |
-| 当前状态 | README 首屏、Windows 离线 CI、About/Topics、脱敏 GitHub Pages Demo 和 PR 合并均已验证；核心 Agent、评测金标、历史结果与业务数据未修改 |
+| 当前阶段 | 阶段 0～7 已完成；招聘者视角仓库展示优化在本提交完成 |
+| 当前状态 | README 已收敛，开发资料已归档到 `smartbuy/docs/`，展示图与 Release 草案已补齐；核心 Agent、评测金标、历史结果与业务数据未修改 |
 | 最后更新时间 | 2026-08-29 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
@@ -16,18 +16,18 @@
 本指南按以下优先级整理；发现冲突时保留高优先级要求，并在“风险与待决策事项”中记录，不静默改变项目方向：
 
 1. 用户当前阶段指令。
-2. [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)。
-3. [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)。
+2. [FINAL 开发交接文档](../archive/FINAL_多源消费决策研究Agent开发交接总文档.md)。
+3. [阿里云百炼 API 调用说明](../setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md)。
 4. 仓库当前代码和其他文档。
 
 ### 文档维护规则
 
 - 本文件描述计划、阶段状态、验收口径和已确认决策；没有运行证据的能力一律标记为“计划”或“待验证”。
 - 文件或目录变化时，在同一提交中同步 [PROJECT_STRUCTURE.md](PROJECT_STRUCTURE.md)。
-- 能力、安装方法、配置项或测试结果变化时，在同一提交中同步 [README.md](README.md)。
+- 能力、安装方法、配置项或测试结果变化时，在同一提交中同步 [README.md](../../../README.md)。
 - 每阶段完成后更新阶段状态、实际测试结果、Commit Hash、已知问题和回退结论。
 - 目标值与实验结果严格分开；“建议目标”必须通过阶段 1～6 的基线测试校准。
-- 不删除、移动、重命名或覆盖两份既有资料；需要修订时先取得用户同意。
+- 两份既有资料已按用户本次明确要求分别移入 `archive/` 与 `setup/`；原文件名和内容保持不变，后续不得再次移动、重命名或覆盖，修订前需取得用户同意。
 
 ## 2. 项目场景
 
@@ -337,7 +337,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 ## 9. 验收指标
 
-以下数值是全项目**建议目标**；已取得的阶段 3 检索基线在表后和[阶段 3 报告](smartbuy/docs/stage3_data_and_retrieval_report.md)中单独记录，不能外推为完整 Agent 指标。
+以下数值是全项目**建议目标**；已取得的阶段 3 检索基线在表后和[阶段 3 报告](../stage3_data_and_retrieval_report.md)中单独记录，不能外推为完整 Agent 指标。
 
 | 指标 | 定义、测试数据与计算 | 建议目标 | 验收命令或操作 | 未达标处理 |
 |---|---|---|---|---|
@@ -362,7 +362,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 
 阶段 4 固定 16 条 Agent E2E 的真实结果：工具选择 16/16，7 条正例任务型号召回 7/7，9 条应拒答任务 9/9，8 条依赖式多跳 8/8，Schema 16/16，端到端 15/16；平均/P95 为 25.900/40.195 秒。唯一失败由模型臆加用户未提出的显示尺寸约束造成；改为仅接受用户显式给值的资格字段后，该样本独立回归 1/1。该结果证明阶段 4 字段拒答有效，但不等同于阶段 5 最终硬约束满足率已验收。
 
-阶段 5 的真实阻断结果：自然硬约束用例 55/55 字段、10/10 任务；独立故障注入 21/21 字段、12/12 任务、12/12 违规拦截；unknown/conflict 6/6、unsupported 2/2、重复执行 12/12、合规候选误杀 0。阶段 4 固定候选池 A/B 的任务级正确率由 10/12 提升到 12/12并恢复 3 个合规候选。首次在线 16 条 E2E 为 13/16，安全门完整性 16/16；三个失败均保留并定向修复，不虚报为同一次 16/16。详见[阶段 5 报告](smartbuy/docs/stage5_constraint_verification_report.md)。
+阶段 5 的真实阻断结果：自然硬约束用例 55/55 字段、10/10 任务；独立故障注入 21/21 字段、12/12 任务、12/12 违规拦截；unknown/conflict 6/6、unsupported 2/2、重复执行 12/12、合规候选误杀 0。阶段 4 固定候选池 A/B 的任务级正确率由 10/12 提升到 12/12并恢复 3 个合规候选。首次在线 16 条 E2E 为 13/16，安全门完整性 16/16；三个失败均保留并定向修复，不虚报为同一次 16/16。详见[阶段 5 报告](../stage5_constraint_verification_report.md)。
 
 ## 10. 分阶段开发计划
 
@@ -388,7 +388,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 前置依赖：阶段 0 已完成；Windows 持久化环境变量已配置；短 ASCII 运行路径、网络和 MinIO 可用。
 - 开发任务：以 subtree 固定上游；记录 commit/license/差异；`uv sync --frozen`；启动 MinIO、FastAPI/WebUI；关闭 OCR/HiChunk、本地模型和阶段 1 Reranker；验证文件、KB 配置和基础 Chat；修复配置接口凭据回显。
 - 实际模块：`vendor/youtu-rag/`、`smartbuy/scripts/start_youtu_rag.ps1`、`smartbuy/docs/`、脱敏安全测试、根目录许可证与第三方声明。
-- 交付物：[Runtime Manifest](smartbuy/docs/runtime_manifest.md)、[ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)、[冒烟记录](smartbuy/docs/stage1_smoke_test.md)、许可证与差异记录。
+- 交付物：[Runtime Manifest](../runtime_manifest.md)、[ADR-0001](../adr/0001-vendor-youtu-rag.md)、[冒烟记录](../stage1_smoke_test.md)、许可证与差异记录。
 - 测试方法：关键导入、MinIO health、UI/Monitor、Markdown 上传、知识库创建与文件关联、基础非流式 Chat、配置响应脱敏单测和接口回归。
 - 量化退出条件：`uv sync --frozen` 成功且锁文件不变；三个 HTTP 入口均为 200；上传、KB 关联、基础 Chat 均成功；配置 Key 字段 100% 脱敏；敏感扫描为零；上游 commit 可追溯。KB Build/KB Search 改为阶段 2 完成 Embedding Provider 与 1024 维验证后的退出项，避免跨阶段误调用。
 - 实际结果：上述阶段 1 条件全部满足；KB 文件当前为 `pending`、0 chunks，未宣称已完成向量检索。
@@ -403,7 +403,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 前置依赖：阶段 1 基线；`Qianwen_workspace_id` 已配置且用户确认有效；百炼权限与北京地域匹配。
 - 开发任务：统一配置加载；普通/流式/Tool Calling；Embedding 1024 维和 `/model_id` 兼容处理；Reranker `/reranks`、顶层 `results`、用量统计；建库、KB Search、二阶段排序；超时/重试/降级/脱敏日志。
 - 实际模块：`smartbuy/config/`、`smartbuy/providers/`、`smartbuy/observability/`、验证脚本、单元/集成测试，以及最小供应商兼容补丁。
-- 交付物：[ADR-0002](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md)、[阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)、三模型 Provider、错误矩阵和成本起始基线。
+- 交付物：[ADR-0002](../adr/0002-bailian-provider-and-index-contract.md)、[阶段 2 验证记录](../stage2_bailian_verification.md)、三模型 Provider、错误矩阵和成本起始基线。
 - 测试方法：5 次有界真实模型调用；阶段 1 夹具强制重建；实际 Chroma count；Youtu KB Search + Rerank；401/429/超时/错误维度/503 模拟；日志与工作区敏感扫描。
 - 退出条件：三类 API 正常；测试知识库 `completed` 且 API/Chroma 均为 2 chunks；KB Search 与二阶段排序成功；17 tests passed；核心静态检查通过；Key 匹配为零；失败状态有正确重试或拒绝/降级策略。
 - 实际结果：退出条件全部满足。最终独立验证 398 input + 31 output tokens，估算 0.0003243 元；正式质量指标仍需阶段 3～6 评测集，不能由单样本推断。
@@ -423,7 +423,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 量化退出条件：自动质量错误 0；SQLite `integrity=ok`、外键违规 0 且连续逻辑哈希一致；构建状态 `completed`，60 文档/60 chunks；Reranker Recall@5 0.9838、nDCG@5 0.9541；成本小于 10 元。
 - 实际结果：退出条件满足。固定阈值拒答 0/4 是非阻断但高优先级边界；本阶段未实现自然语言回答、Text2SQL、ReAct、Memory 或确定性硬约束。
 - 风险与回退：不提交第三方全文；动态价格追加且带时间；冲突并列保存；Reranker 失败保留向量顺序；组合约束和拒答转由阶段 4 的 SQLite/证据复核承担。
-- 文档更新：[数据卡](smartbuy/docs/data_card.md)、[ADR-0003](smartbuy/docs/adr/0003-governed-monitor-data-and-index.md)、[阶段 3 报告](smartbuy/docs/stage3_data_and_retrieval_report.md)、Runtime Manifest、项目结构和 README 已同步。
+- 文档更新：[数据卡](../data_card.md)、[ADR-0003](../adr/0003-governed-monitor-data-and-index.md)、[阶段 3 报告](../stage3_data_and_retrieval_report.md)、Runtime Manifest、项目结构和 README 已同步。
 - 建议 Commit Message：`feat(stage3): build governed monitor dataset and knowledge base`。
 
 ### 阶段 4：核心消费决策 Agent 工作流
@@ -438,7 +438,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 量化退出结果：工具选择 16/16，正例型号召回 7/7，9 条应拒答 9/9，多跳 8/8，Schema 16/16，端到端 15/16；失败修复后定向 1/1；最终全量成本 ¥0.4073413，阶段累计严格上界 <¥2.3159403，低于 10 元。
 - 风险与回退：Tool Calling 路径仍有非确定性，执行器门禁阻止越序和越权；Web 无凭据返回 unavailable；Reranker 失败保留向量顺序；SQL 不支持字段转 KB/Evidence；最大步数时安全停止。平均 25.900 秒、P95 40.195 秒，阶段 6 再优化。
 - 阶段边界：阶段 4 Evidence Check 当时不是最终 Constraint Checker；阶段 5 已补齐该边界，四组完整消融已在阶段 6 完成。真实 Web Search、GraphRAG 和第二品类仍未实现。
-- 文档更新：[ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)、[阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)、Runtime Manifest、结构和 README 已同步。
+- 文档更新：[ADR-0004](../adr/0004-bounded-react-evidence-and-memory.md)、[阶段 4 技术报告](../stage4_agent_workflow_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`feat(stage4): implement multi-source purchase decision workflow`。
 
 ### 阶段 5：Agentic RAG 核心增强点
@@ -453,7 +453,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 量化退出结果：自然 55/55 字段、10/10 任务；故障注入 21/21 字段、12/12 任务、12/12 拦截；unknown/conflict、unsupported、重复执行和 s4-014 均 100%；Checker API/成本为 0，在线平均 Checker 延迟 2.014ms。
 - 风险与回退：首批词表有意收窄；unsupported/ambiguous、null、冲突和 Checker 异常均 fail closed。首次在线 E2E 13/16 与定向修复均保留；阶段 6 已完成完整重复评测。
 - 阶段边界：未实现真实 Web Search、GraphRAG、第二品类、自动下单或公网多租户。
-- 文档更新：[ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)、[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)、Runtime Manifest、结构和 README 已同步。
+- 文档更新：[ADR-0005](../adr/0005-deterministic-constraint-gate.md)、[阶段 5 技术报告](../stage5_constraint_verification_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`feat(stage5): add deterministic constraint verification`。
 
 ### 阶段 6：评测、可观测性、缓存、错误恢复和降级
@@ -470,7 +470,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 成本与性能：四组唯一预测 ¥8.57293；阶段全部活动可审计下限 ¥11.4491691、保守估算 <¥13，低于 ¥20。D 平均/P95 24.802/41.328 秒；热缓存 5/5 命中且输出一致，平均 10.436ms，但未用于主实验。
 - 风险与回退：LLM 无 seed，holdout D 仅 15/24；严格 evidence 金标可能低估合法引用；错误 usage 丢失使阶段成本只能报告下限；缓存仅允许公共评测且故障时绕过；Checker 异常 fail closed。
 - 阶段边界：未实现真实 Web Search、GraphRAG、第二品类、生产 SLA 或公网多租户；阶段 7 负责干净 Windows 复现和演示发布。
-- 文档更新：[ADR-0006](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)、[阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)、Runtime Manifest、结构和 README 已同步。
+- 文档更新：[ADR-0006](../adr/0006-reproducible-evaluation-cache-and-resilience.md)、[阶段 6 技术报告](../stage6_evaluation_and_resilience_report.md)、Runtime Manifest、结构和 README 已同步。
 - 建议 Commit Message：`test(stage6): add reproducible evaluation and resilience checks`。
 
 ### 阶段 7：前端展示、演示数据、README 和发布整理
@@ -485,7 +485,7 @@ Agentic RAG 是当前主线：Agent 自主选择或编排 KB、SQL、Web 和 Mem
 - 量化退出结果：字段级硬约束 183/183、违规推荐 0/56、工具选择 36/40、多跳 23/23；开发仓库与干净 clone 的四个 Demo 均 4/4；95 tests passed；阶段 7 可审计在线成本 ¥2.1072924，低于 ¥5。
 - Windows 复现：前两个全新目录分别暴露 CRLF/运行清单写回和伴随校验语义问题，均保留失败；第三个全新 clone 在 Commit `79e5575198919d323d22b6cb23719540610ea966` 上通过 11/11 preflight、294 包冻结安装、SQLite/60 chunks、三页面 HTTP 200、四 Demo、stop 端口释放，且 `git status` 为 0。
 - 风险与回退：首次发布候选仍有 6/40 未完成，首次 unknown/conflict 2/5；项目保持实验性 MVP。现场网络失败时可展示明确标注的脱敏结果回放；Checker 异常始终 fail closed。
-- 文档更新：[阶段 7 发布报告](smartbuy/docs/release_report.md)、[Demo 指南](smartbuy/docs/demo_guide.md)、[作品集指标](smartbuy/docs/portfolio_metrics.md) 和 [发布清单](smartbuy/docs/release_checklist.md)。
+- 文档更新：[阶段 7 发布报告](../release_report.md)、[Demo 指南](../demo_guide.md)、[作品集指标](../portfolio_metrics.md) 和 [发布清单](../release_checklist.md)。
 - 建议 Commit Message：`docs(stage7): prepare reproducible demo and release`。
 
 ## 11. 每阶段 Definition of Done
@@ -552,15 +552,15 @@ docs: initialize development guide and project map
 
 ## 文档导航
 
-- [项目首页](README.md)
+- [项目首页](../../../README.md)
 - [当前项目结构](PROJECT_STRUCTURE.md)
-- [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)
-- [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)
-- [阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)
-- [ADR-0002：百炼 Provider 与索引契约](smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md)
-- [阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)
-- [ADR-0004：有界 ReAct、字段证据与分层记忆](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)
-- [阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)
-- [ADR-0005：确定性硬约束安全门](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)
-- [阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)
-- [ADR-0006：冻结评测、缓存与韧性](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)
+- [FINAL 开发交接文档](../archive/FINAL_多源消费决策研究Agent开发交接总文档.md)
+- [阿里云百炼 API 调用说明](../setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md)
+- [阶段 2 验证记录](../stage2_bailian_verification.md)
+- [ADR-0002：百炼 Provider 与索引契约](../adr/0002-bailian-provider-and-index-contract.md)
+- [阶段 4 技术报告](../stage4_agent_workflow_report.md)
+- [ADR-0004：有界 ReAct、字段证据与分层记忆](../adr/0004-bounded-react-evidence-and-memory.md)
+- [阶段 5 技术报告](../stage5_constraint_verification_report.md)
+- [ADR-0005：确定性硬约束安全门](../adr/0005-deterministic-constraint-gate.md)
+- [阶段 6 技术报告](../stage6_evaluation_and_resilience_report.md)
+- [ADR-0006：冻结评测、缓存与韧性](../adr/0006-reproducible-evaluation-cache-and-resilience.md)

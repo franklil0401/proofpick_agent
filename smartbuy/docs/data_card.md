@@ -1,4 +1,4 @@
-# SmartBuy 显示器数据卡（v1）
+# ProofPick / SmartBuy 显示器场景数据卡（v1）
 
 - 数据版本：`monitor-cn-2026-08-26-v1`
 - Schema 版本：`1.0.0`

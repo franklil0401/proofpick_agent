@@ -1,4 +1,4 @@
-# SmartBuy 五分钟演示指南
+# ProofPick 五分钟演示指南（SmartBuy 显示器场景）
 
 最后更新：2026-08-27
 

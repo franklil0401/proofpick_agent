@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-08-29 |
-| 当前阶段 | 阶段 0～7 与发布后 GitHub 作品集展示优化均已完成 |
+| 当前阶段 | 阶段 0～7 已完成；招聘者视角仓库展示优化在本提交完成 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -22,13 +22,9 @@ proofpick_agent/
 │     └─ pages.yml
 ├─ .gitattributes
 ├─ .gitignore
-├─ DEVELOPMENT_GUIDE.md
-├─ FINAL_多源消费决策研究Agent开发交接总文档.md
 ├─ LICENSE
-├─ PROJECT_STRUCTURE.md
 ├─ README.md
 ├─ THIRD_PARTY_NOTICES.md
-├─ 阿里云百炼API-Key调用与Youtu-RAG接入说明.md
 ├─ smartbuy/
 │  ├─ __init__.py
 │  ├─ agent/
@@ -85,7 +81,7 @@ proofpick_agent/
 │  │  ├─ build_database.py
 │  │  └─ schema_v1.sql
 │  ├─ docs/
-│  │  ├─ assets/                 # WebUI 实图、脱敏结果回放 HTML 与截图
+│  │  ├─ assets/                 # WebUI 实图、脱敏回放与 README 架构图
 │  │  ├─ adr/
 │  │  │  ├─ 0001-vendor-youtu-rag.md
 │  │  │  ├─ 0002-bailian-provider-and-index-contract.md
@@ -93,6 +89,15 @@ proofpick_agent/
 │  │  │  ├─ 0004-bounded-react-evidence-and-memory.md
 │  │  │  ├─ 0005-deterministic-constraint-gate.md
 │  │  │  └─ 0006-reproducible-evaluation-cache-and-resilience.md
+│  │  ├─ archive/
+│  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
+│  │  ├─ development/
+│  │  │  ├─ DEVELOPMENT_GUIDE.md
+│  │  │  └─ PROJECT_STRUCTURE.md
+│  │  ├─ release/
+│  │  │  └─ v1.0.0-portfolio-release-notes.md
+│  │  ├─ setup/
+│  │  │  └─ 阿里云百炼API-Key调用与Youtu-RAG接入说明.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -195,21 +200,21 @@ proofpick_agent/
       └─ uv.lock
 ```
 
-`vendor/youtu-rag/` 包含完整固定上游源码，树中只展开维护入口，未逐项列出所有上游文件。上游固定 Commit、版本和差异见 [Runtime Manifest](smartbuy/docs/runtime_manifest.md) 与 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+`vendor/youtu-rag/` 包含完整固定上游源码，树中只展开维护入口，未逐项列出所有上游文件。上游固定 Commit、版本和差异见 [Runtime Manifest](../runtime_manifest.md) 与 [THIRD_PARTY_NOTICES.md](../../../THIRD_PARTY_NOTICES.md)。
 
 ## 文件与目录职责
 
 | 路径 | 职责 |
 |---|---|
 | `.gitignore` | 排除凭据文件、虚拟环境、缓存、日志、运行数据库、向量索引和模型文件 |
-| `.gitattributes` | 固定版本化数据、事实卡与冻结评测夹具为 LF，避免 Windows checkout 改变哈希或制造重建差异 |
+| `.gitattributes` | 固定版本化数据、事实卡与冻结评测夹具为 LF，并将 `vendor/**` 标记为 GitHub Linguist vendored |
 | `.github/workflows/ci.yml` | 在 Windows/Python 3.12 上执行无百炼 Secret、无外部服务和无模型费用的离线质量门 |
 | `.github/workflows/pages.yml` | 只将脱敏回放 HTML 与白名单 PNG 发布到 GitHub Pages，不包含运行数据或配置 |
-| `README.md` | 面向首次访问者的真实状态、快速开始、安全边界与文档入口 |
-| `DEVELOPMENT_GUIDE.md` | 项目范围、架构、数据、模型、指标、阶段计划、DoD 和 Git 工作流的主要依据 |
-| `PROJECT_STRUCTURE.md` | 当前真实结构和职责的事实来源 |
-| `FINAL_多源消费决策研究Agent开发交接总文档.md` | 原始规格、调研和总体完成定义；保持原名与原内容 |
-| `阿里云百炼API-Key调用与Youtu-RAG接入说明.md` | 百炼 API 安全、端点、模型和 Youtu-RAG 适配说明；阶段 1 纳入版本控制且未修改 |
+| `README.md` | 面向招聘者的项目定位、Demo、核心代码、量化结果与四行启动入口 |
+| `smartbuy/docs/development/DEVELOPMENT_GUIDE.md` | 项目范围、架构、数据、模型、指标、阶段计划、DoD 和 Git 工作流的主要依据 |
+| `smartbuy/docs/development/PROJECT_STRUCTURE.md` | 当前真实结构和职责的事实来源 |
+| `smartbuy/docs/archive/FINAL_多源消费决策研究Agent开发交接总文档.md` | 原始规格、调研和总体完成定义；仅移动归档，保持原名与原内容 |
+| `smartbuy/docs/setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md` | 百炼 API 安全、端点、模型和 Youtu-RAG 适配说明；仅移动到 setup，内容未改 |
 | `LICENSE` | 本项目自行开发代码的 MIT License |
 | `THIRD_PARTY_NOTICES.md` | 第三方来源、固定版本、许可和供应商目录差异 |
 | `vendor/youtu-rag/` | 以 Git subtree 固定纳入的完整 Youtu-RAG 上游源码 |
@@ -271,7 +276,8 @@ proofpick_agent/
 | `smartbuy/docs/release_report.md` | 发布候选、定向修复、Windows 复现、成本与最终发布边界 |
 | `smartbuy/docs/portfolio_metrics.md` | 简历数字的分子/分母、数据、Commit 和允许/禁止表述 |
 | `smartbuy/docs/release_checklist.md` | 评测、运行、数据许可、安全、工程质量和推送清单 |
-| `smartbuy/docs/assets/` | 实际 WebUI 首页与明确标注非实时的脱敏结果回放材料 |
+| `smartbuy/docs/release/v1.0.0-portfolio-release-notes.md` | 待用户确认后使用的 GitHub Release 文案；当前未创建 Tag 或 Release |
+| `smartbuy/docs/assets/` | 实际 WebUI、明确标注非实时的脱敏回放与 README 专用架构图 |
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
 | `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
@@ -300,26 +306,26 @@ proofpick_agent/
 - [x] 计划项单独列出且明确标记“计划/不存在”。
 - [x] 缓存、模型文件、运行数据和大批样本没有逐项罗列。
 - [x] 供应商目录修改已同步第三方声明与 ADR。
-- [x] 文件职责与 [README.md](README.md) 和 [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) 一致。
-- [x] 两份原始资料仍位于根目录且文件名未改变。
+- [x] 文件职责与 [README.md](../../../README.md) 和 [DEVELOPMENT_GUIDE.md](DEVELOPMENT_GUIDE.md) 一致。
+- [x] 两份原始资料已按 archive/setup 归档，保留原文件名且内容未被改写。
 
 ## 文档导航
 
-- [项目首页](README.md)
+- [项目首页](../../../README.md)
 - [开发指南](DEVELOPMENT_GUIDE.md)
-- [Runtime Manifest](smartbuy/docs/runtime_manifest.md)
-- [阶段 1 冒烟记录](smartbuy/docs/stage1_smoke_test.md)
-- [阶段 2 验证记录](smartbuy/docs/stage2_bailian_verification.md)
-- [阶段 3 数据卡](smartbuy/docs/data_card.md)
-- [阶段 3 数据与检索报告](smartbuy/docs/stage3_data_and_retrieval_report.md)
-- [阶段 4 技术报告](smartbuy/docs/stage4_agent_workflow_report.md)
-- [ADR-0004](smartbuy/docs/adr/0004-bounded-react-evidence-and-memory.md)
-- [阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)
-- [ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md)
-- [阶段 6 技术报告](smartbuy/docs/stage6_evaluation_and_resilience_report.md)
-- [ADR-0006](smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md)
-- [阶段 7 发布报告](smartbuy/docs/release_report.md)
-- [Demo 指南](smartbuy/docs/demo_guide.md)
-- [作品集指标](smartbuy/docs/portfolio_metrics.md)
-- [FINAL 开发交接文档](FINAL_多源消费决策研究Agent开发交接总文档.md)
-- [阿里云百炼 API 调用说明](阿里云百炼API-Key调用与Youtu-RAG接入说明.md)
+- [Runtime Manifest](../runtime_manifest.md)
+- [阶段 1 冒烟记录](../stage1_smoke_test.md)
+- [阶段 2 验证记录](../stage2_bailian_verification.md)
+- [阶段 3 数据卡](../data_card.md)
+- [阶段 3 数据与检索报告](../stage3_data_and_retrieval_report.md)
+- [阶段 4 技术报告](../stage4_agent_workflow_report.md)
+- [ADR-0004](../adr/0004-bounded-react-evidence-and-memory.md)
+- [阶段 5 技术报告](../stage5_constraint_verification_report.md)
+- [ADR-0005](../adr/0005-deterministic-constraint-gate.md)
+- [阶段 6 技术报告](../stage6_evaluation_and_resilience_report.md)
+- [ADR-0006](../adr/0006-reproducible-evaluation-cache-and-resilience.md)
+- [阶段 7 发布报告](../release_report.md)
+- [Demo 指南](../demo_guide.md)
+- [作品集指标](../portfolio_metrics.md)
+- [FINAL 开发交接文档](../archive/FINAL_多源消费决策研究Agent开发交接总文档.md)
+- [阿里云百炼 API 调用说明](../setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md)

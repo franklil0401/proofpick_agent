@@ -50,7 +50,11 @@ jobs:
         run: uv sync --project vendor/youtu-rag --frozen --group dev
 
       - name: Run offline tests
-        run: uv run --project vendor/youtu-rag --frozen python -m pytest smartbuy/tests -q
+        run: >-
+          uv run --project vendor/youtu-rag --frozen python -m pytest
+          smartbuy/tests
+          vendor/youtu-rag/tests/rag/api/test_config_security.py
+          -q
 
       - name: Run Ruff
         run: uv run --project vendor/youtu-rag --frozen ruff check smartbuy

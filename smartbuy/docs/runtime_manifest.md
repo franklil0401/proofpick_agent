@@ -1,4 +1,4 @@
-# SmartBuy Runtime Manifest
+# ProofPick Runtime Manifest（SmartBuy 显示器场景）
 
 最后更新：2026-08-27
 当前阶段：阶段 7 已完成；等待最终提交推送后交付
