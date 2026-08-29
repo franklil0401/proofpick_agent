@@ -201,7 +201,7 @@ proofpick_agent/
 | 路径 | 职责 |
 |---|---|
 | `.gitignore` | 排除凭据文件、虚拟环境、缓存、日志、运行数据库、向量索引和模型文件 |
-| `.gitattributes` | 固定版本化数据与事实卡为 LF，避免 Windows checkout 改变哈希或制造重建差异 |
+| `.gitattributes` | 固定版本化数据、事实卡与冻结评测夹具为 LF，避免 Windows checkout 改变哈希或制造重建差异 |
 | `.github/workflows/ci.yml` | 在 Windows/Python 3.12 上执行无百炼 Secret、无外部服务和无模型费用的离线质量门 |
 | `README.md` | 面向首次访问者的真实状态、快速开始、安全边界与文档入口 |
 | `DEVELOPMENT_GUIDE.md` | 项目范围、架构、数据、模型、指标、阶段计划、DoD 和 Git 工作流的主要依据 |
