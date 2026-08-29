@@ -12,7 +12,7 @@ ProofPick 把自然语言需求转为可追溯约束，由有界 ReAct 自主编
 
 > **当前状态：可复现的作品集 / MVP 原型。** SmartBuy 是首个中国大陆显示器消费决策场景和 Python 业务模块：12 个治理型号、40 条冻结自然任务。项目不是生产级系统、实时电商搜索平台或全品类购物助手。
 
-![Constraint Checker 阻止 LLM 覆盖硬约束结果](smartbuy/docs/assets/constraint-checker.png)
+[![Constraint Checker 阻止 LLM 覆盖硬约束结果](smartbuy/docs/assets/constraint-checker.png)](https://franklil0401.github.io/proofpick_agent/)
 
 主图是已保存本地 API 验证结果的脱敏回放，不是实时模型调用；不含 Prompt、密钥、Workspace ID 或私人路径。
 
@@ -38,8 +38,9 @@ ProofPick 把自然语言需求转为可追溯约束，由有界 ReAct 自主编
 
 ## 立即看 Demo
 
+- [在线脱敏结果回放](https://franklil0401.github.io/proofpick_agent/)：GitHub Pages 匿名可访问；来源于保存的本地 API 验证结果，不是实时模型调用。
 - [五分钟 Demo 指南](smartbuy/docs/demo_guide.md)：4 个固定输入、预期工具轨迹、实测耗时和失败备用步骤。
-- [脱敏结果回放](smartbuy/docs/assets/demo_replay.html)：下载后本地打开；醒目标注“不是实时模型调用”。
+- [本地回放源文件](smartbuy/docs/assets/demo_replay.html)：可下载后离线打开，使用与在线页面相同的脱敏声明。
 - [发布报告](smartbuy/docs/release_report.md)：发布候选 `34/40`、Windows 干净复现、成本与已知边界。
 
 ## 项目解决的问题

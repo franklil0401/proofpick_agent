@@ -6,8 +6,8 @@
 |---|---|
 | 项目名称 | ProofPick Agent；SmartBuy 为首个显示器消费决策场景与 Python 业务模块 |
 | 文档用途 | 后续开发、测试、评测、提交和交付的主要执行依据 |
-| 当前阶段 | 阶段 0～7 已完成；发布后 GitHub 作品集展示优化（进行中） |
-| 当前状态 | 仅优化 README 首屏、离线 CI、仓库公开元信息与脱敏 Demo 发布体验；不修改核心 Agent、评测金标、历史结果或业务数据 |
+| 当前阶段 | 阶段 0～7 与发布后 GitHub 作品集展示优化均已完成 |
+| 当前状态 | README 首屏、Windows 离线 CI、About/Topics、脱敏 GitHub Pages Demo 和 PR 合并均已验证；核心 Agent、评测金标、历史结果与业务数据未修改 |
 | 最后更新时间 | 2026-08-29 |
 | 运行基线 | Windows 11、Python 3.12、云端模型 API |
 
