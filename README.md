@@ -1,12 +1,46 @@
-# ProofPick / SmartBuy Agent
+# ProofPick Agent
 
-**基于 Agentic RAG 的多源显示器消费决策 Agent。** 它把自然语言需求转为有来源的约束，通过只读 SQL、知识库检索、证据四态判断和不可被 LLM 覆盖的确定性安全门，输出候选、淘汰原因、冲突、未知项与可审计轨迹。
+## SmartBuy：基于 Agentic RAG 的多源显示器消费决策场景
 
-> 当前状态：**可复现的作品集 / MVP 原型**。单一中国大陆显示器场景、12 个治理型号、40 条冻结自然任务；已在全新 Windows 短路径 clone 完成冻结安装、数据/索引重建、服务、四 Demo 与停止验证。它不是生产级系统、实时电商搜索平台或全品类购物助手。
+ProofPick 把自然语言需求转为可追溯约束，由有界 ReAct 自主编排只读 SQL、知识库与证据检查，再用不可被 LLM 覆盖的确定性安全门阻止违规推荐。
 
-![Youtu-RAG WebUI 中的 SmartBuy 入口](smartbuy/docs/assets/webui-home.png)
+[![CI](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml)
+[![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![Windows 11](https://img.shields.io/badge/Windows-11-0078D4?logo=windows11&logoColor=white)](https://www.microsoft.com/windows/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE)
+[![Status: Portfolio MVP](https://img.shields.io/badge/Status-Portfolio%20MVP-8A2BE2)](smartbuy/docs/release_report.md)
 
-截图来自本地实际 WebUI。工具轨迹、Checker、Memory 与冲突案例截图使用已保存的脱敏 API 结果回放，并在页面中明确标注“不是实时模型调用”；详见 [Demo 指南](smartbuy/docs/demo_guide.md)。
+> **当前状态：可复现的作品集 / MVP 原型。** SmartBuy 是首个中国大陆显示器消费决策场景和 Python 业务模块：12 个治理型号、40 条冻结自然任务。项目不是生产级系统、实时电商搜索平台或全品类购物助手。
+
+![Constraint Checker 阻止 LLM 覆盖硬约束结果](smartbuy/docs/assets/constraint-checker.png)
+
+主图是已保存本地 API 验证结果的脱敏回放，不是实时模型调用；不含 Prompt、密钥、Workspace ID 或私人路径。
+
+| 发布候选 | 三次公平对照 | 约束安全 | Checker 确定性 |
+|---:|---:|---:|---:|
+| **34/40** | Fixed RAG **51/120** → 增强组 **92/120**（+34.17 个百分点） | 增强组首次违规候选推荐 **0/43** | 同输入三次字节一致 **40/40**；额外模型调用 **0** |
+
+这些数字只适用于当前显示器数据版本、冻结任务和已支持约束字段，不代表系统准确率 100% 或生产 SLA。完整分母、历史失败与允许表述见[作品集指标口径](smartbuy/docs/portfolio_metrics.md)。
+
+## 为什么它是真实 Agent，而不是普通 RAG
+
+- 有界 ReAct 会根据任务和工具观察动态选择 Text2SQL、KB Search、Evidence Check，并按缺失字段执行依赖式多跳；不是固定检索后拼接 Prompt。
+- `matched/not_matched/unknown/conflict` 四态证据与工具失败状态进入公开轨迹；不展示隐藏思维链。
+- Constraint Checker 从完整工具候选池独立读取只读 SQLite 和证据记录；LLM 只能解释、不能改写资格集合，异常时 fail closed。
+
+## 上游与本项目贡献边界
+
+| Youtu-RAG 上游能力 | 本项目新增能力 |
+|---|---|
+| FastAPI/WebUI；文件与知识库基础设施；基础 Agent/RAG 组件 | 百炼 LLM/Embedding/Reranker Provider；治理后的显示器数据与证据模型；有界 ReAct；安全 Text2SQL；四态 Evidence Check；分层 Memory；确定性 Constraint Checker；四组评测、缓存、故障注入、统一账本；Windows 复现脚本与消费决策展示 |
+
+上游固定 Commit、供应商目录改动和 MIT 归属见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md)。本项目没有把 Youtu-RAG 原生能力描述为个人从零实现。
+
+## 立即看 Demo
+
+- [五分钟 Demo 指南](smartbuy/docs/demo_guide.md)：4 个固定输入、预期工具轨迹、实测耗时和失败备用步骤。
+- [脱敏结果回放](smartbuy/docs/assets/demo_replay.html)：下载后本地打开；醒目标注“不是实时模型调用”。
+- [发布报告](smartbuy/docs/release_report.md)：发布候选 `34/40`、Windows 干净复现、成本与已知边界。
 
 ## 项目解决的问题
 
@@ -66,6 +100,12 @@ LLM 负责理解、规划、工具调用与解释；SQLite/证据记录提供事
 
 首次本地 API 演示验证为 **4/4**，6 次 Agent 调用估算 ¥0.2202436。完整输入、预期轨迹、备用步骤和截图见 [Demo 指南](smartbuy/docs/demo_guide.md)。
 
+### 运行界面（基于 Youtu-RAG）
+
+![Youtu-RAG WebUI 中的 SmartBuy 入口](smartbuy/docs/assets/webui-home.png)
+
+上图是本地实际 WebUI 入口；打开 SmartBuy 模式后，请求进入独立消费决策 API。下图是已保存验证结果的脱敏工具轨迹回放。
+
 ![依赖式工具轨迹回放](smartbuy/docs/assets/react-tool-trace.png)
 
 ## Windows 快速开始
@@ -91,7 +131,7 @@ try {
 ### 克隆、构建与启动
 
 ```powershell
-git clone <本仓库的 SSH 或 HTTPS 地址> C:\ai\proofpick
+git clone https://github.com/franklil0401/proofpick_agent.git C:\ai\proofpick
 Set-Location C:\ai\proofpick
 
 ./smartbuy/scripts/preflight.ps1
@@ -156,6 +196,8 @@ uv run --project vendor/youtu-rag --group dev python -m pytest smartbuy/tests -q
 uv run --project vendor/youtu-rag ruff check smartbuy
 ```
 
+GitHub Actions 在 `windows-latest` / Python 3.12 上执行同一套离线测试、Ruff、`compileall`、PowerShell AST 与 Markdown 链接检查。工作流显式清空模型变量，不配置 Secret，不启动 MinIO/Chroma，也不调用百炼 API；定义见 [`.github/workflows/ci.yml`](.github/workflows/ci.yml)。
+
 冻结和韧性检查：
 
 ```powershell
@@ -194,15 +236,6 @@ uv run --project vendor/youtu-rag python -m smartbuy.eval.run_stage6_checker_det
 - Checker 异常时不输出购买推荐；SQLite/Chroma 不可用时不让 LLM 心算硬约束或伪装证据核验。
 - 5 条公共 KB 查询热缓存输出一致 **5/5**，平均延迟从 1441.682ms 降至 10.436ms；仅是小样本稳定查询，不代表系统整体或生产性能。
 - 动态价格、库存、Memory 写入、最终自由文本、敏感请求和失败结果默认不缓存。
-
-## 上游与本项目贡献边界
-
-| 范围 | 能力 |
-|---|---|
-| Youtu-RAG 上游原生 | FastAPI/WebUI、文件与知识库基础设施、基础 Agent/RAG 组件 |
-| 本项目新增 | 百炼 LLM/Embedding/Reranker Provider；治理显示器数据与证据模型；有界 ReAct；安全 Text2SQL；四态 Evidence Check；分层 Memory；确定性 Checker；四组评测、缓存、故障注入、统一账本；Windows 脚本与消费决策展示 |
-
-上游固定 Commit 为 `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066`，以 `git subtree --squash` 纳入 `vendor/youtu-rag/`。详细差异、归属和 MIT 许可见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md) 与 [ADR-0001](smartbuy/docs/adr/0001-vendor-youtu-rag.md)。本项目没有把上游能力描述为从零实现。
 
 ## 安全、数据许可与隐私
 

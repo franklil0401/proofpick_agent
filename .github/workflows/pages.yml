@@ -1,0 +1,68 @@
+name: Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/pages.yml
+      - smartbuy/docs/assets/demo_replay.html
+      - smartbuy/docs/assets/*.png
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Publish sanitized replay
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Prepare allowlisted static site
+        shell: bash
+        run: |
+          set -euo pipefail
+          site="$RUNNER_TEMP/proofpick-pages"
+          mkdir -p "$site/assets"
+          cp smartbuy/docs/assets/demo_replay.html "$site/index.html"
+          for image in \
+            conflict-refusal.png \
+            constraint-checker.png \
+            memory-demo.png \
+            react-tool-trace.png \
+            webui-home.png; do
+            cp "smartbuy/docs/assets/$image" "$site/assets/$image"
+          done
+          test "$(find "$site" -type f | wc -l)" -eq 6
+          if find "$site" -type f ! -name '*.html' ! -name '*.png' | grep -q .; then
+            echo "Unexpected file type in Pages artifact" >&2
+            exit 1
+          fi
+
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+
+      - name: Upload sanitized Pages artifact
+        uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: ${{ runner.temp }}/proofpick-pages
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@cd2ce8fcbc39b97be8ca5fce6e763baed58fa128 # v5.0.0

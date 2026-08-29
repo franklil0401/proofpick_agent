@@ -4,8 +4,8 @@
 
 | 项目 | 内容 |
 |---|---|
-| 最后更新时间 | 2026-08-27 |
-| 当前阶段 | 阶段 7：前端展示、演示数据、README 和发布整理（已完成） |
+| 最后更新时间 | 2026-08-29 |
+| 当前阶段 | 阶段 0～7 已完成；发布后 GitHub 作品集展示优化（进行中） |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -16,6 +16,10 @@
 
 ```text
 proofpick_agent/
+├─ .github/
+│  └─ workflows/
+│     ├─ ci.yml
+│     └─ pages.yml
 ├─ .gitattributes
 ├─ .gitignore
 ├─ DEVELOPMENT_GUIDE.md
@@ -147,6 +151,7 @@ proofpick_agent/
 │  │  ├─ bootstrap.ps1
 │  │  ├─ build_stage3_data.py
 │  │  ├─ build_stage3_index.py
+│  │  ├─ check_markdown_links.py
 │  │  ├─ preflight.ps1
 │  │  ├─ start.ps1
 │  │  ├─ start_youtu_rag.ps1
@@ -197,7 +202,9 @@ proofpick_agent/
 | 路径 | 职责 |
 |---|---|
 | `.gitignore` | 排除凭据文件、虚拟环境、缓存、日志、运行数据库、向量索引和模型文件 |
-| `.gitattributes` | 固定版本化数据与事实卡为 LF，避免 Windows checkout 改变哈希或制造重建差异 |
+| `.gitattributes` | 固定版本化数据、事实卡与冻结评测夹具为 LF，避免 Windows checkout 改变哈希或制造重建差异 |
+| `.github/workflows/ci.yml` | 在 Windows/Python 3.12 上执行无百炼 Secret、无外部服务和无模型费用的离线质量门 |
+| `.github/workflows/pages.yml` | 只将脱敏回放 HTML 与白名单 PNG 发布到 GitHub Pages，不包含运行数据或配置 |
 | `README.md` | 面向首次访问者的真实状态、快速开始、安全边界与文档入口 |
 | `DEVELOPMENT_GUIDE.md` | 项目范围、架构、数据、模型、指标、阶段计划、DoD 和 Git 工作流的主要依据 |
 | `PROJECT_STRUCTURE.md` | 当前真实结构和职责的事实来源 |
@@ -269,6 +276,7 @@ proofpick_agent/
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
 | `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
 | `smartbuy/scripts/build_stage3_index.py` / `verify_stage3_index.py` | 有界真实建库和不调用模型的 Chroma 契约复核 |
+| `smartbuy/scripts/check_markdown_links.py` | 在本地与 CI 中检查根文档和 `smartbuy/docs/` 的相对链接目标 |
 | `smartbuy/scripts/preflight.ps1` / `bootstrap.ps1` | Windows 依赖与脱敏配置预检、冻结依赖、数据/SQLite/Chroma 幂等构建 |
 | `smartbuy/scripts/start.ps1` / `stop.ps1` | 仓库外运行目录中的 MinIO/FastAPI 启停、HTTP 检查和精确进程树清理 |
 | `smartbuy/scripts/verify_stage7_demos.py` | 调用本地 API 验证四个固定 Demo 并保存脱敏摘要 |

@@ -1,0 +1,85 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - chore/portfolio-polish
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  offline-quality:
+    name: Windows / Python 3.12 / offline
+    runs-on: windows-latest
+    timeout-minutes: 30
+    env:
+      PYTHONPATH: ${{ github.workspace }}
+      Qianwen_api_key: ""
+      Qianwen_workspace_id: ""
+      UTU_LLM_API_KEY: ""
+      UTU_EMBEDDING_API_KEY: ""
+      UTU_RERANKER_API_KEY: ""
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.12"
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@c771a70e6277c0a99b617c7a806ffedaca235ff9 # v9.0.0
+        with:
+          version: "0.12.3"
+          enable-cache: true
+          cache-dependency-glob: vendor/youtu-rag/uv.lock
+
+      - name: Install frozen dependencies
+        run: uv sync --project vendor/youtu-rag --frozen --group dev
+
+      - name: Run offline tests
+        run: uv run --project vendor/youtu-rag --frozen python -m pytest smartbuy/tests -q
+
+      - name: Run Ruff
+        run: uv run --project vendor/youtu-rag --frozen ruff check smartbuy
+
+      - name: Compile Python sources
+        run: uv run --project vendor/youtu-rag --frozen python -m compileall -q smartbuy
+
+      - name: Parse PowerShell scripts
+        shell: pwsh
+        run: |
+          $failed = $false
+          Get-ChildItem -LiteralPath smartbuy/scripts -Filter *.ps1 | ForEach-Object {
+            $tokens = $null
+            $parseErrors = $null
+            [void][System.Management.Automation.Language.Parser]::ParseFile(
+              $_.FullName,
+              [ref]$tokens,
+              [ref]$parseErrors
+            )
+            if ($parseErrors.Count -gt 0) {
+              $failed = $true
+              $parseErrors | ForEach-Object {
+                Write-Error "$($_.Extent.File):$($_.Extent.StartLineNumber): $($_.Message)"
+              }
+            }
+          }
+          if ($failed) { exit 1 }
+
+      - name: Check local Markdown links
+        run: >-
+          uv run --project vendor/youtu-rag --frozen python
+          -m smartbuy.scripts.check_markdown_links
