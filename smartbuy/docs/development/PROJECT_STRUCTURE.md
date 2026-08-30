@@ -4,8 +4,8 @@
 
 | 项目 | 内容 |
 |---|---|
-| 最后更新时间 | 2026-08-29 |
-| 当前阶段 | 阶段 0～7 已完成；招聘者视角仓库展示优化在本提交完成 |
+| 最后更新时间 | 2026-08-30 |
+| 当前阶段 | V1 已冻结；V2-1A 实现级设计完成，等待评审，尚未开始 V2 生产代码 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -98,6 +98,12 @@ proofpick_agent/
 │  │  │  └─ v1.0.0-portfolio-release-notes.md
 │  │  ├─ setup/
 │  │  │  └─ 阿里云百炼API-Key调用与Youtu-RAG接入说明.md
+│  │  ├─ v2/
+│  │  │  ├─ README.md
+│  │  │  ├─ ProofPick_V2_目标与实现路径.md
+│  │  │  ├─ V2_DEVELOPMENT_PROCESS.md
+│  │  │  ├─ v2_1_implementation_design.md
+│  │  │  └─ v2_1_langgraph_poc_plan.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -215,6 +221,11 @@ proofpick_agent/
 | `smartbuy/docs/development/PROJECT_STRUCTURE.md` | 当前真实结构和职责的事实来源 |
 | `smartbuy/docs/archive/FINAL_多源消费决策研究Agent开发交接总文档.md` | 原始规格、调研和总体完成定义；仅移动归档，保持原名与原内容 |
 | `smartbuy/docs/setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md` | 百炼 API 安全、端点、模型和 Youtu-RAG 适配说明；仅移动到 setup，内容未改 |
+| `smartbuy/docs/v2/README.md` | V2 文档入口与当前真实阶段状态 |
+| `smartbuy/docs/v2/ProofPick_V2_目标与实现路径.md` | V2 产品目标、Trusted/Open 模式、目标架构、阶段路线和完成边界 |
+| `smartbuy/docs/v2/V2_DEVELOPMENT_PROCESS.md` | V2 分支、阶段门、测试、成本、提交和停止规则 |
+| `smartbuy/docs/v2/v2_1_implementation_design.md` | V2-1A 硬编码清单、通用契约、Monitor Domain Pack、V1 兼容与回滚设计 |
+| `smartbuy/docs/v2/v2_1_langgraph_poc_plan.md` | V2-1B Fake Provider PoC 的状态图、并行、恢复、澄清、安全门和决策标准；尚未执行 |
 | `LICENSE` | 本项目自行开发代码的 MIT License |
 | `THIRD_PARTY_NOTICES.md` | 第三方来源、固定版本、许可和供应商目录差异 |
 | `vendor/youtu-rag/` | 以 Git subtree 固定纳入的完整 Youtu-RAG 上游源码 |
@@ -276,7 +287,7 @@ proofpick_agent/
 | `smartbuy/docs/release_report.md` | 发布候选、定向修复、Windows 复现、成本与最终发布边界 |
 | `smartbuy/docs/portfolio_metrics.md` | 简历数字的分子/分母、数据、Commit 和允许/禁止表述 |
 | `smartbuy/docs/release_checklist.md` | 评测、运行、数据许可、安全、工程质量和推送清单 |
-| `smartbuy/docs/release/v1.0.0-portfolio-release-notes.md` | 待用户确认后使用的 GitHub Release 文案；当前未创建 Tag 或 Release |
+| `smartbuy/docs/release/v1.0.0-portfolio-release-notes.md` | 已发布的 `v1.0.0-portfolio` GitHub Release 基础文案与 V1 能力边界 |
 | `smartbuy/docs/assets/` | 实际 WebUI、明确标注非实时的脱敏回放与 README 专用架构图 |
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
@@ -298,7 +309,7 @@ proofpick_agent/
 
 ## 计划结构
 
-当前没有未创建却被列入“当前真实结构”的阶段 7 文件。可选 GraphRAG、Neo4j、第二品类与真实 Web Search 仍未创建。
+V2 生产目录 `domain_packs/`、Product Pack、LangGraph PoC 和相应代码均尚未创建；其建议结构只存在于 `smartbuy/docs/v2/` 的计划章节。可选 GraphRAG、Neo4j、第二品类与真实 Web Search 仍未创建。
 
 ## 维护检查清单
 
@@ -327,5 +338,8 @@ proofpick_agent/
 - [阶段 7 发布报告](../release_report.md)
 - [Demo 指南](../demo_guide.md)
 - [作品集指标](../portfolio_metrics.md)
+- [V2 文档入口](../v2/README.md)
+- [V2-1A 实现级设计](../v2/v2_1_implementation_design.md)
+- [LangGraph PoC 计划](../v2/v2_1_langgraph_poc_plan.md)
 - [FINAL 开发交接文档](../archive/FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](../setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md)
