@@ -85,4 +85,4 @@ Set-Location C:\ai\proofpick
 - [作品集指标](smartbuy/docs/portfolio_metrics.md) / [发布报告](smartbuy/docs/release_report.md)：实验分母、历史失败和发布复现。
 - [开发指南](smartbuy/docs/development/DEVELOPMENT_GUIDE.md) / [项目结构](smartbuy/docs/development/PROJECT_STRUCTURE.md)：工程规范与代码地图。
 
-本项目自行开发代码采用 [MIT License](LICENSE)，适用于公开作品集审阅与本地复现。数据许可独立记录；感谢 TencentCloudADP 的 [Youtu-RAG](https://github.com/TencentCloudADP/youtu-rag)。
+本项目自行开发代码采用 [MIT License](LICENSE)；数据许可单独记录。感谢 TencentCloudADP 的 [Youtu-RAG](https://github.com/TencentCloudADP/youtu-rag)。
