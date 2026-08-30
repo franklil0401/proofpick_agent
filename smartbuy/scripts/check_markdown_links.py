@@ -10,11 +10,7 @@ from urllib.parse import unquote, urlsplit
 REPOSITORY_ROOT = Path(__file__).resolve().parents[2]
 ROOT_DOCUMENTS = (
     "README.md",
-    "DEVELOPMENT_GUIDE.md",
-    "PROJECT_STRUCTURE.md",
     "THIRD_PARTY_NOTICES.md",
-    "FINAL_多源消费决策研究Agent开发交接总文档.md",
-    "阿里云百炼API-Key调用与Youtu-RAG接入说明.md",
 )
 MARKDOWN_LINK = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 EXTERNAL_SCHEMES = {"data", "http", "https", "mailto", "tel"}

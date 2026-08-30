@@ -1,4 +1,5 @@
 .gitattributes text eol=lf
+vendor/** linguist-vendored=true
 smartbuy/data/catalog/*.json text eol=lf
 smartbuy/data/demo/*.json text eol=lf
 smartbuy/data/demo/fact_cards/*.md text eol=lf
