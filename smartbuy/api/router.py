@@ -15,6 +15,12 @@ from pydantic import BaseModel, Field
 from smartbuy.agent import PurchaseDecisionAgent
 from smartbuy.config import load_bailian_settings
 from smartbuy.db.build_database import DEFAULT_OUTPUT
+from smartbuy.domain_packs import (
+    DomainPackLoader,
+    DomainPackSettings,
+    DomainPackValidationError,
+)
+from smartbuy.domain_packs.orchestrator import DomainPackOrchestrator
 from smartbuy.memory import LongTermPreferenceStore
 from smartbuy.observability import UsageLedger, agent_monitor
 from smartbuy.orchestration import (
@@ -25,6 +31,7 @@ from smartbuy.orchestration import (
     ReactOrchestrator,
 )
 from smartbuy.orchestration.checkpoints import SqliteCheckpointBackend
+from smartbuy.orchestration.contracts import Orchestrator
 from smartbuy.orchestration.langgraph_adapter import LangGraphOrchestrator
 from smartbuy.providers import BailianProvider
 from smartbuy.retrieval.knowledge_base import DEFAULT_INDEX_DIR
@@ -33,7 +40,7 @@ from smartbuy.tools import EvidenceCheckTool, KBSearchTool, Text2SQLTool, WebSea
 
 router = APIRouter(prefix="/api/smartbuy", tags=["SmartBuy"])
 _agent: PurchaseDecisionAgent | None = None
-_orchestrator: OrchestratorSelector | None = None
+_orchestrator: Orchestrator | OrchestratorSelector | None = None
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -91,7 +98,7 @@ def set_smartbuy_agent(agent: PurchaseDecisionAgent | None) -> None:
     _orchestrator = None
 
 
-def get_smartbuy_orchestrator() -> OrchestratorSelector:
+def get_smartbuy_orchestrator() -> Orchestrator | OrchestratorSelector:
     global _orchestrator
     if _orchestrator is None:
         settings = OrchestratorSettings.from_environment()
@@ -104,15 +111,36 @@ def get_smartbuy_orchestrator() -> OrchestratorSelector:
             )
             return LangGraphOrchestrator(agent, backend)
 
-        _orchestrator = OrchestratorSelector(
+        selected: Orchestrator | OrchestratorSelector = OrchestratorSelector(
             ReactOrchestrator(agent),
             langgraph_factory,
             settings,
         )
+        domain_settings = DomainPackSettings.from_environment()
+        if domain_settings.enabled:
+            try:
+                pack = DomainPackLoader().load(domain_settings.pack_path)
+            except DomainPackValidationError as exc:
+                agent_monitor.record_orchestration_event(
+                    {
+                        "type": "domain_pack_failed",
+                        "requested": domain_settings.domain_id,
+                        "selected": None,
+                        "status": "initialization_fail_closed",
+                        "reason": type(exc).__name__,
+                    }
+                )
+                raise
+            if pack.domain_id != domain_settings.domain_id:
+                raise DomainPackValidationError("requested domain does not match loaded pack")
+            selected = DomainPackOrchestrator(selected, pack)
+        _orchestrator = selected
     return _orchestrator
 
 
-def set_smartbuy_orchestrator(orchestrator: OrchestratorSelector | None) -> None:
+def set_smartbuy_orchestrator(
+    orchestrator: Orchestrator | OrchestratorSelector | None,
+) -> None:
     """Test seam for the V2 compatibility layer."""
     global _orchestrator
     _orchestrator = orchestrator
@@ -148,7 +176,10 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
         elif event["type"] == "constraint_check_completed":
             await queue.put(event)
         elif event["type"].startswith(
-            ("orchestrator_", "graph_", "checkpoint_", "interrupt_", "checker_terminal_")
+            (
+                "orchestrator_", "graph_", "checkpoint_", "interrupt_",
+                "checker_terminal_", "domain_pack_",
+            )
         ):
             await queue.put(event)
 

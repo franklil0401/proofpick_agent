@@ -1,0 +1,66 @@
+{
+  "source_priority": {
+    "official_manual": 100,
+    "official_support": 95,
+    "official_product": 90,
+    "public_retail": 50,
+    "professional_review": 40
+  },
+  "checker": {
+    "implementation": "smartbuy.constraints.verifier",
+    "version": "smartbuy-constraint-verifier-v1",
+    "fail_closed": true,
+    "unknown_eligible": false,
+    "conflict_eligible": false,
+    "price_max_age_days": 30,
+    "supported_fields": [
+      "price_cny", "display_size_inch", "resolution", "refresh_rate_hz",
+      "is_oled", "has_usb_c", "usb_c_video", "usb_c_power_delivery_w",
+      "width_mm", "brand", "stand_adjustment", "region"
+    ]
+  },
+  "ranking": {
+    "implementation": "smartbuy.agent.ranking",
+    "hard_constraints_may_change_eligibility": false,
+    "profile": "v1-monitor-soft-preference-order"
+  },
+  "memory": {
+    "implementation": "smartbuy.memory.store",
+    "allowed_keys": {
+      "budget_min_cny": "price_cny",
+      "budget_max_cny": "price_cny",
+      "display_size_inch": "display_size_inch",
+      "resolution": "resolution",
+      "min_refresh_rate_hz": "refresh_rate_hz",
+      "exclude_oled": "is_oled",
+      "excluded_brands": "brand",
+      "primary_use": "primary_use"
+    }
+  },
+  "report": {
+    "implementation": "smartbuy.agent.reporting",
+    "schema_version": "smartbuy-decision-v3",
+    "states": ["matched", "not_matched", "unknown", "conflict"]
+  },
+  "product_pack": {
+    "pack_id": "monitor-cn-v1-adapter",
+    "pack_version": "1.0.0",
+    "data_version": "monitor-cn-2026-08-26-v1",
+    "compatible_data_versions": ["monitor-cn-2026-08-26-v1"],
+    "catalog_path": "smartbuy/data/catalog/monitors_v1.json",
+    "catalog_sha256": "b50fd4818575747dab00ffe922ea9720b3a7196e1a5162c0494cd6454a04210a",
+    "counts": {"products": 12, "brands": 4, "sources": 16, "evidence": 180}
+  },
+  "eval_fixtures": {
+    "stage4_cases": {
+      "path": "smartbuy/eval/stage4_cases.jsonl",
+      "case_count": 16,
+      "sha256": "a25c8852887096d91da6758f64d69bd1e69bb30a413425a77883de03cea77a0f"
+    },
+    "stage6_natural_cases": {
+      "path": "smartbuy/eval/stage6_natural_cases.jsonl",
+      "case_count": 40,
+      "sha256": "6082ac83d72441fedf7ac3083a3c53f31d538ca54216f2cf99d3a9de5068e0ef"
+    }
+  }
+}

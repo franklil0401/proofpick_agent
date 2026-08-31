@@ -1,14 +1,14 @@
 # ProofPick Runtime Manifest（SmartBuy 显示器场景）
 
-最后更新：2026-08-27
-当前阶段：阶段 7 已完成；等待最终提交推送后交付
-运行范围：Windows 11 原生 Youtu-RAG + 阿里云百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界多工具 Agent + 确定性 Constraint Checker + 可复现评测/缓存/故障降级 + 作品集 Demo
+最后更新：2026-08-31
+当前阶段：V1 已冻结；V2-1D 通用契约与 Monitor Domain Pack 兼容落地完成，Domain Pack 默认关闭
+运行范围：V1 Windows 11 原生 Youtu-RAG + 百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界 Agent + 确定性 Checker；V2 opt-in 编排/Domain Pack 兼容层
 
 ## 代码与纳入方式
 
 | 项目 | 固定值 |
 |---|---|
-| 当前项目分支 | `main` |
+| 当前项目分支 | V1 稳定版 `main`；V2 开发 `feature/proofpick-v2` |
 | Youtu-RAG 上游仓库 | <https://github.com/TencentCloudADP/youtu-rag> |
 | Youtu-RAG Commit | `ce5c3010ff2e2a1c3e657ebcba14481ac5a2b066` |
 | 安全清理派生 Commit | `87af8dcf679f82779257c32c262d34285b6b9903`；仅处理 GitHub 对模型类名的 Secret 误报 |
@@ -17,7 +17,7 @@
 | 上游许可证 | MIT，见 `vendor/youtu-rag/LICENSE` |
 | `uv.lock` SHA-256 | `726A4CC25B64C0B0C98DBADB51218F86433C7C424B52D40C88FE0910B1BFB659` |
 
-详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，Agent/Memory 决策见 [ADR-0004](adr/0004-bounded-react-evidence-and-memory.md)，确定性安全门见 [ADR-0005](adr/0005-deterministic-constraint-gate.md)，评测/缓存/韧性决策见 [ADR-0006](adr/0006-reproducible-evaluation-cache-and-resilience.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
+详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，Agent/Memory 决策见 [ADR-0004](adr/0004-bounded-react-evidence-and-memory.md)，确定性安全门见 [ADR-0005](adr/0005-deterministic-constraint-gate.md)，评测/缓存/韧性决策见 [ADR-0006](adr/0006-reproducible-evaluation-cache-and-resilience.md)，V2 编排决策见 [ADR-0007](adr/0007-langgraph-orchestration-decision.md)与 [ADR-0008](adr/0008-langgraph-compatibility-and-checkpointing.md)，Domain Pack 决策见 [ADR-0009](adr/0009-domain-contracts-and-monitor-pack.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
 
 ## 主机与关键版本
 
@@ -128,10 +128,19 @@
 - 阶段 7 可审计在线成本 ¥2.1072924，低于 ¥5；最终自动化 95 passed，静态/语法/冻结/数据质量门通过。
 - 详细证据见[阶段 7 发布报告](release_report.md)与[Demo 指南](demo_guide.md)。
 
+V2-1C / V2-1D 兼容层：
+
+- 默认编排器仍为 `react`；LangGraph 只能通过 `PROOFPICK_ORCHESTRATOR=langgraph` 显式开启，当前仍是完整 V1 ReAct 的兼容封装，不具备切换默认值的条件。
+- `PROOFPICK_DOMAIN_PACK_ENABLED` 默认 `false`；关闭时不加载 Pack、不包装请求、不迁移 V1 数据。显式开启后加载 `smartbuy/domain_packs/monitor/`，缺失、损坏、版本或冻结 Catalog 哈希不兼容均 fail closed。
+- Domain 契约版本 `proofpick-domain-contract-v1`；Monitor Manifest/Pack/Loader 为 `1.0.0`，映射 23 个字段、12 个现有 Checker 字段、8 个 Memory key 和 V1 `smartbuy-decision-v3` 响应。
+- Monitor Pack 只引用 `monitor-cn-2026-08-26-v1` 与原 12/4/16/180 数据，不包含新商品，不修改 SQLite/Chroma/事实卡/冻结评测；Product Pack 当前只有只读接口，没有导入流程。
+- V2-1D 新增测试 35/35、当前全仓库 154/154；云端调用、Token 与费用均为 0。历史 V1/V2-1C 文档的 95/120 计数原样保留，当前环境实际收集的对应文件集合为 94/119，全部通过，详见 [V2-1D 报告](v2/v2_1d_domain_pack_report.md)。
+- 本地开关、回滚和安全边界见 [V2-1D 运行说明](v2/v2_1d_runtime.md)。
+
 ## 测试与成本
 
-- 当前提交前自动化：89 passed，3 条上游依赖弃用警告。
-- 静态检查：`smartbuy/` 与三类核心 Provider 文件 Ruff 通过。
+- V2-1D 当前离线自动化：`smartbuy/tests` 154/154；加入上游配置安全测试后的 CI 等价套件为 155/155，均有 3 条上游弃用警告。
+- 静态检查：`smartbuy/` Ruff 与 Compileall、JavaScript 12/12、PowerShell AST 5/5、Markdown 相对链接 244/244 均通过。
 - 独立三模型最终验证：5 次调用、398 input + 31 output tokens，估算 0.0003243 元。
 - 最终 Youtu 建库/查询：Embedding 130 input tokens，估算 0.000065 元；Reranker 160 input tokens，估算 0.000080 元。
 - Youtu Agent 内部 LLM Token 尚未完整进入自研账本，精确阶段总成本记为未知；调用均为有界小样本，远低于 5 元阶段上限。

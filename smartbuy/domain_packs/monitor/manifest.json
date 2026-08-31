@@ -1,0 +1,13 @@
+{
+  "manifest_schema_version": "1.0.0",
+  "domain_pack_version": "1.0.0",
+  "domain_id": "monitor",
+  "display_name": "Monitor / 显示器",
+  "contract_versions": ["proofpick-domain-contract-v1"],
+  "compatible_loader_versions": ["1.0.0"],
+  "data_versions": ["monitor-cn-2026-08-26-v1"],
+  "files": {
+    "fields": "fields.json",
+    "policies": "policies.json"
+  }
+}

@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-08-31 |
-| 当前阶段 | V1 已冻结；V2-1C 兼容适配完成，默认仍为 ReAct，等待下一阶段授权 |
+| 当前阶段 | V1 已冻结；V2-1D 通用契约与 Monitor Domain Pack 兼容落地完成，Domain Pack 默认关闭，等待下一阶段授权 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -58,6 +58,10 @@ proofpick_agent/
 │  │  ├─ normalize.py
 │  │  ├─ scoring.py
 │  │  └─ verifier.py
+│  ├─ contracts/
+│  │  ├─ __init__.py
+│  │  ├─ models.py
+│  │  └─ product_pack.py
 │  ├─ api/
 │  │  └─ router.py
 │  ├─ config/
@@ -107,7 +111,8 @@ proofpick_agent/
 │  │  │  ├─ 0005-deterministic-constraint-gate.md
 │  │  │  ├─ 0006-reproducible-evaluation-cache-and-resilience.md
 │  │  │  ├─ 0007-langgraph-orchestration-decision.md
-│  │  │  └─ 0008-langgraph-compatibility-and-checkpointing.md
+│  │  │  ├─ 0008-langgraph-compatibility-and-checkpointing.md
+│  │  │  └─ 0009-domain-contracts-and-monitor-pack.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -125,7 +130,9 @@ proofpick_agent/
 │  │  │  ├─ v2_1_langgraph_poc_plan.md
 │  │  │  ├─ v2_1_langgraph_poc_report.md
 │  │  │  ├─ v2_1c_compatibility_report.md
-│  │  │  └─ v2_1c_runtime.md
+│  │  │  ├─ v2_1c_runtime.md
+│  │  │  ├─ v2_1d_domain_pack_report.md
+│  │  │  └─ v2_1d_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -140,6 +147,16 @@ proofpick_agent/
 │  │  └─ release_report.md
 │  ├─ domain/
 │  │  └─ models.py
+│  ├─ domain_packs/
+│  │  ├─ monitor/
+│  │  │  ├─ manifest.json
+│  │  │  ├─ fields.json
+│  │  │  └─ policies.json
+│  │  ├─ __init__.py
+│  │  ├─ loader.py
+│  │  ├─ orchestrator.py
+│  │  ├─ settings.py
+│  │  └─ v1_adapter.py
 │  ├─ eval/
 │  │  ├─ __init__.py
 │  │  ├─ cases.jsonl
@@ -207,6 +224,7 @@ proofpick_agent/
 │     │  └─ v2_checkpoint_worker.py
 │     ├─ integration/
 │     │  ├─ test_stage4_api.py
+│     │  ├─ test_v2_domain_pack_compat.py
 │     │  ├─ test_v2_api_orchestration.py
 │     │  ├─ test_v2_sqlite_checkpoint.py
 │     │  └─ test_youtu_bailian_adapters.py
@@ -227,7 +245,8 @@ proofpick_agent/
 │        ├─ test_stage6_cache.py
 │        ├─ test_stage6_eval_contract.py
 │        ├─ test_stage7_reporting.py
-│        └─ test_v2_orchestration_contract.py
+│        ├─ test_v2_orchestration_contract.py
+│        └─ test_v2_domain_pack.py
 └─ vendor/
    └─ youtu-rag/
       ├─ configs/
@@ -263,6 +282,8 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_1_langgraph_poc_report.md` | 20 类 PoC 矩阵、量化对比、首次失败、V1 回归、隔离边界和采用建议 |
 | `smartbuy/docs/v2/v2_1c_compatibility_report.md` | V2-1C 统一契约、显式开关、Checker 终态、Checkpoint 安全、兼容测试和采用边界 |
 | `smartbuy/docs/v2/v2_1c_runtime.md` | 默认 ReAct、显式 LangGraph、仓库外 Checkpoint 和安全回滚的 Windows 运行说明 |
+| `smartbuy/docs/v2/v2_1d_domain_pack_report.md` | 通用契约、Monitor Pack、V1 往返兼容、冻结证据、测试和 V2-2 前置条件 |
+| `smartbuy/docs/v2/v2_1d_runtime.md` | 默认关闭的 Domain Pack 开关、显式验证、fail-closed 与无迁移回滚说明 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
 | `experiments/langgraph_poc/contracts.py` | JSON-safe AgentState、ToolResult、Reducer、事件和确定性合并契约 |
@@ -287,8 +308,12 @@ proofpick_agent/
 | `smartbuy/constraints/normalize.py` | 首批字段的别名、单位、否定、比较符、来源优先级和取消规则 |
 | `smartbuy/constraints/verifier.py` | 完整候选池的只读 SQLite/evidence 确定性复核与 fail-closed |
 | `smartbuy/constraints/scoring.py` | 自然/故障注入固定套件的精确分母、延迟和重复性 Scorer |
+| `smartbuy/contracts/` | V2 不可变通用 Product/Field/Constraint/Evidence/Candidate/Tool/Data/Pack 契约与 Product Pack 只读接口 |
 | `smartbuy/api/router.py` | `/api/smartbuy` HTTP/SSE、Monitor JSON 和长期偏好管理接口 |
 | `smartbuy/domain/models.py` | 需求、四态证据、轨迹、Checker 结果、候选和最终报告 Pydantic 契约 |
+| `smartbuy/domain_packs/loader.py` / `settings.py` | 固定 JSON 文件集、版本/字段/策略校验及默认关闭的 Domain Pack 配置 |
+| `smartbuy/domain_packs/monitor/` | 映射 V1 显示器字段、单位、别名、来源、Checker、Ranking、Memory、报告和冻结哈希的首套 Pack |
+| `smartbuy/domain_packs/v1_adapter.py` / `orchestrator.py` | V1 请求/商品/Checker/报告的通用映射、资格一致性门和 opt-in 包装层 |
 | `smartbuy/memory/store.py` | 进程内会话状态及仓库外、显式确认的长期偏好生命周期 |
 | `smartbuy/orchestration/contracts.py` / `react_adapter.py` | ReAct/LangGraph 共用的版本化输入输出事件契约及不改行为的 V1 适配器 |
 | `smartbuy/orchestration/langgraph_adapter.py` / `safety.py` | 显式启用的状态图外壳、Interrupt/恢复和不可绕过的 Checker 终态结构门 |
@@ -324,6 +349,7 @@ proofpick_agent/
 | `smartbuy/docs/adr/0006-reproducible-evaluation-cache-and-resilience.md` | 四组公平性、冻结集、缓存边界、统一账本及故障注入决策 |
 | `smartbuy/docs/adr/0007-langgraph-orchestration-decision.md` | V2 编排建议采用 LangGraph、证据、风险、兼容门和回滚条件 |
 | `smartbuy/docs/adr/0008-langgraph-compatibility-and-checkpointing.md` | V2-1C 默认 ReAct、显式 LangGraph、本地 Checkpoint 与默认值迁移门决策 |
+| `smartbuy/docs/adr/0009-domain-contracts-and-monitor-pack.md` | V2-1D 适配优先、数据所有权、严格 Loader、默认关闭和无迁移回滚决策 |
 | `smartbuy/docs/data_card.md` | 数据范围、来源、缺失、哈希语义、人工抽查和合规说明 |
 | `smartbuy/docs/runtime_manifest.md` | 目标主机、依赖、模型状态、索引契约、运行路径和服务结果 |
 | `smartbuy/docs/stage1_smoke_test.md` | 阶段 1 命令、耗时、通过/延后项、安全事件与退出结论 |
@@ -395,5 +421,8 @@ V2 已创建兼容适配层，但默认仍为自研 ReAct；当前 LangGraph 只
 - [V2-1C 兼容适配报告](../v2/v2_1c_compatibility_report.md)
 - [V2-1C 运行说明](../v2/v2_1c_runtime.md)
 - [ADR-0008](../adr/0008-langgraph-compatibility-and-checkpointing.md)
+- [V2-1D Domain Pack 报告](../v2/v2_1d_domain_pack_report.md)
+- [V2-1D 运行说明](../v2/v2_1d_runtime.md)
+- [ADR-0009](../adr/0009-domain-contracts-and-monitor-pack.md)
 - [FINAL 开发交接文档](../archive/FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](../setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md)

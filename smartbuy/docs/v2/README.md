@@ -13,11 +13,14 @@
 - [V2-1C 编排兼容适配报告](v2_1c_compatibility_report.md)
 - [V2-1C 本地运行说明](v2_1c_runtime.md)
 - [ADR-0008：兼容适配与 Checkpoint](../adr/0008-langgraph-compatibility-and-checkpointing.md)
+- [V2-1D 通用契约与 Monitor Domain Pack 报告](v2_1d_domain_pack_report.md)
+- [V2-1D Domain Pack 运行说明](v2_1d_runtime.md)
+- [ADR-0009：通用契约与 Monitor Pack](../adr/0009-domain-contracts-and-monitor-pack.md)
 
 ## 当前状态
 
 - V1 已冻结在 `v1.0.0-portfolio`；`feature/proofpick-v2` 已从同一 V1 Commit 创建并推送。
-- V2-1C 已建立统一编排契约、显式开关、仓库外 SQLite Checkpoint 与 Checker 强制终态。
+- V2-1D 已通过适配层落地通用契约、严格 Domain Pack Loader 与 Monitor Pack；该路径默认关闭，V1 行为与冻结数据不变。
 - V1 自研 ReAct 仍是默认编排器；LangGraph 只可显式开启，尚不具备切换默认值的条件。
-- Domain Pack、Product Pack、真实 Web Search 和其他业务开发均未开始。
+- Product Pack 导入、Evidence Ledger、第二品类和真实 Web Search 均未开始。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。
