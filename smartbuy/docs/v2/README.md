@@ -8,10 +8,12 @@
 - [V2 详细开发流程](V2_DEVELOPMENT_PROCESS.md)
 - [V2-1A 实现级设计](v2_1_implementation_design.md)
 - [V2-1B LangGraph PoC 计划](v2_1_langgraph_poc_plan.md)
+- [V2-1B LangGraph PoC 报告](v2_1_langgraph_poc_report.md)
+- [ADR-0007：LangGraph 编排决策](../adr/0007-langgraph-orchestration-decision.md)
 
 ## 当前状态
 
 - V1 已冻结在 `v1.0.0-portfolio`；`feature/proofpick-v2` 已从同一 V1 Commit 创建并推送。
-- 当前只完成 V2-1A 实现级设计，尚未进入 V2 生产代码开发。
-- LangGraph 仅作为编排候选，需通过 V2-1 PoC 后再决定是否正式采用。
+- V2-1B 隔离 LangGraph PoC 已通过，ADR 建议采用 LangGraph；PoC 尚未接入任何生产入口。
+- V1 自研 ReAct 仍是唯一生产编排器；V2-1C、Domain Pack 和其他业务开发均未开始。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

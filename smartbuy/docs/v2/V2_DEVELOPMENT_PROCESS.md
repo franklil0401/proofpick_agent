@@ -9,9 +9,9 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-0 已完成并建立 V2 分支；当前只完成 V2-1A 设计，尚未开始 V2 生产代码开发** |
+| 当前状态 | **V2-1B 隔离 LangGraph PoC 已完成并建议采用；尚未迁移生产编排器或开始 Domain Pack** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
-| 最后更新 | 2026-08-30 |
+| 最后更新 | 2026-08-31 |
 
 关联文档：
 
@@ -899,6 +899,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-0 已完成。当前轮次只执行 V2-1A 实现级设计：硬编码盘点、通用契约、Monitor Domain Pack 设计、V1 兼容/回滚和 LangGraph PoC 计划。
-
-设计提交并由用户确认前，不得开始 LangGraph PoC、Domain Pack 生产代码、Web Search、新数据或 V2-1B。V2-1B PoC 通过也不自动授权 V2-1C 生产迁移。
+V2-1B 隔离 LangGraph PoC 已完成，决策见 [ADR-0007](../adr/0007-langgraph-orchestration-decision.md)。PoC 通过不自动授权 V2-1C；在用户再次确认前，不得迁移生产编排器、开始 Domain Pack/Product Pack、Web Search、新数据或其他 V2 业务开发。

@@ -1,0 +1,51 @@
+{
+  "schema_version": "proofpick-langgraph-poc-result-v1",
+  "run_date": "2026-08-31",
+  "branch": "feature/proofpick-v2",
+  "runtime": {
+    "python": "3.12",
+    "langgraph": "1.0.5",
+    "provider": "fake",
+    "external_api_calls": 0,
+    "estimated_cost_cny": 0.0,
+    "dependency_files_changed": 0
+  },
+  "fixtures": {
+    "stage5_natural_cases_sha256": "27f6470af07c1844bbbc4e3a7280a0529d1782aa91c6dce2e36a66700d537400",
+    "stage4_cases_sha256": "a25c8852887096d91da6758f64d69bd1e69bb30a413425a77883de03cea77a0f"
+  },
+  "acceptance": {
+    "matrix_categories_passed": 20,
+    "matrix_categories_total": 20,
+    "pytest_passed": 28,
+    "pytest_failed": 0,
+    "v1_representative_passed": 10,
+    "v1_representative_total": 10,
+    "v1_regression_safe_passed": 16,
+    "v1_regression_safe_total": 16,
+    "checkpoint_recovery_passed": 1,
+    "checkpoint_recovery_total": 1,
+    "completed_sql_kb_calls_repeated_after_resume": 0,
+    "completed_sql_kb_calls_before_resume": 2,
+    "interrupt_resume_passed": 1,
+    "interrupt_resume_total": 1,
+    "checker_bypass_blocks": 2,
+    "checker_bypass_attempts": 2
+  },
+  "parallel_benchmark": {
+    "repetitions": 9,
+    "overlap_passed": 9,
+    "parallel_full_graph_median_ms": 51.945,
+    "sequential_reference_median_ms": 83.117,
+    "median_reduction_percent": 37.504,
+    "scope": "local fake 40ms SQL plus 40ms KB workload; not a production SLA"
+  },
+  "first_failure": {
+    "category": "checkpoint_file_flush_race_on_windows",
+    "preserved_in_report": true,
+    "resolution": "serialize saver mutation and atomic file replacement with a reentrant lock",
+    "targeted_regression_passed": true
+  },
+  "decision": "recommend_adopting_langgraph",
+  "production_integrated": false
+}

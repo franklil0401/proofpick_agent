@@ -1,10 +1,12 @@
 # ProofPick V2-1B LangGraph PoC 计划
 
-最后更新：2026-08-30
+最后更新：2026-08-31
 
-状态：**仅计划，未安装依赖、未编写 PoC、未调用 API**
+状态：**V2-1B 已按本计划完成隔离 PoC；未接生产主链，外部 API 调用为 0**
 
 前置设计：[V2-1A 实现级设计](v2_1_implementation_design.md)
+
+执行结果：[V2-1B PoC 报告](v2_1_langgraph_poc_report.md)；决策：[ADR-0007](../adr/0007-langgraph-orchestration-decision.md)。以下保留执行前冻结的测试计划和退出标准，作为结果审计依据。
 
 ## 1. 决策问题与边界
 
