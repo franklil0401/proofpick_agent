@@ -234,7 +234,7 @@ def test_publish_second_version_and_rollback_keeps_all_artifacts_aligned(tmp_pat
     finally:
         connection.close()
 
-    with pytest.raises(ProductPackValidationError, match="index is not completed"):
+    with pytest.raises(ProductPackValidationError, match="index pointer"):
         resolve_product_snapshot(
             ProductPackRuntimeSettings(enabled=True, runtime_root=tmp_path / "runtime")
         )

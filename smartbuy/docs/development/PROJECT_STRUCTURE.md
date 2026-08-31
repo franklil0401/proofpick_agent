@@ -208,6 +208,7 @@ proofpick_agent/
 │  │  ├─ builder.py
 │  │  ├─ cli.py
 │  │  ├─ ledger.py
+│  │  ├─ live_index.py
 │  │  ├─ loader.py
 │  │  ├─ models.py
 │  │  └─ runtime.py
@@ -232,6 +233,7 @@ proofpick_agent/
 │  │  ├─ stop.ps1
 │  │  ├─ validate_stage3_data.py
 │  │  ├─ verify_bailian_stage2.py
+│  │  ├─ verify_v2_product_pack_live.py
 │  │  ├─ verify_stage7_demos.py
 │  │  └─ verify_stage3_index.py
 │  └─ tests/
@@ -240,6 +242,7 @@ proofpick_agent/
 │     │  └─ v2_checkpoint_worker.py
 │     ├─ integration/
 │     │  ├─ test_stage4_api.py
+│     │  ├─ test_v2_live_product_index.py
 │     │  ├─ test_v2_product_pack_pipeline.py
 │     │  ├─ test_v2_domain_pack_compat.py
 │     │  ├─ test_v2_api_orchestration.py
@@ -343,7 +346,8 @@ proofpick_agent/
 | `smartbuy/providers/bailian.py` | 普通/流式/工具 Chat、1024 维 Embedding、Rerank、有限重试与降级实现 |
 | `smartbuy/product_packs/models.py` / `schema/` | Product Pack、来源、字段证据、观察和临时证据的严格版本化 JSON/Pydantic 契约 |
 | `smartbuy/product_packs/loader.py` / `ledger.py` | 型号/品牌/别名/地区/配置版/单位/许可归一化门和统一字段级 Evidence Ledger |
-| `smartbuy/product_packs/builder.py` / `cli.py` / `runtime.py` | 仓库外 staging/validate/publish/rollback、幂等快照、原子指针、默认关闭的运行选择与 CLI |
+| `smartbuy/product_packs/builder.py` / `cli.py` / `runtime.py` | 仓库外 staging/validate/publish/rollback、幂等数据快照、默认关闭的运行选择与数据/索引 CLI |
+| `smartbuy/product_packs/live_index.py` | 独立 1024 维 Chroma 构建、完整 Manifest 校验、原子 Index 指针、失败保持与回滚 |
 | `smartbuy/product_packs/examples/monitor-u2725qe-us/pack.json` | 仅含官方元数据、自制短摘要和结构化证据的第 13 个显示器示例 Pack |
 | `smartbuy/observability/usage.py` | 不记录正文或凭据的内存 Token、延迟和成本账本 |
 | `smartbuy/observability/agent_events.py` | 有界、脱敏的 Agent 运行摘要和 Monitor 聚合 |
@@ -391,6 +395,7 @@ proofpick_agent/
 | `smartbuy/docs/assets/` | 实际 WebUI、明确标注非实时的脱敏回放与 README 专用架构图 |
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
+| `smartbuy/scripts/verify_v2_product_pack_live.py` | 第 13 个型号真实 KB、四工具闭环、Reranker 降级、未完成索引与回滚的有界在线验收 |
 | `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
 | `smartbuy/scripts/build_stage3_index.py` / `verify_stage3_index.py` | 有界真实建库和不调用模型的 Chroma 契约复核 |
 | `smartbuy/scripts/check_markdown_links.py` | 在本地与 CI 中检查根文档和 `smartbuy/docs/` 的相对链接目标 |
@@ -401,6 +406,7 @@ proofpick_agent/
 | `smartbuy/tests/unit/` | 百炼统一配置、请求契约、重试、维度与降级单元测试 |
 | `smartbuy/tests/integration/` | Youtu Embedding/Reranker 和 Toolkit 日志安全适配回归 |
 | `smartbuy/tests/unit/test_v2_product_pack.py` / `integration/test_v2_product_pack_pipeline.py` | Product Pack Schema、非法输入、临时 Ledger、幂等构建、工具链、发布失败和回滚测试 |
+| `smartbuy/tests/integration/test_v2_live_product_index.py` | 真实本地 Chroma 的数量/维度/Manifest 门、原子指针、回滚和 fail-closed 测试；Provider 为 Fake，不调用云端 |
 | `smartbuy/tests/unit/test_stage3_*` | 数据质量、评测集、SQLite 幂等和 chunk 元数据契约测试 |
 | `smartbuy/tests/unit/test_stage4_*` | SQL 安全/金标、Evidence 四态、Memory、Agent 上限和降级测试 |
 | `smartbuy/tests/unit/test_stage5_*` | 约束来源、别名/边界、完整池、fail-closed、s4-014、安全门和顺序回归 |

@@ -2,6 +2,7 @@
 
 from .builder import ProductPackManager, PublishedProductSnapshot
 from .ledger import RequestEvidenceWorkspace
+from .live_index import ProductIndexManager, PublishedIndexSnapshot
 from .loader import LoadedProductPack, ProductPackLoader, ProductPackValidationError
 from .models import (
     EVIDENCE_LEDGER_SCHEMA_VERSION,
@@ -13,7 +14,11 @@ from .models import (
     RequestEvidenceRecord,
     SourceInput,
 )
-from .runtime import ProductPackRuntimeSettings, resolve_product_snapshot
+from .runtime import (
+    ProductPackRuntimeSettings,
+    ResolvedProductSnapshot,
+    resolve_product_snapshot,
+)
 
 __all__ = [
     "PRODUCT_PACK_SCHEMA_VERSION",
@@ -26,10 +31,13 @@ __all__ = [
     "ProductPackLoader",
     "ProductPackManager",
     "ProductPackRuntimeSettings",
+    "ProductIndexManager",
     "ProductPackValidationError",
     "PublishedProductSnapshot",
+    "PublishedIndexSnapshot",
     "RequestEvidenceRecord",
     "RequestEvidenceWorkspace",
+    "ResolvedProductSnapshot",
     "SourceInput",
     "resolve_product_snapshot",
 ]

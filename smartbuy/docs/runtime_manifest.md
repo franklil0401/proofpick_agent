@@ -138,13 +138,13 @@ V2-1C ～ V2-2 兼容层：
 - Product Pack `1.0.0` 示例以数据方式增加美国版 `dell-u2725qe-us`；离线快照为 13 products、4 prices、17 sources、196 evidence、13 事实卡和 65 向量文档。Manifest/SQLite 逻辑哈希、artifact hashes、许可与来源字段均受校验。
 - 字段级 Ledger 共 196 条，正式记录绑定来源、片段、地区、配置版、来源版本和观察时间；请求级临时证据必须位于仓库外且不会自动晋升。
 - `PROOFPICK_PRODUCT_PACK_ENABLED` 默认 `false`；开启后只接受完整已发布版本，异常 fail closed，不静默回退。数据关闭后可无迁移恢复 V1。
-- Product Pack 离线测试 20/20；百炼调用、Token 与成本均为 0。生成索引状态为 `documents_ready`，Embedding 契约固定 `text-embedding-v4`/1024；真实 Chroma 完成前显式启用会 fail closed。
+- Product Pack 主体离线测试 20/20；V2-2B 增加 3 条本地事务测试，并在仓库外完成 `monitor-multi-region-2026-08-31-v2` / `monitor-multi-region-h2-v2-embedding1024-r1` / `proofpick_monitor_v2_b9e7bc6d41a735fa` 的真实 65-chunk Chroma。Embedding 固定 `text-embedding-v4`/1024；建库与最小查询（含首次失败估算）约 ¥0.0169。Product Pack 仍默认关闭，未完成索引会 fail closed。
 - 历史 V1/V2-1C 的 95/120 是 CI 等价范围；`smartbuy/tests` 对应为 94/119，唯一差异是显式加入的上游配置安全 node，不存在实际测试缺失。详见 [V2-2 报告](v2/v2_2_product_pack_report.md)。
 - 本地导入、发布、回滚和安全边界见 [V2-2 运行说明](v2/v2_2_runtime.md)。
 
 ## 测试与成本
 
-- V2-2 最终离线自动化：`smartbuy/tests` 174/174，加入上游配置安全测试后的 CI 等价套件 175/175；Product Pack 定向套件 20/20，API 调用和成本为 0。Ruff、Compileall、JavaScript 12/12、PowerShell AST 5/5 与 Markdown 链接 260/260 通过。
+- V2-2B 最终自动化：`smartbuy/tests` 177/177，加入上游配置安全测试后的 CI 等价套件 178/178；Product Pack/实时索引定向套件 23/23。Ruff、Compileall、JavaScript 12/12、PowerShell AST 5/5 和 Markdown 262/262 通过，详见 [V2-2 报告](v2/v2_2_product_pack_report.md)。
 - 独立三模型最终验证：5 次调用、398 input + 31 output tokens，估算 0.0003243 元。
 - 最终 Youtu 建库/查询：Embedding 130 input tokens，估算 0.000065 元；Reranker 160 input tokens，估算 0.000080 元。
 - Youtu Agent 内部 LLM Token 尚未完整进入自研账本，精确阶段总成本记为未知；调用均为有界小样本，远低于 5 元阶段上限。

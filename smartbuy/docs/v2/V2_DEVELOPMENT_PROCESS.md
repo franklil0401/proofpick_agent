@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-2 Product Pack 与字段级 Evidence Ledger 已完成离线验收；默认仍为 V1 数据与 ReAct** |
+| 当前状态 | **V2-2B 真实 Product Pack 索引与 KB Search 已完成收尾验收；默认仍为 V1 数据与 ReAct** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-08-31 |
 
@@ -899,4 +899,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-2 Product Pack 与字段级 Evidence Ledger 已完成，决策与边界见 [ADR-0010](../adr/0010-versioned-product-pack-and-evidence-ledger.md)。默认编排器仍为 ReAct，Domain/Product Pack 路径仍默认关闭；在用户再次确认前，不得进入 V2-3、实现 Source Search/Web Extractor、调用收费搜索、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。
+V2-2 Product Pack、字段级 Evidence Ledger 及 V2-2B 真实 65-chunk Chroma/KB Search 收尾验收已完成，决策与边界见 [ADR-0010](../adr/0010-versioned-product-pack-and-evidence-ledger.md)，运行证据见 [V2-2 报告](v2_2_product_pack_report.md)。默认编排器仍为 ReAct，Domain/Product Pack 路径仍默认关闭；在用户再次确认前，不得进入 V2-3、实现 Source Search/Web Extractor、调用收费搜索、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。

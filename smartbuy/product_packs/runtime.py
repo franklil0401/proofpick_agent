@@ -3,15 +3,57 @@
 from __future__ import annotations
 
 import os
+from dataclasses import dataclass
 from pathlib import Path
 
 from pydantic import BaseModel, ConfigDict
 
+from smartbuy.data.loader import stable_json_hash
 from smartbuy.product_packs.builder import ProductPackManager, PublishedProductSnapshot
+from smartbuy.product_packs.live_index import ProductIndexManager, PublishedIndexSnapshot
 from smartbuy.product_packs.loader import ProductPackValidationError
 
 
 DEFAULT_PRODUCT_PACK_ROOT = Path("C:/ai/proofpick-v2/product-packs")
+
+
+@dataclass(frozen=True)
+class ResolvedProductSnapshot:
+    data: PublishedProductSnapshot
+    index: PublishedIndexSnapshot
+
+    @property
+    def data_version(self) -> str:
+        return self.data.data_version
+
+    @property
+    def manifest_hash(self) -> str:
+        return stable_json_hash(
+            {
+                "data_manifest_hash": self.data.manifest_hash,
+                "index_manifest_hash": self.index.manifest_hash,
+            }
+        )
+
+    @property
+    def database_path(self) -> Path:
+        return self.data.database_path
+
+    @property
+    def evidence_path(self) -> Path:
+        return self.data.evidence_path
+
+    @property
+    def sources_path(self) -> Path:
+        return self.data.sources_path
+
+    @property
+    def index_dir(self) -> Path:
+        return self.index.chroma_path
+
+    @property
+    def collection_name(self) -> str:
+        return self.index.collection_name
 
 
 class ProductPackRuntimeSettings(BaseModel):
@@ -35,13 +77,12 @@ class ProductPackRuntimeSettings(BaseModel):
 
 def resolve_product_snapshot(
     settings: ProductPackRuntimeSettings,
-) -> PublishedProductSnapshot | None:
+) -> ResolvedProductSnapshot | None:
     """Resolve only when explicitly enabled; disabled mode performs no filesystem access."""
     if not settings.enabled:
         return None
-    snapshot = ProductPackManager(settings.runtime_root).current()
-    if snapshot.manifest["index"]["status"] != "completed":
-        raise ProductPackValidationError(
-            "published Product Pack index is not completed"
-        )
-    return snapshot
+    data = ProductPackManager(settings.runtime_root).current()
+    index = ProductIndexManager(settings.runtime_root).current()
+    if index.data_version != data.data_version:
+        raise ProductPackValidationError("current Product Pack data and index differ")
+    return ResolvedProductSnapshot(data=data, index=index)

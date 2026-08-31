@@ -23,7 +23,7 @@
 ## 当前状态
 
 - V1 已冻结在 `v1.0.0-portfolio`；`feature/proofpick-v2` 已从同一 V1 Commit 创建并推送。
-- V2-2 已落地严格 Product Pack、字段级 Evidence Ledger、仓库外 staging/publish/rollback 和第 13 个显示器离线工具链验证；Product Pack 路径默认关闭，V1 冻结数据与历史结果不变。
+- V2-2 已落地严格 Product Pack、字段级 Evidence Ledger、仓库外 staging/publish/rollback，并完成第 13 个显示器的真实 65-chunk Chroma 与四工具闭环验证；Product Pack 路径默认关闭，V1 冻结数据与历史结果不变。
 - V1 自研 ReAct 仍是默认编排器；LangGraph 只可显式开启，尚不具备切换默认值的条件。
-- 真实 Product Pack Chroma 构建、第二品类和 Source Search/Web Extractor 均未开始；本阶段云端调用与成本为 0。
+- 真实 Product Pack Chroma 已按独立 Data/Index Version 构建并验收；第二品类和 Source Search/Web Extractor 均未开始。V2-2B 仅执行有界 Embedding/Reranker，估算约 ¥0.0169。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

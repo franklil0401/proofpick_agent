@@ -49,6 +49,7 @@ PRODUCT_COLUMNS = (
     "source_updated_at",
 )
 MANIFEST_SCHEMA_VERSION = "proofpick-data-manifest-v1"
+DEFAULT_INDEX_VERSION = "monitor-multi-region-h2-v2-embedding1024-r1"
 
 
 def _canonical(value: Any) -> str:
@@ -288,6 +289,7 @@ class ProductPackManager:
             index.get("embedding_model") != "text-embedding-v4"
             or index.get("embedding_dimensions") != 1024
             or index.get("data_version") != data_version
+            or index.get("index_version") != DEFAULT_INDEX_VERSION
             or index.get("status") not in {"documents_ready", "completed"}
         ):
             raise ProductPackValidationError("index contract differs from data version")
@@ -302,6 +304,7 @@ class ProductPackManager:
             for key in (
                 "status",
                 "data_version",
+                "index_version",
                 "collection_name",
                 "embedding_model",
                 "embedding_dimensions",
@@ -394,6 +397,7 @@ class ProductPackManager:
         index_manifest = {
             "status": "documents_ready",
             "data_version": loaded.document.data_version,
+            "index_version": DEFAULT_INDEX_VERSION,
             "domain_id": loaded.document.domain_id,
             "collection_name": f"proofpick_monitor_{collection_suffix}",
             "embedding_model": loaded.document.compatibility.embedding_model,
@@ -410,6 +414,7 @@ class ProductPackManager:
             {
                 "status": "documents_ready",
                 "data_version": loaded.document.data_version,
+                "index_version": index_manifest["index_version"],
                 "collection_name": index_manifest["collection_name"],
                 "embedding_model": index_manifest["embedding_model"],
                 "embedding_dimensions": index_manifest["embedding_dimensions"],
@@ -643,10 +648,33 @@ class ProductPackManager:
     ) -> list[dict[str, Any]]:
         product_by_id = {item["model_id"]: item for item in products}
         source_by_id = {item["source_id"]: item for item in sources}
+        pack_product_by_id = {
+            item["model_id"]: item for item in loaded.normalized_products
+        }
+        pack_source_by_id = {
+            item.source_id: item for item in loaded.document.sources
+        }
         documents: list[dict[str, Any]] = []
         for model_id in sorted(cards):
             product = product_by_id[model_id]
             source = source_by_id[product["official_source_id"]]
+            pack_product = pack_product_by_id.get(model_id)
+            pack_source = pack_source_by_id.get(source["source_id"])
+            variant_key = (
+                str(pack_product["variant_key"])
+                if pack_product is not None
+                else f"{model_id}-v1"
+            )
+            source_version = (
+                pack_source.source_version
+                if pack_source is not None
+                else "v1-governed-capture"
+            )
+            aliases = (
+                [model_id, product["model_name"], *pack_product["aliases"]]
+                if pack_product is not None
+                else [model_id, product["model_name"]]
+            )
             card = cards[model_id]
             matches = list(re.finditer(r"^##\s+(.+?)\s*$", card, flags=re.MULTILINE))
             for index, match in enumerate(matches, start=1):
@@ -659,13 +687,19 @@ class ProductPackManager:
                         "doc_id": doc_id,
                         "content": (
                             f"型号：{product['brand']} {product['model_name']}"
-                            f"（{product['region']}）\n章节：{section}\n{body}"
+                            f"（{product['region']}）\n"
+                            f"稳定 ID：{model_id}\n配置版：{variant_key}\n"
+                            f"来源版本：{source_version}\n别名：{'；'.join(aliases)}\n"
+                            f"章节：{section}\n{body}"
                         ),
                         "metadata": {
                             "doc_id": doc_id,
                             "model_id": model_id,
                             "brand": product["brand"],
                             "region_version": product["region"],
+                            "variant_key": variant_key,
+                            "source_version": source_version,
+                            "aliases": " | ".join(aliases),
                             "source_id": source["source_id"],
                             "source_type": source["source_type"],
                             "source_url": source["url"],
