@@ -46,7 +46,10 @@
     "pack_id": "monitor-cn-v1-adapter",
     "pack_version": "1.0.0",
     "data_version": "monitor-cn-2026-08-26-v1",
-    "compatible_data_versions": ["monitor-cn-2026-08-26-v1"],
+    "compatible_data_versions": [
+      "monitor-cn-2026-08-26-v1",
+      "monitor-multi-region-2026-08-31-v2"
+    ],
     "catalog_path": "smartbuy/data/catalog/monitors_v1.json",
     "catalog_sha256": "b50fd4818575747dab00ffe922ea9720b3a7196e1a5162c0494cd6454a04210a",
     "counts": {"products": 12, "brands": 4, "sources": 16, "evidence": 180}

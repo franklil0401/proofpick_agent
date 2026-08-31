@@ -78,3 +78,11 @@ SQLite 是工作区外的运行产物，不进入 Git。连续重建必须保持
 第三方网页和手册仍受各自权利人与条款约束；`redistribution_status=metadata_and_summary_only` 表示本仓库只再分发元数据与自制短摘要。任何扩充、商用或重新分发原文的行为都需要重新核验许可。模型或脚本不得用猜测补齐未知值，动态价格必须新增观察而非覆盖历史。
 
 数据决策见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，实测质量与检索指标见[阶段 3 报告](stage3_data_and_retrieval_report.md)。
+
+## V2-2 可选 Product Pack 扩展
+
+V1 数据版本、12 个型号和以上质量统计保持冻结不变。V2-2 另提供一个默认关闭的可选数据版本 `monitor-multi-region-2026-08-31-v2`，由 Product Pack 在仓库外构建完整快照：13 个型号、4 个品牌、17 个来源、4 条价格观察、196 条字段证据、13 份自制事实卡和 65 份向量文档。
+
+新增型号为美国版 Dell UltraSharp U2725QE（稳定 ID `dell-u2725qe-us`，配置版 `u2725qe-us-210-bqhr`），来源是 [Dell 美国官方产品页](https://www.dell.com/en-us/shop/u2725qe-monitor/apd/210-bqhr/monitors-monitor-accessories)。仓库仅提交 URL、访问时间、自制短摘要和 16 条结构化字段证据，标记为 `metadata_and_summary_only`，不提交网页原文；发布日期无法核验时保留 `null`。该美国版本不自动映射为中国可购或中国保修。
+
+统一 Evidence Ledger 把 V1 证据经 Adapter 与新 Pack 证据映射到同一字段契约，每条记录绑定 source、snippet、market、variant、source version、observed_at 和再分发状态。请求级临时证据固定为 `temporary/not_reviewed`，不自动进入正式数据。完整版本、许可、幂等和回滚证据见 [V2-2 报告](v2/v2_2_product_pack_report.md)与 [ADR-0010](adr/0010-versioned-product-pack-and-evidence-ledger.md)。

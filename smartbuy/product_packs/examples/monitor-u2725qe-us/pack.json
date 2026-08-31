@@ -1,0 +1,88 @@
+{
+  "schema_version": "1.0.0",
+  "pack_id": "monitor-u2725qe-us",
+  "pack_version": "1.0.0",
+  "domain_id": "monitor",
+  "base_data_version": "monitor-cn-2026-08-26-v1",
+  "data_version": "monitor-multi-region-2026-08-31-v2",
+  "created_at": "2026-08-31T00:00:00Z",
+  "compatibility": {
+    "contract_version": "proofpick-domain-contract-v1",
+    "domain_pack_version": "1.0.0",
+    "embedding_model": "text-embedding-v4",
+    "embedding_dimensions": 1024,
+    "chunk_config_version": "monitor-fact-card-h2-v2"
+  },
+  "license": {
+    "redistribution_status": "metadata_and_summary_only",
+    "data_license_note": "仅提交来源元数据、自制短摘要和结构化事实；不再分发 Dell 网页原文。",
+    "raw_content_included": false
+  },
+  "products": [
+    {
+      "product_id": "dell-u2725qe-us",
+      "brand": "Dell",
+      "canonical_name": "UltraSharp U2725QE",
+      "market": "US",
+      "variant_key": "u2725qe-us-210-bqhr",
+      "aliases": ["U2725QE", "Dell U2725QE", "UltraSharp 27 4K Thunderbolt Hub Monitor"],
+      "attributes": {
+        "display_size_inch": {"value": 27, "unit": "inch"},
+        "resolution": {"value": "3840x2160", "unit": null},
+        "refresh_rate_hz": {"value": 120, "unit": "Hz"},
+        "panel_type": {"value": "IPS Black", "unit": null},
+        "is_oled": {"value": false, "unit": null},
+        "has_usb_c": {"value": true, "unit": null},
+        "usb_c_video": {"value": true, "unit": null},
+        "usb_c_power_delivery_w": {"value": 140, "unit": "W"},
+        "stand_adjustment": {"value": "升降、俯仰、左右旋转、垂直旋转", "unit": null},
+        "width_mm": {"value": 24.11, "unit": "in"},
+        "weight_kg": {"value": 5.221, "unit": "kg"},
+        "warranty": {"value": "3 年有限硬件保修与高级更换服务", "unit": null},
+        "release_date": {"value": null, "unit": null}
+      },
+      "official_source_ids": ["src-dell-u2725qe-us-official-product"],
+      "status": "active"
+    }
+  ],
+  "sources": [
+    {
+      "source_id": "src-dell-u2725qe-us-official-product",
+      "product_id": "dell-u2725qe-us",
+      "source_type": "official_product",
+      "title": "Dell UltraSharp 27 4K Thunderbolt Hub Monitor - U2725QE",
+      "uri": "https://www.dell.com/en-us/shop/u2725qe-monitor/apd/210-bqhr/monitors-monitor-accessories",
+      "publisher": "Dell",
+      "is_official": true,
+      "market": "US",
+      "variant_key": "u2725qe-us-210-bqhr",
+      "language": "en-US",
+      "source_version": "Dell part 210-BQHR",
+      "published_at": null,
+      "accessed_at": "2026-08-31T00:00:00Z",
+      "governed_summary": "戴尔官方美国产品页列出 U2725QE 的 27 英寸 4K IPS Black 显示、120 Hz、Thunderbolt 4 上行视频与最高 140 W EPR 供电、四向支架、尺寸重量和三年保修。",
+      "content_hash": "90ddec102dd7c820e18f0314c377172c9fcb826799babc252ffebac4e5e7e405",
+      "redistribution_status": "metadata_and_summary_only",
+      "access_policy": "public_no_login"
+    }
+  ],
+  "evidence": [
+    {"evidence_id":"ev-dell-u2725qe-us-model-id","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"model_id","raw_value":"U2725QE","normalized_value":"dell-u2725qe-us","unit":null,"snippet":"官方产品标题标明型号 U2725QE。","evidence_location":"产品标题","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-brand","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"brand","raw_value":"Dell","normalized_value":"Dell","unit":null,"snippet":"官方页面品牌为 Dell。","evidence_location":"产品标题与制造商信息","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-model-name","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"model_name","raw_value":"UltraSharp U2725QE","normalized_value":"UltraSharp U2725QE","unit":null,"snippet":"官方产品名称为 UltraSharp U2725QE。","evidence_location":"产品标题","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-region","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"region","raw_value":"US/EN, order code u2725qesap","normalized_value":"US","unit":null,"snippet":"来源为 Dell 美国站，对应美国销售版本 210-BQHR。","evidence_location":"站点地区与订单代码","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-display-size-inch","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"display_size_inch","raw_value":"27 inch","normalized_value":27,"unit":"inch","snippet":"官方技术规格列出可视尺寸 27 英寸。","evidence_location":"Tech Specs / Screen Size","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-resolution","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"resolution","raw_value":"3840 x 2160","normalized_value":"3840x2160","unit":null,"snippet":"官方技术规格列出最大分辨率 3840×2160。","evidence_location":"Tech Specs / Maximum Resolution","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-refresh-rate-hz","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"refresh_rate_hz","raw_value":"120 Hz","normalized_value":120,"unit":"Hz","snippet":"官方技术规格列出标准刷新率 120 Hz。","evidence_location":"Tech Specs / Standard Refresh Rate","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-panel-type","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"panel_type","raw_value":"In-plane Switching (IPS) Black Technology","normalized_value":"IPS Black","unit":null,"snippet":"官方技术规格将面板技术标为 IPS Black。","evidence_location":"Tech Specs / Panel Technology","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-is-oled","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"is_oled","raw_value":"IPS Black","normalized_value":false,"unit":null,"snippet":"面板为 IPS Black，因此规范化为非 OLED。","evidence_location":"Tech Specs / Panel Technology","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-has-usb-c","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"has_usb_c","raw_value":"Thunderbolt 4 upstream and USB-C ports","normalized_value":true,"unit":null,"snippet":"端口列表包含 Thunderbolt 4 上行口和多个 USB-C 端口。","evidence_location":"Tech Specs / Connectivity","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-usb-c-video","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"usb_c_video","raw_value":"Thunderbolt 4 upstream with DP 1.4","normalized_value":true,"unit":null,"snippet":"Thunderbolt 4 上行口明确支持 DP 1.4 视频链路。","evidence_location":"Tech Specs / Connectivity","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-usb-c-power-delivery-w","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"usb_c_power_delivery_w","raw_value":"Up to 140W EPR","normalized_value":140,"unit":"W","snippet":"Thunderbolt 4 上行口的供电规格为最高 140 W EPR。","evidence_location":"Tech Specs / USB Type-C Power Delivery","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-stand-adjustment","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"stand_adjustment","raw_value":"Tilt, Pivot, Height, Swivel","normalized_value":"升降、俯仰、左右旋转、垂直旋转","unit":null,"snippet":"支架支持俯仰、升降、左右旋转和垂直旋转。","evidence_location":"Tech Specs / Stand Adjustments","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-width-mm","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"width_mm","raw_value":"24.11 inch","normalized_value":612.394,"unit":"mm","snippet":"官方尺寸宽度为 24.11 英寸，规范化换算为 612.394 mm。","evidence_location":"Tech Specs / Physical Characteristics","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-weight-kg","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"weight_kg","raw_value":"11.51 lb without stand","normalized_value":5.221,"unit":"kg","snippet":"官方不含支架重量为 11.51 lb，规范化约为 5.221 kg。","evidence_location":"Tech Specs / Physical Characteristics","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"},
+    {"evidence_id":"ev-dell-u2725qe-us-warranty","source_id":"src-dell-u2725qe-us-official-product","product_id":"dell-u2725qe-us","field_id":"warranty","raw_value":"3 Years Limited Hardware and Advanced Exchange Service","normalized_value":"3 年有限硬件保修与高级更换服务","unit":null,"snippet":"官方页面列出三年有限硬件保修和高级更换服务。","evidence_location":"Tech Specs / Warranty","market":"US","variant_key":"u2725qe-us-210-bqhr","source_version":"Dell part 210-BQHR","effective_at":null,"observed_at":"2026-08-31T00:00:00Z","confidence":"high","conflict_group":null,"trust_state":"governed"}
+  ],
+  "observations": []
+}

@@ -1,0 +1,174 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofpick.local/schema/product-pack-v1.json",
+  "title": "ProofPick Product Pack v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "pack_id", "pack_version", "domain_id",
+    "base_data_version", "data_version", "created_at", "compatibility",
+    "license", "products", "sources", "evidence", "observations"
+  ],
+  "properties": {
+    "schema_version": {"const": "1.0.0"},
+    "pack_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+    "pack_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
+    "domain_id": {"const": "monitor"},
+    "base_data_version": {"type": "string", "minLength": 1},
+    "data_version": {"type": "string", "minLength": 1},
+    "created_at": {"type": "string", "format": "date-time"},
+    "compatibility": {"$ref": "#/$defs/compatibility"},
+    "license": {"$ref": "#/$defs/license"},
+    "products": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/product"}},
+    "sources": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/source"}},
+    "evidence": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/evidence"}},
+    "observations": {"type": "array", "items": {"$ref": "#/$defs/observation"}}
+  },
+  "$defs": {
+    "compatibility": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "contract_version", "domain_pack_version", "embedding_model",
+        "embedding_dimensions", "chunk_config_version"
+      ],
+      "properties": {
+        "contract_version": {"const": "proofpick-domain-contract-v1"},
+        "domain_pack_version": {"type": "string"},
+        "embedding_model": {"const": "text-embedding-v4"},
+        "embedding_dimensions": {"const": 1024},
+        "chunk_config_version": {"type": "string", "minLength": 1}
+      }
+    },
+    "license": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["redistribution_status", "data_license_note", "raw_content_included"],
+      "properties": {
+        "redistribution_status": {
+          "enum": ["redistributable", "metadata_and_summary_only"]
+        },
+        "data_license_note": {"type": "string", "minLength": 1},
+        "raw_content_included": {"const": false}
+      }
+    },
+    "attribute": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "unit"],
+      "properties": {"value": {}, "unit": {"type": ["string", "null"]}}
+    },
+    "product": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "product_id", "brand", "canonical_name", "market", "variant_key",
+        "aliases", "attributes", "official_source_ids", "status"
+      ],
+      "properties": {
+        "product_id": {
+          "type": "string",
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*-(?:cn|us|ca|global)$"
+        },
+        "brand": {"type": "string", "minLength": 1},
+        "canonical_name": {"type": "string", "minLength": 1},
+        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "variant_key": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
+        "aliases": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
+        "attributes": {
+          "type": "object",
+          "additionalProperties": {"$ref": "#/$defs/attribute"}
+        },
+        "official_source_ids": {
+          "type": "array", "minItems": 1, "items": {"type": "string"}, "uniqueItems": true
+        },
+        "status": {"enum": ["active", "retired", "unknown"]}
+      }
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "source_id", "product_id", "source_type", "title", "uri", "publisher",
+        "is_official", "market", "variant_key", "language", "source_version",
+        "published_at", "accessed_at", "governed_summary", "content_hash",
+        "redistribution_status", "access_policy"
+      ],
+      "properties": {
+        "source_id": {"type": "string"},
+        "product_id": {"type": "string"},
+        "source_type": {
+          "enum": [
+            "official_manual", "official_support", "official_product",
+            "public_retail", "professional_review"
+          ]
+        },
+        "title": {"type": "string", "minLength": 1},
+        "uri": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "publisher": {"type": "string", "minLength": 1},
+        "is_official": {"type": "boolean"},
+        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "variant_key": {"type": "string"},
+        "language": {"type": "string"},
+        "source_version": {"type": "string", "minLength": 1},
+        "published_at": {"type": ["string", "null"]},
+        "accessed_at": {"type": "string", "format": "date-time"},
+        "governed_summary": {"type": "string", "minLength": 1, "maxLength": 1000},
+        "content_hash": {"type": "string", "pattern": "^[a-f0-9]{64}$"},
+        "redistribution_status": {
+          "enum": ["redistributable", "metadata_and_summary_only"]
+        },
+        "access_policy": {"const": "public_no_login"}
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "evidence_id", "source_id", "product_id", "field_id", "raw_value",
+        "normalized_value", "unit", "snippet", "evidence_location", "market",
+        "variant_key", "source_version", "effective_at", "observed_at",
+        "confidence", "conflict_group", "trust_state"
+      ],
+      "properties": {
+        "evidence_id": {"type": "string"},
+        "source_id": {"type": "string"},
+        "product_id": {"type": "string"},
+        "field_id": {"type": "string", "pattern": "^[a-z][a-z0-9_]*$"},
+        "raw_value": {},
+        "normalized_value": {},
+        "unit": {"type": ["string", "null"]},
+        "snippet": {"type": "string", "minLength": 1, "maxLength": 500},
+        "evidence_location": {"type": "string", "minLength": 1},
+        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "variant_key": {"type": "string"},
+        "source_version": {"type": "string"},
+        "effective_at": {"type": ["string", "null"]},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "confidence": {"enum": ["high", "medium", "low"]},
+        "conflict_group": {"type": ["string", "null"]},
+        "trust_state": {"const": "governed"}
+      }
+    },
+    "observation": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "observation_id", "product_id", "price_cny", "seller", "market",
+        "stock_status", "uri", "observed_at", "price_type", "source_id"
+      ],
+      "properties": {
+        "observation_id": {"type": "string"},
+        "product_id": {"type": "string"},
+        "price_cny": {"type": "number", "exclusiveMinimum": 0},
+        "seller": {"type": "string", "minLength": 1},
+        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "stock_status": {"type": "string", "minLength": 1},
+        "uri": {"type": "string", "format": "uri", "pattern": "^https://"},
+        "observed_at": {"type": "string", "format": "date-time"},
+        "price_type": {"type": "string", "minLength": 1},
+        "source_id": {"type": "string"}
+      }
+    }
+  }
+}

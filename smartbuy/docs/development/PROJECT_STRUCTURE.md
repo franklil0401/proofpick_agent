@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-08-31 |
-| 当前阶段 | V1 已冻结；V2-1D 通用契约与 Monitor Domain Pack 兼容落地完成，Domain Pack 默认关闭，等待下一阶段授权 |
+| 当前阶段 | V1 已冻结；V2-2 Product Pack 与字段级 Evidence Ledger 离线验收完成，V2 数据路径默认关闭，等待下一阶段授权 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -112,7 +112,8 @@ proofpick_agent/
 │  │  │  ├─ 0006-reproducible-evaluation-cache-and-resilience.md
 │  │  │  ├─ 0007-langgraph-orchestration-decision.md
 │  │  │  ├─ 0008-langgraph-compatibility-and-checkpointing.md
-│  │  │  └─ 0009-domain-contracts-and-monitor-pack.md
+│  │  │  ├─ 0009-domain-contracts-and-monitor-pack.md
+│  │  │  └─ 0010-versioned-product-pack-and-evidence-ledger.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -132,7 +133,9 @@ proofpick_agent/
 │  │  │  ├─ v2_1c_compatibility_report.md
 │  │  │  ├─ v2_1c_runtime.md
 │  │  │  ├─ v2_1d_domain_pack_report.md
-│  │  │  └─ v2_1d_runtime.md
+│  │  │  ├─ v2_1d_runtime.md
+│  │  │  ├─ v2_2_product_pack_report.md
+│  │  │  └─ v2_2_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -195,6 +198,19 @@ proofpick_agent/
 │  ├─ providers/
 │  │  ├─ __init__.py
 │  │  └─ bailian.py
+│  ├─ product_packs/
+│  │  ├─ examples/
+│  │  │  └─ monitor-u2725qe-us/
+│  │  │     └─ pack.json
+│  │  ├─ schema/
+│  │  │  └─ product-pack-v1.schema.json
+│  │  ├─ __init__.py
+│  │  ├─ builder.py
+│  │  ├─ cli.py
+│  │  ├─ ledger.py
+│  │  ├─ loader.py
+│  │  ├─ models.py
+│  │  └─ runtime.py
 │  ├─ retrieval/
 │  │  ├─ __init__.py
 │  │  └─ knowledge_base.py
@@ -224,6 +240,7 @@ proofpick_agent/
 │     │  └─ v2_checkpoint_worker.py
 │     ├─ integration/
 │     │  ├─ test_stage4_api.py
+│     │  ├─ test_v2_product_pack_pipeline.py
 │     │  ├─ test_v2_domain_pack_compat.py
 │     │  ├─ test_v2_api_orchestration.py
 │     │  ├─ test_v2_sqlite_checkpoint.py
@@ -246,7 +263,8 @@ proofpick_agent/
 │        ├─ test_stage6_eval_contract.py
 │        ├─ test_stage7_reporting.py
 │        ├─ test_v2_orchestration_contract.py
-│        └─ test_v2_domain_pack.py
+│        ├─ test_v2_domain_pack.py
+│        └─ test_v2_product_pack.py
 └─ vendor/
    └─ youtu-rag/
       ├─ configs/
@@ -284,6 +302,8 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_1c_runtime.md` | 默认 ReAct、显式 LangGraph、仓库外 Checkpoint 和安全回滚的 Windows 运行说明 |
 | `smartbuy/docs/v2/v2_1d_domain_pack_report.md` | 通用契约、Monitor Pack、V1 往返兼容、冻结证据、测试和 V2-2 前置条件 |
 | `smartbuy/docs/v2/v2_1d_runtime.md` | 默认关闭的 Domain Pack 开关、显式验证、fail-closed 与无迁移回滚说明 |
+| `smartbuy/docs/v2/v2_2_product_pack_report.md` | 测试计数审计、Product Pack/Ledger、第 13 个显示器、幂等构建、工具链和失败回滚证据 |
+| `smartbuy/docs/v2/v2_2_runtime.md` | 仓库外导入、校验、发布、版本查看、回滚、特性开关与索引状态说明 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
 | `experiments/langgraph_poc/contracts.py` | JSON-safe AgentState、ToolResult、Reducer、事件和确定性合并契约 |
@@ -321,6 +341,10 @@ proofpick_agent/
 | `smartbuy/tools/` | KB、只读 Text2SQL、Evidence Check、Web unavailable 和统一结果契约 |
 | `smartbuy/config/bailian.py` | 从继承进程安全加载百炼配置、派生三类端点和 Youtu 子进程映射 |
 | `smartbuy/providers/bailian.py` | 普通/流式/工具 Chat、1024 维 Embedding、Rerank、有限重试与降级实现 |
+| `smartbuy/product_packs/models.py` / `schema/` | Product Pack、来源、字段证据、观察和临时证据的严格版本化 JSON/Pydantic 契约 |
+| `smartbuy/product_packs/loader.py` / `ledger.py` | 型号/品牌/别名/地区/配置版/单位/许可归一化门和统一字段级 Evidence Ledger |
+| `smartbuy/product_packs/builder.py` / `cli.py` / `runtime.py` | 仓库外 staging/validate/publish/rollback、幂等快照、原子指针、默认关闭的运行选择与 CLI |
+| `smartbuy/product_packs/examples/monitor-u2725qe-us/pack.json` | 仅含官方元数据、自制短摘要和结构化证据的第 13 个显示器示例 Pack |
 | `smartbuy/observability/usage.py` | 不记录正文或凭据的内存 Token、延迟和成本账本 |
 | `smartbuy/observability/agent_events.py` | 有界、脱敏的 Agent 运行摘要和 Monitor 聚合 |
 | `smartbuy/observability/eval_ledger.py` | 阶段 6 统一运行/步骤账本 Schema、脱敏校验与 JSONL 输出 |
@@ -350,6 +374,7 @@ proofpick_agent/
 | `smartbuy/docs/adr/0007-langgraph-orchestration-decision.md` | V2 编排建议采用 LangGraph、证据、风险、兼容门和回滚条件 |
 | `smartbuy/docs/adr/0008-langgraph-compatibility-and-checkpointing.md` | V2-1C 默认 ReAct、显式 LangGraph、本地 Checkpoint 与默认值迁移门决策 |
 | `smartbuy/docs/adr/0009-domain-contracts-and-monitor-pack.md` | V2-1D 适配优先、数据所有权、严格 Loader、默认关闭和无迁移回滚决策 |
+| `smartbuy/docs/adr/0010-versioned-product-pack-and-evidence-ledger.md` | V2-2 严格 Schema、字段 Ledger、事务发布、索引版本和临时证据边界决策 |
 | `smartbuy/docs/data_card.md` | 数据范围、来源、缺失、哈希语义、人工抽查和合规说明 |
 | `smartbuy/docs/runtime_manifest.md` | 目标主机、依赖、模型状态、索引契约、运行路径和服务结果 |
 | `smartbuy/docs/stage1_smoke_test.md` | 阶段 1 命令、耗时、通过/延后项、安全事件与退出结论 |
@@ -375,6 +400,7 @@ proofpick_agent/
 | `smartbuy/tests/fixtures/stage1_baseline.md` | 自制、无隐私的 Markdown 上传与知识库配置冒烟夹具 |
 | `smartbuy/tests/unit/` | 百炼统一配置、请求契约、重试、维度与降级单元测试 |
 | `smartbuy/tests/integration/` | Youtu Embedding/Reranker 和 Toolkit 日志安全适配回归 |
+| `smartbuy/tests/unit/test_v2_product_pack.py` / `integration/test_v2_product_pack_pipeline.py` | Product Pack Schema、非法输入、临时 Ledger、幂等构建、工具链、发布失败和回滚测试 |
 | `smartbuy/tests/unit/test_stage3_*` | 数据质量、评测集、SQLite 幂等和 chunk 元数据契约测试 |
 | `smartbuy/tests/unit/test_stage4_*` | SQL 安全/金标、Evidence 四态、Memory、Agent 上限和降级测试 |
 | `smartbuy/tests/unit/test_stage5_*` | 约束来源、别名/边界、完整池、fail-closed、s4-014、安全门和顺序回归 |
@@ -384,7 +410,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建兼容适配层，但默认仍为自研 ReAct；当前 LangGraph 只是显式启用、复用完整 V1 工作流的外壳，不能冒充已完成逐节点迁移或线上性能提升。`domain_packs/`、Product Pack、GraphRAG、Neo4j、第二品类与真实 Web Search 仍未创建。
+V2 已创建兼容适配层、Monitor Domain Pack 和 Product Pack/Ledger 的默认关闭路径，但默认仍使用 V1 数据与自研 ReAct；当前 LangGraph 只是显式启用、复用完整 V1 工作流的外壳，不能冒充已完成逐节点迁移或线上性能提升。真实 Product Pack Chroma 建库、Source Search/Web Extractor、GraphRAG、Neo4j 和第二品类仍未创建。
 
 ## 维护检查清单
 
@@ -424,5 +450,8 @@ V2 已创建兼容适配层，但默认仍为自研 ReAct；当前 LangGraph 只
 - [V2-1D Domain Pack 报告](../v2/v2_1d_domain_pack_report.md)
 - [V2-1D 运行说明](../v2/v2_1d_runtime.md)
 - [ADR-0009](../adr/0009-domain-contracts-and-monitor-pack.md)
+- [V2-2 Product Pack 报告](../v2/v2_2_product_pack_report.md)
+- [V2-2 运行说明](../v2/v2_2_runtime.md)
+- [ADR-0010](../adr/0010-versioned-product-pack-and-evidence-ledger.md)
 - [FINAL 开发交接文档](../archive/FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](../setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md)

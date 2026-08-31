@@ -16,11 +16,14 @@
 - [V2-1D 通用契约与 Monitor Domain Pack 报告](v2_1d_domain_pack_report.md)
 - [V2-1D Domain Pack 运行说明](v2_1d_runtime.md)
 - [ADR-0009：通用契约与 Monitor Pack](../adr/0009-domain-contracts-and-monitor-pack.md)
+- [V2-2 Product Pack 与 Evidence Ledger 报告](v2_2_product_pack_report.md)
+- [V2-2 Product Pack 运行说明](v2_2_runtime.md)
+- [ADR-0010：版本化 Product Pack 与字段级 Evidence Ledger](../adr/0010-versioned-product-pack-and-evidence-ledger.md)
 
 ## 当前状态
 
 - V1 已冻结在 `v1.0.0-portfolio`；`feature/proofpick-v2` 已从同一 V1 Commit 创建并推送。
-- V2-1D 已通过适配层落地通用契约、严格 Domain Pack Loader 与 Monitor Pack；该路径默认关闭，V1 行为与冻结数据不变。
+- V2-2 已落地严格 Product Pack、字段级 Evidence Ledger、仓库外 staging/publish/rollback 和第 13 个显示器离线工具链验证；Product Pack 路径默认关闭，V1 冻结数据与历史结果不变。
 - V1 自研 ReAct 仍是默认编排器；LangGraph 只可显式开启，尚不具备切换默认值的条件。
-- Product Pack 导入、Evidence Ledger、第二品类和真实 Web Search 均未开始。
+- 真实 Product Pack Chroma 构建、第二品类和 Source Search/Web Extractor 均未开始；本阶段云端调用与成本为 0。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

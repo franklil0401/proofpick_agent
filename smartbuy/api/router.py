@@ -34,6 +34,11 @@ from smartbuy.orchestration.checkpoints import SqliteCheckpointBackend
 from smartbuy.orchestration.contracts import Orchestrator
 from smartbuy.orchestration.langgraph_adapter import LangGraphOrchestrator
 from smartbuy.providers import BailianProvider
+from smartbuy.product_packs import (
+    ProductPackRuntimeSettings,
+    ProductPackValidationError,
+    resolve_product_snapshot,
+)
 from smartbuy.retrieval.knowledge_base import DEFAULT_INDEX_DIR
 from smartbuy.tools import EvidenceCheckTool, KBSearchTool, Text2SQLTool, WebSearchTool
 
@@ -72,14 +77,53 @@ def get_smartbuy_agent() -> PurchaseDecisionAgent:
     if _agent is None:
         settings = load_bailian_settings()
         provider = BailianProvider(settings, ledger=UsageLedger(), timeout_seconds=30.0)
-        database_path = Path(os.getenv("SMARTBUY_DB_PATH", str(DEFAULT_OUTPUT)))
-        index_path = Path(os.getenv("SMARTBUY_INDEX_PATH", str(DEFAULT_INDEX_DIR)))
+        try:
+            product_pack_settings = ProductPackRuntimeSettings.from_environment()
+            published = resolve_product_snapshot(product_pack_settings)
+        except (ProductPackValidationError, ValueError) as exc:
+            agent_monitor.record_orchestration_event(
+                {
+                    "type": "product_pack_failed",
+                    "status": "initialization_fail_closed",
+                    "reason": type(exc).__name__,
+                }
+            )
+            raise
+        if published:
+            agent_monitor.record_orchestration_event(
+                {
+                    "type": "product_pack_selected",
+                    "status": "validated",
+                    "data_version": published.data_version,
+                    "manifest_hash": published.manifest_hash,
+                }
+            )
+        if published:
+            # A published Product Pack is one immutable snapshot. Allowing legacy
+            # path overrides here could mix a V1 database with V2 evidence/indexes.
+            database_path = published.database_path
+            index_path = published.index_dir
+        else:
+            database_path = Path(os.getenv("SMARTBUY_DB_PATH", str(DEFAULT_OUTPUT)))
+            index_path = Path(os.getenv("SMARTBUY_INDEX_PATH", str(DEFAULT_INDEX_DIR)))
         memory_path = Path(
             os.getenv("SMARTBUY_MEMORY_PATH", "C:/ai/smartbuy-stage4/preferences.json")
         )
+        kb_search = (
+            KBSearchTool(
+                settings,
+                provider,
+                index_dir=index_path,
+                evidence_path=published.evidence_path,
+                sources_path=published.sources_path,
+                collection_name=published.collection_name,
+            )
+            if published
+            else KBSearchTool(settings, provider, index_dir=index_path)
+        )
         tools = {
             "text2sql": Text2SQLTool(database_path),
-            "kb_search": KBSearchTool(settings, provider, index_dir=index_path),
+            "kb_search": kb_search,
             "evidence_check": EvidenceCheckTool(database_path),
             "web_search": WebSearchTool(),
         }
@@ -178,7 +222,7 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
         elif event["type"].startswith(
             (
                 "orchestrator_", "graph_", "checkpoint_", "interrupt_",
-                "checker_terminal_", "domain_pack_",
+                "checker_terminal_", "domain_pack_", "product_pack_",
             )
         ):
             await queue.put(event)

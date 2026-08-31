@@ -5,7 +5,10 @@
   "display_name": "Monitor / 显示器",
   "contract_versions": ["proofpick-domain-contract-v1"],
   "compatible_loader_versions": ["1.0.0"],
-  "data_versions": ["monitor-cn-2026-08-26-v1"],
+  "data_versions": [
+    "monitor-cn-2026-08-26-v1",
+    "monitor-multi-region-2026-08-31-v2"
+  ],
   "files": {
     "fields": "fields.json",
     "policies": "policies.json"

@@ -32,6 +32,7 @@ class KBSearchTool:
         result_top_k: int = 8,
         evidence_path: Path | str = DEFAULT_EVIDENCE_PATH,
         sources_path: Path | str = DEFAULT_SOURCES_PATH,
+        collection_name: str = INDEX_CONTRACT["collection_name"],
     ) -> None:
         self.settings = settings
         self.provider = provider
@@ -41,6 +42,7 @@ class KBSearchTool:
         self.result_top_k = result_top_k
         self.evidence_path = Path(evidence_path)
         self.sources_path = Path(sources_path)
+        self.collection_name = collection_name
         self._evidence_index: dict[tuple[str, str], list[dict[str, Any]]] | None = None
 
     @property
@@ -72,7 +74,7 @@ class KBSearchTool:
 
             return ChromaVectorStore(
                 VectorStoreConfig(
-                    collection_name=INDEX_CONTRACT["collection_name"],
+                    collection_name=self.collection_name,
                     persist_directory=str(self.index_dir.resolve()),
                     distance_metric="cosine",
                 )
