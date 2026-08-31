@@ -10,10 +10,14 @@
 - [V2-1B LangGraph PoC 计划](v2_1_langgraph_poc_plan.md)
 - [V2-1B LangGraph PoC 报告](v2_1_langgraph_poc_report.md)
 - [ADR-0007：LangGraph 编排决策](../adr/0007-langgraph-orchestration-decision.md)
+- [V2-1C 编排兼容适配报告](v2_1c_compatibility_report.md)
+- [V2-1C 本地运行说明](v2_1c_runtime.md)
+- [ADR-0008：兼容适配与 Checkpoint](../adr/0008-langgraph-compatibility-and-checkpointing.md)
 
 ## 当前状态
 
 - V1 已冻结在 `v1.0.0-portfolio`；`feature/proofpick-v2` 已从同一 V1 Commit 创建并推送。
-- V2-1B 隔离 LangGraph PoC 已通过，ADR 建议采用 LangGraph；PoC 尚未接入任何生产入口。
-- V1 自研 ReAct 仍是唯一生产编排器；V2-1C、Domain Pack 和其他业务开发均未开始。
+- V2-1C 已建立统一编排契约、显式开关、仓库外 SQLite Checkpoint 与 Checker 强制终态。
+- V1 自研 ReAct 仍是默认编排器；LangGraph 只可显式开启，尚不具备切换默认值的条件。
+- Domain Pack、Product Pack、真实 Web Search 和其他业务开发均未开始。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

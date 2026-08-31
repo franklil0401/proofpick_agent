@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-1B 隔离 LangGraph PoC 已完成并建议采用；尚未迁移生产编排器或开始 Domain Pack** |
+| 当前状态 | **V2-1C 兼容适配与显式开关已完成；默认仍为 ReAct，尚未开始 Domain Pack** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-08-31 |
 
@@ -899,4 +899,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-1B 隔离 LangGraph PoC 已完成，决策见 [ADR-0007](../adr/0007-langgraph-orchestration-decision.md)。PoC 通过不自动授权 V2-1C；在用户再次确认前，不得迁移生产编排器、开始 Domain Pack/Product Pack、Web Search、新数据或其他 V2 业务开发。
+V2-1C 兼容适配已完成，决策与边界见 [ADR-0008](../adr/0008-langgraph-compatibility-and-checkpointing.md)。默认编排器仍为 ReAct；在用户再次确认前，不得把 LangGraph 切为默认值、逐节点迁移生产工作流、开始 Domain Pack/Product Pack、Web Search、新数据或其他 V2 业务开发。

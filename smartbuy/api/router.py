@@ -17,6 +17,15 @@ from smartbuy.config import load_bailian_settings
 from smartbuy.db.build_database import DEFAULT_OUTPUT
 from smartbuy.memory import LongTermPreferenceStore
 from smartbuy.observability import UsageLedger, agent_monitor
+from smartbuy.orchestration import (
+    OrchestratorRequest,
+    OrchestrationStatus,
+    OrchestratorSelector,
+    OrchestratorSettings,
+    ReactOrchestrator,
+)
+from smartbuy.orchestration.checkpoints import SqliteCheckpointBackend
+from smartbuy.orchestration.langgraph_adapter import LangGraphOrchestrator
 from smartbuy.providers import BailianProvider
 from smartbuy.retrieval.knowledge_base import DEFAULT_INDEX_DIR
 from smartbuy.tools import EvidenceCheckTool, KBSearchTool, Text2SQLTool, WebSearchTool
@@ -24,6 +33,8 @@ from smartbuy.tools import EvidenceCheckTool, KBSearchTool, Text2SQLTool, WebSea
 
 router = APIRouter(prefix="/api/smartbuy", tags=["SmartBuy"])
 _agent: PurchaseDecisionAgent | None = None
+_orchestrator: OrchestratorSelector | None = None
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
 class SmartBuyChatRequest(BaseModel):
@@ -31,6 +42,8 @@ class SmartBuyChatRequest(BaseModel):
     stream: bool = True
     session_id: str | None = Field(default=None, max_length=128)
     user_id: str | None = Field(default=None, max_length=128)
+    thread_id: str | None = Field(default=None, max_length=128)
+    resume_value: str | bool | dict[str, Any] | None = None
     use_long_term_memory: bool = False
 
 
@@ -73,8 +86,36 @@ def get_smartbuy_agent() -> PurchaseDecisionAgent:
 
 def set_smartbuy_agent(agent: PurchaseDecisionAgent | None) -> None:
     """Test seam; production uses the lazy process singleton."""
-    global _agent
+    global _agent, _orchestrator
     _agent = agent
+    _orchestrator = None
+
+
+def get_smartbuy_orchestrator() -> OrchestratorSelector:
+    global _orchestrator
+    if _orchestrator is None:
+        settings = OrchestratorSettings.from_environment()
+        agent = get_smartbuy_agent()
+
+        def langgraph_factory() -> LangGraphOrchestrator:
+            backend = SqliteCheckpointBackend(
+                settings.checkpoint_path,
+                repository_root=PROJECT_ROOT,
+            )
+            return LangGraphOrchestrator(agent, backend)
+
+        _orchestrator = OrchestratorSelector(
+            ReactOrchestrator(agent),
+            langgraph_factory,
+            settings,
+        )
+    return _orchestrator
+
+
+def set_smartbuy_orchestrator(orchestrator: OrchestratorSelector | None) -> None:
+    """Test seam for the V2 compatibility layer."""
+    global _orchestrator
+    _orchestrator = orchestrator
 
 
 def _sse(event: dict[str, Any]) -> str:
@@ -106,14 +147,22 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
             await queue.put(event)
         elif event["type"] == "constraint_check_completed":
             await queue.put(event)
+        elif event["type"].startswith(
+            ("orchestrator_", "graph_", "checkpoint_", "interrupt_", "checker_terminal_")
+        ):
+            await queue.put(event)
 
     async def execute() -> Any:
         try:
-            return await get_smartbuy_agent().run(
-                request.query,
-                session_id=request.session_id,
-                user_id=request.user_id,
-                use_long_term_memory=request.use_long_term_memory,
+            return await get_smartbuy_orchestrator().run(
+                OrchestratorRequest(
+                    query=request.query,
+                    session_id=request.session_id,
+                    user_id=request.user_id,
+                    thread_id=request.thread_id,
+                    resume_value=request.resume_value,
+                    use_long_term_memory=request.use_long_term_memory,
+                ),
                 event_callback=callback,
             )
         except Exception:
@@ -127,11 +176,28 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
         except TimeoutError:
             continue
         yield _sse(event)
-    report = await task
-    if report is None:
+    result = await task
+    if result is None:
         yield _sse({"type": "error", "error": "SmartBuy Agent 未完成；敏感错误细节已隐藏。"})
+    elif result.status == OrchestrationStatus.INTERRUPTED:
+        yield _sse(
+            {
+                "type": "done",
+                "status": "interrupted",
+                "thread_id": result.thread_id,
+                "interrupt": result.interrupt,
+            }
+        )
     else:
-        yield _sse({"type": "done", "final_output": report.to_markdown(), "report": report.model_dump(mode="json")})
+        report = result.report
+        assert report is not None
+        yield _sse(
+            {
+                "type": "done",
+                "final_output": report.to_markdown(),
+                "report": report.model_dump(mode="json"),
+            }
+        )
     yield "data: [DONE]\n\n"
 
 
@@ -140,14 +206,26 @@ async def chat(request: SmartBuyChatRequest):
     if request.stream:
         return StreamingResponse(_stream(request), media_type="text/event-stream")
     try:
-        report = await get_smartbuy_agent().run(
-            request.query,
-            session_id=request.session_id,
-            user_id=request.user_id,
-            use_long_term_memory=request.use_long_term_memory,
+        result = await get_smartbuy_orchestrator().run(
+            OrchestratorRequest(
+                query=request.query,
+                session_id=request.session_id,
+                user_id=request.user_id,
+                thread_id=request.thread_id,
+                resume_value=request.resume_value,
+                use_long_term_memory=request.use_long_term_memory,
+            )
         )
     except Exception:
         raise HTTPException(status_code=503, detail="SmartBuy Agent unavailable; sensitive details suppressed") from None
+    if result.status == OrchestrationStatus.INTERRUPTED:
+        return {
+            "status": "interrupted",
+            "thread_id": result.thread_id,
+            "interrupt": result.interrupt,
+        }
+    report = result.report
+    assert report is not None
     return {"report": report.model_dump(mode="json"), "markdown": report.to_markdown()}
 
 

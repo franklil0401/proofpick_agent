@@ -1,6 +1,6 @@
 # 第三方软件声明
 
-最后更新：2026-08-27（阶段 5）
+最后更新：2026-08-31（V2-1C）
 
 ## Youtu-RAG
 
@@ -75,6 +75,17 @@ Youtu-RAG 的版权归原权利人所有。本项目根目录 [LICENSE](LICENSE)
 | `vendor/youtu-rag/utu/rag/api/routes/monitor.py` | 在既有 Monitor 面板显示 Checker 运行数、降级数和平均延迟，数据来自脱敏有界摘要 |
 
 设计与验证见 [ADR-0005](smartbuy/docs/adr/0005-deterministic-constraint-gate.md) 和[阶段 5 技术报告](smartbuy/docs/stage5_constraint_verification_report.md)。上游更新时需逐项复核这两个展示补丁；不得把业务约束规则迁入供应商目录。
+
+### 本项目对供应商目录的 V2-1C 修改
+
+V2-1C 的适配器、Checkpoint 安全和测试均位于 `smartbuy/`；供应商业务源码未修改。为使用 LangGraph 官方 SQLite Checkpointer，只更新供应商依赖清单和锁文件：
+
+| 文件 | 变更原因 |
+|---|---|
+| `vendor/youtu-rag/pyproject.toml` | 将已有 LangGraph 固定为已验证的 `1.0.5`，增加兼容的 `langgraph-checkpoint-sqlite>=3.0.1,<4` |
+| `vendor/youtu-rag/uv.lock` | 锁定 `langgraph-checkpoint-sqlite==3.0.3` 及其解析依赖 `sqlite-vec==0.1.9` |
+
+设计、序列化边界和非生产 SQLite 限制见 [ADR-0008](smartbuy/docs/adr/0008-langgraph-compatibility-and-checkpointing.md)。
 
 ## 本地开发依赖
 

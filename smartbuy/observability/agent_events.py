@@ -11,6 +11,7 @@ from typing import Any
 class AgentMonitor:
     def __init__(self, max_runs: int = 50) -> None:
         self._runs: deque[dict[str, Any]] = deque(maxlen=max_runs)
+        self._orchestration_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
         self._lock = Lock()
 
     def record(self, payload: dict[str, Any]) -> None:
@@ -62,9 +63,22 @@ class AgentMonitor:
         with self._lock:
             self._runs.append(allowed)
 
+    def record_orchestration_event(self, payload: dict[str, Any]) -> None:
+        """Store only bounded orchestration metadata, never prompts, IDs or checkpoint keys."""
+        allowed = {
+            "type": str(payload.get("type", ""))[:64],
+            "requested": str(payload.get("requested", ""))[:24],
+            "selected": str(payload.get("selected") or "")[:24] or None,
+            "status": str(payload.get("status", ""))[:40],
+            "reason": str(payload.get("reason") or "")[:80] or None,
+        }
+        with self._lock:
+            self._orchestration_events.append(allowed)
+
     def snapshot(self) -> dict[str, Any]:
         with self._lock:
             runs = deepcopy(list(self._runs))
+            orchestration_events = deepcopy(list(self._orchestration_events))
         latencies = sorted(item["latency_ms"] for item in runs)
         p95_index = max(0, min(len(latencies) - 1, int(len(latencies) * 0.95))) if latencies else 0
         return {
@@ -80,6 +94,7 @@ class AgentMonitor:
                 sum(item["constraint_check_latency_ms"] for item in runs) / len(runs), 3
             ) if runs else 0.0,
             "recent_runs": runs[-10:],
+            "recent_orchestration_events": orchestration_events[-20:],
         }
 
 
