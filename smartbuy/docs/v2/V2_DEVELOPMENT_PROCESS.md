@@ -9,9 +9,9 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-2B 真实 Product Pack 索引与 KB Search 已完成收尾验收；默认仍为 V1 数据与 ReAct** |
+| 当前状态 | **V2-3 受控智谱 Source Search 已完成；默认关闭，搜索候选仍与 Evidence/Checker 隔离** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
-| 最后更新 | 2026-08-31 |
+| 最后更新 | 2026-09-01 |
 
 关联文档：
 
@@ -442,32 +442,34 @@ feat(v2): add versioned product pack ingestion
 
 ### 11.1 目标
 
-将当前 unavailable Web 工具替换为真实、显式、可审计的来源搜索工具，但暂不让网页结果直接进入推荐。
+在保留 V1 unavailable Web 工具的同时，增加真实、显式、可审计的来源搜索工具，但不让网页结果直接进入证据或推荐。
 
 ### 11.2 任务
 
-- 实现 `BailianWebSearchProvider`。
-- 复用现有百炼安全配置，不新增硬编码 Key。
-- 使用能返回来源列表和搜索状态的接口路径。
-- 实现 `SourceSearchRequest` 和 `SourceSearchResult`。
+- 实现可插拔 `SourceSearchProvider` 与 `ZhipuSourceSearchProvider`。
+- 使用 `ZhiPu_api_key`，不得输出或持久化值；特性开关默认关闭。
+- 先调用 `search_pro`；无精确地区来源时有界回退 `search_pro_sogou`。
+- 实现 `SourceSearchRequest`、`SourceSearchResult`、`SourceCandidate` 与状态枚举。
 - 支持查询、品类、目标字段、地区、freshness 和站点白名单。
 - 首批只允许 Dell、ASUS、LG、BenQ 官方域名。
-- 记录调用原因、是否真实搜索、URL、标题、域名、延迟、费用和错误。
+- 确定性区分 `region_matched`、`region_mismatch`、`region_unknown`、`model_mismatch`、`domain_rejected` 和 `invalid_url`。
+- 记录调用原因、是否真实搜索、requested/raw/scanned/usable 数量、URL 元数据、延迟、费用和错误。
 - 实现最大搜索次数、RPS、超时、有限重试和 TTL 缓存。
 - 未真实触发搜索时返回明确降级，不使用模型常识补结果。
 
 ### 11.3 实现功能
 
-- Agent 可以显式调用 Source Search。
+- Agent 可以在显式开关下调用 Source Search。
 - 能区分静态充分证据任务和必须联网任务。
-- 搜索结果只进入来源候选列表。
+- `usable_candidates` 只含精确地区来源；其他/未知地区只能进入有界导航列表。
+- 搜索结果只进入来源候选列表，进入 Evidence Ledger 和 Checker 的数量必须为 0。
 - 网络不可用时仍能走 V1 本地主链。
 
 ### 11.4 测试集
 
 至少覆盖：
 
-- 4 个品牌各 2 条官方规格查询。
+- 4 个品牌各 2 条官方规格查询，允许安全返回“没有目标地区来源”。
 - 2 条数据库外型号查询。
 - 2 条不应联网的稳定规格查询。
 - 401、403、429、5xx、超时、空结果和搜索未触发。
@@ -477,8 +479,11 @@ feat(v2): add versioned product pack ingestion
 ### 11.5 验收指标
 
 - 强制联网用例真实搜索检测 100%。
-- 返回结果中的 URL、域名和搜索时间完整率 100%。
+- 8 条任务状态判断正确 8/8：6 条 `region_matched`，2 条 `no_region_matched_source`。
+- 精确地区页面覆盖率如实报告为 6/8，禁止包装为 8/8。
+- 返回可用结果中的 URL、域名和搜索时间完整率 100%。
 - 站点白名单违规来源进入可用结果 0。
+- 错误地区、地区 unknown 和错误型号进入可用结果均为 0。
 - 静态充分证据任务无效联网率不高于 5%。
 - 401/403 不重试；429/5xx/超时符合有限重试策略。
 - Source Search 结果进入 Checker 的数量为 0。
@@ -488,10 +493,10 @@ feat(v2): add versioned product pack ingestion
 ### 11.6 提交与停止
 
 ```text
-feat(v2): add auditable bailian source search
+feat(v2): add auditable zhipu source search
 ```
 
-推送后报告搜索触发率、来源完整率、错误矩阵、费用和限制，然后停止。
+推送后必须使用以下真实口径：8 条官方来源任务均安全处理，6 条找到目标地区官方页面，2 条明确降级，错误地区误接受为 0。不得写“官方来源搜索准确率 100%”或“官方页面覆盖率 8/8”。
 
 ## 12. V2-4：Web Extractor、临时证据与开放研究模式
 
@@ -899,4 +904,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-2 Product Pack、字段级 Evidence Ledger 及 V2-2B 真实 65-chunk Chroma/KB Search 收尾验收已完成，决策与边界见 [ADR-0010](../adr/0010-versioned-product-pack-and-evidence-ledger.md)，运行证据见 [V2-2 报告](v2_2_product_pack_report.md)。默认编排器仍为 ReAct，Domain/Product Pack 路径仍默认关闭；在用户再次确认前，不得进入 V2-3、实现 Source Search/Web Extractor、调用收费搜索、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。
+V2-3 受控智谱 Source Search 已完成，决策见 [ADR-0011](../adr/0011-auditable-zhipu-source-search.md)，运行和验证证据见 [V2-3 报告](v2_3_source_search_report.md)与[运行说明](v2_3_runtime.md)。默认编排器仍为 ReAct，Domain/Product Pack 和 Source Search 均默认关闭；Source Candidate 不能进入 Evidence/Checker。在用户再次确认前，不得进入 V2-4、实现网页提取或 Evidence Promotion、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。

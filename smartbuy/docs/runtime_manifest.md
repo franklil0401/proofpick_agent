@@ -1,8 +1,8 @@
 # ProofPick Runtime Manifest（SmartBuy 显示器场景）
 
-最后更新：2026-08-31
-当前阶段：V1 已冻结；V2-2 Product Pack 与字段级 Evidence Ledger 离线验收完成，V2 数据路径默认关闭
-运行范围：V1 Windows 11 原生 Youtu-RAG + 百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界 Agent + 确定性 Checker；V2 opt-in 编排/Domain/Product Pack 兼容层
+最后更新：2026-09-01
+当前阶段：V1 已冻结；V2-3 受控智谱 Source Search 已完成，默认关闭且不进入 Evidence/Checker
+运行范围：V1 Windows 11 原生 Youtu-RAG + 百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界 Agent + 确定性 Checker；V2 opt-in 编排/Domain/Product Pack/Source Search 兼容层
 
 ## 代码与纳入方式
 
@@ -17,7 +17,7 @@
 | 上游许可证 | MIT，见 `vendor/youtu-rag/LICENSE` |
 | `uv.lock` SHA-256 | `726A4CC25B64C0B0C98DBADB51218F86433C7C424B52D40C88FE0910B1BFB659` |
 
-详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，Agent/Memory 决策见 [ADR-0004](adr/0004-bounded-react-evidence-and-memory.md)，确定性安全门见 [ADR-0005](adr/0005-deterministic-constraint-gate.md)，评测/缓存/韧性决策见 [ADR-0006](adr/0006-reproducible-evaluation-cache-and-resilience.md)，V2 编排决策见 [ADR-0007](adr/0007-langgraph-orchestration-decision.md)与 [ADR-0008](adr/0008-langgraph-compatibility-and-checkpointing.md)，Domain Pack 决策见 [ADR-0009](adr/0009-domain-contracts-and-monitor-pack.md)，Product Pack/Ledger 决策见 [ADR-0010](adr/0010-versioned-product-pack-and-evidence-ledger.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
+详细纳入方式见 [ADR-0001](adr/0001-vendor-youtu-rag.md)，Provider/索引决策见 [ADR-0002](adr/0002-bailian-provider-and-index-contract.md)，数据和索引版本见 [ADR-0003](adr/0003-governed-monitor-data-and-index.md)，Agent/Memory 决策见 [ADR-0004](adr/0004-bounded-react-evidence-and-memory.md)，确定性安全门见 [ADR-0005](adr/0005-deterministic-constraint-gate.md)，评测/缓存/韧性决策见 [ADR-0006](adr/0006-reproducible-evaluation-cache-and-resilience.md)，V2 编排决策见 [ADR-0007](adr/0007-langgraph-orchestration-decision.md)与 [ADR-0008](adr/0008-langgraph-compatibility-and-checkpointing.md)，Domain Pack 决策见 [ADR-0009](adr/0009-domain-contracts-and-monitor-pack.md)，Product Pack/Ledger 决策见 [ADR-0010](adr/0010-versioned-product-pack-and-evidence-ledger.md)，Source Search 决策见 [ADR-0011](adr/0011-auditable-zhipu-source-search.md)，供应商差异见根目录 [THIRD_PARTY_NOTICES.md](../../THIRD_PARTY_NOTICES.md)。
 
 ## 主机与关键版本
 
@@ -62,6 +62,7 @@
 | Reranker | `qwen3-rerank`，完整 `/compatible-api/v1/reranks` | 独立排序与 Youtu 二阶段排序均通过；失败可显式降级 |
 | OCR / HiChunk | 关闭 | 阶段 2 文本夹具不需要 |
 | Web Search | 未配置 | 不阻塞；默认基础 Agent 不加载 Serper |
+| V2 Source Search | 智谱 `search_pro` → `search_pro_sogou`；默认关闭 | 只发现官方 URL；6/8 精确地区命中，2/8 安全降级；不进入 Evidence/Checker |
 | SmartBuy Agent | qwen-plus Tool Calling；8 steps / 12 tool calls | KB/SQL/Evidence/Memory/报告通过；Web 只验证 unavailable 降级 |
 | Constraint Checker | `smartbuy-constraint-checker-v1`；只读 SQLite/evidence | 完整候选池、来源门禁、四态、边界、fail-closed 和重复执行通过；0 API 调用 |
 | Stage 6 Eval | qwen-plus，temperature=0，max output=800；固定数据/索引/as_of | A/B/C/D 相同 40 条自然任务，各 3 次；配置和数据哈希已冻结 |
@@ -69,7 +70,7 @@
 | Eval Ledger | `smartbuy-eval-ledger-v1` | 记录运行、步骤、Token、成本、延迟、重试、命中和降级；禁止 Prompt、Key、Authorization 和思维链 |
 | 本地模型 | 关闭 | 不作为主要在线链路 |
 
-配置只从当前进程继承的 `Qianwen_api_key` 和 `Qianwen_workspace_id` 读取。启动脚本将其映射为子进程 `UTU_*`，不读取 Windows 注册表、不写 `.env`、不输出值。轮换 Key 后必须重启所有长运行进程。
+百炼配置只从当前进程继承的 `Qianwen_api_key` 和 `Qianwen_workspace_id` 读取。V2 Source Search 仅在 `PROOFPICK_SOURCE_SEARCH_ENABLED=true` 时读取 `ZhiPu_api_key`；默认关闭时不读取该 Key。启动脚本不读取 Windows 注册表、不写 `.env`、不输出任何值。轮换 Key 后必须重启所有长运行进程。
 
 ## 服务与知识库结果
 
@@ -142,9 +143,18 @@ V2-1C ～ V2-2 兼容层：
 - 历史 V1/V2-1C 的 95/120 是 CI 等价范围；`smartbuy/tests` 对应为 94/119，唯一差异是显式加入的上游配置安全 node，不存在实际测试缺失。详见 [V2-2 报告](v2/v2_2_product_pack_report.md)。
 - 本地导入、发布、回滚和安全边界见 [V2-2 运行说明](v2/v2_2_runtime.md)。
 
+V2-3 受控 Source Search：
+
+- `PROOFPICK_SOURCE_SEARCH_ENABLED` 默认 `false`；关闭后不注册新工具，V1 `web_search` unavailable 和 KB + SQL 主链保持不变。
+- `SourceSearchProvider` 当前只实现智谱；百炼/智谱/博查只读预选覆盖分别为 4/8、6/8、1/8，三家组合 7/8，未实现 Composite Provider。
+- 最终精确站点复测：`search_pro` 直接 4/8、搜狗恢复 2 条，总计 6/8；另 2/2 返回 `no_region_matched_source`。错误地区、unknown、白名单外和错误型号进入 usable 均为 0。
+- Source Candidate 固定不能进入 Evidence Ledger 或 Checker。V2-3 不抓网页正文，不核验页面规格，不提供实时价格或库存。
+- 最终复测 12 次调用、估算 ¥0.44、平均 1,780.551ms、小样本 P95 4,337.367ms；首次根域过滤 4/8、14 次/¥0.54 原样保留。详见 [V2-3 报告](v2/v2_3_source_search_report.md)。
+
 ## 测试与成本
 
 - V2-2B 最终自动化：`smartbuy/tests` 177/177，加入上游配置安全测试后的 CI 等价套件 178/178；Product Pack/实时索引定向套件 23/23。Ruff、Compileall、JavaScript 12/12、PowerShell AST 5/5 和 Markdown 262/262 通过，详见 [V2-2 报告](v2/v2_2_product_pack_report.md)。
+- V2-3 定向离线套件 24/24；`smartbuy/tests` 201/201，加入上游安全 node 的 CI 等价套件 202/202；Ruff、Compileall、JavaScript 12/12、PowerShell 5/5、Markdown 277/277 和安全门通过。真实收尾两次合计估算 ¥0.98；含此前授权的三 Provider 只读诊断，已知估算仍低于 ¥2 阶段上限。详见 [V2-3 报告](v2/v2_3_source_search_report.md)。
 - 独立三模型最终验证：5 次调用、398 input + 31 output tokens，估算 0.0003243 元。
 - 最终 Youtu 建库/查询：Embedding 130 input tokens，估算 0.000065 元；Reranker 160 input tokens，估算 0.000080 元。
 - Youtu Agent 内部 LLM Token 尚未完整进入自研账本，精确阶段总成本记为未知；调用均为有界小样本，远低于 5 元阶段上限。
@@ -192,4 +202,4 @@ V2-1C ～ V2-2 兼容层：
 - 阶段 1/2 夹具知识库仍只有一个自制文档和 2 chunks；阶段 3 正式知识库另有 12 个型号和 60 chunks。
 - 阶段 6 已完成完整四组对照、核心组三次重复、统一账本、缓存和故障注入；holdout 首次增强组仍有 9/24 未完成，主要边界是证据覆盖与上游 LLM 路由/结构化输出稳定性。
 - 上游供应商目录存在既有 lint 债务，本阶段只保证自研代码及三类核心 Provider 文件通过；不做无关批量格式化。
-- Web Search 真实调用仍未实现；当前 Web 仅有 unavailable 降级接口。首批约束词表有意收窄，unsupported/ambiguous 会 fail closed。
+- V1 动态 Web Search 仍是 unavailable 降级接口；V2 Source Search 只发现官方 URL，默认关闭，尚无网页正文抽取、Evidence Promotion 或实时价格/库存。首批约束词表有意收窄，unsupported/ambiguous 会 fail closed。

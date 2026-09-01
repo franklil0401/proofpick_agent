@@ -12,6 +12,7 @@ class AgentMonitor:
     def __init__(self, max_runs: int = 50) -> None:
         self._runs: deque[dict[str, Any]] = deque(maxlen=max_runs)
         self._orchestration_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
+        self._source_search_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
         self._lock = Lock()
 
     def record(self, payload: dict[str, Any]) -> None:
@@ -75,10 +76,31 @@ class AgentMonitor:
         with self._lock:
             self._orchestration_events.append(allowed)
 
+    def record_source_search_event(self, payload: dict[str, Any]) -> None:
+        """Record bounded counts/status only; queries, URLs and request IDs are excluded."""
+        allowed = {
+            "type": str(payload.get("type", ""))[:64],
+            "provider": str(payload.get("provider", ""))[:32],
+            "status": str(payload.get("status", ""))[:40],
+            "search_executed": bool(payload.get("search_executed", False)),
+            "requested_count": int(payload.get("requested_count", 0)),
+            "raw_result_count": int(payload.get("raw_result_count", 0)),
+            "scanned_result_count": int(payload.get("scanned_result_count", 0)),
+            "usable_result_count": int(payload.get("usable_result_count", 0)),
+            "navigation_result_count": int(payload.get("navigation_result_count", 0)),
+            "cache_status": str(payload.get("cache_status", ""))[:20],
+            "degraded": bool(payload.get("degraded", False)),
+            "estimated_cost_cny": float(payload.get("estimated_cost_cny", 0.0)),
+            "error_category": str(payload.get("error_category") or "")[:64] or None,
+        }
+        with self._lock:
+            self._source_search_events.append(allowed)
+
     def snapshot(self) -> dict[str, Any]:
         with self._lock:
             runs = deepcopy(list(self._runs))
             orchestration_events = deepcopy(list(self._orchestration_events))
+            source_search_events = deepcopy(list(self._source_search_events))
         latencies = sorted(item["latency_ms"] for item in runs)
         p95_index = max(0, min(len(latencies) - 1, int(len(latencies) * 0.95))) if latencies else 0
         return {
@@ -95,6 +117,7 @@ class AgentMonitor:
             ) if runs else 0.0,
             "recent_runs": runs[-10:],
             "recent_orchestration_events": orchestration_events[-20:],
+            "recent_source_search_events": source_search_events[-20:],
         }
 
 

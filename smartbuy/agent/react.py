@@ -165,6 +165,12 @@ class PurchaseDecisionAgent:
             safe["query_summary"] = str(arguments.get("query", ""))[:160]
             safe["model_ids"] = list(arguments.get("model_ids", []))[:10]
             safe["required_fields"] = list(arguments.get("required_fields", []))[:15]
+        elif name == "source_search":
+            safe["target_model"] = str(arguments.get("target_model", ""))[:100]
+            safe["target_fields"] = list(arguments.get("target_fields", []))[:15]
+            safe["region"] = str(arguments.get("region", ""))[:8]
+            safe["allowed_domains"] = list(arguments.get("allowed_domains", []))[:10]
+            safe["trigger_reason"] = str(arguments.get("trigger_reason", ""))[:40]
         elif name == "evidence_check":
             safe["model_ids"] = list(arguments.get("model_ids", []))[:10]
             safe["required_fields"] = list(arguments.get("required_fields", []))[:15]
@@ -432,6 +438,18 @@ class PurchaseDecisionAgent:
             return ToolResult(
                 tool=name, status="failed", error_code="TOOL_NOT_ALLOWED", summary="工具不在白名单中。",
             )
+        if name == "source_search":
+            source_limit = int(
+                getattr(getattr(tool, "settings", None), "max_tool_invocations_per_task", 2)
+            )
+            prior_source_calls = sum(trace.tool == "source_search" for trace in state.traces)
+            if prior_source_calls >= source_limit:
+                return ToolResult(
+                    tool=name,
+                    status="failed",
+                    error_code="SOURCE_SEARCH_TASK_BUDGET_EXHAUSTED",
+                    summary="已达到单任务 Source Search 次数上限，未继续联网。",
+                )
         observed = [
             trace.tool for trace in state.traces if trace.status in {"success", "degraded", "unavailable"}
         ]
@@ -543,6 +561,15 @@ class PurchaseDecisionAgent:
             arguments["constraints"] = [
                 item.model_dump(mode="json") for item in eligibility_constraints
             ]
+        elif name == "source_search":
+            required = set(arguments.get("target_fields") or [])
+            locally_bound = {item.field for item in state.kb_hits if item.field}
+            arguments["_local_evidence_checked"] = bool(
+                {"kb_search", "evidence_check"} & set(observed)
+            )
+            arguments["_local_evidence_sufficient"] = bool(
+                required and required.issubset(locally_bound)
+            )
         if name in {"kb_search", "evidence_check"} and hard_flow and state.candidate_pool_rows:
             arguments["model_ids"] = list(state.candidate_pool_rows)[:10]
         try:
@@ -703,6 +730,8 @@ class PurchaseDecisionAgent:
             return "根据四态结果补查 unknown/conflict，或明确结束/拒答。"
         if name == "web_search":
             return "Web 不可用，回到 KB + SQL 稳定链路。"
+        if name == "source_search":
+            return "只把 URL 元数据保留为来源候选；不得转成 Evidence 或 Checker 输入。"
         return "停止并生成经过 Schema 校验的报告。"
 
     async def run(
@@ -726,6 +755,11 @@ class PurchaseDecisionAgent:
             "confirmed_preferences": preferences,
         }
         system_prompt = SYSTEM_PROMPT
+        if "source_search" in self.tools:
+            system_prompt += (
+                "11. source_search 只用于用户明确要求、目录外型号、动态来源发现，或本地取证后仍缺字段；"
+                "返回项只是 Source Candidate，不能当成规格事实、Evidence 或 Checker 输入。\n"
+            )
         if not self.enable_constraint_checker:
             system_prompt = system_prompt.replace(
                 "10. finish_decision 后系统仍会对完整工具候选池强制运行 Constraint Checker；你不能跳过、覆盖或修改其结果。",
@@ -783,6 +817,22 @@ class PurchaseDecisionAgent:
                         summary="工具参数不是有效 JSON 对象。",
                     )
                 else:
+                    if name == "source_search":
+                        raw_requested_count = arguments.get("max_results", 10)
+                        started_event = {
+                            "type": "source_search_started",
+                            "provider": "zhipu",
+                            "status": "started",
+                            "search_executed": False,
+                            "requested_count": (
+                                raw_requested_count
+                                if isinstance(raw_requested_count, int)
+                                and not isinstance(raw_requested_count, bool)
+                                else 0
+                            ),
+                        }
+                        agent_monitor.record_source_search_event(started_event)
+                        await self._emit(event_callback, started_event)
                     result = await self._invoke_tool(
                         name,
                         arguments,
@@ -791,6 +841,27 @@ class PurchaseDecisionAgent:
                         previous_constraints,
                         preferences,
                     )
+                if name == "source_search":
+                    source_data = result.data
+                    completed_event = {
+                        "type": "source_search_completed",
+                        "provider": str(source_data.get("provider", "zhipu"))[:32],
+                        "status": str(source_data.get("status", result.status))[:40],
+                        "search_executed": bool(source_data.get("search_executed", False)),
+                        "requested_count": int(source_data.get("requested_count", 0) or 0),
+                        "raw_result_count": int(source_data.get("raw_result_count", 0) or 0),
+                        "scanned_result_count": int(source_data.get("scanned_result_count", 0) or 0),
+                        "usable_result_count": int(source_data.get("usable_result_count", 0) or 0),
+                        "navigation_result_count": len(source_data.get("navigation_candidates", [])),
+                        "cache_status": str(source_data.get("cache_status", ""))[:20],
+                        "degraded": bool(result.degraded),
+                        "estimated_cost_cny": float(
+                            source_data.get("estimated_cost_cny", 0.0) or 0.0
+                        ),
+                        "error_category": result.error_code,
+                    }
+                    agent_monitor.record_source_search_event(completed_event)
+                    await self._emit(event_callback, completed_event)
                 state.tool_call_count += 1
                 parent_step = arguments.get("parent_step") if isinstance(arguments.get("parent_step"), int) else None
                 if name == "kb_search":

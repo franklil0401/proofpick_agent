@@ -8,6 +8,13 @@ from .bailian import (
     BailianResponseError,
     RetryPolicy,
 )
+from .zhipu_search import (
+    ZhipuSourceSearchAuthError,
+    ZhipuSourceSearchError,
+    ZhipuSourceSearchHTTPError,
+    ZhipuSourceSearchProvider,
+    ZhipuSourceSearchResponseError,
+)
 
 __all__ = [
     "BailianAuthError",
@@ -16,4 +23,9 @@ __all__ = [
     "BailianProvider",
     "BailianResponseError",
     "RetryPolicy",
+    "ZhipuSourceSearchAuthError",
+    "ZhipuSourceSearchError",
+    "ZhipuSourceSearchHTTPError",
+    "ZhipuSourceSearchProvider",
+    "ZhipuSourceSearchResponseError",
 ]

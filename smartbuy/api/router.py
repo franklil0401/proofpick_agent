@@ -33,14 +33,21 @@ from smartbuy.orchestration import (
 from smartbuy.orchestration.checkpoints import SqliteCheckpointBackend
 from smartbuy.orchestration.contracts import Orchestrator
 from smartbuy.orchestration.langgraph_adapter import LangGraphOrchestrator
-from smartbuy.providers import BailianProvider
+from smartbuy.providers import BailianProvider, ZhipuSourceSearchProvider
 from smartbuy.product_packs import (
     ProductPackRuntimeSettings,
     ProductPackValidationError,
     resolve_product_snapshot,
 )
 from smartbuy.retrieval.knowledge_base import DEFAULT_INDEX_DIR
-from smartbuy.tools import EvidenceCheckTool, KBSearchTool, Text2SQLTool, WebSearchTool
+from smartbuy.source_search import SourceSearchSettings
+from smartbuy.tools import (
+    EvidenceCheckTool,
+    KBSearchTool,
+    SourceSearchTool,
+    Text2SQLTool,
+    WebSearchTool,
+)
 
 
 router = APIRouter(prefix="/api/smartbuy", tags=["SmartBuy"])
@@ -127,6 +134,14 @@ def get_smartbuy_agent() -> PurchaseDecisionAgent:
             "evidence_check": EvidenceCheckTool(database_path),
             "web_search": WebSearchTool(),
         }
+        source_settings = SourceSearchSettings.from_environment()
+        if source_settings.enabled:
+            source_provider = (
+                ZhipuSourceSearchProvider(source_settings)
+                if source_settings.api_key
+                else None
+            )
+            tools["source_search"] = SourceSearchTool(source_settings, source_provider)
         _agent = PurchaseDecisionAgent(
             provider,
             tools,
@@ -222,7 +237,7 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
         elif event["type"].startswith(
             (
                 "orchestrator_", "graph_", "checkpoint_", "interrupt_",
-                "checker_terminal_", "domain_pack_", "product_pack_",
+                "checker_terminal_", "domain_pack_", "product_pack_", "source_search_",
             )
         ):
             await queue.put(event)
