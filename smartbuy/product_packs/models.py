@@ -38,10 +38,10 @@ class ProductAttribute(FrozenModel):
 
 
 class ProductInput(FrozenModel):
-    product_id: str = Field(pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*-(?:cn|us|ca|global)$")
+    product_id: str = Field(pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*-(?:[a-z]{2}|global)$")
     brand: str = Field(min_length=1, max_length=100)
     canonical_name: str = Field(min_length=1, max_length=200)
-    market: Literal["CN", "US", "CA", "GLOBAL"]
+    market: str = Field(pattern=r"^(?:[A-Z]{2}|GLOBAL)$")
     variant_key: str = Field(pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
     aliases: list[str] = Field(default_factory=list, max_length=30)
     attributes: dict[str, ProductAttribute]
@@ -75,7 +75,7 @@ class SourceInput(FrozenModel):
     uri: HttpUrl
     publisher: str = Field(min_length=1, max_length=100)
     is_official: bool
-    market: Literal["CN", "US", "CA", "GLOBAL"]
+    market: str = Field(pattern=r"^(?:[A-Z]{2}|GLOBAL)$")
     variant_key: str
     language: str = Field(pattern=r"^[a-z]{2}(?:-[A-Z]{2})?$")
     source_version: str = Field(min_length=1, max_length=100)
@@ -97,7 +97,7 @@ class EvidenceInput(FrozenModel):
     unit: str | None = None
     snippet: str = Field(min_length=1, max_length=500)
     evidence_location: str = Field(min_length=1, max_length=300)
-    market: Literal["CN", "US", "CA", "GLOBAL"]
+    market: str = Field(pattern=r"^(?:[A-Z]{2}|GLOBAL)$")
     variant_key: str
     source_version: str = Field(min_length=1, max_length=100)
     effective_at: str | None = None
@@ -112,7 +112,7 @@ class ObservationInput(FrozenModel):
     product_id: str
     price_cny: float = Field(gt=0)
     seller: str = Field(min_length=1)
-    market: Literal["CN", "US", "CA", "GLOBAL"]
+    market: str = Field(pattern=r"^(?:[A-Z]{2}|GLOBAL)$")
     stock_status: str = Field(min_length=1)
     uri: HttpUrl
     observed_at: str
@@ -124,7 +124,7 @@ class ProductPackDocument(FrozenModel):
     schema_version: Literal[PRODUCT_PACK_SCHEMA_VERSION] = PRODUCT_PACK_SCHEMA_VERSION
     pack_id: str = Field(pattern=r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
     pack_version: str = Field(pattern=r"^\d+\.\d+\.\d+$")
-    domain_id: Literal["monitor"] = "monitor"
+    domain_id: str = Field(pattern=r"^[a-z][a-z0-9_-]*$")
     base_data_version: str
     data_version: str
     created_at: str
@@ -149,7 +149,7 @@ class GovernedEvidenceRecord(FrozenModel):
     unit: str | None = None
     snippet: str = Field(min_length=1, max_length=1_000)
     evidence_location: str
-    market: Literal["CN", "US", "CA", "GLOBAL"]
+    market: str = Field(pattern=r"^(?:[A-Z]{2}|GLOBAL)$")
     variant_key: str
     source_version: str
     effective_at: str | None = None
@@ -176,7 +176,7 @@ class RequestEvidenceRecord(FrozenModel):
     unit: str | None = None
     snippet: str = Field(min_length=1, max_length=500)
     source_uri: HttpUrl
-    market: Literal["CN", "US", "CA", "GLOBAL"]
+    market: str = Field(pattern=r"^(?:[A-Z]{2}|GLOBAL)$")
     variant_key: str | None = None
     source_version: str
     observed_at: str

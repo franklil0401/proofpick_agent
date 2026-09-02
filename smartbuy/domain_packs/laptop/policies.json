@@ -1,0 +1,169 @@
+{
+  "source_priority": {
+    "official_product": 100,
+    "official_support": 95,
+    "official_manual": 90,
+    "professional_review": 60,
+    "public_retail": 40
+  },
+  "checker": {
+    "implementation": "smartbuy.domain_packs.evaluator",
+    "version": "proofpick-domain-evaluator-v1",
+    "fail_closed": true,
+    "unknown_eligible": false,
+    "conflict_eligible": false,
+    "supported_fields": [
+      "product_id", "family_id", "model_name", "brand", "region",
+      "configuration_id", "part_number", "price_cny", "cpu_vendor",
+      "cpu_family", "cpu_model", "gpu_type", "gpu_vendor", "gpu_model",
+      "gpu_vram_gb", "memory_gb", "memory_type", "memory_soldered",
+      "memory_slots", "max_memory_gb", "storage_gb", "storage_type",
+      "storage_slots", "weight_kg", "width_mm", "depth_mm", "height_mm",
+      "battery_wh", "charger_w", "display_size_inch", "resolution",
+      "refresh_rate_hz", "panel_type", "usb_c", "thunderbolt", "usb4",
+      "hdmi", "video_output", "usb_c_charging", "upgradeability",
+      "operating_system", "primary_use"
+    ],
+    "hard_fields": [
+      "product_id", "family_id", "model_name", "brand", "region",
+      "configuration_id", "part_number", "price_cny", "cpu_vendor",
+      "cpu_family", "cpu_model", "gpu_type", "gpu_vendor", "gpu_model",
+      "gpu_vram_gb", "memory_gb", "memory_soldered", "memory_slots",
+      "max_memory_gb", "storage_gb", "storage_slots", "weight_kg",
+      "battery_wh", "display_size_inch", "resolution", "refresh_rate_hz",
+      "usb_c", "thunderbolt", "usb4", "hdmi", "video_output",
+      "usb_c_charging", "upgradeability"
+    ],
+    "soft_only_fields": ["color_gamut", "warranty", "primary_use"],
+    "value_bounds": {
+      "price_cny": [0, 1000000], "gpu_vram_gb": [0, 128],
+      "memory_gb": [1, 1024], "memory_slots": [0, 16], "max_memory_gb": [1, 2048],
+      "storage_gb": [1, 65536], "storage_slots": [0, 16], "weight_kg": [0.3, 20],
+      "width_mm": [100, 1000], "depth_mm": [100, 1000], "height_mm": [3, 200],
+      "battery_wh": [1, 500], "charger_w": [1, 1000],
+      "display_size_inch": [5, 30], "refresh_rate_hz": [20, 1000]
+    },
+    "value_order": {
+      "resolution": {
+        "1920x1080": 1, "1920x1200": 2, "2240x1400": 3,
+        "2560x1600": 4, "2880x1800": 5, "3840x2400": 6
+      }
+    }
+  },
+  "ranking": {
+    "implementation": "smartbuy.domain_packs.evaluator",
+    "hard_constraints_may_change_eligibility": false,
+    "profile": "laptop-evidence-first-v1",
+    "ordered_soft_fields": ["primary_use", "weight_kg", "battery_wh", "color_gamut", "warranty"]
+  },
+  "memory": {
+    "implementation": "smartbuy.memory.store",
+    "allowed_keys": {
+      "budget_max_cny": "price_cny",
+      "preferred_cpu_family": "cpu_family",
+      "preferred_gpu_type": "gpu_type",
+      "min_memory_gb": "memory_gb",
+      "min_storage_gb": "storage_gb",
+      "max_weight_kg": "weight_kg",
+      "need_usb_c_charging": "usb_c_charging",
+      "need_thunderbolt": "thunderbolt",
+      "excluded_brands": "brand",
+      "primary_use": "primary_use"
+    }
+  },
+  "report": {
+    "implementation": "smartbuy.agent.reporting",
+    "schema_version": "proofpick-domain-decision-v1",
+    "states": ["matched", "not_matched", "unknown", "conflict"],
+    "allowed_fields": [
+      "product_id", "family_id", "model_name", "brand", "region",
+      "configuration_id", "part_number", "cpu_model", "gpu_model",
+      "memory_gb", "storage_gb", "weight_kg", "battery_wh",
+      "display_size_inch", "resolution", "refresh_rate_hz", "usb_c",
+      "thunderbolt", "usb4", "hdmi", "usb_c_charging", "upgradeability",
+      "operating_system", "warranty"
+    ]
+  },
+  "product_pack": {
+    "pack_id": "laptop-governed-v1",
+    "pack_version": "1.0.0",
+    "base_mode": "standalone",
+    "base_data_version": "laptop-empty-v0",
+    "data_version": "laptop-governed-2026-09-02-v1",
+    "compatible_data_versions": ["laptop-empty-v0", "laptop-governed-2026-09-02-v1"],
+    "counts": {"products": 12, "brands": 4, "sources": 12, "evidence": 406},
+    "identity_evidence_fields": ["product_id", "brand", "model_name", "region"],
+    "identity_value_map": {
+      "product_id": "product_id", "brand": "brand",
+      "model_name": "model_name", "region": "region"
+    },
+    "attribute_fields": [
+      "family_id", "configuration_id", "part_number", "source_version",
+      "price_cny", "cpu_vendor", "cpu_family", "cpu_model", "gpu_type",
+      "gpu_vendor", "gpu_model", "gpu_vram_gb", "memory_gb", "memory_type",
+      "memory_soldered", "memory_slots", "max_memory_gb", "storage_gb",
+      "storage_type", "storage_slots", "weight_kg", "width_mm", "depth_mm",
+      "height_mm", "battery_wh", "charger_w", "display_size_inch",
+      "resolution", "refresh_rate_hz", "panel_type", "color_gamut", "usb_c",
+      "thunderbolt", "usb4", "hdmi", "video_output", "usb_c_charging",
+      "upgradeability", "operating_system", "warranty", "primary_use",
+      "measured_battery_life_h", "performance_score", "surface_temperature_c",
+      "noise_db"
+    ],
+    "positive_fields": [
+      "price_cny", "gpu_vram_gb", "memory_gb", "max_memory_gb",
+      "storage_gb", "weight_kg", "width_mm", "depth_mm",
+      "height_mm", "battery_wh", "charger_w", "display_size_inch",
+      "refresh_rate_hz", "measured_battery_life_h", "performance_score",
+      "surface_temperature_c", "noise_db"
+    ],
+    "date_fields": [],
+    "source_field_permissions": {
+      "official_product": [
+        "product_id", "family_id", "model_name", "brand", "region",
+        "configuration_id", "part_number", "source_version", "cpu_vendor",
+        "cpu_family", "cpu_model", "gpu_type", "gpu_vendor", "gpu_model",
+        "gpu_vram_gb", "memory_gb", "memory_type", "memory_soldered",
+        "memory_slots", "max_memory_gb", "storage_gb", "storage_type",
+        "storage_slots", "weight_kg", "width_mm", "depth_mm", "height_mm",
+        "battery_wh", "charger_w", "display_size_inch", "resolution",
+        "refresh_rate_hz", "panel_type", "color_gamut", "usb_c",
+        "thunderbolt", "usb4", "hdmi", "video_output", "usb_c_charging",
+        "upgradeability", "operating_system", "warranty"
+      ],
+      "official_support": [
+        "product_id", "family_id", "model_name", "brand", "region",
+        "configuration_id", "part_number", "source_version", "cpu_vendor",
+        "cpu_family", "cpu_model", "gpu_type", "gpu_vendor", "gpu_model",
+        "gpu_vram_gb", "memory_gb", "memory_type", "memory_soldered",
+        "memory_slots", "max_memory_gb", "storage_gb", "storage_type",
+        "storage_slots", "weight_kg", "width_mm", "depth_mm", "height_mm",
+        "battery_wh", "charger_w", "display_size_inch", "resolution",
+        "refresh_rate_hz", "panel_type", "color_gamut", "usb_c",
+        "thunderbolt", "usb4", "hdmi", "video_output", "usb_c_charging",
+        "upgradeability", "operating_system", "warranty"
+      ],
+      "official_manual": [
+        "product_id", "family_id", "model_name", "brand", "region",
+        "configuration_id", "part_number", "source_version", "cpu_vendor",
+        "cpu_family", "cpu_model", "gpu_type", "gpu_vendor", "gpu_model",
+        "gpu_vram_gb", "memory_gb", "memory_type", "memory_soldered",
+        "memory_slots", "max_memory_gb", "storage_gb", "storage_type",
+        "storage_slots", "weight_kg", "width_mm", "depth_mm", "height_mm",
+        "battery_wh", "charger_w", "display_size_inch", "resolution",
+        "refresh_rate_hz", "panel_type", "color_gamut", "usb_c",
+        "thunderbolt", "usb4", "hdmi", "video_output", "usb_c_charging",
+        "upgradeability", "operating_system", "warranty"
+      ],
+      "professional_review": ["measured_battery_life_h", "performance_score", "surface_temperature_c", "noise_db"],
+      "public_retail": []
+    }
+  },
+  "eval_fixtures": {
+    "v2_6a_laptop_cases": {
+      "path": "smartbuy/eval/v2_6a_laptop_cases.jsonl",
+      "case_count": 30,
+      "sha256": "3dfcc0f442bda2b6b4d2e96814a8973b415b3d8c8b9b33235924982fa1758d34"
+    }
+  }
+}

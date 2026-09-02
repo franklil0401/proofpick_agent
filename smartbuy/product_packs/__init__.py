@@ -1,6 +1,7 @@
 """Versioned Product Pack ingestion for ProofPick V2."""
 
 from .builder import ProductPackManager, PublishedProductSnapshot
+from .domain_builder import DomainProductPackManager, DomainProductSnapshot
 from .ledger import RequestEvidenceWorkspace
 from .live_index import ProductIndexManager, PublishedIndexSnapshot
 from .loader import LoadedProductPack, ProductPackLoader, ProductPackValidationError
@@ -30,6 +31,8 @@ __all__ = [
     "ProductPackDocument",
     "ProductPackLoader",
     "ProductPackManager",
+    "DomainProductPackManager",
+    "DomainProductSnapshot",
     "ProductPackRuntimeSettings",
     "ProductIndexManager",
     "ProductPackValidationError",

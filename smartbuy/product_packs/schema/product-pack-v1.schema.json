@@ -13,7 +13,7 @@
     "schema_version": {"const": "1.0.0"},
     "pack_id": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
     "pack_version": {"type": "string", "pattern": "^\\d+\\.\\d+\\.\\d+$"},
-    "domain_id": {"const": "monitor"},
+    "domain_id": {"type": "string", "pattern": "^[a-z][a-z0-9_-]*$"},
     "base_data_version": {"type": "string", "minLength": 1},
     "data_version": {"type": "string", "minLength": 1},
     "created_at": {"type": "string", "format": "date-time"},
@@ -68,11 +68,11 @@
       "properties": {
         "product_id": {
           "type": "string",
-          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*-(?:cn|us|ca|global)$"
+          "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*-(?:[a-z]{2}|global)$"
         },
         "brand": {"type": "string", "minLength": 1},
         "canonical_name": {"type": "string", "minLength": 1},
-        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "market": {"type": "string", "pattern": "^(?:[A-Z]{2}|GLOBAL)$"},
         "variant_key": {"type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$"},
         "aliases": {"type": "array", "items": {"type": "string"}, "uniqueItems": true},
         "attributes": {
@@ -107,7 +107,7 @@
         "uri": {"type": "string", "format": "uri", "pattern": "^https://"},
         "publisher": {"type": "string", "minLength": 1},
         "is_official": {"type": "boolean"},
-        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "market": {"type": "string", "pattern": "^(?:[A-Z]{2}|GLOBAL)$"},
         "variant_key": {"type": "string"},
         "language": {"type": "string"},
         "source_version": {"type": "string", "minLength": 1},
@@ -140,7 +140,7 @@
         "unit": {"type": ["string", "null"]},
         "snippet": {"type": "string", "minLength": 1, "maxLength": 500},
         "evidence_location": {"type": "string", "minLength": 1},
-        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "market": {"type": "string", "pattern": "^(?:[A-Z]{2}|GLOBAL)$"},
         "variant_key": {"type": "string"},
         "source_version": {"type": "string"},
         "effective_at": {"type": ["string", "null"]},
@@ -162,7 +162,7 @@
         "product_id": {"type": "string"},
         "price_cny": {"type": "number", "exclusiveMinimum": 0},
         "seller": {"type": "string", "minLength": 1},
-        "market": {"enum": ["CN", "US", "CA", "GLOBAL"]},
+        "market": {"type": "string", "pattern": "^(?:[A-Z]{2}|GLOBAL)$"},
         "stock_status": {"type": "string", "minLength": 1},
         "uri": {"type": "string", "format": "uri", "pattern": "^https://"},
         "observed_at": {"type": "string", "format": "date-time"},

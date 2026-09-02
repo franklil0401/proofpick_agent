@@ -122,6 +122,8 @@ class ProductPackLoader:
         except DomainPackValidationError as exc:
             raise ProductPackValidationError("referenced Domain Pack is unavailable") from exc
         try:
+            if document.domain_id != domain_pack.domain_id:
+                raise ProductPackValidationError("Product Pack domain differs from Domain Pack")
             normalized_products = self._normalize_products(document, domain_pack)
             normalized_evidence = self._validate_relations(
                 document,
@@ -160,8 +162,8 @@ class ProductPackLoader:
         ):
             raise ProductPackValidationError("Product Pack JSON Schema version is incompatible")
 
-    @staticmethod
     def _normalize_products(
+        self,
         document: ProductPackDocument,
         domain_pack: LoadedDomainPack,
     ) -> list[dict[str, Any]]:
@@ -169,6 +171,10 @@ class ProductPackLoader:
             raise ProductPackValidationError("Product Pack and Domain Pack versions differ")
         if document.base_data_version not in domain_pack.pack.manifest.data_versions:
             raise ProductPackValidationError("Product Pack base version is not Domain Pack compatible")
+        policy = domain_pack.pack.policies["product_pack"]
+        attribute_fields = set(policy.get("attribute_fields", PRODUCT_ATTRIBUTE_FIELDS))
+        positive_fields = set(policy.get("positive_fields", POSITIVE_FIELDS))
+        date_fields = set(policy.get("date_fields", {"release_date"}))
         output: list[dict[str, Any]] = []
         product_ids: set[str] = set()
         identity_keys: set[tuple[str, str, str]] = set()
@@ -191,7 +197,7 @@ class ProductPackLoader:
                 if not key or (key in aliases and aliases[key] != product.product_id):
                     raise ProductPackValidationError("ambiguous product alias")
                 aliases[key] = product.product_id
-            if set(product.attributes) != PRODUCT_ATTRIBUTE_FIELDS:
+            if set(product.attributes) != attribute_fields:
                 raise ProductPackValidationError("product attribute set is incomplete or unsupported")
             attributes: dict[str, Any] = {}
             for field_id, attribute in product.attributes.items():
@@ -199,13 +205,15 @@ class ProductPackLoader:
                 if isinstance(value, str) and value.strip().casefold() in {"", "unknown", "未知"}:
                     raise ProductPackValidationError("unknown values must use JSON null")
                 normalized = domain_pack.normalize_value(field_id, value, unit=attribute.unit)
-                if field_id in POSITIVE_FIELDS and normalized is not None and normalized <= 0:
+                if field_id in positive_fields and normalized is not None and normalized <= 0:
                     raise ProductPackValidationError("numeric product values must be positive")
-                if field_id in {"release_date"} and normalized is not None:
+                if field_id in date_fields and normalized is not None:
                     _iso(normalized, field=field_id)
                 attributes[field_id] = normalized
             output.append(
                 {
+                    "product_id": product.product_id,
+                    "domain_id": document.domain_id,
                     "model_id": product.product_id,
                     "brand": brand,
                     "model_name": product.canonical_name,
@@ -220,12 +228,27 @@ class ProductPackLoader:
             )
         return output
 
-    @staticmethod
     def _validate_relations(
+        self,
         document: ProductPackDocument,
         products: list[dict[str, Any]],
         domain_pack: LoadedDomainPack,
     ) -> list[dict[str, Any]]:
+        policy = domain_pack.pack.policies["product_pack"]
+        attribute_fields = set(policy.get("attribute_fields", PRODUCT_ATTRIBUTE_FIELDS))
+        identity_evidence_fields = set(
+            policy.get("identity_evidence_fields", IDENTITY_EVIDENCE_FIELDS)
+        )
+        identity_value_map = policy.get(
+            "identity_value_map",
+            {
+                "model_id": "model_id",
+                "brand": "brand",
+                "model_name": "model_name",
+                "region": "region",
+            },
+        )
+        source_field_permissions = policy.get("source_field_permissions")
         product_by_id = {item["model_id"]: item for item in products}
         source_by_id: dict[str, Any] = {}
         for source in document.sources:
@@ -292,13 +315,17 @@ class ProductPackLoader:
             if evidence.effective_at is not None:
                 _iso(evidence.effective_at, field="evidence.effective_at")
             expected = {
-                "model_id": product["model_id"],
-                "brand": product["brand"],
-                "model_name": product["model_name"],
-                "region": product["region"],
+                field_id: product.get(source_key)
+                for field_id, source_key in identity_value_map.items()
             }.get(evidence.field_id, product.get(evidence.field_id))
             if expected is None:
                 raise ProductPackValidationError("null fields must not have governed evidence")
+            if source_field_permissions is not None:
+                allowed_fields = source_field_permissions.get(source.source_type, [])
+                if evidence.field_id not in allowed_fields:
+                    raise ProductPackValidationError(
+                        "source type is not permitted for the evidence field"
+                    )
             normalized = domain_pack.normalize_value(
                 evidence.field_id,
                 evidence.normalized_value,
@@ -318,9 +345,9 @@ class ProductPackLoader:
                 }
             )
         for product in products:
-            required = IDENTITY_EVIDENCE_FIELDS | {
+            required = identity_evidence_fields | {
                 field_id
-                for field_id in PRODUCT_ATTRIBUTE_FIELDS
+                for field_id in attribute_fields
                 if product[field_id] is not None
             }
             if coverage[product["model_id"]] != required:
@@ -354,10 +381,25 @@ class ProductPackLoader:
         document: ProductPackDocument,
         normalized_products: list[dict[str, Any]],
     ) -> None:
-        catalog_bytes = self.base_catalog_path.read_bytes()
-        actual_hash = hashlib.sha256(catalog_bytes).hexdigest()
         domain_pack = DomainPackLoader().load(self.domain_pack_path)
         policy = domain_pack.pack.policies["product_pack"]
+        if policy.get("base_mode", "v1_catalog") == "standalone":
+            if document.base_data_version != policy.get("base_data_version"):
+                raise ProductPackValidationError("standalone base data version differs")
+            if document.data_version == document.base_data_version:
+                raise ProductPackValidationError("Product Pack must create a new data version")
+            expected = policy.get("counts", {})
+            if len(normalized_products) != expected.get("products"):
+                raise ProductPackValidationError("standalone product count differs from policy")
+            if len({item["brand"] for item in normalized_products}) != expected.get("brands"):
+                raise ProductPackValidationError("standalone brand count differs from policy")
+            if len(document.sources) != expected.get("sources"):
+                raise ProductPackValidationError("standalone source count differs from policy")
+            if len(document.evidence) != expected.get("evidence"):
+                raise ProductPackValidationError("standalone evidence count differs from policy")
+            return
+        catalog_bytes = self.base_catalog_path.read_bytes()
+        actual_hash = hashlib.sha256(catalog_bytes).hexdigest()
         if actual_hash != policy["catalog_sha256"]:
             raise ProductPackValidationError("frozen base catalog hash differs")
         catalog = load_catalog(self.base_catalog_path)

@@ -1,0 +1,10 @@
+{
+  "manifest_schema_version": "1.0.0",
+  "domain_pack_version": "1.0.0",
+  "domain_id": "laptop",
+  "display_name": "Laptop exact-configuration domain",
+  "contract_versions": ["proofpick-domain-contract-v1"],
+  "compatible_loader_versions": ["1.0.0"],
+  "data_versions": ["laptop-empty-v0", "laptop-governed-2026-09-02-v1"],
+  "files": {"fields": "fields.json", "policies": "policies.json"}
+}

@@ -1,0 +1,103 @@
+{
+  "dataset_id": "proofpick-laptop-governed-v1",
+  "created_at": "2026-09-02T00:00:00+08:00",
+  "accessed_at": "2026-09-02T00:00:00+08:00",
+  "products": [
+    {
+      "product_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+      "brand": "Dell", "model_name": "Dell XPS 13 9350 (usexchcto9350lnl06)",
+      "market": "US", "configuration_id": "usexchcto9350lnl06",
+      "aliases": ["usexchcto9350lnl06", "xps13-9350-oled-us"],
+      "source": {"url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexchcto9350lnl06", "title": "Dell XPS 13 9350 Order Code usexchcto9350lnl06", "publisher": "Dell", "language": "en-US"},
+      "attributes": {"family_id":"dell-xps13-9350","part_number":"usexchcto9350lnl06","cpu_vendor":"Intel","cpu_family":"Core Ultra 7 Series 2","cpu_model":"Core Ultra 7 258V","gpu_type":"integrated","gpu_vendor":"Intel","gpu_model":"Arc Graphics","memory_gb":32,"memory_type":"LPDDR5X","memory_soldered":true,"memory_slots":0,"max_memory_gb":32,"storage_gb":1024,"storage_type":"PCIe NVMe SSD","storage_slots":1,"weight_kg":1.179,"display_size_inch":13.4,"resolution":"2880x1800","refresh_rate_hz":60,"panel_type":"OLED","operating_system":"Windows 11 Home"}
+    },
+    {
+      "product_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+      "brand": "Dell", "model_name": "Dell XPS 13 9350 (caexchcto9350lnl02)",
+      "market": "CA", "configuration_id": "caexchcto9350lnl02",
+      "aliases": ["caexchcto9350lnl02", "xps13-9350-oled-ca"],
+      "source": {"url": "https://www.dell.com/en-ca/shop/laptops-ultrabooks/xps-13-laptop/spd/xps-13-9350-intel-laptop/caexchcto9350lnl02", "title": "Dell Canada XPS 13 9350 Order Code caexchcto9350lnl02", "publisher": "Dell", "language": "en-CA"},
+      "attributes": {"family_id":"dell-xps13-9350","part_number":"caexchcto9350lnl02","cpu_vendor":"Intel","cpu_family":"Core Ultra 7 Series 2","cpu_model":"Core Ultra 7 258V","gpu_type":"integrated","gpu_vendor":"Intel","gpu_model":"Arc Graphics","memory_gb":32,"memory_type":"LPDDR5X","memory_soldered":true,"memory_slots":0,"max_memory_gb":32,"storage_gb":1024,"storage_type":"PCIe NVMe SSD","storage_slots":1,"weight_kg":1.179,"display_size_inch":13.4,"resolution":"2880x1800","refresh_rate_hz":60,"panel_type":"OLED","operating_system":"Windows 11 Home"}
+    },
+    {
+      "product_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+      "brand": "Dell", "model_name": "Dell XPS 13 9350 (usexcpcto9350lnl04)",
+      "market": "US", "configuration_id": "usexcpcto9350lnl04",
+      "aliases": ["usexcpcto9350lnl04", "xps13-9350-fhd-us"],
+      "source": {"url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexcpcto9350lnl04", "title": "Dell XPS 13 9350 Order Code usexcpcto9350lnl04", "publisher": "Dell", "language": "en-US"},
+      "attributes": {"family_id":"dell-xps13-9350","part_number":"usexcpcto9350lnl04","cpu_vendor":"Intel","cpu_family":"Core Ultra 7 Series 2","cpu_model":"Core Ultra 7 256V","gpu_type":"integrated","gpu_vendor":"Intel","gpu_model":"Arc Graphics","memory_gb":16,"memory_type":"LPDDR5X","memory_soldered":true,"memory_slots":0,"max_memory_gb":16,"storage_gb":1024,"storage_type":"PCIe NVMe SSD","storage_slots":1,"weight_kg":1.179,"display_size_inch":13.4,"resolution":"1920x1200","panel_type":"WVA","operating_system":"Windows 11 Pro"}
+    },
+    {
+      "product_id": "asus-proart-p16-h7606wx-cn",
+      "brand": "ASUS", "model_name": "ASUS ProArt P16 H7606WX",
+      "market": "CN", "configuration_id": "H7606WX",
+      "aliases": ["h7606wx", "proart-p16-rtx5090-cn"],
+      "source": {"url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/", "title": "ASUS ProArt P16 H7606 technical specifications", "publisher": "ASUS", "language": "zh-CN"},
+      "attributes": {"family_id":"asus-proart-p16-h7606","part_number":"H7606WX","cpu_vendor":"AMD","cpu_family":"Ryzen AI 9","cpu_model":"Ryzen AI 9 HX 370","gpu_type":"hybrid","gpu_vendor":"NVIDIA","gpu_model":"GeForce RTX 5090 Laptop GPU","gpu_vram_gb":24,"memory_gb":64,"memory_type":"LPDDR5X","memory_soldered":true,"memory_slots":0,"max_memory_gb":64,"storage_gb":4096,"storage_type":"PCIe 4.0 NVMe SSD","storage_slots":2,"weight_kg":1.95,"width_mm":354.9,"depth_mm":246.9,"height_mm":18.3,"battery_wh":90,"charger_w":240,"display_size_inch":16,"resolution":"3840x2400","refresh_rate_hz":60,"panel_type":"OLED","color_gamut":"100% DCI-P3","usb_c":true,"thunderbolt":false,"usb4":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["storage"],"operating_system":"Windows 11 Home"}
+    },
+    {
+      "product_id": "asus-proart-p16-h7606ww-cn",
+      "brand": "ASUS", "model_name": "ASUS ProArt P16 H7606WW",
+      "market": "CN", "configuration_id": "H7606WW",
+      "aliases": ["h7606ww", "proart-p16-rtx5080-cn"],
+      "source": {"url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/", "title": "ASUS ProArt P16 H7606 technical specifications", "publisher": "ASUS", "language": "zh-CN"},
+      "attributes": {"family_id":"asus-proart-p16-h7606","part_number":"H7606WW","cpu_vendor":"AMD","cpu_family":"Ryzen AI 9","cpu_model":"Ryzen AI 9 HX 370","gpu_type":"hybrid","gpu_vendor":"NVIDIA","gpu_model":"GeForce RTX 5080 Laptop GPU","gpu_vram_gb":16,"memory_gb":64,"memory_type":"LPDDR5X","memory_soldered":true,"memory_slots":0,"max_memory_gb":64,"storage_gb":4096,"storage_type":"PCIe 4.0 NVMe SSD","storage_slots":2,"weight_kg":1.95,"width_mm":354.9,"depth_mm":246.9,"height_mm":18.3,"battery_wh":90,"charger_w":240,"display_size_inch":16,"resolution":"3840x2400","refresh_rate_hz":60,"panel_type":"OLED","color_gamut":"100% DCI-P3","usb_c":true,"thunderbolt":false,"usb4":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["storage"],"operating_system":"Windows 11 Home"}
+    },
+    {
+      "product_id": "asus-proart-p16-h7606wi-cn",
+      "brand": "ASUS", "model_name": "ASUS ProArt P16 H7606WI",
+      "market": "CN", "configuration_id": "H7606WI",
+      "aliases": ["h7606wi", "proart-p16-rtx4070-cn"],
+      "source": {"url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/", "title": "ASUS ProArt P16 H7606 technical specifications", "publisher": "ASUS", "language": "zh-CN"},
+      "attributes": {"family_id":"asus-proart-p16-h7606","part_number":"H7606WI","cpu_vendor":"AMD","cpu_family":"Ryzen AI 9","cpu_model":"Ryzen AI 9 HX 370","gpu_type":"hybrid","gpu_vendor":"NVIDIA","gpu_model":"GeForce RTX 4070 Laptop GPU","gpu_vram_gb":8,"memory_gb":64,"memory_type":"LPDDR5X","memory_soldered":true,"memory_slots":0,"max_memory_gb":64,"storage_gb":2048,"storage_type":"PCIe 4.0 NVMe SSD","storage_slots":2,"weight_kg":1.85,"width_mm":354.9,"depth_mm":246.9,"height_mm":17.3,"battery_wh":90,"charger_w":200,"usb_c":true,"thunderbolt":false,"usb4":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["storage"],"operating_system":"Windows 11 Home"}
+    },
+    {
+      "product_id": "hp-elitebook-840-g11-9g0c0et-il",
+      "brand": "HP", "model_name": "HP EliteBook 840 G11 (9G0C0ET)",
+      "market": "IL", "configuration_id": "9G0C0ET",
+      "aliases": ["9g0c0et", "elitebook-840-g11-9g0c0et"],
+      "source": {"url": "https://pcb.inc.hp.com/dc/api/productsheet/il-en/2102292289/pdf/9G0C0ET.pdf", "title": "HP EliteBook 840 G11 ProductSheet 9G0C0ET", "publisher": "HP", "language": "en"},
+      "attributes": {"family_id":"hp-elitebook-840-g11","part_number":"9G0C0ET","cpu_vendor":"Intel","cpu_family":"Core Ultra 7","cpu_model":"Core Ultra 7 155U","gpu_type":"integrated","gpu_vendor":"Intel","gpu_model":"Intel Graphics","memory_gb":16,"memory_type":"DDR5-5600","memory_soldered":false,"memory_slots":2,"storage_gb":1024,"storage_type":"PCIe NVMe SSD","weight_kg":1.41,"width_mm":315.6,"depth_mm":224.3,"height_mm":16.1,"battery_wh":56,"charger_w":65,"display_size_inch":14,"resolution":"1920x1200","panel_type":"IPS","color_gamut":"45% NTSC","usb_c":true,"thunderbolt":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["memory","storage"],"operating_system":"Windows 11 Pro","warranty":"1 year limited"}
+    },
+    {
+      "product_id": "hp-zbook-firefly14-g11-98n14et-il",
+      "brand": "HP", "model_name": "HP ZBook Firefly 14 G11 (98N14ET)",
+      "market": "IL", "configuration_id": "98N14ET",
+      "aliases": ["98n14et", "zbook-firefly14-g11-98n14et"],
+      "source": {"url": "https://pcb.inc.hp.com/dc/api/spec-sheet/il-en/2102271142/pdf/98N14ET.pdf", "title": "HP ZBook Firefly 14 G11 specification 98N14ET", "publisher": "HP", "language": "en"},
+      "attributes": {"family_id":"hp-zbook-firefly14-g11","part_number":"98N14ET","cpu_vendor":"Intel","cpu_family":"Core Ultra 7","cpu_model":"Core Ultra 7 155H","gpu_type":"hybrid","gpu_vendor":"NVIDIA","gpu_model":"RTX A500 Laptop GPU","memory_gb":32,"memory_type":"DDR5","memory_soldered":false,"memory_slots":2,"storage_gb":1024,"storage_type":"PCIe NVMe SSD","display_size_inch":14,"resolution":"1920x1200","panel_type":"IPS","usb_c":true,"thunderbolt":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["memory","storage"],"operating_system":"Windows 11 Pro"}
+    },
+    {
+      "product_id": "hp-zbook-power-g9-6b8c1ea-global",
+      "brand": "HP", "model_name": "HP ZBook Power 15.6 G9 (6B8C1EA)",
+      "market": "GLOBAL", "configuration_id": "6B8C1EA",
+      "aliases": ["6b8c1ea", "zbook-power-g9-6b8c1ea"],
+      "source": {"url": "https://pcb.inc.hp.com/dc/api/productsheet/ww-en/2101329734/pdf/6B8C1EA.pdf", "title": "HP ZBook Power G9 ProductSheet 6B8C1EA", "publisher": "HP", "language": "en"},
+      "attributes": {"family_id":"hp-zbook-power-g9","part_number":"6B8C1EA","cpu_vendor":"Intel","cpu_family":"12th Gen Core i7","cpu_model":"Core i7-12800H","gpu_type":"hybrid","gpu_vendor":"NVIDIA","gpu_model":"RTX A2000 Laptop GPU","gpu_vram_gb":8,"memory_gb":32,"memory_type":"DDR5-4800","memory_soldered":false,"memory_slots":2,"storage_gb":1024,"storage_type":"PCIe NVMe SSD","weight_kg":1.93,"width_mm":359.4,"depth_mm":233.9,"height_mm":22.8,"battery_wh":83,"charger_w":150,"display_size_inch":15.6,"resolution":"1920x1080","panel_type":"IPS","color_gamut":"72% NTSC","usb_c":true,"thunderbolt":true,"usb4":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["memory","storage"],"operating_system":"Windows 11 Pro"}
+    },
+    {
+      "product_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+      "brand": "Lenovo", "model_name": "Lenovo ThinkPad T14 Gen 5 Intel (21ML000FGR)",
+      "market": "DE", "configuration_id": "21ML000FGR",
+      "aliases": ["21ml000fgr", "t14-g5-21ml000fgr"],
+      "source": {"url": "https://psref.lenovo.com/Detail/ThinkPad_T14_Gen_5_Intel?M=21ML000FGR", "title": "Lenovo PSREF ThinkPad T14 Gen 5 21ML000FGR", "publisher": "Lenovo", "language": "en"},
+      "attributes": {"family_id":"lenovo-thinkpad-t14-g5-intel","part_number":"21ML000FGR","cpu_vendor":"Intel","cpu_family":"Core Ultra 7","cpu_model":"Core Ultra 7 155U","gpu_type":"integrated","gpu_vendor":"Intel","gpu_model":"Intel Graphics","memory_gb":16,"memory_type":"DDR5-5600","memory_soldered":false,"memory_slots":2,"max_memory_gb":64,"storage_gb":1024,"storage_type":"PCIe 4.0 NVMe SSD","storage_slots":1,"battery_wh":52.5,"charger_w":65,"usb_c":true,"thunderbolt":true,"usb4":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["memory","storage"],"operating_system":"Windows 11 Pro"}
+    },
+    {
+      "product_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+      "brand": "Lenovo", "model_name": "Lenovo ThinkPad X1 Carbon Gen 13 (21NX00K4PH)",
+      "market": "PH", "configuration_id": "21NX00K4PH",
+      "aliases": ["21nx00k4ph", "x1-carbon-g13-21nx00k4ph"],
+      "source": {"url": "https://psref.lenovo.com/Detail/ThinkPad_X1_Carbon_Gen_13_Aura_Edition?M=21NX00K4PH", "title": "Lenovo PSREF X1 Carbon Gen 13 21NX00K4PH", "publisher": "Lenovo", "language": "en"},
+      "attributes": {"family_id":"lenovo-x1-carbon-g13","part_number":"21NX00K4PH","cpu_vendor":"Intel","cpu_family":"Core Ultra 7","cpu_model":"Core Ultra 7 255U","gpu_type":"integrated","gpu_vendor":"Intel","gpu_model":"Intel Graphics","memory_gb":32,"memory_type":"LPDDR5X-8400","memory_soldered":true,"memory_slots":0,"max_memory_gb":32,"storage_gb":1024,"storage_type":"PCIe 4.0 NVMe SSD","storage_slots":1,"weight_kg":1.006,"usb_c":true,"thunderbolt":true,"usb4":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["storage"],"operating_system":"Windows 11 Pro","warranty":"3 year Premier Support upgrade"}
+    },
+    {
+      "product_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+      "brand": "Lenovo", "model_name": "Lenovo ThinkPad T14s Gen 7 AMD (21YW0042US)",
+      "market": "US", "configuration_id": "21YW0042US",
+      "aliases": ["21yw0042us", "t14s-g7-21yw0042us"],
+      "source": {"url": "https://psref.lenovo.com/Detail/ThinkPad_T14s_Gen_7_AMD?M=21YW0042US", "title": "Lenovo PSREF ThinkPad T14s Gen 7 21YW0042US", "publisher": "Lenovo", "language": "en-US"},
+      "attributes": {"family_id":"lenovo-thinkpad-t14s-g7-amd","part_number":"21YW0042US","cpu_vendor":"AMD","cpu_family":"Ryzen AI 7 PRO","cpu_model":"Ryzen AI 7 PRO 450","gpu_type":"integrated","gpu_vendor":"AMD","gpu_model":"Radeon 860M","memory_gb":24,"memory_type":"LPDDR5X-8000","memory_soldered":true,"memory_slots":0,"max_memory_gb":24,"storage_gb":512,"storage_type":"PCIe 4.0 NVMe SSD","storage_slots":1,"usb_c":true,"thunderbolt":true,"usb4":true,"hdmi":true,"video_output":true,"usb_c_charging":true,"upgradeability":["storage"],"operating_system":"Windows 11 Pro","warranty":"1 year courier or carry-in"}
+    }
+  ]
+}

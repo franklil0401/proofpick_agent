@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-5C 已用服务端精确 Quote-to-Span 关闭 span 兼容问题；新 Live Holdout 数值门通过，等待用户决定是否进入 V2-6** |
+| 当前状态 | **V2-6A 已完成 Laptop Domain Pack、12 个精确配置的治理数据和 30 条冻结任务；真实索引与工具闭环尚未开始** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-02 |
 
@@ -211,7 +211,7 @@ Decision Ranker
 | V2-3 | 真实 Source Search | Agent 能发现官方网络来源 | 是，先 smoke |
 | V2-4 | Web Extractor 与 Open 模式 | 数据库外商品研究 | 是，受预算限制 |
 | V2-5 | 自然约束与主动澄清 | 支持口语、歧义、覆盖和取消 | 是，离线优先 |
-| V2-6 | Laptop Domain Pack | 第二品类复用通用内核 | 索引和 E2E 少量调用 |
+| V2-6 | Laptop Domain Pack | 6A 数据与 Pack 已完成；6B 工具闭环、6C E2E 待授权 | 6A 否；后续索引/E2E 可能少量调用 |
 | V2-7 | Ranker 与 Memory 升级 | 个性化且可解释的合规排序 | 是，主逻辑可离线测 |
 | V2-8 | Headphone Pack 与跨品类评测 | 第三品类与隔离验证 | 是，冻结评测受预算限制 |
 | V2-9 | UI、完整评测和发布 | 五分钟可理解的 V2 作品集 | 是，发布候选单次运行 |
@@ -596,6 +596,12 @@ feat(v2): add schema-validated constraints and clarification
 
 用复杂参数品类验证通用内核、Product Pack、联网证据和 Checker 不依赖显示器。
 
+V2-6 拆分为三个独立验收阶段：
+
+- **V2-6A（已完成）**：Laptop Domain Pack、治理数据、离线派生产物和冻结任务。
+- **V2-6B（未开始）**：独立 SQLite/Chroma、Product Query、KB Search、Evidence Check 与 Checker 工具闭环。
+- **V2-6C（未开始）**：冻结 E2E、开放研究与跨品类验收。
+
 ### 14.2 数据范围
 
 - 至少 12 个治理型号，建议 12～20 个。
@@ -612,24 +618,28 @@ feat(v2): add schema-validated constraints and clarification
 - 可升级性、操作系统和保修。
 - 续航、性能、噪声等测评字段必须标记来源类型。
 
-### 14.4 实现功能
+### 14.4 V2-6A 已实现
 
-- 笔记本 Product Pack 导入。
-- 笔记本结构化筛选和规格核验。
-- 配置版和地区版冲突识别。
-- 办公、开发、创作和游戏使用场景。
-- 本地未知型号进入开放研究模式。
+- 配置驱动的 49 字段 Laptop Domain Pack、42 个 Checker 支持字段和独立 Memory/报告白名单。
+- 12 个精确配置、4 个品牌、12 个官方来源和 406 条字段级 Evidence；地区/配置身份完整。
+- standalone Product Pack、仓库外 staging/publish/current/versions/rollback，以及 EAV SQLite、事实卡和待索引文档派生。
+- 两次构建 Manifest 与逻辑数据哈希一致，SQLite integrity 为 `ok`、外键为 0。
+- 30 条 Laptop 任务在首次正式评测前冻结，SHA-256 为 `3dfcc0f442bda2b6b4d2e96814a8973b415b3d8c8b9b33235924982fa1758d34`。
+- 10 条自然表达通过现有 Proposal/QuoteSpan 的离线 Pack 驱动验证；本阶段真实模型调用为 0。
+
+V2-6A 没有实现笔记本结构化查询、真实 KB、正式 Evidence/Checker 工具闭环、开放研究或 Agent E2E。索引状态仅为 `documents_ready`，误启用必须 fail closed。
 
 ### 14.5 验收指标
 
-- 至少 12 个型号、30 条冻结任务。
+- 至少 12 个精确配置、4 个品牌、30 条冻结任务。
 - 新品类接入不修改通用 Agent 主流程。
 - 通用内核不新增笔记本专属字段常量。
-- 可信模式违规候选推荐为 0。
 - 每个关键推荐事实证据覆盖率不低于 95%。
 - 相似配置版和地区版困难用例全部不串型。
 - 显示器 V1/V2 回归全部通过。
 - 两品类字段、Memory 和索引无交叉污染。
+
+可信模式违规推荐、真实工具闭环和跨品类 E2E 属于 V2-6B/6C，不能用 V2-6A 的离线 evaluator 代替。
 
 ### 14.6 提交与停止
 
@@ -637,7 +647,7 @@ feat(v2): add schema-validated constraints and clarification
 feat(v2): add laptop domain pack and governed dataset
 ```
 
-推送后报告数据卡、字段缺失、评测分母、成本和跨品类回归，然后停止。
+V2-6A 推送后报告数据卡、字段缺失、评测分母、成本和跨品类回归，然后停止；V2-6B 必须再次获得用户授权。
 
 ## 15. V2-7：Decision Ranker 与 Memory 升级
 
@@ -904,4 +914,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-5 的确定性规则、Proposal 安全门和双编排器澄清已完成。50 条先冻结表达离线回归为 55/55 字段、50/50 任务，首次实现 46/50 原样保留。V2-5B 的首次 qwen-plus 结果（Schema 10/12、span 1/20、F1 5.41%、任务 2/12）继续永久保留，旧 12 条从 V2-5C 起只作为已暴露回归。V2-5C 改用服务端精确 Quote-to-Span；新 20 条一次性 Live Holdout V2 首测为 Schema 20/20、服务端 span 28/28、清晰硬约束 F1 96.97%、任务 16/20，安全误激活为 0。数值门已满足但不代表生产能力。证据见 [V2-5C 报告](v2_5c_quote_span_report.md)、[运行说明](v2_5c_quote_span_runtime.md)、[数据卡](v2_5c_live_holdout_v2_data_card.md)与 [ADR-0015](../adr/0015-server-verified-quote-to-span.md)。在用户再次确认前，不得进入 V2-6、针对新 Holdout 调参重跑、增加第二品类、切换默认编排器、实现自动 Evidence Promotion 或修改 V1 冻结数据与历史结果。
+V2-6A 已完成 Laptop Domain Pack、12 个精确配置、406 条字段 Evidence、离线可重复 Product Pack 和 30 条冻结任务；详情见 [阶段报告](v2_6a_laptop_domain_and_data_report.md)、[数据卡](v2_6a_laptop_data_card.md)和[运行说明](v2_6a_laptop_runtime.md)。V2-5B/5C 的全部历史首测继续原样保留。
+
+下一步只有在用户再次确认后才能执行 V2-6B：通用化 Product Query/Text2SQL、KB Search、Evidence Check 与 Checker 的工具闭环，构建与 Monitor 隔离的真实 Laptop 索引。不得直接在通用模块加入 Laptop 字段常量，不得自动进入 V2-6C/V2-7，不得切换默认编排器或修改 V1 冻结数据与历史结果。

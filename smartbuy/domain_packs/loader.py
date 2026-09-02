@@ -104,12 +104,20 @@ class LoadedDomainPack:
             if not isinstance(value, (int, float)) or isinstance(value, bool):
                 raise DomainPackValidationError("unit conversion requires numeric value")
             value = value * factor
+            if definition.data_type == FieldDataType.INTEGER and float(value).is_integer():
+                value = int(value)
         if isinstance(value, str):
             token = value.strip()
             value = definition.value_aliases.get(token.casefold(), token)
         value = self._coerce(definition, value)
         if definition.enum_values and value not in definition.enum_values:
             raise DomainPackValidationError("value is outside field enumeration")
+        bounds = self.pack.policies.get("checker", {}).get("value_bounds", {}).get(
+            definition.field_id
+        )
+        if bounds and isinstance(value, (int, float)) and not isinstance(value, bool):
+            if not bounds[0] <= value <= bounds[1]:
+                raise DomainPackValidationError("value is outside field bounds")
         return value
 
     @staticmethod
@@ -230,28 +238,30 @@ class DomainPackLoader:
         ):
             raise DomainPackValidationError("source priority policy is invalid")
         checker = policies["checker"]
-        if checker.get("fail_closed") is not True or checker.get("implementation") != "smartbuy.constraints.verifier":
-            raise DomainPackValidationError("checker policy does not preserve the V1 gate")
+        if checker.get("fail_closed") is not True or not isinstance(
+            checker.get("implementation"), str
+        ):
+            raise DomainPackValidationError("checker policy is not fail closed")
         supported = set(checker.get("supported_fields", []))
         declared = {item.field_id for item in fields if item.constraint_enabled}
         if supported != declared or not supported <= field_ids:
             raise DomainPackValidationError("checker fields disagree with field definitions")
         memory_keys = policies["memory"].get("allowed_keys", {})
-        if set(memory_keys) != {
-            "budget_min_cny", "budget_max_cny", "display_size_inch", "resolution",
-            "min_refresh_rate_hz", "exclude_oled", "excluded_brands", "primary_use",
-        }:
-            raise DomainPackValidationError("memory policy does not preserve the V1 whitelist")
+        if not isinstance(memory_keys, dict) or not all(
+            isinstance(key, str) and isinstance(value, str)
+            for key, value in memory_keys.items()
+        ):
+            raise DomainPackValidationError("memory policy whitelist is invalid")
         if not set(memory_keys.values()) <= field_ids:
             raise DomainPackValidationError("memory policy references an unknown field")
         ranking = policies["ranking"]
         if (
-            ranking.get("implementation") != "smartbuy.agent.ranking"
+            not isinstance(ranking.get("implementation"), str)
             or ranking.get("hard_constraints_may_change_eligibility") is not False
         ):
             raise DomainPackValidationError("ranking policy can alter deterministic eligibility")
-        if policies["report"].get("schema_version") != "smartbuy-decision-v3":
-            raise DomainPackValidationError("report schema is not V1 compatible")
+        if not isinstance(policies["report"].get("schema_version"), str):
+            raise DomainPackValidationError("report schema version is missing")
         if set(policies["report"].get("states", [])) != {
             "matched", "not_matched", "unknown", "conflict"
         }:
@@ -264,7 +274,9 @@ class DomainPackLoader:
         ):
             raise DomainPackValidationError("product pack data version is incompatible")
         counts = product_pack.get("counts", {})
-        if set(counts) != {"products", "brands", "sources", "evidence"} or not all(
+        if not isinstance(counts, dict) or not {
+            "products", "brands", "sources", "evidence"
+        } <= set(counts) or not all(
             isinstance(value, int) and value >= 0 for value in counts.values()
         ):
             raise DomainPackValidationError("product pack counts are invalid")
