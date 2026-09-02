@@ -1,0 +1,22 @@
+{
+  "schema_version": "proofpick-v2-v1-regression-audit-v1",
+  "scope": "94 pytest node ids present in v1.0.0-portfolio under smartbuy/tests",
+  "first_run": {
+    "passed": 92,
+    "failed": 2,
+    "failed_node_ids": [
+      "smartbuy/tests/integration/test_stage4_api.py::test_non_stream_and_memory_lifecycle",
+      "smartbuy/tests/integration/test_stage4_api.py::test_sse_contains_public_tool_cards_and_markdown"
+    ],
+    "cause": "The opt-in clarification wrapper read OrchestratorSelector.kind, but the selector had not exposed the shared Orchestrator protocol property. Default-off V1 requests therefore failed during wrapper construction."
+  },
+  "postfix_run": {
+    "passed": 94,
+    "failed": 0
+  },
+  "targeted_stage4_memory_checker": {
+    "passed": 30,
+    "failed": 0
+  },
+  "fix": "Expose the already selected orchestrator kind as a read-only selector property; no routing default or V1 business rule changed."
+}

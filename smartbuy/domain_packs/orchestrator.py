@@ -28,6 +28,10 @@ class DomainPackOrchestrator:
     def preference_memory(self):
         return self.underlying.preference_memory
 
+    @property
+    def kind(self):
+        return self.underlying.kind
+
     async def _record(
         self,
         callback: EventCallback | None,

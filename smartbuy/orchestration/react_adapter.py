@@ -10,6 +10,7 @@ from smartbuy.orchestration.contracts import (
     OrchestratorRequest,
     OrchestratorResult,
     OrchestrationStatus,
+    emit_event,
 )
 
 
@@ -26,8 +27,38 @@ class ReactOrchestrator:
         *,
         event_callback: EventCallback | None = None,
     ) -> OrchestratorResult:
+        thread_id = request.thread_id or request.session_id or "react-stateless"
+        if request.clarification_question and request.resume_value is None:
+            await emit_event(
+                event_callback,
+                {
+                    "type": "interrupt_required",
+                    "node": "react_compat_clarification",
+                    "reason": "active_clarification",
+                    "question": request.clarification_question,
+                },
+            )
+            return OrchestratorResult(
+                orchestrator=self.kind,
+                status=OrchestrationStatus.INTERRUPTED,
+                thread_id=thread_id,
+                interrupt={
+                    "kind": "clarification",
+                    "question": request.clarification_question,
+                    "contract_version": request.contract_version,
+                },
+            )
+        if request.resume_value is not None and request.constraint_resolution is None:
+            raise ValueError("react resume requires a validated constraint resolution")
         if request.resume_value is not None:
-            raise ValueError("react orchestrator does not support checkpoint resume")
+            await emit_event(
+                event_callback,
+                {
+                    "type": "interrupt_resumed",
+                    "node": "react_compat_clarification",
+                    "status": "completed",
+                },
+            )
         arguments = {
             "session_id": request.session_id,
             "user_id": request.user_id,
@@ -40,10 +71,13 @@ class ReactOrchestrator:
             arguments["mode"] = request.mode
         if request.thread_id is not None:
             arguments["thread_id"] = request.thread_id
+        if request.constraint_resolution is not None:
+            arguments["constraint_resolution"] = request.constraint_resolution
         report = await self.agent.run(request.query, **arguments)
         return OrchestratorResult(
             orchestrator=self.kind,
             status=OrchestrationStatus.COMPLETED,
-            thread_id=request.thread_id or request.session_id or "react-stateless",
+            thread_id=thread_id,
             report=report,
+            resumed=request.resume_value is not None,
         )

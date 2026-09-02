@@ -14,6 +14,14 @@ from pydantic import BaseModel, Field
 
 from smartbuy.agent import PurchaseDecisionAgent
 from smartbuy.config import load_bailian_settings
+from smartbuy.constraint_proposals.coordinator import (
+    ClarificationCoordinator,
+    ClarificationStore,
+    ClarifyingOrchestrator,
+)
+from smartbuy.constraint_proposals.engine import NaturalConstraintEngine
+from smartbuy.constraint_proposals.provider import QwenConstraintProposalProvider
+from smartbuy.constraint_proposals.settings import NaturalConstraintSettings
 from smartbuy.db.build_database import DEFAULT_OUTPUT
 from smartbuy.domain_packs import (
     DomainPackLoader,
@@ -73,6 +81,7 @@ class SmartBuyChatRequest(BaseModel):
     thread_id: str | None = Field(default=None, max_length=128)
     resume_value: str | bool | dict[str, Any] | None = None
     use_long_term_memory: bool = False
+    use_natural_constraints: bool = False
     mode: ResearchMode = ResearchMode.TRUSTED
 
 
@@ -217,6 +226,43 @@ def get_smartbuy_orchestrator() -> Orchestrator | OrchestratorSelector:
             if pack.domain_id != domain_settings.domain_id:
                 raise DomainPackValidationError("requested domain does not match loaded pack")
             selected = DomainPackOrchestrator(selected, pack)
+        natural_settings = NaturalConstraintSettings.from_environment()
+        coordinator = None
+        if natural_settings.enabled:
+            monitor_pack = DomainPackLoader().load(DEFAULT_MONITOR_PACK)
+            proposal_provider = (
+                QwenConstraintProposalProvider(agent.provider)
+                if natural_settings.llm_fallback_enabled
+                else None
+            )
+            proposal_engine = NaturalConstraintEngine(
+                monitor_pack,
+                proposal_provider,
+                max_provider_calls=natural_settings.max_provider_calls,
+                max_cost_cny=natural_settings.max_cost_cny,
+            )
+            clarification_store = ClarificationStore(
+                natural_settings.clarification_root,
+                repository_root=PROJECT_ROOT,
+            )
+
+            def constraint_context(session_id: str | None):
+                if not session_id:
+                    return None, 1
+                snapshot = agent.session_memory.get(session_id)
+                if snapshot is None:
+                    return None, 1
+                return snapshot.constraint_set.model_copy(deep=True), snapshot.turn_number + 1
+
+            coordinator = ClarificationCoordinator(
+                proposal_engine,
+                clarification_store,
+                context_loader=constraint_context,
+                preference_memory=agent.preference_memory,
+            )
+        # Keep the gate installed even while disabled so an opt-in request can
+        # never be silently interpreted by the legacy parser.
+        selected = ClarifyingOrchestrator(selected, coordinator, natural_settings)
         _orchestrator = selected
     return _orchestrator
 
@@ -263,6 +309,7 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
                 "orchestrator_", "graph_", "checkpoint_", "interrupt_",
                 "checker_terminal_", "domain_pack_", "product_pack_", "source_search_",
                 "web_extraction_", "open_evidence_", "open_research_",
+                "constraint_proposal", "clarification_",
             )
         ):
             await queue.put(event)
@@ -277,6 +324,7 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
                     thread_id=request.thread_id,
                     resume_value=request.resume_value,
                     use_long_term_memory=request.use_long_term_memory,
+                    use_natural_constraints=request.use_natural_constraints,
                     mode=request.mode,
                 ),
                 event_callback=callback,
@@ -330,6 +378,7 @@ async def chat(request: SmartBuyChatRequest):
                 thread_id=request.thread_id,
                 resume_value=request.resume_value,
                 use_long_term_memory=request.use_long_term_memory,
+                use_natural_constraints=request.use_natural_constraints,
                 mode=request.mode,
             )
         )

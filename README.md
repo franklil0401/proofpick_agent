@@ -22,7 +22,7 @@
 ## 为什么它是 Agent
 
 - **自主选择工具：** 有界 ReAct 根据问题调用 Text2SQL、KB Search 或 Evidence Check；V2 Open Mode 可显式发现官方 URL、抽取正文并形成临时证据。
-- **支持连续追问：** 保存当前会话条件和用户确认的长期偏好，新要求可以覆盖旧条件。
+- **支持连续追问：** 保存当前会话条件和用户确认的长期偏好；V2 显式路径会校验口语约束，并在歧义影响筛选前暂停确认。
 - **推荐前强制复核：** LLM 负责规划和解释，SQL/代码负责检查预算、尺寸和接口等硬要求。
 
 固定 RAG 的检索路径和上下文通常预先确定；ProofPick 会根据候选数量、字段缺失与证据冲突继续规划，并把最终推荐资格交给确定性代码，而不是交给生成模型自由判断。
@@ -46,7 +46,7 @@ Optional Web Adapter 使用灰色虚线表示，公开 Demo 默认关闭，不�
 
 - [`smartbuy/agent/react.py`](smartbuy/agent/react.py)：ReAct 规划、工具编排和停止条件。
 - [`smartbuy/tools/`](smartbuy/tools/)：Text2SQL、KB Search、Evidence Check，以及默认关闭的 Source Search/Web Extractor。
-- [`smartbuy/constraints/verifier.py`](smartbuy/constraints/verifier.py)：确定性硬约束复核。
+- [`smartbuy/constraints/verifier.py`](smartbuy/constraints/verifier.py)：确定性硬约束复核；V2 提案与澄清入口见 [`smartbuy/constraint_proposals/`](smartbuy/constraint_proposals/)。
 - [`smartbuy/memory/store.py`](smartbuy/memory/store.py)：短期会话和长期偏好记忆。
 - [`smartbuy/eval/`](smartbuy/eval/)：冻结任务、消融实验和故障评测。
 

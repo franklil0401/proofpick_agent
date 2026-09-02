@@ -88,6 +88,17 @@ def build_report(
             request_summary=state.requirements.summary or state.query[:200],
             task_type=state.requirements.task_type,
             constraint_set=state.constraint_set,
+            constraint_proposals=(
+                state.constraint_resolution.proposals if state.constraint_resolution else []
+            ),
+            clarification_state=(
+                state.constraint_resolution.clarification_state
+                if state.constraint_resolution
+                else "not_required"
+            ),
+            constraint_diff=(
+                state.constraint_resolution.diff if state.constraint_resolution else []
+            ),
             constraint_verification=state.constraint_verification,
             hard_constraints=state.requirements.hard_constraints,
             soft_preferences=state.requirements.soft_preferences,
@@ -313,6 +324,15 @@ def build_report(
         request_summary=state.requirements.summary or state.query[:200],
         task_type=state.requirements.task_type,
         constraint_set=state.constraint_set,
+        constraint_proposals=(
+            state.constraint_resolution.proposals if state.constraint_resolution else []
+        ),
+        clarification_state=(
+            state.constraint_resolution.clarification_state
+            if state.constraint_resolution
+            else "not_required"
+        ),
+        constraint_diff=(state.constraint_resolution.diff if state.constraint_resolution else []),
         constraint_verification=state.constraint_verification,
         hard_constraints=state.requirements.hard_constraints,
         soft_preferences=state.requirements.soft_preferences,

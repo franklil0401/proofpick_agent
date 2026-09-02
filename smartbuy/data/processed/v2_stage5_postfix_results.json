@@ -1,0 +1,38 @@
+{
+  "schema_version": "proofpick-v2-constraint-eval-result-v1",
+  "run_type": "postfix_frozen_full",
+  "runner": "proofpick-natural-constraints-v1",
+  "provider": "offline_rules_only",
+  "cases_sha256": "9c03937ba7897b9e390f2e73099d394f331bfd696ea763cfc1c3b4b27741eb75",
+  "case_count": 50,
+  "splits": {
+    "regression": 30,
+    "holdout": 20
+  },
+  "true_positive": 55,
+  "false_positive": 0,
+  "false_negative": 0,
+  "precision": 1.0,
+  "recall": 1.0,
+  "f1": 1.0,
+  "clear_hard_fields": {
+    "true_positive": 39,
+    "false_positive": 0,
+    "false_negative": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0
+  },
+  "task_exact": 50,
+  "split_task_exact": {
+    "regression": 30,
+    "holdout": 20
+  },
+  "clarification_safe": "5/5",
+  "unsupported_safe": "4/4",
+  "failed_case_ids": [],
+  "average_rule_latency_ms": 0.457,
+  "p95_rule_latency_ms": 0.703,
+  "api_calls": 0,
+  "estimated_cost_cny": 0.0
+}

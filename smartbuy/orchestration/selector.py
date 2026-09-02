@@ -76,6 +76,11 @@ class OrchestratorSelector:
     def preference_memory(self):
         return self.react.preference_memory
 
+    @property
+    def kind(self) -> OrchestratorKind:
+        """Expose the explicit requested kind to compatibility wrappers."""
+        return self.settings.selected
+
     async def _record(
         self,
         event_callback: EventCallback | None,

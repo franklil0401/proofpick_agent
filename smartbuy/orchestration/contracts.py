@@ -39,6 +39,10 @@ class OrchestratorRequest(BaseModel):
     mode: ResearchMode = ResearchMode.TRUSTED
     resume_value: Any = None
     clarification_question: str | None = Field(default=None, max_length=500)
+    use_natural_constraints: bool = False
+    # Internal, validated V2 payload. ``Any`` avoids coupling the stable V1
+    # orchestration contract module to the opt-in proposal package at import time.
+    constraint_resolution: Any = None
 
     @model_validator(mode="after")
     def validate_contract(self) -> OrchestratorRequest:
@@ -86,6 +90,7 @@ class CompatibleAgent(Protocol):
         mode: ResearchMode = ResearchMode.TRUSTED,
         thread_id: str | None = None,
         event_callback: EventCallback | None = None,
+        constraint_resolution: Any = None,
     ) -> DecisionReport: ...
 
 

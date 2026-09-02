@@ -14,6 +14,7 @@ class AgentMonitor:
         self._orchestration_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
         self._source_search_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
         self._open_research_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
+        self._constraint_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
         self._lock = Lock()
 
     def record(self, payload: dict[str, Any]) -> None:
@@ -119,12 +120,37 @@ class AgentMonitor:
         with self._lock:
             self._open_research_events.append(allowed)
 
+    def record_constraint_event(self, payload: dict[str, Any]) -> None:
+        """Record proposal states and field names without raw user text or values."""
+        allowed = {
+            "type": str(payload.get("type", ""))[:64],
+            "status": str(payload.get("status", ""))[:40],
+            "proposal_count": int(payload.get("proposal_count", 0)),
+            "active_constraint_count": int(payload.get("active_constraint_count", 0)),
+            "provider_calls": int(payload.get("provider_calls", 0)),
+            "estimated_cost_cny": float(payload.get("estimated_cost_cny", 0.0)),
+            "proposals": [
+                {
+                    "field": str(item.get("field", ""))[:80],
+                    "operator": str(item.get("operator") or "")[:20] or None,
+                    "status": str(item.get("status", ""))[:24],
+                    "action": str(item.get("action", ""))[:24],
+                    "active": bool(item.get("active", False)),
+                }
+                for item in list(payload.get("proposals", []))[:12]
+                if isinstance(item, dict)
+            ],
+        }
+        with self._lock:
+            self._constraint_events.append(allowed)
+
     def snapshot(self) -> dict[str, Any]:
         with self._lock:
             runs = deepcopy(list(self._runs))
             orchestration_events = deepcopy(list(self._orchestration_events))
             source_search_events = deepcopy(list(self._source_search_events))
             open_research_events = deepcopy(list(self._open_research_events))
+            constraint_events = deepcopy(list(self._constraint_events))
         latencies = sorted(item["latency_ms"] for item in runs)
         p95_index = max(0, min(len(latencies) - 1, int(len(latencies) * 0.95))) if latencies else 0
         return {
@@ -143,6 +169,7 @@ class AgentMonitor:
             "recent_orchestration_events": orchestration_events[-20:],
             "recent_source_search_events": source_search_events[-20:],
             "recent_open_research_events": open_research_events[-20:],
+            "recent_constraint_events": constraint_events[-20:],
         }
 
 

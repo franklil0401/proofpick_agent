@@ -160,12 +160,22 @@ V2-4 Web Extractor 与 Open Research：
 - LG 27GS95QE-B/CN 与 BenQ PD2725U/CA 的 canonical/hreflang 自动恢复 0/2，均明确降级且未硬编码 URL。Open 商品进入 Trusted eligible、正式 Ledger/Checker 均为 0。
 - 阶段已知 28 次智谱搜索估算 ¥1.08，LLM/Embedding/Reranker 调用 0。详见 [V2-4 报告](v2/v2_4_open_research_report.md)和[运行说明](v2/v2_4_runtime.md)。
 
+V2-5 自然约束与主动澄清：
+
+- `PROOFPICK_NATURAL_CONSTRAINTS_ENABLED` 默认 `false`，请求还需显式 `use_natural_constraints=true`；关闭后恢复 V1 解析与默认 ReAct，不迁移数据。
+- 中文数字、范围、单位、否定、双重否定、覆盖和取消由确定性规则优先；规则无结果时才允许 qwen-plus 严格 Function Calling 提案，逐条经过原文 span 和 Monitor Pack 校验。
+- ambiguous/needs_confirmation/unsupported/invalid 在确认前进入 Checker 为 0；pending 不写长期 Memory；当前输入继续覆盖会话和已启用偏好。
+- ReAct 使用仓库外严格 JSON 暂停状态，LangGraph 使用现有 interrupt/checkpoint；两者共享同一 Resolution。默认目录 `C:/ai/proofpick-v2/clarifications`，拒绝仓库内路径和 Pickle。
+- 50 条冻结表达（30 Regression、20 Holdout）最终 55/55 字段、50/50 任务；首次实现 46/50 保留。双编排器 5 类澄清各通过一次，暂停前 Agent 调用 0、恢复后 1。
+- 本阶段 API、Token、费用均为 0；离线规则平均/P95 0.457/0.703 ms，仅为本机小样本。详见 [V2-5 报告](v2/v2_5_constraint_clarification_report.md)和[运行说明](v2/v2_5_runtime.md)。
+
 ## 测试与成本
 
 - V2-2B 最终自动化：`smartbuy/tests` 177/177，加入上游配置安全测试后的 CI 等价套件 178/178；Product Pack/实时索引定向套件 23/23。Ruff、Compileall、JavaScript 12/12、PowerShell AST 5/5 和 Markdown 262/262 通过，详见 [V2-2 报告](v2/v2_2_product_pack_report.md)。
 - V2-3 定向离线套件 24/24；`smartbuy/tests` 201/201，加入上游安全 node 的 CI 等价套件 202/202；Ruff、Compileall、JavaScript 12/12、PowerShell 5/5、Markdown 277/277 和安全门通过。真实收尾两次合计估算 ¥0.98；含此前授权的三 Provider 只读诊断，已知估算仍低于 ¥2 阶段上限。详见 [V2-3 报告](v2/v2_3_source_search_report.md)。
 - V2-4 定向 21/21；`smartbuy/tests` 222/222，加入上游配置脱敏 node 的 CI 等价套件 223/223；Ruff、Compileall、JavaScript 12/12、PowerShell 5/5、Markdown 289/289 与安全/禁止产物门通过。详见 [V2-4 报告](v2/v2_4_open_research_report.md)。
 - V2-4C 将单一错误地区证据由 conflict 修正为 `unknown/region_mismatch_only`，并分离目标地区状态与跨地区比较；六组地区专项和四类双边冲突通过，PD3226G/US 仓库外证据回放仍为 6/6 matched。`smartbuy/tests` 228/228、CI 等价 229/229、V1 原始 node 94/94；本轮 API 调用 0。详见 [V2-4C 报告](v2/v2_4c_regional_evidence_report.md)。
+- V2-5 定向 23/23；`smartbuy/tests` 251/251，加入上游配置脱敏 node 的 CI 等价套件 252/252；V1 原始 node 首次暴露适配属性回归 92/94，修复后 94/94，Checker/Memory/阶段 4 代表组合 30/30。Ruff、Compileall、JavaScript 12/12、PowerShell 5/5、Markdown 312/312 与安全门通过，详见 [V2-5 报告](v2/v2_5_constraint_clarification_report.md)。本轮 API 调用和费用为 0。
 - 独立三模型最终验证：5 次调用、398 input + 31 output tokens，估算 0.0003243 元。
 - 最终 Youtu 建库/查询：Embedding 130 input tokens，估算 0.000065 元；Reranker 160 input tokens，估算 0.000080 元。
 - Youtu Agent 内部 LLM Token 尚未完整进入自研账本，精确阶段总成本记为未知；调用均为有界小样本，远低于 5 元阶段上限。

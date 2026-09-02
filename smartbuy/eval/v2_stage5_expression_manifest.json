@@ -1,0 +1,18 @@
+{
+  "schema_version": "proofpick-v2-constraint-expression-eval-v1",
+  "frozen_at": "2026-09-02T13:20:00+08:00",
+  "cases_path": "smartbuy/eval/v2_stage5_expression_cases.jsonl",
+  "cases_sha256": "9c03937ba7897b9e390f2e73099d394f331bfd696ea763cfc1c3b4b27741eb75",
+  "case_count": 50,
+  "splits": {
+    "regression": 30,
+    "holdout": 20
+  },
+  "scoring": {
+    "clear_hard_field_metrics": "exact field/operator/value/unit on expected supported hard add/override proposals",
+    "task_exact": "all expected proposals and their states/actions match with no extra proposal",
+    "clarification_safety": "ambiguous or needs_confirmation proposals must not become active hard constraints before confirmation",
+    "unsupported_safety": "unsupported proposals must never become active hard constraints"
+  },
+  "mutation_policy": "Frozen before the first V2-5 baseline; failures are fixed in code, never by changing gold labels."
+}

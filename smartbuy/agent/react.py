@@ -23,6 +23,7 @@ from smartbuy.constraints import (
     ConstraintStrength,
     VERIFIER_VERSION,
 )
+from smartbuy.constraint_proposals.models import ConstraintResolution
 from smartbuy.domain import (
     AgentLimits,
     AgentState,
@@ -378,13 +379,29 @@ class PurchaseDecisionAgent:
                 )
             current.task_type = self._infer_task_type(state.query, current.task_type)
             model_proposals = [item.model_dump(mode="json") for item in current.hard_constraints]
-            state.constraint_set = self.constraint_normalizer.build(
-                state.query,
-                source_turn=state.turn_number,
-                previous=previous_constraints,
-                preferences=preferences,
-                model_proposals=model_proposals,
-            )
+            if state.constraint_resolution is not None:
+                state.constraint_set = state.constraint_resolution.constraint_set.model_copy(
+                    deep=True
+                )
+                active_fields = {item.field for item in state.constraint_set.active()}
+                state.constraint_set.rejected_model_constraints.extend(
+                    sorted(
+                        {
+                            str(item.get("field", "unknown"))
+                            for item in model_proposals
+                            if item.get("field") not in active_fields
+                            and item.get("field") not in {"model_id", "model_name"}
+                        }
+                    )
+                )
+            else:
+                state.constraint_set = self.constraint_normalizer.build(
+                    state.query,
+                    source_turn=state.turn_number,
+                    previous=previous_constraints,
+                    preferences=preferences,
+                    model_proposals=model_proposals,
+                )
             current_locators = self._gated_locators(state.query, current.hard_constraints)
             previous_locators = (
                 [
@@ -827,12 +844,14 @@ class PurchaseDecisionAgent:
         mode: ResearchMode = ResearchMode.TRUSTED,
         thread_id: str | None = None,
         event_callback: EventCallback | None = None,
+        constraint_resolution: ConstraintResolution | None = None,
     ) -> DecisionReport:
         started = time.perf_counter()
         session_id = session_id or str(uuid.uuid4())
         state, previous_requirements, previous_constraints = self._start_state(
             query, session_id, user_id, mode, thread_id
         )
+        state.constraint_resolution = constraint_resolution
         preferences = (
             self.preference_memory.recall(user_id, requested=use_long_term_memory) if user_id else {}
         )

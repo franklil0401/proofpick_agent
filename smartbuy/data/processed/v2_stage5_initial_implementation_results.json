@@ -1,0 +1,24 @@
+{
+  "schema_version": "proofpick-v2-constraint-eval-result-v1",
+  "run_type": "first_v2_5_implementation_run",
+  "runner": "proofpick-natural-constraints-v1-pre-fix",
+  "provider": "offline_rules_only",
+  "cases_sha256": "9c03937ba7897b9e390f2e73099d394f331bfd696ea763cfc1c3b4b27741eb75",
+  "case_count": 50,
+  "true_positive": 53,
+  "false_positive": 4,
+  "false_negative": 2,
+  "precision": 0.929825,
+  "recall": 0.963636,
+  "f1": 0.946429,
+  "task_exact": 46,
+  "failed_case_ids": [
+    "v2c-reg-016",
+    "v2c-reg-017",
+    "v2c-reg-022",
+    "v2c-reg-023"
+  ],
+  "failure_summary": "Two USB-C power expressions gained an unrequested has_usb_c proposal; two explicit regions were mislabeled as user overrides when replacing the system default.",
+  "api_calls": 0,
+  "estimated_cost_cny": 0.0
+}

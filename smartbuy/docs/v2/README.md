@@ -27,6 +27,10 @@
 - [ADR-0012：受控网页抽取与 Open Evidence](../adr/0012-governed-web-extraction-and-open-evidence.md)
 - [V2-4C 地区证据可比性收尾报告](v2_4c_regional_evidence_report.md)
 - [ADR-0013：目标地区证据与跨地区比较分层](../adr/0013-regional-evidence-comparability.md)
+- [V2-5 自然约束与主动澄清报告](v2_5_constraint_clarification_report.md)
+- [V2-5 运行说明](v2_5_runtime.md)
+- [V2-5 新表达评测集](v2_5_expression_eval.md)
+- [ADR-0014：Schema Proposal 与双编排器澄清](../adr/0014-validated-constraint-proposals-and-clarification.md)
 
 ## 当前状态
 
@@ -36,5 +40,6 @@
 - V2-3 已实现默认关闭的智谱 Source Search：固定 8 条任务中 6 条命中精确地区官方页、2 条安全降级，错误地区误接受为 0；Source Candidate 不进入 Evidence 或 Checker。
 - V2-4 已实现默认关闭的静态 Web Extractor、请求级临时 Open Evidence 与开放研究报告；数据库外 PD3226G/US 真实链路成功，Open 商品固定不能进入 Trusted eligible。
 - V2-4C 已把“只有错误地区证据”从 conflict 修正为 unknown，并把目标地区核验与跨地区差异分层；PD3226G/US 离线回放仍为 6/6 matched。
-- Evidence Promotion、浏览器渲染、第二品类和 V2-5 均未开始；不宣称实时价格、全网覆盖或生产级网页抓取。
+- V2-5 已实现默认关闭的确定性优先 Constraint Proposal 与主动澄清；50 条冻结表达 55/55 字段、50/50 任务，ReAct/LangGraph 暂停恢复语义一致，真实 API 调用 0。
+- Evidence Promotion、浏览器渲染、第二品类和 V2-6 均未开始；不宣称实时价格、任意自然语言、全网覆盖或生产级服务。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

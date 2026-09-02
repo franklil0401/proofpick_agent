@@ -122,6 +122,8 @@ class LangGraphOrchestrator:
             arguments["mode"] = request.mode
         if request.thread_id is not None:
             arguments["thread_id"] = request.thread_id
+        if request.constraint_resolution is not None:
+            arguments["constraint_resolution"] = request.constraint_resolution
         report = await self.agent.run(request.query, **arguments)
         await self._emit("graph_node_completed", node="execute_react", status="completed")
         return {"report": report.model_dump(mode="json")}

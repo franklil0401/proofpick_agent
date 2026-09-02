@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-4 Web Extractor、临时 Open Evidence 与开放研究模式已完成；默认关闭，Trusted 资格边界不变** |
+| 当前状态 | **V2-5 Schema Constraint Proposal 与主动澄清已完成；默认关闭，V1 ReAct 与 Checker 边界不变** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-02 |
 
@@ -904,4 +904,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-4 Web Extractor 与 Open Research 已完成；V2-4C 又修复了地区不匹配与跨地区冲突语义。决策见 [ADR-0012](../adr/0012-governed-web-extraction-and-open-evidence.md)和[ADR-0013](../adr/0013-regional-evidence-comparability.md)，验证证据见 [V2-4 报告](v2_4_open_research_report.md)、[V2-4C 报告](v2_4c_regional_evidence_report.md)与[运行说明](v2_4_runtime.md)。默认编排器仍为 ReAct，Domain/Product Pack、Source Search 和 Open Research 均默认关闭；Open Evidence 不能进入正式 Ledger、Trusted Checker 或 eligible 集合。在用户再次确认前，不得进入 V2-5、实现自动 Evidence Promotion、浏览器渲染、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。
+V2-5 已完成。确定性规则优先，qwen-plus 只可通过严格 Function Calling 提案；模糊/不支持/无效 Proposal 在确认前均不能进入 Checker。ReAct 与 LangGraph 共用同一 Resolution 和仓库外澄清状态，默认仍为 ReAct。50 条先冻结表达最终 55/55 字段、50/50 任务，首次实现 46/50 原样保留；真实 API 调用 0。决策见 [ADR-0014](../adr/0014-validated-constraint-proposals-and-clarification.md)，证据见 [V2-5 报告](v2_5_constraint_clarification_report.md)、[评测集说明](v2_5_expression_eval.md)与[运行说明](v2_5_runtime.md)。在用户再次确认前，不得进入 V2-6、增加第二品类、切换默认编排器、实现自动 Evidence Promotion 或修改 V1 冻结数据与历史结果。

@@ -13,6 +13,12 @@ from smartbuy.constraints.models import (
     VerificationBatch,
     VerificationStatus,
 )
+from smartbuy.constraint_proposals.models import (
+    ClarificationState,
+    ConstraintDiff,
+    ConstraintProposal,
+    ConstraintResolution,
+)
 from smartbuy.open_research.models import OpenResearchReport, ResearchMode
 
 
@@ -135,6 +141,9 @@ class DecisionReport(BaseModel):
     request_summary: str
     task_type: Literal["fact", "filter", "comparison", "dynamic", "unrelated"] = "fact"
     constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
+    constraint_proposals: list[ConstraintProposal] = Field(default_factory=list)
+    clarification_state: ClarificationState = ClarificationState.NOT_REQUIRED
+    constraint_diff: list[ConstraintDiff] = Field(default_factory=list)
     constraint_verification: VerificationBatch | None = None
     hard_constraints: list[ConstraintSpec] = Field(default_factory=list)
     soft_preferences: list[str] = Field(default_factory=list)
@@ -210,6 +219,17 @@ class DecisionReport(BaseModel):
             lines.extend(["## 硬约束", ""])
             for item in self.hard_constraints:
                 lines.append(f"- `{item.field} {item.operator.value} {item.value}`")
+            lines.append("")
+        if self.constraint_proposals:
+            lines.extend(["## 约束理解", ""])
+            for item in self.constraint_proposals:
+                active = "active" if item.active else "blocked"
+                lines.append(
+                    f"- `{item.source_span.text}` → `{item.field}`："
+                    f"**{item.status.value}** / {active} / {item.action.value}"
+                )
+            if self.constraint_diff:
+                lines.append(f"- 本轮约束变更：{len(self.constraint_diff)} 项")
             lines.append("")
         active_constraints = self.constraint_set.active()
         if active_constraints:
@@ -327,6 +347,7 @@ class AgentState(BaseModel):
     turn_number: int = Field(default=1, ge=1)
     requirements: UserRequirements = Field(default_factory=UserRequirements)
     constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
+    constraint_resolution: ConstraintResolution | None = None
     candidate_rows: list[dict[str, Any]] = Field(default_factory=list)
     candidate_pool_rows: dict[str, dict[str, Any]] = Field(default_factory=dict)
     candidate_pool_sources: dict[str, list[str]] = Field(default_factory=dict)
