@@ -39,6 +39,8 @@
 - [V2-6A Laptop Domain Pack 与治理数据报告](v2_6a_laptop_domain_and_data_report.md)
 - [V2-6A Laptop 治理数据卡](v2_6a_laptop_data_card.md)
 - [V2-6A Laptop Pack 本地运行说明](v2_6a_laptop_runtime.md)
+- [V2-6B Laptop SQLite、真实索引与工具闭环报告](v2_6b_laptop_toolchain_report.md)
+- [V2-6B Laptop 索引与工具运行说明](v2_6b_laptop_index_runtime.md)
 
 ## 当前状态
 
@@ -52,5 +54,6 @@
 - V2-5B 新增 12 条一次性 Live Holdout：真实 qwen-plus Function 名 12/12 正确且安全误激活为 0，但 Schema 10/12、span 1/20、任务 2/12，LLM 回退仍属实验能力，不能宣称任意口语约束已稳定支持。
 - V2-5C 保留上述历史并改用服务端精确 Quote-to-Span；新的 20 条一次性 Live Holdout V2 首测为 Schema 20/20、服务端 span 28/28、清晰硬约束 F1 96.97%、任务 16/20，安全误激活仍为 0。
 - V2-6A 已新增配置驱动的 Laptop Domain Pack，以及 12 个精确配置、4 个品牌、12 个官方来源和 406 条字段证据；30 条 Laptop 任务已冻结。离线 Product Pack、EAV SQLite、事实卡和待索引文档可重复生成。
-- Laptop 索引仍是 `documents_ready`，真实 Chroma、工具闭环、Agent E2E 和开放研究均未开始；不得把 V2-6A 描述为已完成笔记本购买推荐。Evidence Promotion 和浏览器渲染亦未实现。
+- V2-6B 已构建独立的 12-document/1024 维 Laptop Chroma，并完成 Product Query、KB Search、Reranker、Evidence Check 与 Checker 的工具闭环；冻结的独立 30 条检索集首次 Recall@5 为 30/30，跨品类召回为 0。
+- Laptop Agent E2E、V2-6A 冻结 Holdout、开放研究和 Ranker 仍未开始；不得把工具闭环描述为已完成笔记本购买推荐。Evidence Promotion 和浏览器渲染亦未实现。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

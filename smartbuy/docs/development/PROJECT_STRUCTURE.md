@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-02 |
-| 当前阶段 | V1 已冻结；V2-6A 已完成 Laptop Domain Pack、治理数据、离线派生产物与冻结任务，等待 V2-6B 授权 |
+| 当前阶段 | V1 已冻结；V2-6B 已完成 Laptop SQLite、独立真实索引与工具级闭环，等待 V2-6C 授权 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -168,7 +168,9 @@ proofpick_agent/
 │  │  │  ├─ v2_5c_live_holdout_v2_data_card.md
 │  │  │  ├─ v2_6a_laptop_domain_and_data_report.md
 │  │  │  ├─ v2_6a_laptop_data_card.md
-│  │  │  └─ v2_6a_laptop_runtime.md
+│  │  │  ├─ v2_6a_laptop_runtime.md
+│  │  │  ├─ v2_6b_laptop_toolchain_report.md
+│  │  │  └─ v2_6b_laptop_index_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -197,6 +199,7 @@ proofpick_agent/
 │  │  ├─ loader.py
 │  │  ├─ orchestrator.py
 │  │  ├─ registry.py
+│  │  ├─ scope.py
 │  │  ├─ settings.py
 │  │  └─ v1_adapter.py
 │  ├─ eval/
@@ -228,7 +231,11 @@ proofpick_agent/
 │  │  ├─ v2_stage5c_live_holdout_v2.jsonl
 │  │  ├─ v2_stage5c_live_holdout_v2_manifest.json
 │  │  ├─ run_v2_quote_span_live_eval.py
-│  │  └─ v2_6a_laptop_cases.jsonl
+│  │  ├─ v2_6a_laptop_cases.jsonl
+│  │  ├─ v2_6b_laptop_retrieval_cases.jsonl
+│  │  ├─ v2_6b_laptop_retrieval_runner.py
+│  │  └─ results/
+│  │     └─ v2_6b_laptop_retrieval_first.json
 │  ├─ memory/
 │  │  └─ store.py
 │  ├─ observability/
@@ -279,6 +286,7 @@ proofpick_agent/
 │  │  └─ runtime.py
 │  ├─ retrieval/
 │  │  ├─ __init__.py
+│  │  ├─ domain_index.py
 │  │  └─ knowledge_base.py
 │  ├─ source_search/
 │  │  ├─ __init__.py
@@ -289,6 +297,7 @@ proofpick_agent/
 │  │  └─ validator.py
 │  ├─ tools/
 │  │  ├─ base.py
+│  │  ├─ domain.py
 │  │  ├─ evidence_check.py
 │  │  ├─ kb_search.py
 │  │  ├─ source_search.py
@@ -398,6 +407,7 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_5c_live_holdout_v2_data_card.md` | 新 20 条一次性 Live Holdout V2 的冻结 SHA、覆盖、评分、不变性和限制 |
 | `smartbuy/docs/v2/v2_6a_laptop_domain_and_data_report.md` / `v2_6a_laptop_runtime.md` | 第二品类前置审计、Pack/数据/构建证据、离线复现命令和 V2-6B 边界 |
 | `smartbuy/docs/v2/v2_6a_laptop_data_card.md` | 12 个精确笔记本配置的范围、来源权限、缺失率、证据覆盖和许可边界 |
+| `smartbuy/docs/v2/v2_6b_laptop_toolchain_report.md` / `v2_6b_laptop_index_runtime.md` | Laptop 字段/缺失/分母审计、SQLite/真实索引、检索指标、五工具闭环、成本与复现边界 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -429,6 +439,7 @@ proofpick_agent/
 | `smartbuy/domain/models.py` | 需求、四态证据、轨迹、Checker 结果、候选和最终报告 Pydantic 契约 |
 | `smartbuy/domain_packs/loader.py` / `settings.py` | 固定 JSON 文件集、版本/字段/策略校验及默认关闭的 Domain Pack 配置 |
 | `smartbuy/domain_packs/registry.py` / `evaluator.py` | 多 Pack fail-closed 注册与完全由 Pack 字段/操作符驱动的确定性比较；不含品类字段常量 |
+| `smartbuy/domain_packs/scope.py` | 把 domain 纳入 Memory/Checkpoint key，并拒绝跨品类 envelope 恢复 |
 | `smartbuy/domain_packs/laptop/` | 49 个 Laptop 字段、单位/别名/值域、来源权限、Checker、Ranking、Memory、报告和冻结评测配置 |
 | `smartbuy/domain_packs/monitor/` | 映射 V1 显示器字段、单位、别名、来源、Checker、Ranking、Memory、报告和冻结哈希的首套 Pack |
 | `smartbuy/domain_packs/v1_adapter.py` / `orchestrator.py` | V1 请求/商品/Checker/报告的通用映射、资格一致性门和 opt-in 包装层 |
@@ -437,6 +448,7 @@ proofpick_agent/
 | `smartbuy/orchestration/langgraph_adapter.py` / `safety.py` | 显式启用的状态图外壳、Interrupt/恢复和不可绕过的 Checker 终态结构门 |
 | `smartbuy/orchestration/checkpoints.py` / `selector.py` | 严格反序列化、内存/仓库外 SQLite Saver、身份隔离、特性选择及显式回退 |
 | `smartbuy/tools/` | KB、只读 Text2SQL、Evidence Check、Web unavailable、显式 Source Search 和统一结果契约 |
+| `smartbuy/tools/domain.py` | 通用 EAV 只读 Product Query、领域索引 KB Search、四态 Evidence Check 与完整池 Checker |
 | `smartbuy/config/bailian.py` | 从继承进程安全加载百炼配置、派生三类端点和 Youtu 子进程映射 |
 | `smartbuy/providers/bailian.py` | 普通/流式/工具 Chat、1024 维 Embedding、Rerank、有限重试与降级实现 |
 | `smartbuy/providers/zhipu_search.py` | `search_pro` 与搜狗有界回退、重试/费用/延迟门、TTL 缓存和脱敏调用账本 |
@@ -462,6 +474,7 @@ proofpick_agent/
 | `smartbuy/data/raw/README.md` | 本地受限原文目录规则；除说明外的内容均被 Git 忽略 |
 | `smartbuy/db/schema_v1.sql` / `build_database.py` | 四实体 SQLite Schema、工作区外原子重建、完整性摘要和可选 CSV 导出 |
 | `smartbuy/retrieval/knowledge_base.py` | H2 事实卡切分、必需 chunk 元数据和 Youtu/Chroma 正式建库契约 |
+| `smartbuy/retrieval/domain_index.py` | 通用 Product Pack 的仓库外 1024 维 Chroma 构建、Manifest 校验与原子领域索引指针 |
 | `smartbuy/eval/cases.jsonl` | 40 条固定检索、冲突、拒答和降级金标任务 |
 | `smartbuy/eval/run_retrieval_eval.py` | Vector-only/Reranker 检索、Recall/nDCG/拒答/延迟/成本评测 |
 | `smartbuy/eval/stage4_cases.jsonl` / `run_stage4_eval.py` | 16 条 Agent 金标、4 条 dry run、真实 E2E 指标与成本 Runner |
@@ -474,8 +487,11 @@ proofpick_agent/
 | `smartbuy/eval/merge_stage6_checkpoints.py` / `build_stage6_artifacts.py` | 分片审计合并、首见结果保留、指标 CSV 和统一账本生成 |
 | `smartbuy/eval/v2_stage5_expression_*` / `run_v2_constraint_eval.py` | 先冻结的 30 Regression + 20 Holdout 新表达、哈希和零网络精确评分器 |
 | `smartbuy/eval/v2_6a_laptop_cases.jsonl` | 首次正式 Laptop E2E 前冻结的 30 条结构化、相似配置、地区/配置、负例和自然约束金标 |
+| `smartbuy/eval/v2_6b_laptop_retrieval_cases.jsonl` / `v2_6b_laptop_retrieval_runner.py` | 在线调参前冻结的 30 条 Laptop 工具检索集，以及 Vector/Reranker 首次评测 Runner |
+| `smartbuy/eval/results/v2_6b_laptop_retrieval_first.json` | 不可覆盖的首次真实 1024 维检索、Reranker、延迟和费用脱敏结果 |
 | `smartbuy/scripts/build_laptop_product_pack.py` | 将紧凑治理源确定性展开为完整 Laptop Product Pack，不抓取网页或调用模型 |
 | `smartbuy/tests/integration/test_v2_laptop_domain_pack.py` | Pack 隔离、字段/单位、来源权限、Evidence、幂等构建、SQLite、回滚、自然表达和冻结哈希验收 |
+| `smartbuy/tests/integration/test_v2_laptop_toolchain.py` | Product Query、真实索引合同、KB/Reranker 降级、Evidence/Checker、10 条组合与跨品类隔离测试 |
 | `smartbuy/eval/v2_stage5b_live_holdout*` / `run_v2_live_constraint_holdout.py` | 一次性 12 条 qwen-plus 回退集、冻结哈希、严格 Tool/span/Pack 评分和仓库外首测产物 |
 | `smartbuy/eval/v2_stage5c_live_holdout_v2*` / `run_v2_quote_span_live_eval.py` | 新 20 条 Quote 合同 Live Holdout、冻结哈希、真实 Function/Schema/span/安全评分与仓库外不可覆盖输出 |
 | `smartbuy/docs/adr/0001-vendor-youtu-rag.md` | 上游纳入方式、固定 Commit、修改边界和更新流程决策 |

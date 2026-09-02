@@ -1,0 +1,1005 @@
+{
+  "run_type": "v2_6b_laptop_retrieval_first",
+  "created_at": "2026-09-02T12:02:30.057710+00:00",
+  "case_file_sha256": "7c70e4da196c17d3d09f6ee5c42162d16995963c2ee18c0c4254af55d6903e8c",
+  "case_count": 30,
+  "domain_id": "laptop",
+  "domain_pack_version": "1.0.0",
+  "data_version": "laptop-governed-2026-09-02-v1",
+  "data_manifest_hash": "d44373c8214cb996776445e5a5c1da60c233ce5d4b770c261399d913211ac1ad",
+  "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+  "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+  "index_manifest_hash": "74a2c4467d53bd4ab265c61fd0cce42b0656bbb9a841c0f37bea5c5d86d8330f",
+  "document_count": 12,
+  "chunk_count": 12,
+  "embedding_model": "text-embedding-v4",
+  "embedding_dimensions": 1024,
+  "metrics": {
+    "vector_recall_at_5": 1.0,
+    "reranker_recall_at_5": 1.0,
+    "vector_ndcg_at_5": 0.9765645368162078,
+    "reranker_ndcg_at_5": 0.9973240263049395,
+    "vector_exact_top1_errors": 0,
+    "reranker_exact_top1_errors": 0,
+    "exact_top1_denominator": 18,
+    "wrong_region_exact_bindings": 0,
+    "cross_domain_hits": 0,
+    "vector_average_latency_ms": 346.148113355351,
+    "vector_p95_latency_ms": 621.8505001161247,
+    "reranker_average_latency_ms": 256.62816665911424,
+    "reranker_p95_latency_ms": 416.37340001761913
+  },
+  "api_usage": {
+    "call_count": 62,
+    "successful_calls": 62,
+    "degraded_calls": 0,
+    "input_tokens": 513055,
+    "output_tokens": 0,
+    "estimated_cost_cny": 0.2565275
+  },
+  "frozen_agent_holdout_run": false,
+  "cases": [
+    {
+      "case_id": "lret-001",
+      "category": "configuration_id",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_top5": [
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "asus-proart-p16-h7606ww-cn",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 324.848,
+      "reranker_latency_ms": 247.545,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-002",
+      "category": "configuration_id",
+      "difficulty": "region",
+      "gold_product_ids": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_top5": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606ww-cn"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 621.851,
+      "reranker_latency_ms": 229.882,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-003",
+      "category": "configuration_id",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "dell-xps13-9350-usexcpcto9350lnl04-us"
+      ],
+      "vector_top5": [
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "asus-proart-p16-h7606wi-cn"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 304.031,
+      "reranker_latency_ms": 199.983,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-004",
+      "category": "configuration_id",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 295.039,
+      "reranker_latency_ms": 264.821,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-005",
+      "category": "configuration_id",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606ww-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 304.307,
+      "reranker_latency_ms": 212.061,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-006",
+      "category": "configuration_id",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606wi-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 312.978,
+      "reranker_latency_ms": 206.928,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-007",
+      "category": "sku",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "hp-elitebook-840-g11-9g0c0et-il"
+      ],
+      "vector_top5": [
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "reranker_top5": [
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 314.347,
+      "reranker_latency_ms": 239.482,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-008",
+      "category": "sku",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "hp-zbook-firefly14-g11-98n14et-il"
+      ],
+      "vector_top5": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de"
+      ],
+      "reranker_top5": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 318.926,
+      "reranker_latency_ms": 233.26,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-009",
+      "category": "sku",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "vector_top5": [
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn"
+      ],
+      "reranker_top5": [
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "asus-proart-p16-h7606ww-cn",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 320.772,
+      "reranker_latency_ms": 239.819,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-010",
+      "category": "sku",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de"
+      ],
+      "vector_top5": [
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-elitebook-840-g11-9g0c0et-il"
+      ],
+      "reranker_top5": [
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 402.419,
+      "reranker_latency_ms": 316.158,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-011",
+      "category": "sku",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "vector_top5": [
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "reranker_top5": [
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 344.677,
+      "reranker_latency_ms": 315.407,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-012",
+      "category": "sku",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_top5": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "dell-xps13-9350-usexcpcto9350lnl04-us"
+      ],
+      "reranker_top5": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 325.643,
+      "reranker_latency_ms": 294.201,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-013",
+      "category": "cpu_gpu",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "asus-proart-p16-h7606ww-cn",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 313.873,
+      "reranker_latency_ms": 207.838,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-014",
+      "category": "cpu_gpu",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606ww-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.5,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 322.938,
+      "reranker_latency_ms": 317.57,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-015",
+      "category": "cpu_gpu",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "hp-zbook-firefly14-g11-98n14et-il"
+      ],
+      "vector_top5": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "reranker_top5": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "hp-elitebook-840-g11-9g0c0et-il"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 356.705,
+      "reranker_latency_ms": 224.519,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-016",
+      "category": "cpu_gpu",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "vector_top5": [
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "reranker_top5": [
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 327.379,
+      "reranker_latency_ms": 280.121,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-017",
+      "category": "cpu_gpu",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_top5": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "reranker_top5": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 385.567,
+      "reranker_latency_ms": 200.016,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-018",
+      "category": "cpu_gpu",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "dell-xps13-9350-usexcpcto9350lnl04-us"
+      ],
+      "vector_top5": [
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "reranker_top5": [
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "hp-zbook-firefly14-g11-98n14et-il"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 333.371,
+      "reranker_latency_ms": 224.886,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-019",
+      "category": "memory_storage",
+      "difficulty": "multi_answer",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.9197207891481876,
+      "reranker_ndcg_at_5": 0.9197207891481876,
+      "vector_latency_ms": 317.673,
+      "reranker_latency_ms": 298.363,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-020",
+      "category": "memory_storage",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606wi-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 311.567,
+      "reranker_latency_ms": 220.645,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-021",
+      "category": "memory_storage",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_top5": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "hp-zbook-firefly14-g11-98n14et-il"
+      ],
+      "reranker_top5": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "hp-elitebook-840-g11-9g0c0et-il"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 324.768,
+      "reranker_latency_ms": 232.428,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-022",
+      "category": "memory_storage",
+      "difficulty": "multi_answer",
+      "gold_product_ids": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "vector_top5": [
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "reranker_top5": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.8772153153380493,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 316.191,
+      "reranker_latency_ms": 416.373,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-023",
+      "category": "interfaces",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 306.237,
+      "reranker_latency_ms": 208.663,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-024",
+      "category": "interfaces",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "hp-elitebook-840-g11-9g0c0et-il"
+      ],
+      "vector_top5": [
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "reranker_top5": [
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "hp-zbook-firefly14-g11-98n14et-il"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 327.717,
+      "reranker_latency_ms": 282.882,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-025",
+      "category": "interfaces",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "vector_top5": [
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "asus-proart-p16-h7606ww-cn"
+      ],
+      "reranker_top5": [
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "hp-zbook-firefly14-g11-98n14et-il"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 330.58,
+      "reranker_latency_ms": 192.751,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-026",
+      "category": "interfaces",
+      "difficulty": "fact",
+      "gold_product_ids": [
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de"
+      ],
+      "vector_top5": [
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "hp-zbook-firefly14-g11-98n14et-il"
+      ],
+      "reranker_top5": [
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 322.545,
+      "reranker_latency_ms": 180.497,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-027",
+      "category": "region_configuration",
+      "difficulty": "region",
+      "gold_product_ids": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_top5": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 305.858,
+      "reranker_latency_ms": 484.391,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-028",
+      "category": "region_configuration",
+      "difficulty": "region",
+      "gold_product_ids": [
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_top5": [
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 674.22,
+      "reranker_latency_ms": 213.039,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-029",
+      "category": "region_configuration",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606wi-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 291.072,
+      "reranker_latency_ms": 207.169,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "lret-030",
+      "category": "region_configuration",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "asus-proart-p16-h7606ww-cn"
+      ],
+      "vector_top5": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "reranker_top5": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "asus-proart-p16-h7606wi-cn",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 326.346,
+      "reranker_latency_ms": 307.148,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    }
+  ]
+}

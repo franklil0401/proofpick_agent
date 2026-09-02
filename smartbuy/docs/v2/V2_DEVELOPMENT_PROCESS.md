@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-6A 已完成 Laptop Domain Pack、12 个精确配置的治理数据和 30 条冻结任务；真实索引与工具闭环尚未开始** |
+| 当前状态 | **V2-6B 已完成 Laptop SQLite、独立真实索引和五工具闭环；Agent E2E 与冻结 Holdout 尚未运行** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-02 |
 
@@ -599,7 +599,7 @@ feat(v2): add schema-validated constraints and clarification
 V2-6 拆分为三个独立验收阶段：
 
 - **V2-6A（已完成）**：Laptop Domain Pack、治理数据、离线派生产物和冻结任务。
-- **V2-6B（未开始）**：独立 SQLite/Chroma、Product Query、KB Search、Evidence Check 与 Checker 工具闭环。
+- **V2-6B（已完成）**：独立 SQLite/Chroma、Product Query、KB Search、Reranker、Evidence Check 与 Checker 工具闭环。
 - **V2-6C（未开始）**：冻结 E2E、开放研究与跨品类验收。
 
 ### 14.2 数据范围
@@ -628,6 +628,16 @@ V2-6 拆分为三个独立验收阶段：
 - 10 条自然表达通过现有 Proposal/QuoteSpan 的离线 Pack 驱动验证；本阶段真实模型调用为 0。
 
 V2-6A 没有实现笔记本结构化查询、真实 KB、正式 Evidence/Checker 工具闭环、开放研究或 Agent E2E。索引状态仅为 `documents_ready`，误启用必须 fail closed。
+
+### 14.4.1 V2-6B 已实现
+
+- 由 Domain Pack 驱动的只读 EAV Product Query；预算缺少价格观察时保持 unknown。
+- 仓库外独立 Laptop Chroma：12 documents/chunks、`text-embedding-v4`/1024 维，Data/Index/Collection 显式绑定。
+- KB Search 与 `qwen3-rerank` 正常/向量降级路径，以及通用 Evidence Check/Constraint Checker 完整候选池安全门。
+- 在在线调参前冻结的 30 条独立检索集，首次 Vector/Reranker Recall@5 均为 30/30；nDCG@5 为 0.9766/0.9973，精确绑定与跨品类错误为 0。
+- 10 条工具组合任务、两品类字段/索引/Memory/Checkpoint 隔离；没有运行 V2-6A 的 Agent Holdout。
+
+V2-6B 不等于 Laptop Agent E2E。完整 30 条冻结 Agent 任务、自然语言规划、开放研究与端到端报告属于 V2-6C，必须再次授权。
 
 ### 14.5 验收指标
 
@@ -914,6 +924,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-6A 已完成 Laptop Domain Pack、12 个精确配置、406 条字段 Evidence、离线可重复 Product Pack 和 30 条冻结任务；详情见 [阶段报告](v2_6a_laptop_domain_and_data_report.md)、[数据卡](v2_6a_laptop_data_card.md)和[运行说明](v2_6a_laptop_runtime.md)。V2-5B/5C 的全部历史首测继续原样保留。
+V2-6A 已完成 Laptop Domain Pack、12 个精确配置、406 条字段 Evidence、离线可重复 Product Pack 和 30 条冻结任务；V2-6B 已完成真实索引与工具闭环。详情见 [V2-6A 阶段报告](v2_6a_laptop_domain_and_data_report.md)、[数据卡](v2_6a_laptop_data_card.md)、[V2-6B 报告](v2_6b_laptop_toolchain_report.md)和[运行说明](v2_6b_laptop_index_runtime.md)。V2-5B/5C 的全部历史首测继续原样保留。
 
-下一步只有在用户再次确认后才能执行 V2-6B：通用化 Product Query/Text2SQL、KB Search、Evidence Check 与 Checker 的工具闭环，构建与 Monitor 隔离的真实 Laptop 索引。不得直接在通用模块加入 Laptop 字段常量，不得自动进入 V2-6C/V2-7，不得切换默认编排器或修改 V1 冻结数据与历史结果。
+下一步只有在用户再次确认后才能执行 V2-6C：冻结 Laptop Agent E2E、跨品类端到端和开放研究验收。不得自动进入 V2-6C/V2-7，不得切换默认编排器或修改 V1 冻结数据与历史结果。
