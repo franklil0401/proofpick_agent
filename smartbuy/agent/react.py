@@ -31,12 +31,14 @@ from smartbuy.domain import (
     DecisionReport,
     EvidenceReference,
     FieldAssessment,
+    ResearchMode,
     ToolTrace,
     UserRequirements,
 )
 from smartbuy.memory import LongTermPreferenceStore, SessionMemoryStore
 from smartbuy.observability import agent_monitor
 from smartbuy.tools import ToolResult
+from smartbuy.open_research.models import OpenResearchReport
 
 
 EventCallback = Callable[[dict[str, Any]], Awaitable[None] | None]
@@ -153,7 +155,15 @@ class PurchaseDecisionAgent:
 
     @property
     def tool_schemas(self) -> list[dict[str, Any]]:
-        return [SET_REQUIREMENTS_SCHEMA, *[self.tools[name].schema for name in sorted(self.tools)], FINISH_SCHEMA]
+        return self._tool_schemas(ResearchMode.TRUSTED)
+
+    def _tool_schemas(self, mode: ResearchMode) -> list[dict[str, Any]]:
+        names = [
+            name
+            for name in sorted(self.tools)
+            if name != "web_extractor" or mode == ResearchMode.OPEN
+        ]
+        return [SET_REQUIREMENTS_SCHEMA, *[self.tools[name].schema for name in names], FINISH_SCHEMA]
 
     @staticmethod
     def _safe_arguments(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
@@ -171,6 +181,12 @@ class PurchaseDecisionAgent:
             safe["region"] = str(arguments.get("region", ""))[:8]
             safe["allowed_domains"] = list(arguments.get("allowed_domains", []))[:10]
             safe["trigger_reason"] = str(arguments.get("trigger_reason", ""))[:40]
+        elif name == "web_extractor":
+            safe["target_model"] = str(arguments.get("target_model", ""))[:100]
+            safe["target_fields"] = list(arguments.get("target_fields", []))[:15]
+            safe["region"] = str(arguments.get("region", ""))[:8]
+            safe["source_candidate_observed"] = bool(arguments.get("_source_candidate"))
+            safe["allow_region_discovery"] = bool(arguments.get("allow_region_discovery", False))
         elif name == "evidence_check":
             safe["model_ids"] = list(arguments.get("model_ids", []))[:10]
             safe["required_fields"] = list(arguments.get("required_fields", []))[:15]
@@ -308,15 +324,28 @@ class PurchaseDecisionAgent:
             sources.append(source)
 
     def _start_state(
-        self, query: str, session_id: str, user_id: str | None
+        self,
+        query: str,
+        session_id: str,
+        user_id: str | None,
+        mode: ResearchMode,
+        thread_id: str | None,
     ) -> tuple[AgentState, UserRequirements | None, ConstraintSet | None]:
         previous = self.session_memory.get(session_id)
         if previous is None:
-            return AgentState(session_id=session_id, user_id=user_id, query=query), None, None
+            return AgentState(
+                session_id=session_id,
+                user_id=user_id,
+                query=query,
+                mode=mode,
+                thread_id=thread_id,
+            ), None, None
         previous_requirements = previous.requirements.model_copy(deep=True)
         previous_constraints = previous.constraint_set.model_copy(deep=True)
         previous.query = query
         previous.user_id = user_id or previous.user_id
+        previous.mode = mode
+        previous.thread_id = thread_id
         previous.turn_number += 1
         previous.traces = []
         previous.degraded_states = []
@@ -326,6 +355,8 @@ class PurchaseDecisionAgent:
         previous.constraint_verification = None
         previous.ranked_eligible_model_ids = []
         previous.candidate_explanations = {}
+        previous.source_candidates = {}
+        previous.open_research = None
         return previous, previous_requirements, previous_constraints
 
     async def _invoke_tool(
@@ -411,7 +442,12 @@ class PurchaseDecisionAgent:
                     tool=name, status="failed", error_code="EVIDENCE_CHECK_REQUIRED",
                     summary="已有候选但尚未执行字段级证据核验，不能结束。",
                 )
-            if not state.candidate_rows and not state.kb_hits and not ({"text2sql", "evidence_check"} & observed):
+            if (
+                not state.candidate_rows
+                and not state.kb_hits
+                and state.open_research is None
+                and not ({"text2sql", "evidence_check", "source_search", "web_extractor"} & observed)
+            ):
                 return ToolResult(
                     tool=name, status="failed", error_code="OBSERVATION_REQUIRED",
                     summary="尚无工具观察结果，不能结束。",
@@ -421,7 +457,12 @@ class PurchaseDecisionAgent:
             successful_sql = any(
                 trace.tool == "text2sql" and trace.status in {"success", "degraded"} for trace in state.traces
             )
-            if "unknown" in statuses or "conflict" in statuses:
+            if state.mode == ResearchMode.OPEN and state.open_research is not None:
+                state.stop_reason = (
+                    "Open Research 已完成字段级临时证据核验；结果保持 provisional，"
+                    "未进入 Trusted 推荐集合。"
+                )
+            elif "unknown" in statuses or "conflict" in statuses:
                 state.stop_reason = "字段级证据存在 unknown 或 conflict，已停止并拒绝标记为完全满足。"
             elif state.assessments:
                 state.stop_reason = "候选字段四态核验完成，达到显式停止条件。"
@@ -450,6 +491,28 @@ class PurchaseDecisionAgent:
                     error_code="SOURCE_SEARCH_TASK_BUDGET_EXHAUSTED",
                     summary="已达到单任务 Source Search 次数上限，未继续联网。",
                 )
+        if name == "web_extractor":
+            if state.mode != ResearchMode.OPEN:
+                return ToolResult(
+                    tool=name,
+                    status="failed",
+                    error_code="OPEN_MODE_REQUIRED",
+                    summary="Web Extractor 只能在显式 Open Mode 中运行。",
+                )
+            source_url = str(arguments.get("source_url", ""))
+            source_candidate = state.source_candidates.get(source_url)
+            if source_candidate is None:
+                return ToolResult(
+                    tool=name,
+                    status="failed",
+                    error_code="OBSERVED_SOURCE_CANDIDATE_REQUIRED",
+                    summary="URL 不在本轮 Source Search 候选中，安全门已阻断。",
+                )
+            arguments["_source_candidate"] = source_candidate
+            arguments["_user_id"] = state.user_id
+            arguments["_session_id"] = state.session_id
+            arguments["_thread_id"] = state.thread_id or state.session_id
+            arguments["_request_id"] = uuid.uuid4().hex
         observed = [
             trace.tool for trace in state.traces if trace.status in {"success", "degraded", "unavailable"}
         ]
@@ -620,6 +683,22 @@ class PurchaseDecisionAgent:
                 state.assessments[model_id] = [FieldAssessment.model_validate(item) for item in items]
                 state.verified_fields[model_id] = [item.field for item in state.assessments[model_id]]
                 self._remember_candidate(state, str(model_id), {"model_id": model_id}, "evidence_check")
+        elif name == "source_search":
+            for group in ("usable_candidates", "navigation_candidates"):
+                for candidate in result.data.get(group, []):
+                    url = str(candidate.get("url", ""))
+                    if url:
+                        state.source_candidates[url] = dict(candidate)
+        elif name == "web_extractor" and result.data.get("report"):
+            try:
+                state.open_research = OpenResearchReport.model_validate(result.data["report"])
+            except ValidationError:
+                return ToolResult(
+                    tool=name,
+                    status="failed",
+                    error_code="INVALID_OPEN_RESEARCH_RESULT",
+                    summary="Open Research 输出未通过 Schema 校验，未进入报告。",
+                )
         if result.degraded or result.status in {"degraded", "unavailable"}:
             state.degraded_states.append(f"{name}: {result.summary}")
         return result
@@ -731,7 +810,11 @@ class PurchaseDecisionAgent:
         if name == "web_search":
             return "Web 不可用，回到 KB + SQL 稳定链路。"
         if name == "source_search":
+            if state.mode == ResearchMode.OPEN:
+                return "选择已验证的官方 Source Candidate，调用 Web Extractor 获取正文；摘要仍不能成为证据。"
             return "只把 URL 元数据保留为来源候选；不得转成 Evidence 或 Checker 输入。"
+        if name == "web_extractor":
+            return "根据临时证据四态生成 Open Research 报告；不得加入 Trusted 推荐集合。"
         return "停止并生成经过 Schema 校验的报告。"
 
     async def run(
@@ -741,11 +824,15 @@ class PurchaseDecisionAgent:
         session_id: str | None = None,
         user_id: str | None = None,
         use_long_term_memory: bool = False,
+        mode: ResearchMode = ResearchMode.TRUSTED,
+        thread_id: str | None = None,
         event_callback: EventCallback | None = None,
     ) -> DecisionReport:
         started = time.perf_counter()
         session_id = session_id or str(uuid.uuid4())
-        state, previous_requirements, previous_constraints = self._start_state(query, session_id, user_id)
+        state, previous_requirements, previous_constraints = self._start_state(
+            query, session_id, user_id, mode, thread_id
+        )
         preferences = (
             self.preference_memory.recall(user_id, requested=use_long_term_memory) if user_id else {}
         )
@@ -759,6 +846,11 @@ class PurchaseDecisionAgent:
             system_prompt += (
                 "11. source_search 只用于用户明确要求、目录外型号、动态来源发现，或本地取证后仍缺字段；"
                 "返回项只是 Source Candidate，不能当成规格事实、Evidence 或 Checker 输入。\n"
+            )
+        if "web_extractor" in self.tools and state.mode == ResearchMode.OPEN:
+            system_prompt += (
+                "12. 当前为 Open Mode：目录外型号必须先 source_search，再对本轮观察到的候选调用 web_extractor；"
+                "只有正文片段可形成请求级 open evidence。Open 商品永远不能标为 Trusted eligible。\n"
             )
         if not self.enable_constraint_checker:
             system_prompt = system_prompt.replace(
@@ -781,7 +873,11 @@ class PurchaseDecisionAgent:
                 break
             try:
                 response = await self.provider.chat(
-                    messages, tools=self.tool_schemas, tool_choice="auto", temperature=0.0, max_tokens=800
+                    messages,
+                    tools=self._tool_schemas(state.mode),
+                    tool_choice="auto",
+                    temperature=0.0,
+                    max_tokens=800,
                 )
             except Exception:
                 state.stop_reason = "模型调用失败，已在不暴露底层敏感错误的情况下停止。"
@@ -833,6 +929,15 @@ class PurchaseDecisionAgent:
                         }
                         agent_monitor.record_source_search_event(started_event)
                         await self._emit(event_callback, started_event)
+                    elif name == "web_extractor":
+                        started_event = {
+                            "type": "web_extraction_started",
+                            "status": "started",
+                            "mode": "open",
+                            "target_field_count": len(arguments.get("target_fields", [])),
+                        }
+                        agent_monitor.record_open_research_event(started_event)
+                        await self._emit(event_callback, started_event)
                     result = await self._invoke_tool(
                         name,
                         arguments,
@@ -861,6 +966,27 @@ class PurchaseDecisionAgent:
                         "error_category": result.error_code,
                     }
                     agent_monitor.record_source_search_event(completed_event)
+                    await self._emit(event_callback, completed_event)
+                elif name == "web_extractor":
+                    open_report = result.data.get("report", {})
+                    extraction = result.data.get("extraction", {})
+                    completed_event = {
+                        "type": "web_extraction_completed",
+                        "status": str(extraction.get("status", result.status))[:40],
+                        "mode": "open",
+                        "http_status": extraction.get("http_status"),
+                        "redirect_count": len(extraction.get("redirect_chain", [])),
+                        "snippet_count": len(extraction.get("snippets", [])),
+                        "temporary_evidence_count": int(
+                            open_report.get("temporary_evidence_count", 0) or 0
+                        ),
+                        "unknown_field_count": len(open_report.get("unknown_fields", [])),
+                        "conflict_field_count": len(open_report.get("conflict_fields", [])),
+                        "trusted_eligible": False,
+                        "degraded": bool(result.degraded),
+                        "error_category": result.error_code,
+                    }
+                    agent_monitor.record_open_research_event(completed_event)
                     await self._emit(event_callback, completed_event)
                 state.tool_call_count += 1
                 parent_step = arguments.get("parent_step") if isinstance(arguments.get("parent_step"), int) else None

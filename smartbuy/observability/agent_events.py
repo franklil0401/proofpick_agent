@@ -13,6 +13,7 @@ class AgentMonitor:
         self._runs: deque[dict[str, Any]] = deque(maxlen=max_runs)
         self._orchestration_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
         self._source_search_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
+        self._open_research_events: deque[dict[str, Any]] = deque(maxlen=max_runs * 2)
         self._lock = Lock()
 
     def record(self, payload: dict[str, Any]) -> None:
@@ -96,11 +97,34 @@ class AgentMonitor:
         with self._lock:
             self._source_search_events.append(allowed)
 
+    def record_open_research_event(self, payload: dict[str, Any]) -> None:
+        """Keep counts and public states only; URLs, snippets and scope IDs are excluded."""
+        allowed = {
+            "type": str(payload.get("type", ""))[:64],
+            "status": str(payload.get("status", ""))[:40],
+            "mode": str(payload.get("mode", ""))[:16],
+            "http_status": (
+                int(payload["http_status"]) if payload.get("http_status") is not None else None
+            ),
+            "redirect_count": int(payload.get("redirect_count", 0)),
+            "target_field_count": int(payload.get("target_field_count", 0)),
+            "snippet_count": int(payload.get("snippet_count", 0)),
+            "temporary_evidence_count": int(payload.get("temporary_evidence_count", 0)),
+            "unknown_field_count": int(payload.get("unknown_field_count", 0)),
+            "conflict_field_count": int(payload.get("conflict_field_count", 0)),
+            "trusted_eligible": False,
+            "degraded": bool(payload.get("degraded", False)),
+            "error_category": str(payload.get("error_category") or "")[:64] or None,
+        }
+        with self._lock:
+            self._open_research_events.append(allowed)
+
     def snapshot(self) -> dict[str, Any]:
         with self._lock:
             runs = deepcopy(list(self._runs))
             orchestration_events = deepcopy(list(self._orchestration_events))
             source_search_events = deepcopy(list(self._source_search_events))
+            open_research_events = deepcopy(list(self._open_research_events))
         latencies = sorted(item["latency_ms"] for item in runs)
         p95_index = max(0, min(len(latencies) - 1, int(len(latencies) * 0.95))) if latencies else 0
         return {
@@ -118,6 +142,7 @@ class AgentMonitor:
             "recent_runs": runs[-10:],
             "recent_orchestration_events": orchestration_events[-20:],
             "recent_source_search_events": source_search_events[-20:],
+            "recent_open_research_events": open_research_events[-20:],
         }
 
 

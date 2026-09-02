@@ -21,7 +21,7 @@
 
 ## 为什么它是 Agent
 
-- **自主选择工具：** 有界 ReAct 根据问题调用 Text2SQL、KB Search 或 Evidence Check；V2 可显式启用受控 Source Search 发现官方 URL。
+- **自主选择工具：** 有界 ReAct 根据问题调用 Text2SQL、KB Search 或 Evidence Check；V2 Open Mode 可显式发现官方 URL、抽取正文并形成临时证据。
 - **支持连续追问：** 保存当前会话条件和用户确认的长期偏好，新要求可以覆盖旧条件。
 - **推荐前强制复核：** LLM 负责规划和解释，SQL/代码负责检查预算、尺寸和接口等硬要求。
 
@@ -45,7 +45,7 @@ Optional Web Adapter 使用灰色虚线表示，公开 Demo 默认关闭，不�
 ## 核心代码入口
 
 - [`smartbuy/agent/react.py`](smartbuy/agent/react.py)：ReAct 规划、工具编排和停止条件。
-- [`smartbuy/tools/`](smartbuy/tools/)：Text2SQL、KB Search、Evidence Check 和默认关闭的 Source Search。
+- [`smartbuy/tools/`](smartbuy/tools/)：Text2SQL、KB Search、Evidence Check，以及默认关闭的 Source Search/Web Extractor。
 - [`smartbuy/constraints/verifier.py`](smartbuy/constraints/verifier.py)：确定性硬约束复核。
 - [`smartbuy/memory/store.py`](smartbuy/memory/store.py)：短期会话和长期偏好记忆。
 - [`smartbuy/eval/`](smartbuy/eval/)：冻结任务、消融实验和故障评测。
@@ -75,13 +75,13 @@ Set-Location C:\ai\proofpick
 上游以固定 Commit 的 Git subtree 保留在 `vendor/youtu-rag/`；归属、许可证和接线差异见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md)。
 
 - 默认 V1 数据覆盖 12 个显示器型号；显式 V2 Product Pack 路径验证到 13 个。
-- V2 Source Search 只发现官方 URL，不提取网页证据；价格仍不是实时数据。
+- V2 Open Research 仅对显式模式下的官方来源生成 24 小时临时证据，不自动进入治理数据或 Trusted 推荐；价格仍不是实时数据。
 - 冻结评测结果不代表生产准确率、生产零违规或 SLA。
 
 ## 详细文档与 License
 
 - [五分钟 Demo](smartbuy/docs/demo_guide.md)：固定输入、工具轨迹、截图和备用步骤。
-- [Runtime Manifest](smartbuy/docs/runtime_manifest.md) / [Data Card](smartbuy/docs/data_card.md)：环境、运行方式、数据构建和许可边界；V2 搜索见[阶段报告](smartbuy/docs/v2/v2_3_source_search_report.md)。
+- [Runtime Manifest](smartbuy/docs/runtime_manifest.md) / [Data Card](smartbuy/docs/data_card.md)：环境、运行方式、数据构建和许可边界；V2 Open Research 见[阶段报告](smartbuy/docs/v2/v2_4_open_research_report.md)。
 - [作品集指标](smartbuy/docs/portfolio_metrics.md) / [发布报告](smartbuy/docs/release_report.md)：实验分母、历史失败和发布复现。
 - [开发指南](smartbuy/docs/development/DEVELOPMENT_GUIDE.md) / [项目结构](smartbuy/docs/development/PROJECT_STRUCTURE.md)：工程规范与代码地图。
 

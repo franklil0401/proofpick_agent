@@ -7,7 +7,7 @@ from typing import Any, Awaitable, Callable, Protocol
 
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
-from smartbuy.domain import DecisionReport
+from smartbuy.domain import DecisionReport, ResearchMode
 from smartbuy.memory import LongTermPreferenceStore
 
 
@@ -36,6 +36,7 @@ class OrchestratorRequest(BaseModel):
     user_id: str | None = Field(default=None, max_length=128)
     thread_id: str | None = Field(default=None, max_length=128)
     use_long_term_memory: bool = False
+    mode: ResearchMode = ResearchMode.TRUSTED
     resume_value: Any = None
     clarification_question: str | None = Field(default=None, max_length=500)
 
@@ -82,6 +83,8 @@ class CompatibleAgent(Protocol):
         session_id: str | None = None,
         user_id: str | None = None,
         use_long_term_memory: bool = False,
+        mode: ResearchMode = ResearchMode.TRUSTED,
+        thread_id: str | None = None,
         event_callback: EventCallback | None = None,
     ) -> DecisionReport: ...
 

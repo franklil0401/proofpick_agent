@@ -6,6 +6,7 @@ from .kb_search import KBSearchTool
 from .source_search import SourceSearchTool
 from .text2sql import SQLValidationError, Text2SQLTool, validate_select_sql
 from .web_search import WebSearchTool
+from .web_extractor import WebExtractorTool
 
 __all__ = [
     "EvidenceCheckTool",
@@ -15,5 +16,6 @@ __all__ = [
     "Text2SQLTool",
     "ToolResult",
     "WebSearchTool",
+    "WebExtractorTool",
     "validate_select_sql",
 ]

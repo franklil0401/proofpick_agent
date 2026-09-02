@@ -4,8 +4,8 @@
 
 | 项目 | 内容 |
 |---|---|
-| 最后更新时间 | 2026-09-01 |
-| 当前阶段 | V1 已冻结；V2-3 受控智谱 Source Search 已完成，默认关闭且候选与 Evidence/Checker 隔离 |
+| 最后更新时间 | 2026-09-02 |
+| 当前阶段 | V1 已冻结；V2-4 Web Extractor、临时 Open Evidence 与开放研究模式已完成，默认关闭 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -114,7 +114,8 @@ proofpick_agent/
 │  │  │  ├─ 0008-langgraph-compatibility-and-checkpointing.md
 │  │  │  ├─ 0009-domain-contracts-and-monitor-pack.md
 │  │  │  ├─ 0010-versioned-product-pack-and-evidence-ledger.md
-│  │  │  └─ 0011-auditable-zhipu-source-search.md
+│  │  │  ├─ 0011-auditable-zhipu-source-search.md
+│  │  │  └─ 0012-governed-web-extraction-and-open-evidence.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -138,7 +139,9 @@ proofpick_agent/
 │  │  │  ├─ v2_2_product_pack_report.md
 │  │  │  ├─ v2_2_runtime.md
 │  │  │  ├─ v2_3_source_search_report.md
-│  │  │  └─ v2_3_runtime.md
+│  │  │  ├─ v2_3_runtime.md
+│  │  │  ├─ v2_4_open_research_report.md
+│  │  │  └─ v2_4_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -190,6 +193,17 @@ proofpick_agent/
 │  │  ├─ agent_events.py
 │  │  ├─ eval_ledger.py
 │  │  └─ usage.py
+│  ├─ open_research/
+│  │  ├─ __init__.py
+│  │  ├─ evidence_check.py
+│  │  ├─ extractor.py
+│  │  ├─ html_parser.py
+│  │  ├─ models.py
+│  │  ├─ normalizer.py
+│  │  ├─ service.py
+│  │  ├─ settings.py
+│  │  ├─ store.py
+│  │  └─ url_safety.py
 │  ├─ orchestration/
 │  │  ├─ __init__.py
 │  │  ├─ checkpoints.py
@@ -232,6 +246,7 @@ proofpick_agent/
 │  │  ├─ kb_search.py
 │  │  ├─ source_search.py
 │  │  ├─ text2sql.py
+│  │  ├─ web_extractor.py
 │  │  └─ web_search.py
 │  ├─ scripts/
 │  │  ├─ __init__.py
@@ -247,6 +262,7 @@ proofpick_agent/
 │  │  ├─ verify_bailian_stage2.py
 │  │  ├─ verify_v2_source_search.py
 │  │  ├─ verify_v2_product_pack_live.py
+│  │  ├─ verify_v2_open_research.py
 │  │  ├─ verify_stage7_demos.py
 │  │  └─ verify_stage3_index.py
 │  └─ tests/
@@ -255,6 +271,7 @@ proofpick_agent/
 │     │  └─ v2_checkpoint_worker.py
 │     ├─ integration/
 │     │  ├─ test_stage4_api.py
+│     │  ├─ test_v2_open_research_agent.py
 │     │  ├─ test_v2_source_search_agent.py
 │     │  ├─ test_v2_live_product_index.py
 │     │  ├─ test_v2_product_pack_pipeline.py
@@ -282,6 +299,7 @@ proofpick_agent/
 │        ├─ test_v2_orchestration_contract.py
 │        ├─ test_v2_domain_pack.py
 │        ├─ test_v2_product_pack.py
+│        ├─ test_v2_open_research.py
 │        └─ test_v2_source_search.py
 └─ vendor/
    └─ youtu-rag/
@@ -323,6 +341,7 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_2_product_pack_report.md` | 测试计数审计、Product Pack/Ledger、第 13 个显示器、幂等构建、工具链和失败回滚证据 |
 | `smartbuy/docs/v2/v2_2_runtime.md` | 仓库外导入、校验、发布、版本查看、回滚、特性开关与索引状态说明 |
 | `smartbuy/docs/v2/v2_3_source_search_report.md` / `v2_3_runtime.md` | Provider 选型历史、6/8 精确地区覆盖、安全降级、错误/缓存/成本证据和默认关闭运行方式 |
+| `smartbuy/docs/v2/v2_4_open_research_report.md` / `v2_4_runtime.md` | 数据库外真实抽取、SSRF/失败矩阵、Open/Trusted 隔离、临时证据生命周期、成本和运行开关 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
 | `experiments/langgraph_poc/contracts.py` | JSON-safe AgentState、ToolResult、Reducer、事件和确定性合并契约 |
@@ -363,6 +382,8 @@ proofpick_agent/
 | `smartbuy/providers/zhipu_search.py` | `search_pro` 与搜狗有界回退、重试/费用/延迟门、TTL 缓存和脱敏调用账本 |
 | `smartbuy/source_search/` | 可插拔 Provider 契约、候选状态、默认关闭配置、缓存和 URL/域名/型号/地区确定性验证 |
 | `smartbuy/tools/source_search.py` | Agent 显式来源发现工具、本地证据充分性门，以及 Source Candidate 与 Evidence/Checker 隔离 |
+| `smartbuy/open_research/` | URL/SSRF 安全、静态 HTML 抽取、Monitor 字段规范化、Open 四态核验、请求级仓库外临时存储和研究报告服务 |
+| `smartbuy/tools/web_extractor.py` | 仅在显式 Open Mode 中接受本轮 Source Candidate 的 Agent 工具门，拒绝任意 URL 和 Trusted 晋升 |
 | `smartbuy/product_packs/models.py` / `schema/` | Product Pack、来源、字段证据、观察和临时证据的严格版本化 JSON/Pydantic 契约 |
 | `smartbuy/product_packs/loader.py` / `ledger.py` | 型号/品牌/别名/地区/配置版/单位/许可归一化门和统一字段级 Evidence Ledger |
 | `smartbuy/product_packs/builder.py` / `cli.py` / `runtime.py` | 仓库外 staging/validate/publish/rollback、幂等数据快照、默认关闭的运行选择与数据/索引 CLI |
@@ -399,6 +420,7 @@ proofpick_agent/
 | `smartbuy/docs/adr/0009-domain-contracts-and-monitor-pack.md` | V2-1D 适配优先、数据所有权、严格 Loader、默认关闭和无迁移回滚决策 |
 | `smartbuy/docs/adr/0010-versioned-product-pack-and-evidence-ledger.md` | V2-2 严格 Schema、字段 Ledger、事务发布、索引版本和临时证据边界决策 |
 | `smartbuy/docs/adr/0011-auditable-zhipu-source-search.md` | V2-3 智谱单 Provider、精确地区状态、搜狗回退、候选隔离和不采用三家聚合的决策 |
+| `smartbuy/docs/adr/0012-governed-web-extraction-and-open-evidence.md` | V2-4 URL 安全、静态抽取、临时 Open Evidence、模式隔离和不自动晋升的决策 |
 | `smartbuy/docs/data_card.md` | 数据范围、来源、缺失、哈希语义、人工抽查和合规说明 |
 | `smartbuy/docs/runtime_manifest.md` | 目标主机、依赖、模型状态、索引契约、运行路径和服务结果 |
 | `smartbuy/docs/stage1_smoke_test.md` | 阶段 1 命令、耗时、通过/延后项、安全事件与退出结论 |
@@ -416,6 +438,7 @@ proofpick_agent/
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
 | `smartbuy/scripts/verify_v2_source_search.py` | 8 条固定官方来源任务的有界真实搜索，只输出 URL 元数据、状态、计数、延迟和费用 |
+| `smartbuy/scripts/verify_v2_open_research.py` | 仓库外运行的数据库外商品/降级/canonical-hreflang 有界真实验收，只保存脱敏状态与哈希 |
 | `smartbuy/scripts/verify_v2_product_pack_live.py` | 第 13 个型号真实 KB、四工具闭环、Reranker 降级、未完成索引与回滚的有界在线验收 |
 | `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
 | `smartbuy/scripts/build_stage3_index.py` / `verify_stage3_index.py` | 有界真实建库和不调用模型的 Chroma 契约复核 |
@@ -435,10 +458,11 @@ proofpick_agent/
 | `smartbuy/tests/unit/test_stage7_reporting.py` | 报告冲突 fail-closed、unknown、证据/字段收敛回归 |
 | `smartbuy/tests/integration/test_stage4_api.py` | SmartBuy HTTP/SSE、偏好生命周期和 WebUI 接线回归 |
 | `smartbuy/tests/unit/test_v2_source_search.py` / `integration/test_v2_source_search_agent.py` | 候选分类、白名单/地区/型号安全、重试/缓存/费用、Agent 事件和 Evidence/Checker 隔离 |
+| `smartbuy/tests/unit/test_v2_open_research.py` / `integration/test_v2_open_research_agent.py` | SSRF/HTML/重定向/临时证据/冲突/canonical 恢复和 Open Agent/Checker/Monitor 隔离回归 |
 
 ## 计划结构
 
-V2 已创建兼容适配层、Monitor Domain Pack、Product Pack/Ledger 和默认关闭的受控 Source Search；默认仍使用 V1 数据与自研 ReAct。当前 LangGraph 只是显式启用、复用完整 V1 工作流的外壳；Source Search 也只发现 URL，尚未创建 Web Extractor、Evidence Promotion、GraphRAG、Neo4j 或第二品类。
+V2 已创建兼容适配层、Monitor Domain Pack、Product Pack/Ledger，以及默认关闭的 Source Search 和 Open Research；默认仍使用 V1 数据与自研 ReAct。当前 LangGraph 只是显式启用、复用完整 V1 工作流的外壳；尚未创建自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 或第二品类。
 
 ## 维护检查清单
 
@@ -484,5 +508,8 @@ V2 已创建兼容适配层、Monitor Domain Pack、Product Pack/Ledger 和默�
 - [V2-3 Source Search 报告](../v2/v2_3_source_search_report.md)
 - [V2-3 运行说明](../v2/v2_3_runtime.md)
 - [ADR-0011](../adr/0011-auditable-zhipu-source-search.md)
+- [V2-4 Open Research 报告](../v2/v2_4_open_research_report.md)
+- [V2-4 运行说明](../v2/v2_4_runtime.md)
+- [ADR-0012](../adr/0012-governed-web-extraction-and-open-evidence.md)
 - [FINAL 开发交接文档](../archive/FINAL_多源消费决策研究Agent开发交接总文档.md)
 - [阿里云百炼 API 调用说明](../setup/阿里云百炼API-Key调用与Youtu-RAG接入说明.md)

@@ -1,8 +1,8 @@
 # ProofPick Runtime Manifest（SmartBuy 显示器场景）
 
-最后更新：2026-09-01
-当前阶段：V1 已冻结；V2-3 受控智谱 Source Search 已完成，默认关闭且不进入 Evidence/Checker
-运行范围：V1 Windows 11 原生 Youtu-RAG + 百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界 Agent + 确定性 Checker；V2 opt-in 编排/Domain/Product Pack/Source Search 兼容层
+最后更新：2026-09-02
+当前阶段：V1 已冻结；V2-4 Web Extractor、临时 Open Evidence 与开放研究模式已完成，默认关闭
+运行范围：V1 Windows 11 原生 Youtu-RAG + 百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界 Agent + 确定性 Checker；V2 opt-in 编排/Domain/Product Pack/Source Search/Open Research 兼容层
 
 ## 代码与纳入方式
 
@@ -151,10 +151,20 @@ V2-3 受控 Source Search：
 - Source Candidate 固定不能进入 Evidence Ledger 或 Checker。V2-3 不抓网页正文，不核验页面规格，不提供实时价格或库存。
 - 最终复测 12 次调用、估算 ¥0.44、平均 1,780.551ms、小样本 P95 4,337.367ms；首次根域过滤 4/8、14 次/¥0.54 原样保留。详见 [V2-3 报告](v2/v2_3_source_search_report.md)。
 
+V2-4 Web Extractor 与 Open Research：
+
+- `PROOFPICK_OPEN_RESEARCH_ENABLED` 默认 `false`；只有同时开启 Source Search 且请求 `mode=open` 时注册 Web Extractor。关闭后恢复 Trusted/V1 本地路径。
+- 网页抽取只接受本轮 Source Candidate，执行官方域名、SSRF/DNS、每跳重定向、HTML 类型、5 MiB 解压后大小和总超时安全门；不继承系统代理，不保存完整 HTML。
+- Open Evidence 位于仓库外，按 user/session/thread/request 不透明 token 隔离，TTL 24 小时；查看、删除、过期清理、关闭和损坏降级均受测试。
+- `BenQ PD3226G/US` 数据库外真实链路最终 6/6 目标字段 matched、21 条临时证据、conflict 0；`Dell P2725QE/CN` 的 USB-C 供电多值按 conflict 保留。
+- LG 27GS95QE-B/CN 与 BenQ PD2725U/CA 的 canonical/hreflang 自动恢复 0/2，均明确降级且未硬编码 URL。Open 商品进入 Trusted eligible、正式 Ledger/Checker 均为 0。
+- 阶段已知 28 次智谱搜索估算 ¥1.08，LLM/Embedding/Reranker 调用 0。详见 [V2-4 报告](v2/v2_4_open_research_report.md)和[运行说明](v2/v2_4_runtime.md)。
+
 ## 测试与成本
 
 - V2-2B 最终自动化：`smartbuy/tests` 177/177，加入上游配置安全测试后的 CI 等价套件 178/178；Product Pack/实时索引定向套件 23/23。Ruff、Compileall、JavaScript 12/12、PowerShell AST 5/5 和 Markdown 262/262 通过，详见 [V2-2 报告](v2/v2_2_product_pack_report.md)。
 - V2-3 定向离线套件 24/24；`smartbuy/tests` 201/201，加入上游安全 node 的 CI 等价套件 202/202；Ruff、Compileall、JavaScript 12/12、PowerShell 5/5、Markdown 277/277 和安全门通过。真实收尾两次合计估算 ¥0.98；含此前授权的三 Provider 只读诊断，已知估算仍低于 ¥2 阶段上限。详见 [V2-3 报告](v2/v2_3_source_search_report.md)。
+- V2-4 定向 21/21；`smartbuy/tests` 222/222，加入上游配置脱敏 node 的 CI 等价套件 223/223；Ruff、Compileall、JavaScript 12/12、PowerShell 5/5、Markdown 289/289 与安全/禁止产物门通过。详见 [V2-4 报告](v2/v2_4_open_research_report.md)。
 - 独立三模型最终验证：5 次调用、398 input + 31 output tokens，估算 0.0003243 元。
 - 最终 Youtu 建库/查询：Embedding 130 input tokens，估算 0.000065 元；Reranker 160 input tokens，估算 0.000080 元。
 - Youtu Agent 内部 LLM Token 尚未完整进入自研账本，精确阶段总成本记为未知；调用均为有界小样本，远低于 5 元阶段上限。

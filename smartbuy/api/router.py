@@ -20,9 +20,17 @@ from smartbuy.domain_packs import (
     DomainPackSettings,
     DomainPackValidationError,
 )
+from smartbuy.domain_packs.loader import DEFAULT_MONITOR_PACK
 from smartbuy.domain_packs.orchestrator import DomainPackOrchestrator
 from smartbuy.memory import LongTermPreferenceStore
 from smartbuy.observability import UsageLedger, agent_monitor
+from smartbuy.open_research import (
+    OpenResearchService,
+    OpenResearchSettings,
+    ResearchMode,
+    StaticHTMLExtractor,
+    TemporaryEvidenceStore,
+)
 from smartbuy.orchestration import (
     OrchestratorRequest,
     OrchestrationStatus,
@@ -46,6 +54,7 @@ from smartbuy.tools import (
     KBSearchTool,
     SourceSearchTool,
     Text2SQLTool,
+    WebExtractorTool,
     WebSearchTool,
 )
 
@@ -64,6 +73,7 @@ class SmartBuyChatRequest(BaseModel):
     thread_id: str | None = Field(default=None, max_length=128)
     resume_value: str | bool | dict[str, Any] | None = None
     use_long_term_memory: bool = False
+    mode: ResearchMode = ResearchMode.TRUSTED
 
 
 class PreferenceUpdate(BaseModel):
@@ -142,6 +152,20 @@ def get_smartbuy_agent() -> PurchaseDecisionAgent:
                 else None
             )
             tools["source_search"] = SourceSearchTool(source_settings, source_provider)
+        open_settings = OpenResearchSettings.from_environment()
+        if open_settings.enabled:
+            monitor_pack = DomainPackLoader().load(DEFAULT_MONITOR_PACK)
+            extractor = StaticHTMLExtractor(open_settings)
+            evidence_store = TemporaryEvidenceStore(
+                open_settings.evidence_root, enabled=open_settings.enabled
+            )
+            open_service = OpenResearchService(
+                open_settings,
+                monitor_pack,
+                extractor,
+                evidence_store,
+            )
+            tools["web_extractor"] = WebExtractorTool(open_settings, open_service)
         _agent = PurchaseDecisionAgent(
             provider,
             tools,
@@ -238,6 +262,7 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
             (
                 "orchestrator_", "graph_", "checkpoint_", "interrupt_",
                 "checker_terminal_", "domain_pack_", "product_pack_", "source_search_",
+                "web_extraction_", "open_evidence_", "open_research_",
             )
         ):
             await queue.put(event)
@@ -252,6 +277,7 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
                     thread_id=request.thread_id,
                     resume_value=request.resume_value,
                     use_long_term_memory=request.use_long_term_memory,
+                    mode=request.mode,
                 ),
                 event_callback=callback,
             )
@@ -304,6 +330,7 @@ async def chat(request: SmartBuyChatRequest):
                 thread_id=request.thread_id,
                 resume_value=request.resume_value,
                 use_long_term_memory=request.use_long_term_memory,
+                mode=request.mode,
             )
         )
     except Exception:

@@ -9,9 +9,9 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-3 受控智谱 Source Search 已完成；默认关闭，搜索候选仍与 Evidence/Checker 隔离** |
+| 当前状态 | **V2-4 Web Extractor、临时 Open Evidence 与开放研究模式已完成；默认关闭，Trusted 资格边界不变** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
-| 最后更新 | 2026-09-01 |
+| 最后更新 | 2026-09-02 |
 
 关联文档：
 
@@ -522,7 +522,7 @@ feat(v2): add auditable zhipu source search
 - 本地不存在的新型号可以生成开放研究报告。
 - 搜索摘要不能直接成为硬事实。
 - 字段级证据可以绑定页面片段。
-- 重复联网证据可以经过 Evidence Promotion 进入后续 Product Pack，而不是自动写库。
+- 仅可生成待人工审查的 promotion candidate；本阶段没有实现 Evidence Promotion，也不会自动写库。
 
 ### 12.4 验收指标
 
@@ -904,4 +904,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-3 受控智谱 Source Search 已完成，决策见 [ADR-0011](../adr/0011-auditable-zhipu-source-search.md)，运行和验证证据见 [V2-3 报告](v2_3_source_search_report.md)与[运行说明](v2_3_runtime.md)。默认编排器仍为 ReAct，Domain/Product Pack 和 Source Search 均默认关闭；Source Candidate 不能进入 Evidence/Checker。在用户再次确认前，不得进入 V2-4、实现网页提取或 Evidence Promotion、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。
+V2-4 Web Extractor 与 Open Research 已完成，决策见 [ADR-0012](../adr/0012-governed-web-extraction-and-open-evidence.md)，验证证据见 [V2-4 报告](v2_4_open_research_report.md)与[运行说明](v2_4_runtime.md)。默认编排器仍为 ReAct，Domain/Product Pack、Source Search 和 Open Research 均默认关闭；Open Evidence 不能进入正式 Ledger、Trusted Checker 或 eligible 集合。在用户再次确认前，不得进入 V2-5、实现自动 Evidence Promotion、浏览器渲染、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。

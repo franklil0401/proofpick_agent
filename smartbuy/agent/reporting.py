@@ -74,6 +74,40 @@ def build_report(
     latency_ms: float,
     usage: dict[str, Any],
 ) -> DecisionReport:
+    if state.mode.value == "open" and state.open_research is not None:
+        tools = list(
+            dict.fromkeys(
+                trace.tool
+                for trace in state.traces
+                if trace.tool not in {"set_requirements", "finish_decision"}
+                and trace.status in {"success", "degraded", "unavailable"}
+            )
+        )
+        return DecisionReport(
+            mode=state.mode,
+            request_summary=state.requirements.summary or state.query[:200],
+            task_type=state.requirements.task_type,
+            constraint_set=state.constraint_set,
+            constraint_verification=state.constraint_verification,
+            hard_constraints=state.requirements.hard_constraints,
+            soft_preferences=state.requirements.soft_preferences,
+            tools_used=tools,
+            candidates=[],
+            recommended_model_ids=[],
+            eliminated_model_ids=[],
+            evidence=[],
+            unresolved_facts=[],
+            degraded_states=list(dict.fromkeys(state.degraded_states)),
+            pending_questions=state.requirements.pending_questions,
+            abstained=True,
+            stop_reason=state.stop_reason or "Open Research 已完成并停止；未生成 Trusted 推荐。",
+            trace=state.traces,
+            latency_ms=round(latency_ms, 3),
+            tool_call_count=state.tool_call_count,
+            constraint_check_latency_ms=state.constraint_check_latency_ms,
+            usage=usage,
+            open_research=state.open_research,
+        )
     recommendation_task = state.requirements.task_type in {"filter", "comparison", "dynamic"}
     rows = {
         **state.candidate_pool_rows,

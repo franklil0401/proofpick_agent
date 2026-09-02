@@ -22,6 +22,9 @@
 - [V2-3 受控 Source Search 报告](v2_3_source_search_report.md)
 - [V2-3 Source Search 运行说明](v2_3_runtime.md)
 - [ADR-0011：可审计智谱 Source Search](../adr/0011-auditable-zhipu-source-search.md)
+- [V2-4 Web Extractor 与 Open Research 报告](v2_4_open_research_report.md)
+- [V2-4 Open Research 运行说明](v2_4_runtime.md)
+- [ADR-0012：受控网页抽取与 Open Evidence](../adr/0012-governed-web-extraction-and-open-evidence.md)
 
 ## 当前状态
 
@@ -29,5 +32,6 @@
 - V2-2 已落地严格 Product Pack、字段级 Evidence Ledger、仓库外 staging/publish/rollback，并完成第 13 个显示器的真实 65-chunk Chroma 与四工具闭环验证；Product Pack 路径默认关闭，V1 冻结数据与历史结果不变。
 - V1 自研 ReAct 仍是默认编排器；LangGraph 只可显式开启，尚不具备切换默认值的条件。
 - V2-3 已实现默认关闭的智谱 Source Search：固定 8 条任务中 6 条命中精确地区官方页、2 条安全降级，错误地区误接受为 0；Source Candidate 不进入 Evidence 或 Checker。
-- Web Extractor、Evidence Promotion、第二品类和 V2-4 均未开始。V2-3 只发现 URL，不宣称已经核验网页字段或实时价格。
+- V2-4 已实现默认关闭的静态 Web Extractor、请求级临时 Open Evidence 与开放研究报告；数据库外 PD3226G/US 真实链路成功，Open 商品固定不能进入 Trusted eligible。
+- Evidence Promotion、浏览器渲染、第二品类和 V2-5 均未开始；不宣称实时价格、全网覆盖或生产级网页抓取。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

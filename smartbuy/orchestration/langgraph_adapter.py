@@ -10,7 +10,7 @@ from typing import Any, TypedDict
 from langgraph.graph import END, START, StateGraph
 from langgraph.types import Command, interrupt
 
-from smartbuy.domain import DecisionReport
+from smartbuy.domain import DecisionReport, ResearchMode
 from smartbuy.orchestration.checkpoints import (
     CHECKPOINT_STATE_VERSION,
     CheckpointBackend,
@@ -112,13 +112,17 @@ class LangGraphOrchestrator:
         if request is None:
             raise RuntimeError("orchestration request context is unavailable")
         await self._emit("graph_node_started", node="execute_react", status="running")
-        report = await self.agent.run(
-            request.query,
-            session_id=request.session_id,
-            user_id=request.user_id,
-            use_long_term_memory=request.use_long_term_memory,
-            event_callback=self._callback.get(),
-        )
+        arguments = {
+            "session_id": request.session_id,
+            "user_id": request.user_id,
+            "use_long_term_memory": request.use_long_term_memory,
+            "event_callback": self._callback.get(),
+        }
+        if request.mode == ResearchMode.OPEN:
+            arguments["mode"] = request.mode
+        if request.thread_id is not None:
+            arguments["thread_id"] = request.thread_id
+        report = await self.agent.run(request.query, **arguments)
         await self._emit("graph_node_completed", node="execute_react", status="completed")
         return {"report": report.model_dump(mode="json")}
 

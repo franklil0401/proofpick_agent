@@ -14,6 +14,7 @@ from .models import (
     UnresolvedFact,
     UserRequirements,
 )
+from smartbuy.open_research.models import ResearchMode
 
 __all__ = [
     "AgentLimits",
@@ -28,4 +29,5 @@ __all__ = [
     "ToolTrace",
     "UnresolvedFact",
     "UserRequirements",
+    "ResearchMode",
 ]

@@ -5,7 +5,7 @@ from __future__ import annotations
 from enum import StrEnum
 from typing import Any, Literal
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator
+from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
 
 from smartbuy.constraints.models import (
     ConstraintResult as DeterministicConstraintResult,
@@ -13,6 +13,7 @@ from smartbuy.constraints.models import (
     VerificationBatch,
     VerificationStatus,
 )
+from smartbuy.open_research.models import OpenResearchReport, ResearchMode
 
 
 class ConstraintStatus(StrEnum):
@@ -130,6 +131,7 @@ class DecisionReport(BaseModel):
     model_config = ConfigDict(extra="forbid")
 
     report_version: str = "smartbuy-decision-v3"
+    mode: ResearchMode = ResearchMode.TRUSTED
     request_summary: str
     task_type: Literal["fact", "filter", "comparison", "dynamic", "unrelated"] = "fact"
     constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
@@ -151,8 +153,55 @@ class DecisionReport(BaseModel):
     tool_call_count: int = 0
     constraint_check_latency_ms: float = 0.0
     usage: dict[str, Any] = Field(default_factory=dict)
+    open_research: OpenResearchReport | None = None
+
+    @model_validator(mode="after")
+    def enforce_mode_boundary(self) -> DecisionReport:
+        if self.mode == ResearchMode.OPEN:
+            if self.open_research is None:
+                raise ValueError("Open Mode report requires an open_research payload")
+            if self.recommended_model_ids or any(item.eligible for item in self.candidates):
+                raise ValueError("Open Mode cannot expose Trusted eligible recommendations")
+        elif self.open_research is not None:
+            raise ValueError("Trusted Mode cannot contain open_research evidence")
+        return self
 
     def to_markdown(self) -> str:
+        if self.mode == ResearchMode.OPEN:
+            assert self.open_research is not None
+            lines = [
+                "# ProofPick 开放研究报告",
+                "",
+                f"**需求摘要：** {self.request_summary}",
+                "**运行模式：** Open Research（非 Trusted 推荐）",
+                "",
+                self.open_research.to_markdown(),
+                "",
+                "## 可审计工具轨迹",
+                "",
+            ]
+            if not self.trace:
+                lines.append("- 无")
+            for item in self.trace:
+                lines.append(
+                    f"- step {item.step} / `{item.tool}` / **{item.status}**：{item.result_summary}"
+                )
+            if self.degraded_states:
+                lines.extend(["", "## 降级状态", ""])
+                lines.extend(f"- {item}" for item in self.degraded_states)
+            lines.extend(["", "## 停止原因", "", self.stop_reason, ""])
+            if self.constraint_verification is not None:
+                lines.extend(
+                    [
+                        "## Trusted Checker 隔离审计",
+                        "",
+                        "- Open 商品进入 Trusted candidate pool：`0`",
+                        "- Open 商品进入 Trusted eligible：`0`",
+                        f"- Trusted 候选池：{', '.join(self.constraint_verification.candidate_pool_model_ids) or '空'}",
+                        "",
+                    ]
+                )
+            return "\n".join(lines)
         lines = [
             "# SmartBuy 消费决策报告", "", f"**需求摘要：** {self.request_summary}",
             f"**任务类型：** {self.task_type}", "",
@@ -273,6 +322,8 @@ class AgentState(BaseModel):
     session_id: str
     user_id: str | None = None
     query: str
+    mode: ResearchMode = ResearchMode.TRUSTED
+    thread_id: str | None = None
     turn_number: int = Field(default=1, ge=1)
     requirements: UserRequirements = Field(default_factory=UserRequirements)
     constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
@@ -291,3 +342,5 @@ class AgentState(BaseModel):
     constraint_check_latency_ms: float = 0.0
     ranked_eligible_model_ids: list[str] = Field(default_factory=list)
     candidate_explanations: dict[str, str] = Field(default_factory=dict)
+    source_candidates: dict[str, dict[str, Any]] = Field(default_factory=dict)
+    open_research: OpenResearchReport | None = None

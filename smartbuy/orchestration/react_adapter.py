@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from smartbuy.domain import ResearchMode
 from smartbuy.orchestration.contracts import (
     CompatibleAgent,
     EventCallback,
@@ -27,13 +28,19 @@ class ReactOrchestrator:
     ) -> OrchestratorResult:
         if request.resume_value is not None:
             raise ValueError("react orchestrator does not support checkpoint resume")
-        report = await self.agent.run(
-            request.query,
-            session_id=request.session_id,
-            user_id=request.user_id,
-            use_long_term_memory=request.use_long_term_memory,
-            event_callback=event_callback,
-        )
+        arguments = {
+            "session_id": request.session_id,
+            "user_id": request.user_id,
+            "use_long_term_memory": request.use_long_term_memory,
+            "event_callback": event_callback,
+        }
+        # Preserve the exact V1 call surface for default Trusted requests and
+        # older compatible test/application agents.
+        if request.mode == ResearchMode.OPEN:
+            arguments["mode"] = request.mode
+        if request.thread_id is not None:
+            arguments["thread_id"] = request.thread_id
+        report = await self.agent.run(request.query, **arguments)
         return OrchestratorResult(
             orchestrator=self.kind,
             status=OrchestrationStatus.COMPLETED,
