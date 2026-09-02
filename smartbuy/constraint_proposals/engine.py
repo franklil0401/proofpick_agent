@@ -25,10 +25,13 @@ from .models import (
     ConstraintProposal,
     ConstraintResolution,
     ProposalAction,
+    ProposalKind,
     ProposalSource,
     ProposalStatus,
     SourceSpan,
+    SpanSource,
 )
+from .spans import QuoteSpanResolver, QuoteSpanStatus
 
 
 ENGINE_VERSION = "proofpick-natural-constraints-v1"
@@ -95,8 +98,17 @@ def _chinese_number(token: str) -> float:
     return float(total + section + number)
 
 
-def _proposal_id(query: str, field: str, action: ProposalAction, span: SourceSpan) -> str:
-    raw = f"{query}\0{field}\0{action.value}\0{span.start}\0{span.end}\0{span.text}"
+def _proposal_id(
+    query: str,
+    field: str,
+    action: ProposalAction,
+    span: SourceSpan | None,
+    quote: str | None = None,
+) -> str:
+    start = span.start if span else -1
+    end = span.end if span else -1
+    text = span.text if span else (quote or "")
+    raw = f"{query}\0{field}\0{action.value}\0{start}\0{end}\0{text}"
     return "cp-" + hashlib.sha256(raw.encode("utf-8")).hexdigest()[:24]
 
 
@@ -105,6 +117,7 @@ class ConstraintProposalValidator:
 
     def __init__(self, pack: LoadedDomainPack) -> None:
         self.pack = pack
+        self.quote_resolver = QuoteSpanResolver()
 
     def validate(
         self,
@@ -119,12 +132,51 @@ class ConstraintProposalValidator:
         try:
             action = ProposalAction(action_raw)
         except ValueError:
-            action = ProposalAction.ADD
-        span = self._span(query, raw)
-        if span is None:
-            fallback = SourceSpan(start=0, end=max(1, min(len(query), 1)), text=query[:1] or "?")
-            return self._invalid(field, action, fallback, source, source_turn, "source_span_invalid")
-        proposal_id = _proposal_id(query, field, action, span)
+            return self._invalid(
+                query,
+                field,
+                ProposalAction.ADD,
+                None,
+                source,
+                source_turn,
+                "action_invalid",
+                source_quote=self._quote(raw),
+            )
+        proposal_kind = self._proposal_kind(raw.get("proposal_kind"))
+        span, source_quote, span_source, occurrence, span_error = self._resolve_span(
+            query, raw, source
+        )
+        if span_error:
+            return self._invalid(
+                query,
+                field,
+                action,
+                span,
+                source,
+                source_turn,
+                span_error,
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+            )
+        if source == ProposalSource.LLM and not self._proposal_kind_matches(
+            proposal_kind, action
+        ):
+            return self._invalid(
+                query,
+                field,
+                action,
+                span,
+                source,
+                source_turn,
+                "proposal_kind_action_mismatch",
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+            )
+        proposal_id = _proposal_id(query, field, action, span, source_quote)
         if action == ProposalAction.CANCEL:
             try:
                 canonical = self.pack.canonical_field(field)
@@ -142,6 +194,11 @@ class ConstraintProposalValidator:
                 action=action,
                 source=source,
                 source_span=span,
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+                clarification_question=raw.get("clarification_question"),
                 source_turn=source_turn,
                 confidence=float(raw.get("confidence", 1.0)),
                 reason=reason,
@@ -149,6 +206,7 @@ class ConstraintProposalValidator:
         try:
             canonical = self.pack.canonical_field(field)
         except DomainPackValidationError:
+            unsupported = proposal_kind == ProposalKind.UNSUPPORTED_REQUEST
             return ConstraintProposal(
                 proposal_id=proposal_id,
                 field=field,
@@ -159,27 +217,102 @@ class ConstraintProposalValidator:
                 action=action,
                 status=(
                     ProposalStatus.UNSUPPORTED
-                    if source == ProposalSource.RULE
+                    if source == ProposalSource.RULE or unsupported
                     else ProposalStatus.INVALID
                 ),
                 source=source,
                 source_span=span,
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+                clarification_question=raw.get("clarification_question"),
                 source_turn=source_turn,
                 confidence=float(raw.get("confidence", 0.0)),
                 reason="field_not_declared_by_domain_pack",
             )
-        operator = self._operator_or_none(raw.get("operator"))
-        if operator is None:
-            return self._invalid(canonical, action, span, source, source_turn, "operator_invalid")
-        try:
-            self.pack.validate_operator(canonical, operator.value)
-        except DomainPackValidationError:
-            return self._invalid(canonical, action, span, source, source_turn, "operator_not_allowed")
+        if proposal_kind == ProposalKind.UNSUPPORTED_REQUEST:
+            return ConstraintProposal(
+                proposal_id=proposal_id,
+                field=canonical,
+                operator=self._operator_or_none(raw.get("operator")),
+                normalized_value=raw.get("value", raw.get("normalized_value")),
+                unit=raw.get("unit"),
+                strength=self._strength(raw.get("strength")),
+                action=action,
+                status=ProposalStatus.UNSUPPORTED,
+                source=source,
+                source_span=span,
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+                clarification_question=raw.get("clarification_question"),
+                source_turn=source_turn,
+                confidence=0.0,
+                reason="unsupported_kind_for_declared_field",
+            )
         status_raw = str(raw.get("status", "supported"))
         try:
             status = ProposalStatus(status_raw)
         except ValueError:
             status = ProposalStatus.INVALID
+        operator = self._operator_or_none(raw.get("operator"))
+        if (
+            operator is None
+            and status
+            in {ProposalStatus.AMBIGUOUS, ProposalStatus.NEEDS_CONFIRMATION}
+        ):
+            return ConstraintProposal(
+                proposal_id=proposal_id,
+                field=canonical,
+                operator=None,
+                normalized_value=None,
+                unit=self.pack.fields[canonical].unit,
+                strength=self._strength(raw.get("strength")),
+                action=action,
+                status=status,
+                source=source,
+                source_span=span,
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+                clarification_question=raw.get("clarification_question"),
+                source_turn=source_turn,
+                confidence=float(raw.get("confidence", 0.5)),
+                reason=str(raw.get("reason") or "clarification_required")[:240],
+            )
+        if operator is None:
+            return self._invalid(
+                query,
+                canonical,
+                action,
+                span,
+                source,
+                source_turn,
+                "operator_invalid",
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+            )
+        try:
+            self.pack.validate_operator(canonical, operator.value)
+        except DomainPackValidationError:
+            return self._invalid(
+                query,
+                canonical,
+                action,
+                span,
+                source,
+                source_turn,
+                "operator_not_allowed",
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+            )
         value = raw.get("value", raw.get("normalized_value"))
         unit = raw.get("unit")
         if status in {ProposalStatus.AMBIGUOUS, ProposalStatus.NEEDS_CONFIRMATION}:
@@ -195,6 +328,11 @@ class ConstraintProposalValidator:
                 status=status,
                 source=source,
                 source_span=span,
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+                clarification_question=raw.get("clarification_question"),
                 source_turn=source_turn,
                 confidence=float(raw.get("confidence", 0.5)),
                 reason=str(raw.get("reason") or "clarification_required")[:240],
@@ -203,7 +341,19 @@ class ConstraintProposalValidator:
             normalized = self._normalize(canonical, operator, value, unit)
             self._validate_bounds(canonical, normalized)
         except (DomainPackValidationError, TypeError, ValueError):
-            return self._invalid(canonical, action, span, source, source_turn, "value_or_unit_invalid")
+            return self._invalid(
+                query,
+                canonical,
+                action,
+                span,
+                source,
+                source_turn,
+                "value_or_unit_invalid",
+                source_quote=source_quote,
+                span_source=span_source,
+                occurrence=occurrence,
+                proposal_kind=proposal_kind,
+            )
         return ConstraintProposal(
             proposal_id=proposal_id,
             field=canonical,
@@ -215,14 +365,57 @@ class ConstraintProposalValidator:
             status=ProposalStatus.SUPPORTED,
             source=source,
             source_span=span,
+            source_quote=source_quote,
+            span_source=span_source,
+            occurrence=occurrence,
+            proposal_kind=proposal_kind,
+            clarification_question=raw.get("clarification_question"),
             source_turn=source_turn,
             confidence=float(raw.get("confidence", 1.0)),
             active=True,
             reason="schema_and_domain_pack_validated",
         )
 
+    def _resolve_span(
+        self, query: str, raw: dict[str, Any], source: ProposalSource
+    ) -> tuple[SourceSpan | None, str | None, SpanSource, int | None, str | None]:
+        if source == ProposalSource.LLM:
+            quote = self._quote(raw)
+            result = self.quote_resolver.resolve(
+                query, quote, occurrence=raw.get("occurrence")
+            )
+            if result.resolved:
+                return (
+                    result.span,
+                    result.quote,
+                    SpanSource.SERVER_EXACT_QUOTE,
+                    result.occurrence,
+                    None,
+                )
+            reason = {
+                QuoteSpanStatus.QUOTE_NOT_FOUND: "quote_not_found",
+                QuoteSpanStatus.OCCURRENCE_REQUIRED: "quote_occurrence_required",
+                QuoteSpanStatus.OCCURRENCE_OUT_OF_RANGE: "quote_occurrence_out_of_range",
+                QuoteSpanStatus.INVALID_QUOTE: "quote_invalid",
+            }[result.status]
+            return (
+                None,
+                result.quote or None,
+                SpanSource.UNRESOLVED_QUOTE,
+                result.occurrence,
+                reason,
+            )
+        span = self._legacy_rule_span(query, raw)
+        return (
+            span,
+            span.text if span else None,
+            SpanSource.SERVER_RULE_MATCH,
+            None,
+            None if span else "source_span_invalid",
+        )
+
     @staticmethod
-    def _span(query: str, raw: dict[str, Any]) -> SourceSpan | None:
+    def _legacy_rule_span(query: str, raw: dict[str, Any]) -> SourceSpan | None:
         try:
             start = int(raw["span_start"])
             end = int(raw["span_end"])
@@ -232,6 +425,36 @@ class ConstraintProposalValidator:
         if start < 0 or end <= start or end > len(query) or query[start:end] != text:
             return None
         return SourceSpan(start=start, end=end, text=text)
+
+    @staticmethod
+    def _quote(raw: dict[str, Any]) -> str | None:
+        value = raw.get("quote")
+        return value if isinstance(value, str) and value else None
+
+    @staticmethod
+    def _proposal_kind(value: Any) -> ProposalKind | None:
+        if value is None:
+            return None
+        try:
+            return ProposalKind(str(value))
+        except ValueError:
+            return None
+
+    @staticmethod
+    def _proposal_kind_matches(
+        kind: ProposalKind | None, action: ProposalAction
+    ) -> bool:
+        if kind is None:
+            return False
+        if action == ProposalAction.CANCEL:
+            return kind == ProposalKind.CANCEL_CONSTRAINT
+        if action == ProposalAction.CONFIRM:
+            return kind == ProposalKind.CONFIRM_CONSTRAINT
+        return kind in {
+            ProposalKind.SUPPORTED_CONSTRAINT,
+            ProposalKind.UNSUPPORTED_REQUEST,
+            ProposalKind.NEEDS_CLARIFICATION,
+        }
 
     @staticmethod
     def _operator_or_none(value: Any) -> ConstraintOperator | None:
@@ -282,20 +505,30 @@ class ConstraintProposalValidator:
 
     @staticmethod
     def _invalid(
+        query: str,
         field: str,
         action: ProposalAction,
-        span: SourceSpan,
+        span: SourceSpan | None,
         source: ProposalSource,
         source_turn: int,
         reason: str,
+        *,
+        source_quote: str | None = None,
+        span_source: SpanSource = SpanSource.UNRESOLVED_QUOTE,
+        occurrence: int | None = None,
+        proposal_kind: ProposalKind | None = None,
     ) -> ConstraintProposal:
         return ConstraintProposal(
-            proposal_id=_proposal_id(span.text, field, action, span),
+            proposal_id=_proposal_id(query, field, action, span, source_quote),
             field=field,
             status=ProposalStatus.INVALID,
             action=action,
             source=source,
             source_span=span,
+            source_quote=source_quote,
+            span_source=span_source,
+            occurrence=occurrence,
+            proposal_kind=proposal_kind,
             source_turn=source_turn,
             confidence=0.0,
             reason=reason,
@@ -665,11 +898,16 @@ class NaturalConstraintEngine:
             if cost > self.max_cost_cny:
                 raise RuntimeError("constraint proposal cost limit exceeded")
             provider_latency = float(result.get("latency_ms", 0.0))
+            raw_proposals = [
+                self._apply_current_input_precedence(raw, previous_fields)
+                for raw in result.get("proposals", [])
+                if isinstance(raw, dict)
+            ]
             proposals = [
                 self.validator.validate(
                     query, raw, source=ProposalSource.LLM, source_turn=source_turn
                 )
-                for raw in result.get("proposals", [])
+                for raw in raw_proposals
             ]
         base = self.legacy.build(
             "",
@@ -700,6 +938,27 @@ class NaturalConstraintEngine:
             latency_ms=round(max((time.perf_counter() - started) * 1000, provider_latency), 3),
             estimated_cost_cny=cost,
         )
+
+    def _apply_current_input_precedence(
+        self,
+        raw: dict[str, Any],
+        previous_fields: list[str],
+    ) -> dict[str, Any]:
+        """Mark a current supported constraint as an explicit override.
+
+        The model does not receive memory state.  Precedence therefore remains a
+        deterministic server responsibility instead of being inferred by the LLM.
+        """
+        item = dict(raw)
+        if item.get("action", "add") != ProposalAction.ADD.value:
+            return item
+        try:
+            canonical = self.pack.canonical_field(str(item.get("field", "")))
+        except DomainPackValidationError:
+            return item
+        if canonical in previous_fields:
+            item["action"] = ProposalAction.OVERRIDE.value
+        return item
 
     def confirm(self, resolution: ConstraintResolution, answer: Any) -> ConstraintResolution:
         accepted = self._affirmative(answer)
@@ -782,7 +1041,11 @@ class NaturalConstraintEngine:
             if item.status in {ProposalStatus.AMBIGUOUS, ProposalStatus.NEEDS_CONFIRMATION}
         ]
         descriptions = "；".join(
-            f"{item.source_span.text} → {item.field} {item.operator or ''} {item.normalized_value}"
+            item.clarification_question
+            or (
+                f"{item.source_span.text if item.source_span else item.source_quote or item.field}"
+                f" → {item.field} {item.operator or ''} {item.normalized_value}"
+            )
             for item in pending[:4]
         )
         return f"请确认这些条件是否应进入筛选：{descriptions}。缺少具体数值时请直接补充数值。"
@@ -828,6 +1091,7 @@ class NaturalConstraintEngine:
                 )
                 continue
             assert item.operator is not None
+            assert item.source_span is not None
             constraint = NormalizedConstraint(
                 field=item.field,
                 operator=item.operator,

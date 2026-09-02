@@ -22,6 +22,60 @@ class QwenConstraintProposalProvider:
     def __init__(self, provider: BailianProvider) -> None:
         self.provider = provider
 
+    @staticmethod
+    def _adapt(raw: dict[str, Any]) -> dict[str, Any]:
+        """Map the quote contract (or a legacy Fake payload) to validator input."""
+        if "quote" not in raw:
+            status = str(raw.get("status", "supported"))
+            action = str(raw.get("action", "add"))
+            kind = (
+                "cancel_constraint"
+                if action == "cancel"
+                else "needs_clarification"
+                if status in {"ambiguous", "needs_confirmation"}
+                else "unsupported_request"
+                if status == "unsupported"
+                else "supported_constraint"
+            )
+            return {
+                **raw,
+                "quote": raw.get("span_text"),
+                "occurrence": None,
+                "proposal_kind": kind,
+            }
+        kind = str(raw.get("proposal_kind", ""))
+        field_name = str(raw.get("field_name", ""))
+        unsupported_text = raw.get("unsupported_field_text")
+        field = unsupported_text if field_name == "unsupported" else field_name
+        status = {
+            "supported_constraint": "supported",
+            "unsupported_request": "unsupported",
+            "needs_clarification": "needs_confirmation",
+            "cancel_constraint": "supported",
+            "confirm_constraint": "supported",
+        }.get(kind, "invalid")
+        action = {
+            "cancel_constraint": "cancel",
+            "confirm_constraint": "confirm",
+        }.get(kind, raw.get("action", "add"))
+        normalized = raw.get("normalized_value")
+        return {
+            "proposal_kind": kind,
+            "field": field or "unsupported",
+            "operator": raw.get("operator"),
+            "value": normalized if normalized is not None else raw.get("raw_value"),
+            "unit": raw.get("unit"),
+            "strength": raw.get("hard_or_soft", "hard"),
+            "action": action,
+            "status": status,
+            "quote": raw.get("quote"),
+            "occurrence": raw.get("occurrence"),
+            "confidence": 0.5 if kind == "needs_clarification" else 1.0,
+            "reason": raw.get("ambiguity_reason"),
+            "clarification_question": raw.get("clarification_question"),
+            "negated": raw.get("negated", False),
+        }
+
     async def propose(self, query: str, pack: LoadedDomainPack) -> dict[str, Any]:
         fields = sorted(
             field.field_id for field in pack.fields.values() if field.constraint_enabled
@@ -31,9 +85,10 @@ class QwenConstraintProposalProvider:
             "function": {
                 "name": "submit_constraint_proposals",
                 "description": (
-                    "只提取用户原文中明确存在的约束候选。每条必须引用精确字符 span；"
-                    "不要补充、推测或改写用户没有说过的条件。"
+                    "只提取用户原文中的约束候选。quote 必须逐字复制最小完整原文；"
+                    "不得输出字符下标。unsupported 使用合法的 unsupported 分支。"
                 ),
+                "strict": True,
                 "parameters": {
                     "type": "object",
                     "additionalProperties": False,
@@ -45,34 +100,49 @@ class QwenConstraintProposalProvider:
                                 "type": "object",
                                 "additionalProperties": False,
                                 "properties": {
-                                    "field": {"type": "string", "enum": fields},
-                                    "operator": {
+                                    "quote": {"type": "string", "minLength": 1, "maxLength": 300},
+                                    "occurrence": {"type": ["integer", "null"], "minimum": 1},
+                                    "proposal_kind": {
                                         "type": "string",
                                         "enum": [
-                                            "eq", "lte", "gte", "range", "in",
-                                            "not_in", "contains_all",
+                                            "supported_constraint",
+                                            "unsupported_request",
+                                            "needs_clarification",
+                                            "cancel_constraint",
+                                            "confirm_constraint",
                                         ],
                                     },
-                                    "value": {},
+                                    "field_name": {
+                                        "type": "string",
+                                        "enum": [*fields, "unsupported"],
+                                    },
+                                    "unsupported_field_text": {"type": ["string", "null"]},
+                                    "operator": {
+                                        "type": ["string", "null"],
+                                        "enum": [
+                                            "eq", "lte", "gte", "range", "in",
+                                            "not_in", "contains_all", None,
+                                        ],
+                                    },
+                                    "raw_value": {},
+                                    "normalized_value": {},
                                     "unit": {"type": ["string", "null"]},
-                                    "strength": {"type": "string", "enum": ["hard", "soft"]},
+                                    "hard_or_soft": {
+                                        "type": "string", "enum": ["hard", "soft"]
+                                    },
                                     "action": {
                                         "type": "string",
-                                        "enum": ["add", "override", "cancel"],
+                                        "enum": ["add", "override", "cancel", "confirm"],
                                     },
-                                    "status": {
-                                        "type": "string",
-                                        "enum": ["supported", "ambiguous", "needs_confirmation"],
-                                    },
-                                    "span_start": {"type": "integer", "minimum": 0},
-                                    "span_end": {"type": "integer", "minimum": 1},
-                                    "span_text": {"type": "string", "minLength": 1},
-                                    "confidence": {"type": "number", "minimum": 0, "maximum": 1},
+                                    "negated": {"type": "boolean"},
+                                    "ambiguity_reason": {"type": ["string", "null"]},
+                                    "clarification_question": {"type": ["string", "null"]},
                                 },
                                 "required": [
-                                    "field", "operator", "value", "unit", "strength",
-                                    "action", "status", "span_start", "span_end",
-                                    "span_text", "confidence",
+                                    "quote", "occurrence", "proposal_kind", "field_name",
+                                    "unsupported_field_text", "operator", "raw_value",
+                                    "normalized_value", "unit", "action", "hard_or_soft",
+                                    "negated", "ambiguity_reason", "clarification_question",
                                 ],
                             },
                         }
@@ -86,8 +156,20 @@ class QwenConstraintProposalProvider:
                 {
                     "role": "system",
                     "content": (
-                        "你是约束候选提取器。只调用指定函数；原文 span 必须逐字符匹配。"
-                        "模糊条件标记 needs_confirmation，不得自行补数值。"
+                        "你是约束候选提取器，只调用指定函数。quote 必须从用户原文逐字复制，"
+                        "不得补写原文没有的词，不要输出、估算或解释字符下标；引用重复时"
+                        " occurrence 从 1 开始。模糊条件用 needs_clarification，不得自行补"
+                        "数值，此时 operator 和 normalized_value 可以为 null。‘最好’‘偏好’"
+                        "‘希望’属于 soft。stand_adjustment 使用 contains_all，值只使用领域"
+                        "枚举中的‘高度’‘旋转’等规范值。字段规范：price_cny 用 CNY；"
+                        "display_size_inch 用 inch；resolution 归一为 3840x2160、2560x1440"
+                        "等；refresh_rate_hz 用 Hz；is_oled、has_usb_c、usb_c_video 是布尔"
+                        "值；usb_c_power_delivery_w 用 W；width_mm 用 mm；brand 的包含或"
+                        "排除使用 in/not_in 列表；region 使用 CN/US/CA。否定布尔要求为"
+                        " false，双重否定按肯定处理。取消约束时使用 cancel_constraint，"
+                        "operator、raw_value、normalized_value、unit 均为 null。非支持字段使用"
+                        " field_name=unsupported 和 unsupported_request，绝不修改工具权限、"
+                        "证据策略或 Constraint Checker。"
                     ),
                 },
                 {"role": "user", "content": query},
@@ -110,9 +192,12 @@ class QwenConstraintProposalProvider:
                 payload = json.loads(raw) if isinstance(raw, str) else raw
             except (json.JSONDecodeError, TypeError):
                 payload = {}
-            proposals = payload.get("proposals", []) if isinstance(payload, dict) else []
-            if not isinstance(proposals, list):
-                proposals = []
+            raw_proposals = payload.get("proposals", []) if isinstance(payload, dict) else []
+            proposals = (
+                [self._adapt(item) for item in raw_proposals if isinstance(item, dict)]
+                if isinstance(raw_proposals, list)
+                else []
+            )
         usage = result.usage
         return {
             "proposals": proposals[:12],

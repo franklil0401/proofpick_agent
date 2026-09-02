@@ -1,0 +1,11 @@
+{
+  "schema_version": "proofpick-v2-quote-span-live-holdout-v2",
+  "frozen_at": "2026-09-02",
+  "case_count": 20,
+  "sha256": "ee84f96e7723a900fa640e73c130efffef38e285d89bdec7ef403c20c1df5732",
+  "model": "qwen-plus",
+  "temperature": 0,
+  "max_calls": 20,
+  "max_cost_cny": 1.0,
+  "policy": "Frozen before the one-time live run. Never tune rules, prompts, code or gold labels against the first result; preserve every failure."
+}

@@ -13,10 +13,13 @@ from .models import (
     ConstraintResolution,
     PendingClarification,
     ProposalAction,
+    ProposalKind,
     ProposalSource,
     ProposalStatus,
     SourceSpan,
+    SpanSource,
 )
+from .spans import QuoteSpanResolver, QuoteSpanResult, QuoteSpanStatus
 from .settings import NaturalConstraintSettings
 
 __all__ = [
@@ -29,7 +32,12 @@ __all__ = [
     "NaturalConstraintSettings",
     "PendingClarification",
     "ProposalAction",
+    "ProposalKind",
     "ProposalSource",
     "ProposalStatus",
+    "QuoteSpanResolver",
+    "QuoteSpanResult",
+    "QuoteSpanStatus",
     "SourceSpan",
+    "SpanSource",
 ]

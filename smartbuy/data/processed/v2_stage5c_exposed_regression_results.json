@@ -1,0 +1,35 @@
+{
+  "schema_version": "proofpick-v2-quote-span-live-result-summary-v1",
+  "run_type": "live_provider_regression_v1_exposed",
+  "source_cases_sha256": "3043c7c3f13d4f45f23f64c7ba1416bbda4162e10b9f5ca5b757ba828fd2a889",
+  "case_count": 12,
+  "model": "qwen-plus",
+  "temperature": 0,
+  "http_success": "12/12",
+  "function_name_correct": "12/12",
+  "schema_success": "12/12",
+  "quote_resolvable": "19/20",
+  "server_span_success": "19/20",
+  "all_proposals": {"tp":11,"fp":9,"fn":7,"precision":0.55,"recall":0.611111,"f1":0.578947},
+  "clear_hard_constraints": {"tp":6,"fp":2,"fn":2,"precision":0.75,"recall":0.75,"f1":0.75},
+  "task_exact": "5/12",
+  "safety": {
+    "fabricated_quote_accepted": 0,
+    "non_domain_field_active": 0,
+    "ambiguous_unconfirmed_checker_ingress": 0,
+    "unsupported_silent_active": 0,
+    "prompt_injection_active_or_privilege_change": 0
+  },
+  "latency_ms": {"average":4935.469,"p95":8150.772},
+  "usage": {"api_calls":12,"input_tokens":8448,"output_tokens":2522,"estimated_cost_cny":0.0118024},
+  "non_exact_cases": {
+    "v2c-live-004": "ambiguous PD proposal used null operator before nullable-operator compatibility",
+    "v2c-live-006": "two ambiguous proposals used null operators before nullable-operator compatibility",
+    "v2c-live-007": "one unsupported quote was fabricated and rejected",
+    "v2c-live-009": "current constraint was returned as add before deterministic precedence adaptation",
+    "v2c-live-010": "unsupported proposal was safely inactive but differs from the old empty gold",
+    "v2c-live-011": "unsupported checker request was safely inactive but differs from the old empty gold",
+    "v2c-live-012": "stand value/operator did not use the Domain Pack canonical form"
+  },
+  "immutability_note": "This is an exposed regression run after the quote contract change, not a new holdout. It was not rerun after compatibility diagnostics."
+}

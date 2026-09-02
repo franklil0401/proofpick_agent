@@ -1,7 +1,7 @@
 # ProofPick Runtime Manifest（SmartBuy 显示器场景）
 
 最后更新：2026-09-02
-当前阶段：V1 已冻结；V2-4 Web Extractor、临时 Open Evidence 与开放研究模式已完成，默认关闭
+当前阶段：V1 已冻结；V2-5C 服务端 Quote-to-Span 已完成，V2 能力继续默认关闭
 运行范围：V1 Windows 11 原生 Youtu-RAG + 百炼三模型 + SmartBuy 数据/SQLite/Chroma + 有界 Agent + 确定性 Checker；V2 opt-in 编排/Domain/Product Pack/Source Search/Open Research 兼容层
 
 ## 代码与纳入方式
@@ -176,6 +176,15 @@ V2-5B 真实 qwen-plus 收尾：
 - 12 次调用共 6,864 input + 1,736 output tokens，估算 ¥0.0089632，平均/P95 3,525.803/6,081.975ms。首测没有覆盖；LLM 回退仍为实验能力。
 - 适配器仅增加错误 Function 名 fail-closed 校验；没有根据 Live 失败修改 Prompt、span 规则或金标。详见 [V2-5B 报告](v2/v2_5b_live_provider_validation_report.md)。
 - V2-5B 定向 28/28、`smartbuy/tests` 256/256、CI 等价 257/257、V1 原始 94/94、Checker/Memory/澄清代表集 61/61；Markdown 314/314，其余静态与安全门通过。
+
+V2-5C 服务端 Quote-to-Span：
+
+- V2-5B 首次 Schema 10/12、span 1/20、F1 5.41%、任务 2/12 永久保留；旧 12 条现归类为已暴露 `live_provider_regression_v1`。
+- qwen-plus 只逐字复制 quote，Python start/end 由服务端精确匹配计算；零命中、重复无 occurrence、越界、错误 Function、自由文本和枚举外激活均 fail closed。
+- 新 20 条 Live Holdout V2 在运行前冻结，SHA-256 `ee84f96e7723a900fa640e73c130efffef38e285d89bdec7ef403c20c1df5732`；只运行一次，未按结果调参。
+- 首测 Schema 20/20、服务端 span 28/28、清晰硬约束 P/R/F1 100%/94.12%/96.97%、任务 16/20；安全误激活为 0。
+- 本阶段两组共 32 次 qwen-plus，26,300 input + 5,956 output tokens，估算 ¥0.032952；没有改默认编排器、Checker、Evidence、数据或 V1 历史。
+- `smartbuy/tests` 276/276、CI 等价 277/277、V1 原始 94/94；详见 [V2-5C 报告](v2/v2_5c_quote_span_report.md)、[运行说明](v2/v2_5c_quote_span_runtime.md)和[数据卡](v2/v2_5c_live_holdout_v2_data_card.md)。
 
 ## 测试与成本
 

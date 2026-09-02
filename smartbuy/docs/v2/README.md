@@ -32,6 +32,10 @@
 - [V2-5 新表达评测集](v2_5_expression_eval.md)
 - [V2-5B 评测口径与真实 qwen-plus 首测](v2_5b_live_provider_validation_report.md)
 - [ADR-0014：Schema Proposal 与双编排器澄清](../adr/0014-validated-constraint-proposals-and-clarification.md)
+- [V2-5C 服务端 Quote-to-Span 报告](v2_5c_quote_span_report.md)
+- [V2-5C Quote-to-Span 运行说明](v2_5c_quote_span_runtime.md)
+- [V2-5C Live Holdout V2 数据卡](v2_5c_live_holdout_v2_data_card.md)
+- [ADR-0015：服务端精确 Quote-to-Span](../adr/0015-server-verified-quote-to-span.md)
 
 ## 当前状态
 
@@ -43,5 +47,6 @@
 - V2-4C 已把“只有错误地区证据”从 conflict 修正为 unknown，并把目标地区核验与跨地区差异分层；PD3226G/US 离线回放仍为 6/6 matched。
 - V2-5 已实现默认关闭的确定性优先 Constraint Proposal 与主动澄清；50 条冻结表达的离线规则回归为 55/55 字段、50/50 任务，ReAct/LangGraph 暂停恢复语义一致。
 - V2-5B 新增 12 条一次性 Live Holdout：真实 qwen-plus Function 名 12/12 正确且安全误激活为 0，但 Schema 10/12、span 1/20、任务 2/12，LLM 回退仍属实验能力，不能宣称任意口语约束已稳定支持。
+- V2-5C 保留上述历史并改用服务端精确 Quote-to-Span；新的 20 条一次性 Live Holdout V2 首测为 Schema 20/20、服务端 span 28/28、清晰硬约束 F1 96.97%、任务 16/20，安全误激活仍为 0。数值门已满足，但仍需用户授权才能进入 V2-6。
 - Evidence Promotion、浏览器渲染、第二品类和 V2-6 均未开始；不宣称实时价格、全网覆盖或生产级服务。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

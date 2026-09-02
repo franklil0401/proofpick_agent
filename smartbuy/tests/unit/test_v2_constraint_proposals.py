@@ -127,9 +127,9 @@ def test_llm_hallucinated_span_and_non_domain_field_never_activate():
             "strength": "hard",
             "status": "supported",
             "action": "add",
-            "span_start": 0,
-            "span_end": 2,
-            "span_text": "四千",
+            "proposal_kind": "supported_constraint",
+            "quote": "四千",
+            "occurrence": None,
             "confidence": 1,
         },
         source=ProposalSource.LLM,
@@ -146,9 +146,9 @@ def test_llm_hallucinated_span_and_non_domain_field_never_activate():
             "strength": "hard",
             "status": "supported",
             "action": "add",
-            "span_start": 2,
-            "span_end": len(query),
-            "span_text": query[2:],
+            "proposal_kind": "supported_constraint",
+            "quote": query[2:],
+            "occurrence": None,
             "confidence": 1,
         },
         source=ProposalSource.LLM,
@@ -210,9 +210,9 @@ async def test_rule_gap_uses_one_schema_provider_call_then_deterministic_validat
                         "strength": "hard",
                         "action": "add",
                         "status": "supported",
-                        "span_start": 0,
-                        "span_end": len(query),
-                        "span_text": query,
+                    "proposal_kind": "supported_constraint",
+                    "quote": query,
+                    "occurrence": None,
                         "confidence": 0.9,
                     }
                 ],
@@ -281,4 +281,10 @@ async def test_qwen_fallback_forces_schema_function_call_at_temperature_zero():
     assert len(result["proposals"]) == 1
     assert fake.captured["temperature"] == 0.0
     assert fake.captured["tool_choice"]["function"]["name"] == "submit_constraint_proposals"
-    assert fake.captured["tools"][0]["function"]["parameters"]["additionalProperties"] is False
+    function = fake.captured["tools"][0]["function"]
+    assert function["strict"] is True
+    assert function["parameters"]["additionalProperties"] is False
+    item = function["parameters"]["properties"]["proposals"]["items"]
+    assert "quote" in item["properties"]
+    assert "span_start" not in item["properties"]
+    assert "unsupported" in item["properties"]["field_name"]["enum"]

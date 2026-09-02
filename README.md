@@ -77,7 +77,7 @@ Set-Location C:\ai\proofpick
 - 默认 V1 数据覆盖 12 个显示器型号；显式 V2 Product Pack 路径验证到 13 个。
 - V2 Open Research 仅对显式模式下的官方来源生成 24 小时临时证据，不自动进入治理数据或 Trusted 推荐；价格仍不是实时数据。
 - 冻结评测结果不代表生产准确率、生产零违规或 SLA。
-- V2-5B 的真实 qwen-plus 首测为 2/12，主要受严格原文 span 校验影响；错误 Proposal 均 fail closed，不能据此宣称任意自然语言约束已稳定支持。
+- V2-5B 的 qwen-plus 首测 2/12 与 5.41% F1 永久保留；V2-5C 改用服务端精确 Quote-to-Span 后，新 20 条首测清晰硬约束 F1 为 96.97%、任务 16/20、安全误激活 0，仍不代表生产自然语言理解能力。
 
 ## 详细文档与 License
 

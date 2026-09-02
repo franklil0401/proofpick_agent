@@ -34,6 +34,20 @@ class ProposalSource(StrEnum):
     LLM = "llm"
 
 
+class ProposalKind(StrEnum):
+    SUPPORTED_CONSTRAINT = "supported_constraint"
+    UNSUPPORTED_REQUEST = "unsupported_request"
+    NEEDS_CLARIFICATION = "needs_clarification"
+    CANCEL_CONSTRAINT = "cancel_constraint"
+    CONFIRM_CONSTRAINT = "confirm_constraint"
+
+
+class SpanSource(StrEnum):
+    SERVER_RULE_MATCH = "server_rule_match"
+    SERVER_EXACT_QUOTE = "server_exact_quote"
+    UNRESOLVED_QUOTE = "unresolved_quote"
+
+
 class ClarificationState(StrEnum):
     NOT_REQUIRED = "not_required"
     PENDING = "pending"
@@ -68,7 +82,12 @@ class ConstraintProposal(BaseModel):
     action: ProposalAction = ProposalAction.ADD
     status: ProposalStatus
     source: ProposalSource
-    source_span: SourceSpan
+    source_span: SourceSpan | None = None
+    source_quote: str | None = Field(default=None, min_length=1, max_length=300)
+    span_source: SpanSource = SpanSource.SERVER_RULE_MATCH
+    occurrence: int | None = Field(default=None, ge=1)
+    proposal_kind: ProposalKind | None = None
+    clarification_question: str | None = Field(default=None, max_length=600)
     source_turn: int = Field(ge=1)
     confidence: float = Field(ge=0.0, le=1.0)
     active: bool = False
@@ -76,6 +95,11 @@ class ConstraintProposal(BaseModel):
 
     @model_validator(mode="after")
     def enforce_activation_boundary(self) -> ConstraintProposal:
+        if self.active and self.source_span is None:
+            raise ValueError("active proposal requires a server-verified source span")
+        if self.span_source == SpanSource.SERVER_EXACT_QUOTE:
+            if self.source_span is None or self.source_quote != self.source_span.text:
+                raise ValueError("server exact quote span must preserve the original quote")
         if self.active and self.status != ProposalStatus.SUPPORTED:
             raise ValueError("only supported proposals may be active")
         if self.active and self.action == ProposalAction.CANCEL:

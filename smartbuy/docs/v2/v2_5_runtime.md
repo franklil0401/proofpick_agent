@@ -45,4 +45,4 @@ uv run --project vendor/youtu-rag python -m smartbuy.eval.run_v2_constraint_eval
 uv run --project vendor/youtu-rag python -m pytest smartbuy/tests/unit/test_v2_constraint_proposals.py smartbuy/tests/integration/test_v2_clarification_orchestration.py -q
 ```
 
-冻结集、结果与限制见 [阶段报告](v2_5_constraint_clarification_report.md)。
+冻结集、结果与限制见 [阶段报告](v2_5_constraint_clarification_report.md)。真实 LLM 的字符定位已在 V2-5C 改为服务端精确 Quote-to-Span；新合同、离线验证和不可覆盖首测口径见 [V2-5C 运行说明](v2_5c_quote_span_runtime.md)与[V2-5C 报告](v2_5c_quote_span_report.md)。

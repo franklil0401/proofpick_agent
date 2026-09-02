@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-5 确定性 Proposal/澄清已完成；V2-5B 真实 qwen-plus 首测发现 span 兼容问题，暂不进入 V2-6** |
+| 当前状态 | **V2-5C 已用服务端精确 Quote-to-Span 关闭 span 兼容问题；新 Live Holdout 数值门通过，等待用户决定是否进入 V2-6** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-02 |
 
@@ -904,4 +904,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-5 的确定性规则、Proposal 安全门和双编排器澄清已完成。50 条先冻结表达离线回归为 55/55 字段、50/50 任务，首次实现 46/50 原样保留。V2-5B 又冻结并只运行一次 12 条 qwen-plus Live Holdout：Function 名 12/12 正确且违规激活为 0，但 Schema 10/12、原文 span 1/20、任务 2/12，因此 LLM 回退仍为实验能力，暂不具备进入 V2-6 的条件。证据见 [V2-5 报告](v2_5_constraint_clarification_report.md)、[V2-5B 报告](v2_5b_live_provider_validation_report.md)、[评测集说明](v2_5_expression_eval.md)与[运行说明](v2_5_runtime.md)。在用户再次确认前，不得修订 Live Holdout 后重跑首测、进入 V2-6、增加第二品类、切换默认编排器、实现自动 Evidence Promotion 或修改 V1 冻结数据与历史结果。
+V2-5 的确定性规则、Proposal 安全门和双编排器澄清已完成。50 条先冻结表达离线回归为 55/55 字段、50/50 任务，首次实现 46/50 原样保留。V2-5B 的首次 qwen-plus 结果（Schema 10/12、span 1/20、F1 5.41%、任务 2/12）继续永久保留，旧 12 条从 V2-5C 起只作为已暴露回归。V2-5C 改用服务端精确 Quote-to-Span；新 20 条一次性 Live Holdout V2 首测为 Schema 20/20、服务端 span 28/28、清晰硬约束 F1 96.97%、任务 16/20，安全误激活为 0。数值门已满足但不代表生产能力。证据见 [V2-5C 报告](v2_5c_quote_span_report.md)、[运行说明](v2_5c_quote_span_runtime.md)、[数据卡](v2_5c_live_holdout_v2_data_card.md)与 [ADR-0015](../adr/0015-server-verified-quote-to-span.md)。在用户再次确认前，不得进入 V2-6、针对新 Holdout 调参重跑、增加第二品类、切换默认编排器、实现自动 Evidence Promotion 或修改 V1 冻结数据与历史结果。

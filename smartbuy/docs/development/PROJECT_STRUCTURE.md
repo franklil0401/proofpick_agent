@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-02 |
-| 当前阶段 | V1 已冻结；V2-5B 已完成真实 qwen-plus 口径审计，LLM 回退因 span 兼容问题仍为实验能力 |
+| 当前阶段 | V1 已冻结；V2-5C 已完成服务端精确 Quote-to-Span 与新 Live Holdout 首测，等待 V2-6 授权 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -64,6 +64,7 @@ proofpick_agent/
 │  │  ├─ engine.py
 │  │  ├─ models.py
 │  │  ├─ provider.py
+│  │  ├─ spans.py
 │  │  └─ settings.py
 │  ├─ contracts/
 │  │  ├─ __init__.py
@@ -99,7 +100,8 @@ proofpick_agent/
 │  │  │  ├─ stage6_*            # 冻结评测、首次失败、账本、缓存、故障与汇总结果
 │  │  │  ├─ stage7_*            # 发布候选、定向修复与 Demo 脱敏结果
 │  │  │  ├─ v2_stage5_*         # 旧基线、首次实现失败和修复后冻结表达结果
-│  │  │  └─ v2_stage5b_*        # 四条失败审计与不可覆盖的 Live qwen-plus 首测结果
+│  │  │  ├─ v2_stage5b_*        # 四条失败审计与不可覆盖的 Live qwen-plus 首测结果
+│  │  │  └─ v2_stage5c_*        # 已暴露回归与新 Live Holdout V2 的机器可读首测摘要
 │  │  ├─ raw/
 │  │  │  └─ README.md
 │  │  ├─ __init__.py
@@ -126,7 +128,8 @@ proofpick_agent/
 │  │  │  ├─ 0011-auditable-zhipu-source-search.md
 │  │  │  ├─ 0012-governed-web-extraction-and-open-evidence.md
 │  │  │  ├─ 0013-regional-evidence-comparability.md
-│  │  │  └─ 0014-validated-constraint-proposals-and-clarification.md
+│  │  │  ├─ 0014-validated-constraint-proposals-and-clarification.md
+│  │  │  └─ 0015-server-verified-quote-to-span.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -157,7 +160,10 @@ proofpick_agent/
 │  │  │  ├─ v2_5_constraint_clarification_report.md
 │  │  │  ├─ v2_5_expression_eval.md
 │  │  │  ├─ v2_5_runtime.md
-│  │  │  └─ v2_5b_live_provider_validation_report.md
+│  │  │  ├─ v2_5b_live_provider_validation_report.md
+│  │  │  ├─ v2_5c_quote_span_report.md
+│  │  │  ├─ v2_5c_quote_span_runtime.md
+│  │  │  └─ v2_5c_live_holdout_v2_data_card.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -207,7 +213,10 @@ proofpick_agent/
 │  │  ├─ run_v2_constraint_eval.py
 │  │  ├─ v2_stage5b_live_holdout.jsonl
 │  │  ├─ v2_stage5b_live_holdout_manifest.json
-│  │  └─ run_v2_live_constraint_holdout.py
+│  │  ├─ run_v2_live_constraint_holdout.py
+│  │  ├─ v2_stage5c_live_holdout_v2.jsonl
+│  │  ├─ v2_stage5c_live_holdout_v2_manifest.json
+│  │  └─ run_v2_quote_span_live_eval.py
 │  ├─ memory/
 │  │  └─ store.py
 │  ├─ observability/
@@ -367,6 +376,8 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_4c_regional_evidence_report.md` | V2-4 假通过审计、目标地区/跨地区分层语义、专项回归与 PD3226G 离线回放证据 |
 | `smartbuy/docs/v2/v2_5_constraint_clarification_report.md` / `v2_5_runtime.md` | V2-5 Proposal/澄清实现、冻结指标、首次失败、双编排器暂停恢复、显式开关与回滚说明 |
 | `smartbuy/docs/v2/v2_5b_live_provider_validation_report.md` | 四条 Regression 失败口径、原 Holdout 独立性和 12 条真实 qwen-plus Live Holdout 首测证据 |
+| `smartbuy/docs/v2/v2_5c_quote_span_report.md` / `v2_5c_quote_span_runtime.md` | 服务端精确 Quote-to-Span、旧暴露回归、新 20 条首测、安全门、运行与回滚说明 |
+| `smartbuy/docs/v2/v2_5c_live_holdout_v2_data_card.md` | 新 20 条一次性 Live Holdout V2 的冻结 SHA、覆盖、评分、不变性和限制 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -392,7 +403,7 @@ proofpick_agent/
 | `smartbuy/constraints/normalize.py` | 首批字段的别名、单位、否定、比较符、来源优先级和取消规则 |
 | `smartbuy/constraints/verifier.py` | 完整候选池的只读 SQLite/evidence 确定性复核与 fail-closed |
 | `smartbuy/constraints/scoring.py` | 自然/故障注入固定套件的精确分母、延迟和重复性 Scorer |
-| `smartbuy/constraint_proposals/` | V2-5 Proposal Schema、确定性优先解析、qwen-plus Function Calling 候选门、仓库外澄清状态与双编排器适配 |
+| `smartbuy/constraint_proposals/` | V2-5 Proposal Schema、确定性优先解析、qwen-plus Function Calling 候选门、仓库外澄清状态与双编排器适配；`spans.py` 负责服务端精确 Quote-to-Span |
 | `smartbuy/contracts/` | V2 不可变通用 Product/Field/Constraint/Evidence/Candidate/Tool/Data/Pack 契约与 Product Pack 只读接口 |
 | `smartbuy/api/router.py` | `/api/smartbuy` HTTP/SSE、Monitor JSON 和长期偏好管理接口 |
 | `smartbuy/domain/models.py` | 需求、四态证据、轨迹、Checker 结果、候选和最终报告 Pydantic 契约 |
@@ -438,6 +449,7 @@ proofpick_agent/
 | `smartbuy/eval/merge_stage6_checkpoints.py` / `build_stage6_artifacts.py` | 分片审计合并、首见结果保留、指标 CSV 和统一账本生成 |
 | `smartbuy/eval/v2_stage5_expression_*` / `run_v2_constraint_eval.py` | 先冻结的 30 Regression + 20 Holdout 新表达、哈希和零网络精确评分器 |
 | `smartbuy/eval/v2_stage5b_live_holdout*` / `run_v2_live_constraint_holdout.py` | 一次性 12 条 qwen-plus 回退集、冻结哈希、严格 Tool/span/Pack 评分和仓库外首测产物 |
+| `smartbuy/eval/v2_stage5c_live_holdout_v2*` / `run_v2_quote_span_live_eval.py` | 新 20 条 Quote 合同 Live Holdout、冻结哈希、真实 Function/Schema/span/安全评分与仓库外不可覆盖输出 |
 | `smartbuy/docs/adr/0001-vendor-youtu-rag.md` | 上游纳入方式、固定 Commit、修改边界和更新流程决策 |
 | `smartbuy/docs/adr/0002-bailian-provider-and-index-contract.md` | 百炼 Provider、1024 维索引、重试和降级契约 |
 | `smartbuy/docs/adr/0003-governed-monitor-data-and-index.md` | 数据许可边界、四实体 Schema、事实卡和索引版本决策 |
@@ -452,6 +464,7 @@ proofpick_agent/
 | `smartbuy/docs/adr/0012-governed-web-extraction-and-open-evidence.md` | V2-4 URL 安全、静态抽取、临时 Open Evidence、模式隔离和不自动晋升的决策 |
 | `smartbuy/docs/adr/0013-regional-evidence-comparability.md` | V2-4C 单边地区缺失、跨地区异值/同值与目标地区事实不覆盖的决策 |
 | `smartbuy/docs/adr/0014-validated-constraint-proposals-and-clarification.md` | V2-5 LLM 只提案、严格 span/Pack 校验、双编排器暂停恢复和默认关闭决策 |
+| `smartbuy/docs/adr/0015-server-verified-quote-to-span.md` | V2-5C 由服务端精确定位 quote、重复 occurrence 和禁止模糊补救的 grounding 决策 |
 | `smartbuy/docs/data_card.md` | 数据范围、来源、缺失、哈希语义、人工抽查和合规说明 |
 | `smartbuy/docs/runtime_manifest.md` | 目标主机、依赖、模型状态、索引契约、运行路径和服务结果 |
 | `smartbuy/docs/stage1_smoke_test.md` | 阶段 1 命令、耗时、通过/延后项、安全事件与退出结论 |
@@ -492,10 +505,11 @@ proofpick_agent/
 | `smartbuy/tests/unit/test_v2_open_research.py` / `integration/test_v2_open_research_agent.py` | SSRF/HTML/重定向/临时证据/四类双边冲突、地区不匹配/canonical 恢复和 Open Agent/Checker/Monitor 隔离回归 |
 | `smartbuy/tests/unit/test_v2_constraint_proposals.py` / `integration/test_v2_clarification_orchestration.py` | 50 条表达精确指标、span/Pack 安全、Memory 优先级及 ReAct/LangGraph 五类暂停恢复回归 |
 | `smartbuy/tests/unit/test_v2_live_constraint_provider_contract.py` | Live Holdout 冻结、规则隔离、缺失/错误 Function、非领域字段和未确认歧义的 fail-closed 回归 |
+| `smartbuy/tests/unit/test_v2_quote_span_contract.py` | 唯一/重复/缺失 quote、Unicode/Emoji、unsupported、Prompt Injection、服务端优先级和双编排器一致性测试 |
 
 ## 计划结构
 
-V2 已创建兼容适配层、Monitor Domain Pack、Product Pack/Ledger、Source Search、Open Research，以及默认关闭的自然约束与主动澄清；V2-4C 已修复地区证据可比性。默认仍使用 V1 数据与自研 ReAct。当前 LangGraph 只是显式启用、复用完整 V1 工作流的外壳；尚未创建自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 或第二品类。
+V2 已创建兼容适配层、Monitor Domain Pack、Product Pack/Ledger、Source Search、Open Research，以及默认关闭的自然约束与主动澄清；V2-4C 已修复地区证据可比性，V2-5C 已将 LLM 字符下标替换为服务端精确 Quote-to-Span。默认仍使用 V1 数据与自研 ReAct。当前 LangGraph 只是显式启用、复用完整 V1 工作流的外壳；尚未创建自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 或第二品类。
 
 ## 维护检查清单
 

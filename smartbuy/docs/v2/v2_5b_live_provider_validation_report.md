@@ -83,3 +83,7 @@ HTTP、强制 Function 名和安全阻断通过，但真实 qwen-plus 的 Schema
 - 原 50 条规则评测重新计算：55/55 Proposal、50/50 任务，冻结哈希不变。
 - Ruff、Compileall、JavaScript 12/12、PowerShell AST 5/5、Markdown 相对链接 314/314 通过。
 - 敏感凭据、禁止运行产物命中 0；V1 冻结数据、原 50 条金标、46/50 首次结果和默认编排器均未修改。
+
+## 8. V2-5C 后续口径（追加，不改写首测）
+
+V2-5C 已获授权修复 Quote 合同。由于本页 12 条及其输出已经暴露，它们从 V2-5C 起统一称为 `live_provider_regression_v1`，不能再作为新的未见 Holdout；本页的首次 SHA、5.41% F1、2/12 任务、10/12 Schema 和 1/20 span 均永久保留。新的独立首测口径见 [V2-5C 报告](v2_5c_quote_span_report.md)与 [Live Holdout V2 数据卡](v2_5c_live_holdout_v2_data_card.md)。
