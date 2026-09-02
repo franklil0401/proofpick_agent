@@ -98,10 +98,14 @@ class QwenConstraintProposalProvider:
             max_tokens=600,
         )
         calls = result.data.get("tool_calls") or []
-        if len(calls) != 1:
+        function = (calls[0].get("function") or {}) if len(calls) == 1 else {}
+        if (
+            len(calls) != 1
+            or function.get("name") != "submit_constraint_proposals"
+        ):
             proposals: list[dict[str, Any]] = []
         else:
-            raw = (calls[0].get("function") or {}).get("arguments", "{}")
+            raw = function.get("arguments", "{}")
             try:
                 payload = json.loads(raw) if isinstance(raw, str) else raw
             except (json.JSONDecodeError, TypeError):

@@ -169,6 +169,14 @@ V2-5 自然约束与主动澄清：
 - 50 条冻结表达（30 Regression、20 Holdout）最终 55/55 字段、50/50 任务；首次实现 46/50 保留。双编排器 5 类澄清各通过一次，暂停前 Agent 调用 0、恢复后 1。
 - 本阶段 API、Token、费用均为 0；离线规则平均/P95 0.457/0.703 ms，仅为本机小样本。详见 [V2-5 报告](v2/v2_5_constraint_clarification_report.md)和[运行说明](v2/v2_5_runtime.md)。
 
+V2-5B 真实 qwen-plus 收尾：
+
+- 新 Live Holdout 12 条，SHA-256 `3043c7c3f13d4f45f23f64c7ba1416bbda4162e10b9f5ca5b757ba828fd2a889`；冻结后确定性 Parser 12/12 无结果，只进行一次完整在线首测。
+- qwen-plus HTTP/Function 名 12/12，Tool Schema 10/12、raw span 1/20、任务 2/12、字段 TP/FP/FN 1/18/17；非领域、歧义、unsupported 和 Prompt Injection 进入 Checker 均为 0。
+- 12 次调用共 6,864 input + 1,736 output tokens，估算 ¥0.0089632，平均/P95 3,525.803/6,081.975ms。首测没有覆盖；LLM 回退仍为实验能力。
+- 适配器仅增加错误 Function 名 fail-closed 校验；没有根据 Live 失败修改 Prompt、span 规则或金标。详见 [V2-5B 报告](v2/v2_5b_live_provider_validation_report.md)。
+- V2-5B 定向 28/28、`smartbuy/tests` 256/256、CI 等价 257/257、V1 原始 94/94、Checker/Memory/澄清代表集 61/61；Markdown 314/314，其余静态与安全门通过。
+
 ## 测试与成本
 
 - V2-2B 最终自动化：`smartbuy/tests` 177/177，加入上游配置安全测试后的 CI 等价套件 178/178；Product Pack/实时索引定向套件 23/23。Ruff、Compileall、JavaScript 12/12、PowerShell AST 5/5 和 Markdown 262/262 通过，详见 [V2-2 报告](v2/v2_2_product_pack_report.md)。

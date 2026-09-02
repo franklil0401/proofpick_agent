@@ -1,0 +1,11 @@
+{
+  "schema_version": "proofpick-v2-live-constraint-holdout-v1",
+  "frozen_at": "2026-09-02",
+  "case_count": 12,
+  "sha256": "3043c7c3f13d4f45f23f64c7ba1416bbda4162e10b9f5ca5b757ba828fd2a889",
+  "model": "qwen-plus",
+  "temperature": 0,
+  "max_calls": 12,
+  "max_cost_cny": 1.0,
+  "policy": "Run once before inspecting results; never edit this file or its gold labels in response to the first run."
+}

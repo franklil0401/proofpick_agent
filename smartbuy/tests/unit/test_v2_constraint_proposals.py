@@ -247,6 +247,7 @@ async def test_qwen_fallback_forces_schema_function_call_at_temperature_zero():
                     "tool_calls": [
                         {
                             "function": {
+                                "name": "submit_constraint_proposals",
                                 "arguments": json.dumps(
                                     {
                                         "proposals": [

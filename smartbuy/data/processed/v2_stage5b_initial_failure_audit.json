@@ -1,0 +1,62 @@
+{
+  "schema_version": "proofpick-v2-stage5b-failure-audit-v1",
+  "source_result": "v2_stage5_initial_implementation_results.json",
+  "scoring_fields": ["field", "operator", "value", "unit", "strength", "status", "action"],
+  "conclusion": "All four failures are regression cases. The original holdout first run remains 20/20 and none of its cases was used to change rules.",
+  "cases": [
+    {
+      "case_id": "v2c-reg-016",
+      "split": "regression",
+      "query": "Type-C 可以给笔记本充电",
+      "gold": [
+        {"field":"usb_c_power_delivery_w","operator":"gte","value":null,"unit":"W","strength":"hard","status":"needs_confirmation","action":"add"}
+      ],
+      "first_actual": [
+        {"field":"usb_c_power_delivery_w","operator":"gte","value":null,"unit":"W","strength":"hard","status":"needs_confirmation","action":"add"},
+        {"field":"has_usb_c","operator":"eq","value":true,"unit":null,"strength":"hard","status":"supported","action":"add"}
+      ],
+      "failure": "An implied has_usb_c proposal was added although the frozen gold scores only the unknown PD threshold.",
+      "fix": "Do not infer a separate has_usb_c proposal from this natural-language charging expression."
+    },
+    {
+      "case_id": "v2c-reg-017",
+      "split": "regression",
+      "query": "USB-C 至少 90 瓦供电",
+      "gold": [
+        {"field":"usb_c_power_delivery_w","operator":"gte","value":90.0,"unit":"W","strength":"hard","status":"supported","action":"add"}
+      ],
+      "first_actual": [
+        {"field":"usb_c_power_delivery_w","operator":"gte","value":90.0,"unit":"W","strength":"hard","status":"supported","action":"add"},
+        {"field":"has_usb_c","operator":"eq","value":true,"unit":null,"strength":"hard","status":"supported","action":"add"}
+      ],
+      "failure": "The explicit PD constraint was correct but gained an unrequested has_usb_c proposal.",
+      "fix": "Only terse PD forms explicitly covered by the frozen contract add has_usb_c; this expression remains one PD field."
+    },
+    {
+      "case_id": "v2c-reg-022",
+      "split": "regression",
+      "query": "只看国行版本",
+      "gold": [
+        {"field":"region","operator":"eq","value":"CN","unit":null,"strength":"hard","status":"supported","action":"add"}
+      ],
+      "first_actual": [
+        {"field":"region","operator":"eq","value":"CN","unit":null,"strength":"hard","status":"supported","action":"override"}
+      ],
+      "failure": "Replacing the system-default region was mislabeled as an explicit user override.",
+      "fix": "Keep the Proposal action as add and record replacement of the system default only in ConstraintDiff."
+    },
+    {
+      "case_id": "v2c-reg-023",
+      "split": "regression",
+      "query": "我要美国版",
+      "gold": [
+        {"field":"region","operator":"eq","value":"US","unit":null,"strength":"hard","status":"supported","action":"add"}
+      ],
+      "first_actual": [
+        {"field":"region","operator":"eq","value":"US","unit":null,"strength":"hard","status":"supported","action":"override"}
+      ],
+      "failure": "Replacing the system-default region was mislabeled as an explicit user override.",
+      "fix": "Keep the Proposal action as add and expose the effective replacement in the diff without rewriting user intent."
+    }
+  ]
+}

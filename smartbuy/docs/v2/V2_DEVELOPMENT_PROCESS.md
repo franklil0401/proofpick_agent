@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-5 Schema Constraint Proposal 与主动澄清已完成；默认关闭，V1 ReAct 与 Checker 边界不变** |
+| 当前状态 | **V2-5 确定性 Proposal/澄清已完成；V2-5B 真实 qwen-plus 首测发现 span 兼容问题，暂不进入 V2-6** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-02 |
 
@@ -904,4 +904,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-5 已完成。确定性规则优先，qwen-plus 只可通过严格 Function Calling 提案；模糊/不支持/无效 Proposal 在确认前均不能进入 Checker。ReAct 与 LangGraph 共用同一 Resolution 和仓库外澄清状态，默认仍为 ReAct。50 条先冻结表达最终 55/55 字段、50/50 任务，首次实现 46/50 原样保留；真实 API 调用 0。决策见 [ADR-0014](../adr/0014-validated-constraint-proposals-and-clarification.md)，证据见 [V2-5 报告](v2_5_constraint_clarification_report.md)、[评测集说明](v2_5_expression_eval.md)与[运行说明](v2_5_runtime.md)。在用户再次确认前，不得进入 V2-6、增加第二品类、切换默认编排器、实现自动 Evidence Promotion 或修改 V1 冻结数据与历史结果。
+V2-5 的确定性规则、Proposal 安全门和双编排器澄清已完成。50 条先冻结表达离线回归为 55/55 字段、50/50 任务，首次实现 46/50 原样保留。V2-5B 又冻结并只运行一次 12 条 qwen-plus Live Holdout：Function 名 12/12 正确且违规激活为 0，但 Schema 10/12、原文 span 1/20、任务 2/12，因此 LLM 回退仍为实验能力，暂不具备进入 V2-6 的条件。证据见 [V2-5 报告](v2_5_constraint_clarification_report.md)、[V2-5B 报告](v2_5b_live_provider_validation_report.md)、[评测集说明](v2_5_expression_eval.md)与[运行说明](v2_5_runtime.md)。在用户再次确认前，不得修订 Live Holdout 后重跑首测、进入 V2-6、增加第二品类、切换默认编排器、实现自动 Evidence Promotion 或修改 V1 冻结数据与历史结果。
