@@ -33,6 +33,7 @@ def _from_open(record: OpenEvidenceRecord) -> ScopedEvidenceValue:
         evidence_id=record.evidence_id,
         field_name=record.field_name,
         normalized_value=record.normalized_value,
+        unit=record.unit,
         source_url=record.final_url,
         source_region=record.source_region,
         product_region=record.product_region,
@@ -65,54 +66,117 @@ class OpenEvidenceChecker:
                     )
                 )
                 continue
-            target_regions = {item.product_region for item in records}
-            wrong_region = [
-                item for item in records if item.source_region != item.product_region
-            ]
-            values = {_signature(item.normalized_value) for item in records}
-            governed_values = {
-                _signature(item.normalized_value)
-                for item in records
-                if item.evidence_scope == "governed"
-            }
-            open_values = {
-                _signature(item.normalized_value)
-                for item in records
-                if item.evidence_scope == "open"
-            }
-            conflict_reasons: list[str] = []
-            if wrong_region or len(target_regions) > 1:
-                conflict_reasons.append("同型号不同地区来源不能静默合并")
-            if len(values) > 1:
-                conflict_reasons.append("字段存在多个不同正文值或观察值")
-            if governed_values and open_values and governed_values != open_values:
-                conflict_reasons.append("Open Evidence 与治理证据不一致，不能覆盖 Trusted Evidence")
-            if conflict_reasons:
+            target_regions = list(dict.fromkeys(item.product_region for item in records))
+            if len(target_regions) != 1:
                 output.append(
                     OpenFieldAssessment(
                         field_name=field,
                         status=OpenEvidenceStatus.CONFLICT,
                         values=_unique_values(records),
-                        reason="；".join(dict.fromkeys(conflict_reasons)) + "。",
+                        reason="target_region_scope_conflict",
                         evidence=records,
+                        target_region_status=OpenEvidenceStatus.CONFLICT,
+                        conflict_evidence_ids=[item.evidence_id for item in records],
                     )
                 )
                 continue
-            usable = [
+            target_region = target_regions[0]
+            target_records = [
                 item
                 for item in records
-                if item.source_region == item.product_region
-                and item.normalized_value is not None
-                and bool(item.exact_snippet.strip())
+                if item.source_region == target_region
             ]
-            if not usable:
+            non_target_records = [
+                item for item in records if item.source_region != target_region
+            ]
+            target_ids = [item.evidence_id for item in target_records]
+            non_target_ids = [item.evidence_id for item in non_target_records]
+            if not target_records:
                 output.append(
                     OpenFieldAssessment(
                         field_name=field,
                         status=OpenEvidenceStatus.UNKNOWN,
-                        values=_unique_values(records),
-                        reason="只有错误地区、空值或无正文片段记录，不能标记 matched。",
-                        evidence=records,
+                        reason="region_mismatch_only",
+                        target_region=target_region,
+                        target_region_evidence_ids=[],
+                        non_target_region_evidence_ids=non_target_ids,
+                        target_region_status=OpenEvidenceStatus.UNKNOWN,
+                        cross_region_conflict=False,
+                        non_comparable_evidence=non_target_records,
+                    )
+                )
+                continue
+
+            usable_target = [
+                item
+                for item in target_records
+                if item.normalized_value is not None and bool(item.exact_snippet.strip())
+            ]
+            if not usable_target:
+                output.append(
+                    OpenFieldAssessment(
+                        field_name=field,
+                        status=OpenEvidenceStatus.UNKNOWN,
+                        reason="target_region_evidence_incomplete",
+                        evidence=target_records,
+                        target_region=target_region,
+                        target_region_evidence_ids=target_ids,
+                        non_target_region_evidence_ids=non_target_ids,
+                        target_region_status=OpenEvidenceStatus.UNKNOWN,
+                        cross_region_conflict=False,
+                        non_comparable_evidence=non_target_records,
+                    )
+                )
+                continue
+
+            target_values = {_signature(item.normalized_value) for item in usable_target}
+            target_conflict = len(target_values) > 1
+            target_status = (
+                OpenEvidenceStatus.CONFLICT
+                if target_conflict
+                else OpenEvidenceStatus.MATCHED
+            )
+            comparable_non_target = [
+                item
+                for item in non_target_records
+                if item.normalized_value is not None and bool(item.exact_snippet.strip())
+            ]
+            differing_non_target = [
+                item
+                for item in comparable_non_target
+                if _signature(item.normalized_value) not in target_values
+            ]
+            cross_region_conflict = bool(differing_non_target)
+            if target_conflict or cross_region_conflict:
+                conflict_records = [
+                    *usable_target,
+                    *(differing_non_target if cross_region_conflict else []),
+                ]
+                reason = (
+                    "target_and_cross_region_value_conflict"
+                    if target_conflict and cross_region_conflict
+                    else (
+                        "cross_region_value_conflict"
+                        if cross_region_conflict
+                        else "target_region_value_conflict"
+                    )
+                )
+                output.append(
+                    OpenFieldAssessment(
+                        field_name=field,
+                        status=OpenEvidenceStatus.CONFLICT,
+                        values=_unique_values(conflict_records),
+                        reason=reason,
+                        evidence=conflict_records,
+                        target_region=target_region,
+                        target_region_evidence_ids=target_ids,
+                        non_target_region_evidence_ids=non_target_ids,
+                        target_region_status=target_status,
+                        cross_region_conflict=cross_region_conflict,
+                        conflict_evidence_ids=[
+                            item.evidence_id for item in conflict_records
+                        ],
+                        non_comparable_evidence=non_target_records,
                     )
                 )
                 continue
@@ -120,9 +184,15 @@ class OpenEvidenceChecker:
                 OpenFieldAssessment(
                     field_name=field,
                     status=OpenEvidenceStatus.MATCHED,
-                    values=_unique_values(usable),
-                    reason="目标地区官方正文片段支持该字段；证据仍仅限 Open Mode。",
-                    evidence=usable,
+                    values=_unique_values(usable_target),
+                    reason="target_region_evidence_matched",
+                    evidence=usable_target,
+                    target_region=target_region,
+                    target_region_evidence_ids=target_ids,
+                    non_target_region_evidence_ids=non_target_ids,
+                    target_region_status=OpenEvidenceStatus.MATCHED,
+                    cross_region_conflict=False,
+                    non_comparable_evidence=non_target_records,
                 )
             )
         return output

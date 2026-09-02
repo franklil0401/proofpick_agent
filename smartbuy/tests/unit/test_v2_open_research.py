@@ -13,6 +13,7 @@ from smartbuy.open_research import (
     OpenEvidenceChecker,
     OpenEvidenceRecord,
     OpenEvidenceStatus,
+    OpenResearchReport,
     OpenResearchService,
     OpenResearchSettings,
     ScopedEvidenceValue,
@@ -398,6 +399,7 @@ def governed(value: object) -> ScopedEvidenceValue:
         evidence_id="governed-evidence",
         field_name="usb_c_power_delivery_w",
         normalized_value=value,
+        unit="W",
         source_url="https://www.benq.com/en-us/governed/pd3226g.html",
         source_region="US",
         product_region="US",
@@ -411,7 +413,17 @@ def governed(value: object) -> ScopedEvidenceValue:
     ("open_records", "governed_records"),
     [
         ([open_record(evidence_id="open-" + "1" * 24, value=90)], [governed(85)]),
-        ([open_record(evidence_id="open-" + "2" * 24, value=90, region="CA")], []),
+        (
+            [
+                open_record(evidence_id="open-" + "2" * 24, value=90),
+                open_record(
+                    evidence_id="open-" + "a" * 24,
+                    value=65,
+                    region="CA",
+                ),
+            ],
+            [],
+        ),
         (
             [
                 open_record(evidence_id="open-" + "3" * 24, value=85, observed_at="2026-08-01T00:00:00Z"),
@@ -427,6 +439,12 @@ def governed(value: object) -> ScopedEvidenceValue:
             [],
         ),
     ],
+    ids=[
+        "governed-versus-open",
+        "same-model-cross-region-different-values",
+        "old-versus-new",
+        "same-page-multiple-values",
+    ],
 )
 def test_four_conflict_classes_preserve_both_sides(open_records, governed_records) -> None:
     result = OpenEvidenceChecker().assess(
@@ -434,6 +452,105 @@ def test_four_conflict_classes_preserve_both_sides(open_records, governed_record
     )[0]
     assert result.status == OpenEvidenceStatus.CONFLICT
     assert len(result.evidence) == len(open_records) + len(governed_records)
+
+
+def test_single_wrong_region_evidence_is_unknown() -> None:
+    ca = open_record(evidence_id="open-" + "b" * 24, value=65, region="CA")
+    result = OpenEvidenceChecker().assess([ca.field_name], [ca])[0]
+
+    assert result.status == OpenEvidenceStatus.UNKNOWN
+    assert result.target_region_status == OpenEvidenceStatus.UNKNOWN
+    assert result.reason == "region_mismatch_only"
+    assert result.cross_region_conflict is False
+    assert result.target_region == "US"
+    assert result.target_region_evidence_ids == []
+    assert result.non_target_region_evidence_ids == [ca.evidence_id]
+    assert [item.evidence_id for item in result.non_comparable_evidence] == [
+        ca.evidence_id
+    ]
+
+
+def test_two_regions_with_different_values_preserve_conflict() -> None:
+    us = open_record(evidence_id="open-" + "c" * 24, value=90)
+    ca = open_record(evidence_id="open-" + "d" * 24, value=65, region="CA")
+    result = OpenEvidenceChecker().assess([us.field_name], [us, ca])[0]
+
+    assert result.status == OpenEvidenceStatus.CONFLICT
+    assert result.target_region_status == OpenEvidenceStatus.MATCHED
+    assert result.cross_region_conflict is True
+    assert set(result.conflict_evidence_ids) == {us.evidence_id, ca.evidence_id}
+    preserved = {item.evidence_id: item for item in result.evidence}
+    assert (preserved[us.evidence_id].source_region, preserved[us.evidence_id].normalized_value) == (
+        "US",
+        90,
+    )
+    assert (preserved[ca.evidence_id].source_region, preserved[ca.evidence_id].normalized_value) == (
+        "CA",
+        65,
+    )
+    assert all(item.unit == "W" for item in preserved.values())
+    assert all(item.source_url for item in preserved.values())
+
+
+def test_two_regions_with_same_value_are_not_conflict() -> None:
+    us = open_record(evidence_id="open-" + "e" * 24, value=90)
+    ca = open_record(evidence_id="open-" + "f" * 24, value=90, region="CA")
+    result = OpenEvidenceChecker().assess([us.field_name], [us, ca])[0]
+
+    assert result.status == OpenEvidenceStatus.MATCHED
+    assert result.target_region_status == OpenEvidenceStatus.MATCHED
+    assert result.cross_region_conflict is False
+    assert result.values == [90]
+    assert result.target_region_evidence_ids == [us.evidence_id]
+    assert result.non_target_region_evidence_ids == [ca.evidence_id]
+
+
+def test_same_value_wrong_region_only_is_still_unknown() -> None:
+    ca = open_record(evidence_id="open-" + "0" * 24, value=90, region="CA")
+    result = OpenEvidenceChecker().assess([ca.field_name], [ca])[0]
+
+    assert result.status == OpenEvidenceStatus.UNKNOWN
+    assert result.reason == "region_mismatch_only"
+    assert result.cross_region_conflict is False
+    assert result.values == []
+
+
+def test_target_region_evidence_not_overridden_by_other_region() -> None:
+    us = open_record(evidence_id="open-" + "9" * 24, value=90)
+    ca = open_record(evidence_id="open-" + "8" * 24, value=65, region="CA")
+    result = OpenEvidenceChecker().assess([us.field_name], [ca, us])[0]
+
+    assert result.target_region_status == OpenEvidenceStatus.MATCHED
+    target = [
+        item
+        for item in result.evidence
+        if item.evidence_id in result.target_region_evidence_ids
+    ]
+    assert [(item.source_region, item.normalized_value) for item in target] == [
+        ("US", 90)
+    ]
+    assert [(item.source_region, item.normalized_value) for item in result.non_comparable_evidence] == [
+        ("CA", 65)
+    ]
+
+
+def test_cross_region_conflict_cannot_grant_trusted_eligibility() -> None:
+    us = open_record(evidence_id="open-" + "7" * 24, value=90)
+    ca = open_record(evidence_id="open-" + "6" * 24, value=65, region="CA")
+    assessment = OpenEvidenceChecker().assess([us.field_name], [us, ca])[0]
+    report = OpenResearchReport(
+        provisional_product_id="benq-pd3226g-us-open",
+        target_model="PD3226G",
+        product_region="US",
+        status="completed",
+        field_assessments=[assessment],
+        conflict_fields=[us.field_name],
+    )
+
+    assert assessment.status == OpenEvidenceStatus.CONFLICT
+    assert report.trusted_eligible is False
+    with pytest.raises(ValueError, match="Trusted Constraint Checker"):
+        us.to_trusted_checker_input()
 
 
 def test_temporary_store_expiry_corruption_deletion_and_disabled(tmp_path) -> None:

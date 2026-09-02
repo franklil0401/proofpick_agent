@@ -904,4 +904,4 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-4 Web Extractor 与 Open Research 已完成，决策见 [ADR-0012](../adr/0012-governed-web-extraction-and-open-evidence.md)，验证证据见 [V2-4 报告](v2_4_open_research_report.md)与[运行说明](v2_4_runtime.md)。默认编排器仍为 ReAct，Domain/Product Pack、Source Search 和 Open Research 均默认关闭；Open Evidence 不能进入正式 Ledger、Trusted Checker 或 eligible 集合。在用户再次确认前，不得进入 V2-5、实现自动 Evidence Promotion、浏览器渲染、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。
+V2-4 Web Extractor 与 Open Research 已完成；V2-4C 又修复了地区不匹配与跨地区冲突语义。决策见 [ADR-0012](../adr/0012-governed-web-extraction-and-open-evidence.md)和[ADR-0013](../adr/0013-regional-evidence-comparability.md)，验证证据见 [V2-4 报告](v2_4_open_research_report.md)、[V2-4C 报告](v2_4c_regional_evidence_report.md)与[运行说明](v2_4_runtime.md)。默认编排器仍为 ReAct，Domain/Product Pack、Source Search 和 Open Research 均默认关闭；Open Evidence 不能进入正式 Ledger、Trusted Checker 或 eligible 集合。在用户再次确认前，不得进入 V2-5、实现自动 Evidence Promotion、浏览器渲染、增加第二品类、迁移生产编排器或修改 V1 冻结数据与历史结果。

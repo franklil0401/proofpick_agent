@@ -116,6 +116,7 @@ class ScopedEvidenceValue(FrozenModel):
     evidence_id: str
     field_name: str
     normalized_value: Any = None
+    unit: str | None = Field(default=None, max_length=32)
     source_url: str
     source_region: str
     product_region: str
@@ -130,6 +131,31 @@ class OpenFieldAssessment(FrozenModel):
     values: list[Any] = Field(default_factory=list)
     reason: str
     evidence: list[ScopedEvidenceValue] = Field(default_factory=list)
+    target_region: str | None = Field(default=None, max_length=16)
+    target_region_evidence_ids: list[str] = Field(default_factory=list)
+    non_target_region_evidence_ids: list[str] = Field(default_factory=list)
+    target_region_status: OpenEvidenceStatus = OpenEvidenceStatus.UNKNOWN
+    cross_region_conflict: bool = False
+    conflict_evidence_ids: list[str] = Field(default_factory=list)
+    non_comparable_evidence: list[ScopedEvidenceValue] = Field(default_factory=list)
+
+    @model_validator(mode="after")
+    def validate_region_comparison(self) -> OpenFieldAssessment:
+        if self.cross_region_conflict and self.status != OpenEvidenceStatus.CONFLICT:
+            raise ValueError("cross-region conflict must remain conflict")
+        if self.cross_region_conflict and not self.conflict_evidence_ids:
+            raise ValueError("cross-region conflict requires both evidence sides")
+        conflict_ids = set(self.conflict_evidence_ids)
+        if self.cross_region_conflict and (
+            not conflict_ids.intersection(self.target_region_evidence_ids)
+            or not conflict_ids.intersection(self.non_target_region_evidence_ids)
+        ):
+            raise ValueError("cross-region conflict requires target and non-target evidence")
+        if set(self.target_region_evidence_ids) & set(
+            self.non_target_region_evidence_ids
+        ):
+            raise ValueError("target and non-target evidence ids must be disjoint")
+        return self
 
 
 class TemporaryEvidenceEnvelope(FrozenModel):
@@ -202,11 +228,26 @@ class OpenResearchReport(FrozenModel):
             lines.append("- 未获得可形成字段证据的正文片段。")
         for item in self.field_assessments:
             values = ", ".join(str(value) for value in item.values) or "未知"
-            lines.append(f"- `{item.field_name}`：**{item.status.value}**；值：`{values}`；{item.reason}")
+            lines.append(
+                f"- `{item.field_name}`：**{item.status.value}**；值：`{values}`；"
+                f"目标地区状态：`{item.target_region_status.value}`；"
+                f"跨地区冲突：`{str(item.cross_region_conflict).lower()}`；{item.reason}"
+            )
             for evidence in item.evidence:
                 lines.append(
                     f"  - [{evidence.evidence_id}]({evidence.source_url}) / "
-                    f"{evidence.source_region} / {evidence.observed_at} / scope={evidence.evidence_scope}"
+                    f"{evidence.source_region} / value={evidence.normalized_value}"
+                    f"{evidence.unit or ''} / {evidence.observed_at} / "
+                    f"scope={evidence.evidence_scope}"
+                )
+            for evidence in item.non_comparable_evidence:
+                if evidence.evidence_id in item.conflict_evidence_ids:
+                    continue
+                lines.append(
+                    f"  - 跨地区参考 [{evidence.evidence_id}]({evidence.source_url}) / "
+                    f"{evidence.source_region} / value={evidence.normalized_value}"
+                    f"{evidence.unit or ''} / {evidence.observed_at} / "
+                    f"scope={evidence.evidence_scope}（不参与目标地区判定）"
                 )
         if self.degraded_reasons:
             lines.extend(["", "### 降级与待确认", ""])

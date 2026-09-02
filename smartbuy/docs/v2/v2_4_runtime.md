@@ -55,4 +55,11 @@ uv run --project vendor/youtu-rag python -m smartbuy.scripts.verify_v2_open_rese
 - 错地区 canonical/hreflang 只能作为导航候选；没有成功抓取目标地区正文前不能生成 Evidence。
 - Open Evidence 到 Trusted Checker 的转换入口会抛出异常；Open Report 固定没有推荐商品。
 
-技术决策见 [ADR-0012](../adr/0012-governed-web-extraction-and-open-evidence.md)，完整证据见 [V2-4 报告](v2_4_open_research_report.md)。
+## 地区证据语义
+
+- 目标地区只有错误地区正文时返回 `unknown`、`reason=region_mismatch_only`，错误地区记录仅作为跨地区参考。
+- 目标地区与其他地区字段值不同，`cross_region_conflict=true` 并保留双方 Evidence ID；其他地区值不能覆盖目标地区事实。
+- 两个地区值相同不会自动标记 conflict；但缺少目标地区证据时仍不能把其他地区值判为 matched。
+- 报告分别输出 `target_region_status` 和 `cross_region_conflict`。V1 Schema、Trusted Checker 与默认关闭行为不变。
+
+技术决策见 [ADR-0012](../adr/0012-governed-web-extraction-and-open-evidence.md)与[ADR-0013](../adr/0013-regional-evidence-comparability.md)，完整证据见 [V2-4 报告](v2_4_open_research_report.md)和[V2-4C 收尾报告](v2_4c_regional_evidence_report.md)。
