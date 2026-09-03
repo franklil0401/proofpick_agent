@@ -243,12 +243,28 @@ class DomainPackLoader:
             raise DomainPackValidationError("memory policy whitelist is invalid")
         if not set(memory_keys.values()) <= field_ids:
             raise DomainPackValidationError("memory policy references an unknown field")
+        if not isinstance(policies["memory"].get("schema_version"), str):
+            raise DomainPackValidationError("memory schema version is missing")
+        global_keys = policies["memory"].get("global_allowed_keys", [])
+        ranking_keys = policies["memory"].get("ranking_allowed_keys", [])
+        if (
+            not isinstance(global_keys, list)
+            or not all(isinstance(key, str) and key in memory_keys for key in global_keys)
+            or not isinstance(ranking_keys, list)
+            or set(ranking_keys) != {"ranking_scenario", "ranking_weights"}
+        ):
+            raise DomainPackValidationError("layered memory allowlist is invalid")
         ranking = policies["ranking"]
         if (
             not isinstance(ranking.get("implementation"), str)
             or ranking.get("hard_constraints_may_change_eligibility") is not False
         ):
             raise DomainPackValidationError("ranking policy can alter deterministic eligibility")
+        profile = ranking.get("profile")
+        if not isinstance(profile, dict) or not isinstance(
+            profile.get("profile_version"), str
+        ):
+            raise DomainPackValidationError("ranking profile is missing or invalid")
         if not isinstance(policies["report"].get("schema_version"), str):
             raise DomainPackValidationError("report schema version is missing")
         if set(policies["report"].get("states", [])) != {

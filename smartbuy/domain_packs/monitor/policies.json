@@ -20,12 +20,54 @@
     ]
   },
   "ranking": {
-    "implementation": "smartbuy.agent.ranking",
+    "implementation": "smartbuy.ranking.DeterministicDecisionRanker",
     "hard_constraints_may_change_eligibility": false,
-    "profile": "v1-monitor-soft-preference-order"
+    "profile": {
+      "profile_version": "monitor-ranking-v1",
+      "compatible_domain_pack_versions": ["1.0.0"],
+      "default_scenario": "office_text",
+      "scenario_preference_key": "ranking_scenario",
+      "scenario_aliases": {
+        "办公": "office_text", "文字办公": "office_text", "office": "office_text",
+        "游戏": "gaming", "gaming": "gaming",
+        "创作": "creative_color", "设计": "creative_color", "creative": "creative_color",
+        "笔记本扩展": "laptop_docking", "一线通": "laptop_docking", "docking": "laptop_docking",
+        "桌面空间": "desk_fit", "小桌面": "desk_fit", "desk": "desk_fit"
+      },
+      "deterministic_tie_breaker": "product_id_ascending",
+      "scenarios": [
+        {"scenario_id":"office_text","dimensions":[
+          {"dimension_id":"text_resolution","source_field":"resolution","direction":"maximize","normalization":"enum","enum_scores":{"2560x1440":0.45,"3840x2160":0.8,"5120x2880":1.0},"weight":0.5,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"分辨率证据用于文字办公场景的相对排序。"},
+          {"dimension_id":"office_usb_c","source_field":"has_usb_c","direction":"maximize","normalization":"boolean","weight":0.2,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"USB-C 接口证据用于办公连接便利性排序。"},
+          {"dimension_id":"office_usb_video","source_field":"usb_c_video","direction":"maximize","normalization":"boolean","weight":0.3,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"USB-C 视频证据用于办公连接便利性排序。"}
+        ]},
+        {"scenario_id":"gaming","dimensions":[
+          {"dimension_id":"gaming_refresh","source_field":"refresh_rate_hz","direction":"maximize","normalization":"fixed_range","fixed_range":[60,240],"weight":0.55,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"刷新率证据用于游戏场景的相对排序。"},
+          {"dimension_id":"gaming_resolution","source_field":"resolution","direction":"maximize","normalization":"enum","enum_scores":{"2560x1440":0.6,"3840x2160":0.85,"5120x2880":1.0},"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"分辨率证据用于游戏画面场景的相对排序。"},
+          {"dimension_id":"gaming_oled","source_field":"is_oled","direction":"maximize","normalization":"boolean","weight":0.2,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"OLED 类型仅作为当前游戏 Profile 的显式偏好维度。"}
+        ]},
+        {"scenario_id":"creative_color","dimensions":[
+          {"dimension_id":"creative_resolution","source_field":"resolution","direction":"maximize","normalization":"enum","enum_scores":{"2560x1440":0.4,"3840x2160":0.8,"5120x2880":1.0},"weight":0.45,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"分辨率证据用于创作场景的相对排序。"},
+          {"dimension_id":"creative_panel","source_field":"panel_type","direction":"maximize","normalization":"enum","enum_scores":{"ips":0.7,"fast ips":0.65,"ips black":0.75,"oled":0.8,"woled":0.8},"weight":0.4,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"面板类型只按 Profile 声明映射，不推断未治理的色域或色准。"},
+          {"dimension_id":"creative_size","source_field":"display_size_inch","direction":"maximize","normalization":"fixed_range","fixed_range":[24,32],"weight":0.15,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"显示尺寸证据用于当前创作 Profile 的相对排序。"}
+        ]},
+        {"scenario_id":"laptop_docking","dimensions":[
+          {"dimension_id":"dock_power","source_field":"usb_c_power_delivery_w","direction":"maximize","normalization":"fixed_range","fixed_range":[0,100],"weight":0.5,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"USB-C 供电证据用于笔记本扩展场景排序。"},
+          {"dimension_id":"dock_video","source_field":"usb_c_video","direction":"maximize","normalization":"boolean","weight":0.3,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"USB-C 视频证据用于笔记本扩展场景排序。"},
+          {"dimension_id":"dock_port","source_field":"has_usb_c","direction":"maximize","normalization":"boolean","weight":0.2,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"USB-C 接口证据用于笔记本扩展场景排序。"}
+        ]},
+        {"scenario_id":"desk_fit","dimensions":[
+          {"dimension_id":"desk_width","source_field":"width_mm","direction":"minimize","normalization":"fixed_range","fixed_range":[500,750],"weight":0.65,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"机身宽度证据用于桌面空间场景排序。"},
+          {"dimension_id":"desk_weight","source_field":"weight_kg","direction":"minimize","normalization":"fixed_range","fixed_range":[3,12],"weight":0.35,"evidence_requirement":"required","allowed_source_types":["official_manual","official_support","official_product"],"missing_value_policy":"zero_no_assumption","explanation_template":"重量证据用于桌面布置场景排序。"}
+        ]}
+      ]
+    }
   },
   "memory": {
     "implementation": "smartbuy.memory.store",
+    "schema_version": "proofpick-layered-memory-v1",
+    "global_allowed_keys": ["excluded_brands"],
+    "ranking_allowed_keys": ["ranking_scenario", "ranking_weights"],
     "allowed_keys": {
       "budget_min_cny": "price_cny",
       "budget_max_cny": "price_cny",

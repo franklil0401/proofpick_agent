@@ -23,6 +23,7 @@ from smartbuy.open_research.models import OpenResearchReport, ResearchMode
 from smartbuy.identity import ResolvedProductScope
 from smartbuy.identity import QueryIntent
 from smartbuy.decision_core.delta import ConstraintDelta
+from smartbuy.ranking import RankingExplanation
 
 
 class ConstraintStatus(StrEnum):
@@ -128,6 +129,10 @@ class CandidateDecision(BaseModel):
     verifier_version: str | None = None
     recommendation_reason: str | None = None
     elimination_reason: str | None = None
+    rank: int | None = Field(default=None, ge=1)
+    ranking_score: float | None = Field(default=None, ge=0.0, le=1.0)
+    ranking_advantages: list[str] = Field(default_factory=list)
+    ranking_tradeoffs: list[str] = Field(default_factory=list)
 
     @model_validator(mode="after")
     def validate_candidate_identity(self) -> CandidateDecision:
@@ -194,6 +199,7 @@ class DecisionReport(BaseModel):
     constraint_check_latency_ms: float = 0.0
     usage: dict[str, Any] = Field(default_factory=dict)
     open_research: OpenResearchReport | None = None
+    ranking: RankingExplanation | None = None
 
     @model_validator(mode="after")
     def enforce_mode_boundary(self) -> DecisionReport:
@@ -204,6 +210,14 @@ class DecisionReport(BaseModel):
                 raise ValueError("Open Mode cannot expose Trusted eligible recommendations")
         elif self.open_research is not None:
             raise ValueError("Trusted Mode cannot contain open_research evidence")
+        if self.ranking is not None:
+            ranked_ids = self.ranking.ranked_ids
+            if ranked_ids != self.recommended_model_ids:
+                raise ValueError("report order differs from deterministic ranking")
+            if self.constraint_verification is None or not set(ranked_ids) <= set(
+                self.constraint_verification.eligible_model_ids
+            ):
+                raise ValueError("ranking exceeds Checker eligibility")
         if self.product_scope is not None:
             scope = self.product_scope
             public_ids = {
@@ -322,6 +336,33 @@ class DecisionReport(BaseModel):
             lines.append("")
         if self.soft_preferences:
             lines.extend(["## 软偏好", "", *[f"- {item}" for item in self.soft_preferences], ""])
+        if self.ranking is not None:
+            lines.extend(
+                [
+                    "## 可解释排序",
+                    "",
+                    f"- 当前场景：`{self.ranking.active_scenario}`",
+                    f"- Checker 合规候选：{len(self.ranking.candidate_contributions)}",
+                    f"- Memory：{'启用' if self.ranking.memory_enabled else '关闭'}",
+                    f"- Ranking Profile：`{self.ranking.ranking_profile_version}`",
+                    f"- 降级：{str(self.ranking.ranking_degraded).lower()}",
+                    f"- {self.ranking.score_disclaimer}",
+                    "",
+                ]
+            )
+            for ranked in self.ranking.candidate_contributions:
+                lines.append(
+                    f"- #{ranked.rank} `{ranked.product_id}`：{ranked.total_score:.4f}；"
+                    f"证据覆盖 {ranked.evidence_coverage:.0%}"
+                )
+                for dimension in ranked.dimension_scores:
+                    lines.append(
+                        f"  - `{dimension.dimension_id}`：权重 {dimension.weight:.2f}，"
+                        f"贡献 {dimension.contribution:.4f}，状态 {dimension.status}"
+                    )
+                if ranked.unknown_dimensions:
+                    lines.append(f"  - unknown：{', '.join(ranked.unknown_dimensions)}")
+            lines.append("")
         lines.extend(["## 实际工具", "", ", ".join(self.tools_used) or "无", ""])
         lines.extend(["## 候选判断", ""])
         if not self.candidates:

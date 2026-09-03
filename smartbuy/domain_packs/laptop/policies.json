@@ -51,13 +51,59 @@
     }
   },
   "ranking": {
-    "implementation": "smartbuy.domain_packs.evaluator",
+    "implementation": "smartbuy.ranking.DeterministicDecisionRanker",
     "hard_constraints_may_change_eligibility": false,
-    "profile": "laptop-evidence-first-v1",
-    "ordered_soft_fields": ["primary_use", "weight_kg", "battery_wh", "color_gamut", "warranty"]
+    "profile": {
+      "profile_version": "laptop-ranking-v1",
+      "compatible_domain_pack_versions": ["1.0.0"],
+      "default_scenario": "office",
+      "scenario_preference_key": "ranking_scenario",
+      "scenario_aliases": {
+        "办公": "office", "office": "office",
+        "开发": "software_development", "编程": "software_development", "software development": "software_development",
+        "创作": "creative_work", "设计": "creative_work", "creative": "creative_work",
+        "游戏": "gaming", "gaming": "gaming",
+        "便携": "portability", "出差": "portability", "portability": "portability"
+      },
+      "deterministic_tie_breaker": "product_id_ascending",
+      "scenarios": [
+        {"scenario_id":"office","dimensions":[
+          {"dimension_id":"office_memory","source_field":"memory_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[8,64],"weight":0.35,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理内存容量用于办公场景相对排序。"},
+          {"dimension_id":"office_storage","source_field":"storage_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[256,4096],"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理存储容量用于办公场景相对排序。"},
+          {"dimension_id":"office_battery","source_field":"battery_wh","direction":"maximize","normalization":"fixed_range","fixed_range":[35,100],"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方电池容量只用于相对排序，不等同于实测续航。"},
+          {"dimension_id":"office_weight","source_field":"weight_kg","direction":"minimize","normalization":"fixed_range","fixed_range":[0.8,3.0],"weight":0.15,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方重量用于办公携带场景相对排序。"}
+        ]},
+        {"scenario_id":"software_development","dimensions":[
+          {"dimension_id":"dev_memory","source_field":"memory_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[8,64],"weight":0.4,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理内存容量用于开发场景相对排序。"},
+          {"dimension_id":"dev_storage","source_field":"storage_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[256,4096],"weight":0.3,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理存储容量用于开发场景相对排序。"},
+          {"dimension_id":"dev_battery","source_field":"battery_wh","direction":"maximize","normalization":"fixed_range","fixed_range":[35,100],"weight":0.15,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方电池容量只用于相对排序，不等同于实测续航。"},
+          {"dimension_id":"dev_weight","source_field":"weight_kg","direction":"minimize","normalization":"fixed_range","fixed_range":[0.8,3.0],"weight":0.15,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方重量用于开发移动场景相对排序。"}
+        ]},
+        {"scenario_id":"creative_work","dimensions":[
+          {"dimension_id":"creative_memory","source_field":"memory_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[8,64],"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理内存容量用于创作场景相对排序。"},
+          {"dimension_id":"creative_storage","source_field":"storage_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[256,4096],"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理存储容量用于创作场景相对排序。"},
+          {"dimension_id":"creative_vram","source_field":"gpu_vram_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[0,24],"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"仅使用治理后的显存容量，不按 GPU 名称推测性能。"},
+          {"dimension_id":"creative_resolution","source_field":"resolution","direction":"maximize","normalization":"enum","enum_scores":{"1920x1080":0.25,"1920x1200":0.35,"2240x1400":0.5,"2560x1600":0.65,"2880x1800":0.8,"3840x2400":1.0},"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理分辨率用于创作场景相对排序。"}
+        ]},
+        {"scenario_id":"gaming","dimensions":[
+          {"dimension_id":"gaming_vram","source_field":"gpu_vram_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[0,24],"weight":0.4,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"仅使用治理后的显存容量，不按 GPU 名称推测性能。"},
+          {"dimension_id":"gaming_refresh","source_field":"refresh_rate_hz","direction":"maximize","normalization":"fixed_range","fixed_range":[60,240],"weight":0.3,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理刷新率用于游戏场景相对排序。"},
+          {"dimension_id":"gaming_memory","source_field":"memory_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[8,64],"weight":0.2,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理内存容量用于游戏场景相对排序。"},
+          {"dimension_id":"gaming_storage","source_field":"storage_gb","direction":"maximize","normalization":"fixed_range","fixed_range":[256,4096],"weight":0.1,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"治理存储容量用于游戏场景相对排序。"}
+        ]},
+        {"scenario_id":"portability","dimensions":[
+          {"dimension_id":"portable_weight","source_field":"weight_kg","direction":"minimize","normalization":"fixed_range","fixed_range":[0.8,3.0],"weight":0.5,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方重量用于便携场景相对排序。"},
+          {"dimension_id":"portable_battery","source_field":"battery_wh","direction":"maximize","normalization":"fixed_range","fixed_range":[35,100],"weight":0.3,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方电池容量只用于相对排序，不等同于实测续航。"},
+          {"dimension_id":"portable_height","source_field":"height_mm","direction":"minimize","normalization":"fixed_range","fixed_range":[10,35],"weight":0.2,"evidence_requirement":"required","allowed_source_types":["official_product","official_support","official_manual"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方机身厚度用于便携场景相对排序。"}
+        ]}
+      ]
+    }
   },
   "memory": {
     "implementation": "smartbuy.memory.store",
+    "schema_version": "proofpick-layered-memory-v1",
+    "global_allowed_keys": ["excluded_brands"],
+    "ranking_allowed_keys": ["ranking_scenario", "ranking_weights"],
     "allowed_keys": {
       "budget_max_cny": "price_cny",
       "preferred_cpu_family": "cpu_family",
