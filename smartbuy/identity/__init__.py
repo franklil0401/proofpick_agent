@@ -2,6 +2,11 @@
 
 from .models import (
     IDENTITY_CONTRACT_VERSION,
+    CandidateScope,
+    ProductReference,
+    QueryIntent,
+    ReferencePolarity,
+    ReferenceResolutionStatus,
     ProductMention,
     ProductScopeResolutionStatus,
     ProductScopeType,
@@ -17,9 +22,14 @@ from .guards import (
 
 __all__ = [
     "IDENTITY_CONTRACT_VERSION",
+    "CandidateScope",
     "ProductIdentityResolver",
     "ProductIdentityMismatch",
     "ProductMention",
+    "ProductReference",
+    "QueryIntent",
+    "ReferencePolarity",
+    "ReferenceResolutionStatus",
     "ProductScopeResolutionStatus",
     "ProductScopeType",
     "ResolvedProductScope",

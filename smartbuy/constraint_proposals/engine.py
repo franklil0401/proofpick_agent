@@ -6,6 +6,7 @@ import hashlib
 import json
 import re
 import time
+import unicodedata
 from copy import deepcopy
 from typing import Any, Iterable
 
@@ -579,7 +580,281 @@ class ConstraintProposalValidator:
 
 class DeterministicConstraintParser:
     def __init__(self, pack: LoadedDomainPack) -> None:
+        self.pack = pack
         self.validator = ConstraintProposalValidator(pack)
+
+    @staticmethod
+    def _fold(value: str) -> str:
+        return unicodedata.normalize("NFKC", value).casefold()
+
+    def _pack_rules(
+        self,
+        query: str,
+        *,
+        previous: set[str],
+    ) -> list[dict[str, Any]]:
+        """Parse declared Pack fields without category-specific Python rules."""
+        # V1 Monitor already has a frozen deterministic grammar below.  Generic
+        # Pack-driven parsing is opt-in through the V2 ``understanding`` policy
+        # so adding a new domain cannot change that historical contract.
+        if "understanding" not in self.pack.pack.policies:
+            return []
+        raws: list[dict[str, Any]] = []
+        normalized_query = unicodedata.normalize("NFKC", query)
+        implicit_minimum_fields = set(
+            self.pack.pack.policies.get("understanding", {}).get(
+                "implicit_minimum_fields", []
+            )
+        )
+        clauses = [
+            match
+            for match in re.finditer(
+                r"(?:(?!(?:[，,；;。、]|并且|同时|以及|且)).)+",
+                normalized_query,
+            )
+            if match.group(0).strip()
+        ]
+
+        def append(
+            field: str,
+            operator: str | None,
+            value: Any,
+            start: int,
+            end: int,
+            *,
+            unit: str | None = None,
+            status: str = "supported",
+            strength: str = "hard",
+            action: str | None = None,
+            reason: str | None = None,
+        ) -> None:
+            chosen = action or ("override" if field in previous else "add")
+            raws.append({
+                "field": field,
+                "operator": operator,
+                "value": value,
+                "unit": unit,
+                "strength": strength,
+                "status": status,
+                "action": chosen,
+                "span_start": start,
+                "span_end": end,
+                "span_text": query[start:end],
+                "confidence": 1.0 if status == "supported" else 0.6,
+                "reason": reason,
+            })
+
+        for field_id, definition in self.pack.fields.items():
+            if not definition.constraint_enabled:
+                continue
+            aliases = sorted(
+                {definition.label, *definition.aliases, field_id},
+                key=len,
+                reverse=True,
+            )
+            alias_pattern = "|".join(re.escape(item) for item in aliases if item)
+            if not alias_pattern:
+                continue
+            field_mentions = list(re.finditer(alias_pattern, normalized_query, flags=re.I))
+            if definition.data_type.value in {"number", "integer"}:
+                units = sorted(
+                    {definition.unit or "", *definition.accepted_units},
+                    key=len,
+                    reverse=True,
+                )
+                unit_pattern = "|".join(re.escape(item) for item in units if item)
+                if not unit_pattern:
+                    continue
+                for clause in clauses:
+                    local_mentions = [
+                        item for item in field_mentions
+                        if clause.start() <= item.start() < clause.end()
+                    ]
+                    if not local_mentions:
+                        continue
+                    local = clause.group(0)
+                    numbers = list(re.finditer(
+                        rf"({_NUMBER})\s*({unit_pattern})(?![a-z])",
+                        local,
+                        flags=re.I,
+                    ))
+                    if not numbers:
+                        vague = re.search(
+                            rf"(?:{alias_pattern}).{{0,8}}(?:大些|大一点|高一点|轻一点|便宜点|别太贵|好一点|强一点)",
+                            local,
+                            flags=re.I,
+                        )
+                        if vague:
+                            append(
+                                field_id,
+                                "lte" if "轻" in vague.group(0) or "便宜" in vague.group(0) else "gte",
+                                None,
+                                clause.start() + vague.start(),
+                                clause.start() + vague.end(),
+                                unit=definition.unit,
+                                status="ambiguous",
+                                strength="soft",
+                                reason="qualitative_threshold_missing",
+                            )
+                        continue
+                    for position, number in enumerate(numbers):
+                        # Shared units (for example GB) are bound to the nearest
+                        # declared field mention inside the same clause.
+                        nearest = min(
+                            local_mentions,
+                            key=lambda item: min(
+                                abs(number.start() - item.end()),
+                                abs(item.start() - number.end()),
+                            ),
+                        )
+                        distance = min(
+                            abs(number.start() - nearest.end()),
+                            abs(nearest.start() - number.end()),
+                        )
+                        if distance > 28:
+                            continue
+                        number_start = clause.start() + number.start()
+                        number_end = clause.start() + number.end()
+                        start = min(nearest.start(), number_start)
+                        end = max(nearest.end(), number_end)
+                        local_nearest_start = nearest.start() - clause.start()
+                        local_nearest_end = nearest.end() - clause.start()
+                        context = local[
+                            max(0, min(local_nearest_start, number.start()) - 10):
+                            min(len(local), max(local_nearest_end, number.end()) + 10)
+                        ]
+                        if re.search(r"(?:不超过|至多|最多|以内|以下|上限)", context):
+                            operator = "lte"
+                        elif re.search(r"(?:至少|最低|不低于|不少于|以上|下限)", context):
+                            operator = "gte"
+                        elif (
+                            field_id in implicit_minimum_fields
+                            and number_end <= nearest.start()
+                            and re.search(r"(?:想要|需要|要求)", context)
+                        ):
+                            operator = "gte"
+                        else:
+                            operator = "eq"
+                        action = None
+                        prefix = local[:number.start()]
+                        if position > 0 and re.search(r"(?:改成|改为|调整为|以后|后一个|最终)", prefix):
+                            action = "override"
+                        append(
+                            field_id,
+                            operator,
+                            _chinese_number(number.group(1)),
+                            start,
+                            end,
+                            unit=number.group(2),
+                            action=action,
+                        )
+            elif definition.data_type.value == "boolean":
+                for mention in field_mentions:
+                    context = normalized_query[max(0, mention.start() - 10):mention.end() + 8]
+                    if re.search(r"(?:多少|是什么|是否|能否|有没有|存在|核验|确认)", context):
+                        # Intent processing owns fact fields; do not infer a
+                        # boolean purchase condition from a question form.
+                        continue
+                    double_negative = re.search(r"(?:不能没有|不要不带|不能不支持)", context)
+                    negative = re.search(r"(?:不要|不需要|排除|无|不带|不支持)", context)
+                    append(
+                        field_id,
+                        "eq",
+                        bool(double_negative or not negative),
+                        mention.start(),
+                        mention.end(),
+                    )
+                    break
+            elif definition.data_type.value == "string":
+                value_map = {
+                    self._fold(key): value for key, value in definition.value_aliases.items()
+                }
+                value_map.update({self._fold(value): value for value in definition.enum_values})
+                for token in sorted(value_map, key=len, reverse=True):
+                    match = re.search(
+                        rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])",
+                        self._fold(normalized_query),
+                    )
+                    if match:
+                        append(field_id, "eq", value_map[token], match.start(), match.end())
+                        break
+        # A conversational replacement may omit the field in its second
+        # clause ("storage was 2 TB; change it to at least 1 TB").  Bind the
+        # replacement only when the closest preceding numeric field mention
+        # is unique.  All vocabulary and units still come from the Pack.
+        numeric_mentions: list[tuple[int, str]] = []
+        for field_id, definition in self.pack.fields.items():
+            if not definition.constraint_enabled or definition.data_type.value not in {"number", "integer"}:
+                continue
+            for alias in {definition.label, *definition.aliases, field_id}:
+                if not alias:
+                    continue
+                numeric_mentions.extend(
+                    (match.end(), field_id)
+                    for match in re.finditer(re.escape(alias), normalized_query, flags=re.I)
+                )
+        update_pattern = re.compile(
+            rf"(?:改成|改为|调整为|以后(?:按|用)?|最终(?:按|用)?)\s*"
+            rf"(?:(至少|最低|不低于|不超过|至多|最多)\s*)?({_NUMBER})\s*([A-Za-z\u4e00-\u9fff]+)",
+            flags=re.I,
+        )
+        for update in update_pattern.finditer(normalized_query):
+            prior = sorted(
+                (item for item in numeric_mentions if item[0] <= update.start()),
+                key=lambda item: item[0],
+                reverse=True,
+            )
+            if not prior:
+                continue
+            nearest_end = prior[0][0]
+            nearest_fields = {field for end, field in prior if end == nearest_end}
+            if len(nearest_fields) != 1:
+                continue
+            field_id = next(iter(nearest_fields))
+            definition = self.pack.fields[field_id]
+            accepted = {definition.unit or "", *definition.accepted_units}
+            unit = update.group(3)
+            if self._fold(unit) not in {self._fold(item) for item in accepted if item}:
+                continue
+            qualifier = update.group(1) or ""
+            operator = (
+                "gte" if qualifier in {"至少", "最低", "不低于"}
+                else "lte" if qualifier in {"不超过", "至多", "最多"}
+                else "eq"
+            )
+            append(
+                field_id,
+                operator,
+                _chinese_number(update.group(2)),
+                update.start(),
+                update.end(),
+                unit=unit,
+                action="override",
+            )
+        qualitative = self.pack.pack.policies.get("understanding", {}).get(
+            "qualitative_terms", {}
+        )
+        existing_fields = {item["field"] for item in raws}
+        for field_id, policy in qualitative.items():
+            if field_id in existing_fields or field_id not in self.pack.fields:
+                continue
+            for term in policy.get("terms", []):
+                match = re.search(re.escape(str(term)), normalized_query, flags=re.I)
+                if match is None:
+                    continue
+                append(
+                    field_id,
+                    str(policy.get("operator", "eq")),
+                    None,
+                    match.start(),
+                    match.end(),
+                    unit=self.pack.fields[field_id].unit,
+                    status="ambiguous",
+                    strength=str(policy.get("strength", "soft")),
+                    reason="qualitative_threshold_missing",
+                )
+                break
+        return raws
 
     def parse(
         self,
@@ -716,8 +991,16 @@ class DeterministicConstraintParser:
                 r"(?<!\d)(\d{3,5})\s*[x×]\s*(\d{3,5})(?!\d)", query, flags=re.I
             )
             if explicit_resolution:
+                resolution_context = query[
+                    max(0, explicit_resolution.start() - 12):explicit_resolution.end() + 6
+                ]
                 add(
-                    "resolution", "eq",
+                    "resolution",
+                    (
+                        "gte"
+                        if re.search(r"(?:至少|不低于|不少于|以上|更高)", resolution_context)
+                        else "eq"
+                    ),
                     f"{explicit_resolution.group(1)}x{explicit_resolution.group(2)}",
                     explicit_resolution,
                 )
@@ -857,6 +1140,23 @@ class DeterministicConstraintParser:
             if match := re.search(pattern, query, flags=re.I):
                 add(field, "eq", value, match, status="unsupported", reason="field_not_declared_by_domain_pack")
 
+        raws.extend(self._pack_rules(query, previous=previous))
+        if (
+            "understanding" in self.pack.pack.policies
+            and not raws
+            and re.search(r"(?:必须|要求|需要|至少|不超过)", query, flags=re.I)
+        ):
+            match = re.search(r"\S(?:.*\S)?", query)
+            if match:
+                add(
+                    "unsupported",
+                    None,
+                    None,
+                    match,
+                    status="unsupported",
+                    reason="field_not_declared_by_domain_pack",
+                )
+
         proposals = [
             self.validator.validate(query, raw, source=ProposalSource.RULE, source_turn=source_turn)
             for raw in raws
@@ -886,6 +1186,7 @@ class DeterministicConstraintParser:
             field
             for field, items in by_field.items()
             if len({json.dumps(item.normalized_value, sort_keys=True) for item in items}) > 1
+            and not any(item.action == ProposalAction.OVERRIDE for item in items[1:])
         }
         if not conflicted:
             return unique
@@ -1117,6 +1418,7 @@ class NaturalConstraintEngine:
         only_confirmed: bool = False,
     ) -> tuple[ConstraintSet, list[ConstraintProposal], list[ConstraintDiff]]:
         constraints = [deepcopy(item) for item in base.constraints]
+        base_constraint_count = len(constraints)
         cancelled = set(base.cancelled_fields)
         output: list[ConstraintProposal] = []
         diffs: list[ConstraintDiff] = []
@@ -1133,8 +1435,21 @@ class NaturalConstraintEngine:
             if item.status != ProposalStatus.SUPPORTED:
                 output.append(item.model_copy(update={"active": False}))
                 continue
-            for current in constraints:
-                if current.field == item.field and current.active:
+            active_same_field = [
+                current for current in constraints
+                if current.field == item.field and current.active
+            ]
+            preserve_conjunction = (
+                item.action == ProposalAction.ADD
+                and bool(active_same_field)
+                and all(
+                    current in constraints[base_constraint_count:]
+                    for current in active_same_field
+                )
+                and all(current.operator != item.operator for current in active_same_field)
+            )
+            if not preserve_conjunction:
+                for current in active_same_field:
                     current.active = False
             if item.action == ProposalAction.CANCEL:
                 cancelled.add(item.field)

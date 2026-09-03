@@ -15,6 +15,7 @@ from pydantic import ValidationError
 
 from smartbuy.contracts import CONTRACT_VERSION, ConstraintOperator, DomainPack, DomainPackManifest
 from smartbuy.contracts.models import FieldDataType, FieldDefinition
+from smartbuy.decision_core.canonical import CanonicalValueError, CanonicalValueNormalizer
 
 
 LOADER_VERSION = "1.0.0"
@@ -90,28 +91,12 @@ class LoadedDomainPack:
 
     def normalize_value(self, field_id: str, value: Any, *, unit: str | None = None) -> Any:
         definition = self.fields[self.canonical_field(field_id)]
-        if value is None:
-            if definition.nullable:
-                return None
-            raise DomainPackValidationError("null is not allowed for field")
-        if unit:
-            if unit == definition.unit:
-                factor = 1.0
-            else:
-                factor = definition.accepted_units.get(unit.casefold())
-                if factor is None:
-                    raise DomainPackValidationError("unsupported field unit")
-            if not isinstance(value, (int, float)) or isinstance(value, bool):
-                raise DomainPackValidationError("unit conversion requires numeric value")
-            value = value * factor
-            if definition.data_type == FieldDataType.INTEGER and float(value).is_integer():
-                value = int(value)
-        if isinstance(value, str):
-            token = value.strip()
-            value = definition.value_aliases.get(token.casefold(), token)
-        value = self._coerce(definition, value)
-        if definition.enum_values and value not in definition.enum_values:
-            raise DomainPackValidationError("value is outside field enumeration")
+        try:
+            value = CanonicalValueNormalizer.normalize(
+                definition, value, unit=unit
+            ).to_native()
+        except CanonicalValueError as exc:
+            raise DomainPackValidationError(str(exc)) from exc
         bounds = self.pack.policies.get("checker", {}).get("value_bounds", {}).get(
             definition.field_id
         )
@@ -228,8 +213,12 @@ class DomainPackLoader:
         if not isinstance(policies, dict):
             raise DomainPackValidationError("policies must be an object")
         required = {"source_priority", "checker", "ranking", "memory", "report", "product_pack", "eval_fixtures"}
-        if set(policies) != required:
+        optional = {"understanding"}
+        if not required <= set(policies) or not set(policies) <= required | optional:
             raise DomainPackValidationError("domain policy sections are invalid")
+        understanding = policies.get("understanding", {})
+        if not isinstance(understanding, dict):
+            raise DomainPackValidationError("understanding policy is invalid")
         field_ids = {item.field_id for item in fields}
         source_priority = policies["source_priority"]
         if not isinstance(source_priority, dict) or not source_priority or not all(

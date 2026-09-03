@@ -21,6 +21,8 @@ from smartbuy.constraint_proposals.models import (
 )
 from smartbuy.open_research.models import OpenResearchReport, ResearchMode
 from smartbuy.identity import ResolvedProductScope
+from smartbuy.identity import QueryIntent
+from smartbuy.decision_core.delta import ConstraintDelta
 
 
 class ConstraintStatus(StrEnum):
@@ -165,11 +167,14 @@ class DecisionReport(BaseModel):
     mode: ResearchMode = ResearchMode.TRUSTED
     request_summary: str
     product_scope: ResolvedProductScope | None = None
+    query_intent: QueryIntent | None = None
+    requested_fields: list[str] = Field(default_factory=list)
     task_type: Literal["fact", "filter", "comparison", "dynamic", "unrelated"] = "fact"
     constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
     constraint_proposals: list[ConstraintProposal] = Field(default_factory=list)
     clarification_state: ClarificationState = ClarificationState.NOT_REQUIRED
     constraint_diff: list[ConstraintDiff] = Field(default_factory=list)
+    constraint_deltas: list[ConstraintDelta] = Field(default_factory=list)
     constraint_verification: VerificationBatch | None = None
     hard_constraints: list[ConstraintSpec] = Field(default_factory=list)
     soft_preferences: list[str] = Field(default_factory=list)

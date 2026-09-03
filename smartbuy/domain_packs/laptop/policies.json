@@ -71,6 +71,39 @@
       "primary_use": "primary_use"
     }
   },
+  "understanding": {
+    "default_comparison_fields": ["configuration_id", "gpu_model", "storage_gb"],
+    "default_identity_fact_fields": ["configuration_id", "region"],
+    "numeric_selector_fields": ["memory_gb", "storage_gb", "gpu_vram_gb"],
+    "implicit_minimum_fields": ["memory_gb", "storage_gb"],
+    "requested_field_terms": {
+      "configuration_id": ["配置", "配置号", "order code"],
+      "upgradeability": ["升级", "扩展"]
+    },
+    "requested_field_bundles": {
+      "panel_type": ["resolution"]
+    },
+    "string_list_triggers": {
+      "upgradeability": ["升级", "扩展"]
+    },
+    "qualitative_terms": {
+      "weight_kg": {
+        "terms": ["轻一点", "轻一些", "别太重", "不要游戏本那么重"],
+        "operator": "lte",
+        "strength": "soft"
+      },
+      "memory_gb": {
+        "terms": ["内存大些", "内存大一点", "大内存"],
+        "operator": "gte",
+        "strength": "soft"
+      },
+      "price_cny": {
+        "terms": ["别太贵", "便宜一点", "价格低些"],
+        "operator": "lte",
+        "strength": "soft"
+      }
+    }
+  },
   "report": {
     "implementation": "smartbuy.agent.reporting",
     "schema_version": "proofpick-domain-decision-v1",

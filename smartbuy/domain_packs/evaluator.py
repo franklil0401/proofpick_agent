@@ -7,6 +7,7 @@ from typing import Any, Iterable
 
 from smartbuy.contracts import ConstraintOperator, FieldState
 from smartbuy.domain_packs.loader import LoadedDomainPack
+from smartbuy.decision_core.canonical import CanonicalValueNormalizer
 
 
 @dataclass(frozen=True)
@@ -24,6 +25,7 @@ def _compare(
     expected: Any,
     *,
     value_order: dict[str, int] | None = None,
+    definition: Any | None = None,
 ) -> bool:
     if value_order and actual in value_order:
         actual = value_order[actual]
@@ -33,8 +35,26 @@ def _compare(
             expected = [value_order[item] for item in expected]
         else:
             expected = value_order[expected]
+        # Ordered string values have already been converted to their declared
+        # ordinal representation.  Re-validating those integers as strings
+        # would reject an otherwise valid comparison.
+        definition = None
     if operator == ConstraintOperator.EQ:
+        if definition is not None:
+            return CanonicalValueNormalizer.equivalent(definition, actual, expected)
         return actual == expected
+    if definition is not None and definition.data_type.value in {"number", "integer"}:
+        actual = CanonicalValueNormalizer.normalize(definition, actual).value
+        if operator == ConstraintOperator.RANGE:
+            expected = tuple(
+                CanonicalValueNormalizer.normalize(definition, item).value for item in expected
+            )
+        elif operator in {ConstraintOperator.IN, ConstraintOperator.NOT_IN}:
+            expected = [
+                CanonicalValueNormalizer.normalize(definition, item).value for item in expected
+            ]
+        else:
+            expected = CanonicalValueNormalizer.normalize(definition, expected).value
     if operator == ConstraintOperator.LTE:
         return actual <= expected
     if operator == ConstraintOperator.GTE:
@@ -108,6 +128,7 @@ class DomainConstraintEvaluator:
                 value_order=self.domain_pack.pack.policies["checker"]
                 .get("value_order", {})
                 .get(field_id),
+                definition=self.domain_pack.fields[field_id],
             )
             decisions.append(
                 ConstraintDecision(

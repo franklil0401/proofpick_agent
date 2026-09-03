@@ -438,8 +438,8 @@ class DomainConstraintCheckerTool:
                 )
                 if scope.resolution_status != ProductScopeResolutionStatus.RESOLVED:
                     raise ProductIdentityMismatch("unresolved scope cannot enter Checker")
-                if requested != set(scope.product_ids):
-                    raise ProductIdentityMismatch("Checker candidate pool differs from scope")
+                if not requested <= set(scope.product_ids):
+                    raise ProductIdentityMismatch("Checker candidate pool expands scope")
             hard_fields = set(self.repository.domain_pack.pack.policies["checker"].get("hard_fields", []))
             normalized = []
             unsupported = []
