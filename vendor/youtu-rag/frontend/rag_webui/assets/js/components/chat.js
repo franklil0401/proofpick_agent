@@ -6,6 +6,23 @@ const smartbuySessionId = (window.crypto && window.crypto.randomUUID)
   ? window.crypto.randomUUID()
   : `smartbuy-${Date.now()}`;
 
+// Each browser owns an opaque local identity. If storage or secure randomness
+// is unavailable, long-term Memory stays disabled instead of sharing a public ID.
+const smartbuyAnonymousUserId = (() => {
+  try {
+    const key = 'proofpick-anonymous-user-id';
+    let value = window.localStorage.getItem(key);
+    if (!value) {
+      if (!(window.crypto && window.crypto.randomUUID)) return null;
+      value = `anon-${window.crypto.randomUUID()}`;
+      window.localStorage.setItem(key, value);
+    }
+    return value;
+  } catch (_error) {
+    return null;
+  }
+})();
+
 /**
  * Agent Knowledge Base Requirements Configuration
  * - required: Must select a knowledge base to use
@@ -1007,8 +1024,10 @@ async function sendMessage() {
         query: message,
         stream: true,
         session_id: smartbuySessionId,
-        user_id: 'local-demo-user',
-        use_long_term_memory: document.getElementById('memory-switch')?.checked || false,
+        ...(smartbuyAnonymousUserId ? { user_id: smartbuyAnonymousUserId } : {}),
+        use_long_term_memory: Boolean(
+          smartbuyAnonymousUserId && document.getElementById('memory-switch')?.checked
+        ),
         smartbuy_mode: true
       };
       await streamChatResponse(requestBody);
