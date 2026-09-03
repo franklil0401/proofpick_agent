@@ -63,5 +63,8 @@
       "subjective_review":["comfort_observation","sound_signature","call_quality_observation"]
     }
   },
-  "eval_fixtures":{"v2_8_headphone_cases":{"path":"smartbuy/eval/v2_8_headphone_cases.jsonl","case_count":30,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"}}
+  "eval_fixtures":{
+    "v2_8_headphone_cases":{"path":"smartbuy/eval/v2_8_headphone_cases.jsonl","case_count":30,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"},
+    "v2_8_headphone_retrieval_cases":{"path":"smartbuy/eval/v2_8_headphone_retrieval_cases.jsonl","case_count":30,"sha256":"637c2b4a8fc61f97429af36cb6fc9e628b661212435c93497ae1b01d74e5efb1"}
+  }
 }
