@@ -45,4 +45,3 @@ uv run --project vendor/youtu-rag python -m smartbuy.scripts.verify_v2_8_headpho
 - 401/403 不重试；429/5xx/超时只有限重试。
 - 不提交 SQLite、Chroma、临时 Evidence、缓存或日志。
 - V2 功能关闭时仍回到 V1 稳定路径；默认编排器仍是 ReAct。
-

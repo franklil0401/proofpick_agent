@@ -38,4 +38,3 @@
 - 生成物：12 份事实卡、12 份向量文档、EAV SQLite、Source/Evidence JSONL 与 Manifest。
 
 构建命令与运行边界见 [V2-8 运行说明](v2_8_headphone_runtime.md)。
-
