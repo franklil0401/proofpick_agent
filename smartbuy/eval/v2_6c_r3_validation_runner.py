@@ -46,6 +46,7 @@ from .v2_6c_r3_validation_scorer import score_results
 
 
 ROOT = Path(__file__).resolve().parents[2]
+ROUND = 1
 CASES = ROOT / "smartbuy/eval/v2_6c_r3_validation_round1.jsonl"
 MANIFEST = ROOT / "smartbuy/eval/v2_6c_r3_validation_round1_manifest.json"
 POLICY = ROOT / "smartbuy/eval/v2_6c_r3_validation_round1_policy.json"
@@ -76,6 +77,18 @@ PRODUCTION_FILES = (
     "smartbuy/identity/resolver.py",
     "smartbuy/tools/domain.py",
 )
+
+
+def _select_round(round_number: int) -> None:
+    """Select an already-frozen evaluation round without changing its policy."""
+
+    global ROUND, CASES, MANIFEST, POLICY
+    ROUND = round_number
+    CASES = ROOT / f"smartbuy/eval/v2_6c_r3_validation_round{ROUND}.jsonl"
+    MANIFEST = ROOT / f"smartbuy/eval/v2_6c_r3_validation_round{ROUND}_manifest.json"
+    POLICY = ROOT / f"smartbuy/eval/v2_6c_r3_validation_round{ROUND}_policy.json"
+    if not all(path.is_file() for path in (CASES, MANIFEST, POLICY)):
+        raise RuntimeError(f"validation round {ROUND} is not frozen")
 
 
 def _sha(path: Path) -> str:
@@ -167,7 +180,7 @@ def _rc_contract(runtime_root: Path, run_id: str) -> dict[str, Any]:
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     return {
         "schema_version": "proofpick-v2-6c-r3-validation-rc-v1",
-        "round": 1,
+        "round": ROUND,
         "run_id": run_id,
         "holdout_commit": _head(),
         "code_freeze_commit": manifest["code_freeze_commit"],
@@ -241,7 +254,7 @@ def _atomic(path: Path, payload: Any) -> None:
 def freeze_rc(runtime_root: Path, output: Path) -> dict[str, Any]:
     if output.exists():
         raise RuntimeError("validation RC already exists")
-    run_id = f"v2-6c-r3-v1-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
+    run_id = f"v2-6c-r3-v{ROUND}-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}-{uuid.uuid4().hex[:8]}"
     payload = _rc_contract(runtime_root, run_id)
     payload["config_sha256"] = _stable_hash(payload)
     payload["frozen_at"] = _now()
@@ -458,7 +471,9 @@ async def run_once(runtime_root: Path, rc_path: Path, journal_path: Path, output
     score_input = output.with_suffix(".score-input.tmp")
     _atomic(score_input, {"frozen_case_sha256": _sha(CASES), "cases": rows})
     try:
-        metrics = score_results(score_input)
+        metrics = score_results(
+            score_input, cases_path=CASES, policy_path=POLICY
+        )
     finally:
         score_input.unlink(missing_ok=True)
     events = [event for row in rows for event in row["api_events"]]
@@ -494,7 +509,7 @@ async def run_once(runtime_root: Path, rc_path: Path, journal_path: Path, output
     payload = {
         "schema_version": "proofpick-v2-6c-r3-validation-first-result-v1",
         "classification": "代码冻结后生成并单次运行的验证集",
-        "round": 1,
+        "round": ROUND,
         "run_id": rc["run_id"],
         "run_number": 1,
         "created_at": _now(),
@@ -522,6 +537,7 @@ async def run_once(runtime_root: Path, rc_path: Path, journal_path: Path, output
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--round", type=int, choices=(1, 2, 3), default=1)
     parser.add_argument("--runtime-root", type=Path, required=True)
     action = parser.add_mutually_exclusive_group(required=True)
     action.add_argument("--freeze-release-candidate", action="store_true")
@@ -530,6 +546,7 @@ def main() -> int:
     parser.add_argument("--journal", type=Path)
     parser.add_argument("--output", type=Path)
     args = parser.parse_args()
+    _select_round(args.round)
     if args.freeze_release_candidate:
         payload = freeze_rc(args.runtime_root.resolve(), args.rc_output.resolve())
         print(json.dumps({"status": "frozen", "run_id": payload["run_id"], "config_sha256": payload["config_sha256"]}, ensure_ascii=False))

@@ -22,13 +22,13 @@ def _sha(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
-def _load_cases() -> list[dict[str, Any]]:
-    policy = json.loads(POLICY.read_text(encoding="utf-8"))
-    if _sha(CASES) != policy["case_sha256"]:
+def _load_cases(cases_path: Path, policy_path: Path) -> list[dict[str, Any]]:
+    policy = json.loads(policy_path.read_text(encoding="utf-8"))
+    if _sha(cases_path) != policy["case_sha256"]:
         raise ValueError("validation case SHA-256 differs from frozen policy")
     return [
         json.loads(line)
-        for line in CASES.read_text(encoding="utf-8").splitlines()
+        for line in cases_path.read_text(encoding="utf-8").splitlines()
         if line.strip()
     ]
 
@@ -73,10 +73,20 @@ def _subsequence(required: list[str], actual: list[str]) -> bool:
     return position == len(required)
 
 
-def score_results(results_path: Path) -> dict[str, Any]:
-    cases = {item["case_id"]: item for item in _load_cases()}
+def score_results(
+    results_path: Path,
+    *,
+    cases_path: Path | None = None,
+    policy_path: Path | None = None,
+) -> dict[str, Any]:
+    cases_path = cases_path or CASES
+    policy_path = policy_path or POLICY
+    cases = {
+        item["case_id"]: item
+        for item in _load_cases(cases_path, policy_path)
+    }
     payload = json.loads(results_path.read_text(encoding="utf-8"))
-    if payload.get("frozen_case_sha256") != _sha(CASES):
+    if payload.get("frozen_case_sha256") != _sha(cases_path):
         raise ValueError("result belongs to another validation freeze")
     rows = payload.get("cases")
     if not isinstance(rows, list) or len(rows) != len(cases):
@@ -221,7 +231,7 @@ def score_results(results_path: Path) -> dict[str, Any]:
     f1 = 2 * precision * recall / (precision + recall) if precision + recall else 0.0
     evidence_rate = evidence_hit / evidence_total if evidence_total else 1.0
     empty_rate = sufficient_empty / eligible_count if eligible_count else 0.0
-    thresholds = json.loads(POLICY.read_text(encoding="utf-8"))["thresholds"]
+    thresholds = json.loads(policy_path.read_text(encoding="utf-8"))["thresholds"]
     gates = {
         "task_accuracy": task_correct / len(cases) >= thresholds["task_accuracy_min"],
         "clear_hard_constraint_f1": f1 >= thresholds["clear_hard_constraint_f1_min"],
