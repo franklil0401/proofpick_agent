@@ -1,0 +1,111 @@
+{
+  "schema_version": "proofpick-v2-6c-r4-failure-diagnostic-v1",
+  "baseline_commit": "9900ee1122b3d063c693eeeb6de4bb27145c5fd3",
+  "source_result": "v2_6c_r3_validation_round3_first.json",
+  "historical_result_unchanged": true,
+  "cases": [
+    {
+      "case_id": "laptop-r3-v3-001",
+      "question": "请查 H7606WI 的显存；H7606WX 的 24GB 参数不能作为 WI 的证据。",
+      "expected": {
+        "product_references": [
+          {"configuration_id": "H7606WI", "polarity": "include"},
+          {"configuration_id": "H7606WX", "polarity": "exclude"}
+        ],
+        "query_intent": "exact_fact_verification",
+        "candidate_scope": ["asus-proart-p16-h7606wi-cn"],
+        "constraint_set": [],
+        "sql_candidates": [],
+        "kb_candidates": ["asus-proart-p16-h7606wi-cn"],
+        "evidence_candidates": ["asus-proart-p16-h7606wi-cn"],
+        "checker_eligible": [],
+        "final_report_candidates": ["asus-proart-p16-h7606wi-cn"]
+      },
+      "frozen_actual": {
+        "product_references": [
+          {"configuration_id": "H7606WI", "polarity": "include"},
+          {"configuration_id": "H7606WX", "polarity": "include"}
+        ],
+        "query_intent": "recommendation_filter",
+        "candidate_scope": ["asus-proart-p16-h7606wi-cn", "asus-proart-p16-h7606wx-cn"],
+        "constraint_set": [],
+        "sql_candidates": [],
+        "kb_candidates": ["asus-proart-p16-h7606wi-cn", "asus-proart-p16-h7606wx-cn"],
+        "evidence_candidates": ["asus-proart-p16-h7606wi-cn", "asus-proart-p16-h7606wx-cn"],
+        "checker_eligible": [],
+        "final_report_candidates": [],
+        "first_error_node": "product_scope_resolution"
+      },
+      "r4_regression": {
+        "query_intent": "exact_fact_verification",
+        "candidate_scope": ["asus-proart-p16-h7606wi-cn"],
+        "final_report_candidates": ["asus-proart-p16-h7606wi-cn"],
+        "task_correct": true
+      }
+    },
+    {
+      "case_id": "laptop-r3-v3-002",
+      "question": "H7606 系列中需要显卡 RTX 5080 Laptop GPU、显存 16GB，请给出唯一配置号。",
+      "expected": {
+        "product_references": [{"family_id": "asus-proart-p16-h7606", "polarity": "include"}],
+        "query_intent": "recommendation_filter",
+        "candidate_scope": ["asus-proart-p16-h7606ww-cn"],
+        "constraint_set": ["gpu_model eq GeForce RTX 5080 Laptop GPU", "gpu_vram_gb eq 16 GB"],
+        "sql_candidates": ["asus-proart-p16-h7606ww-cn"],
+        "kb_candidates": ["asus-proart-p16-h7606ww-cn"],
+        "evidence_candidates": ["asus-proart-p16-h7606ww-cn"],
+        "checker_eligible": ["asus-proart-p16-h7606ww-cn"],
+        "final_report_candidates": ["asus-proart-p16-h7606ww-cn"]
+      },
+      "frozen_actual": {
+        "candidate_scope": ["asus-proart-p16-h7606ww-cn"],
+        "sql_candidates": ["asus-proart-p16-h7606ww-cn"],
+        "kb_candidates": ["asus-proart-p16-h7606ww-cn"],
+        "evidence_candidates": ["asus-proart-p16-h7606ww-cn"],
+        "checker_eligible": ["asus-proart-p16-h7606ww-cn"],
+        "final_report_candidates": [],
+        "first_error_node": "result_classification"
+      },
+      "r4_regression": {
+        "candidate_scope": ["asus-proart-p16-h7606ww-cn"],
+        "checker_eligible": ["asus-proart-p16-h7606ww-cn"],
+        "final_report_candidates": ["asus-proart-p16-h7606ww-cn"],
+        "result_status": "recommendation_available",
+        "task_correct": true
+      }
+    },
+    {
+      "case_id": "laptop-r3-v3-011",
+      "question": "核实 xps13-9350-oled-ca 对应的配置号、分辨率、操作系统。",
+      "expected": {
+        "product_references": [{"product_id": "dell-xps13-9350-caexchcto9350lnl02-ca", "polarity": "include"}],
+        "query_intent": "exact_fact_verification",
+        "candidate_scope": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "constraint_set": [],
+        "sql_candidates": [],
+        "kb_candidates": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "evidence_candidates": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "checker_eligible": [],
+        "final_report_candidates": ["dell-xps13-9350-caexchcto9350lnl02-ca"]
+      },
+      "frozen_actual": {
+        "query_intent": "recommendation_filter",
+        "candidate_scope": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "constraint_set": ["panel_type eq OLED"],
+        "sql_candidates": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "kb_candidates": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "evidence_candidates": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "checker_eligible": [],
+        "final_report_candidates": [],
+        "first_error_node": "constraint_resolution"
+      },
+      "r4_regression": {
+        "query_intent": "exact_fact_verification",
+        "candidate_scope": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "constraint_set": [],
+        "final_report_candidates": ["dell-xps13-9350-caexchcto9350lnl02-ca"],
+        "task_correct": true
+      }
+    }
+  ]
+}

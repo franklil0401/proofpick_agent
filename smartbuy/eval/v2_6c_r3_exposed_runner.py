@@ -49,6 +49,9 @@ VALIDATION_SHA256 = "64ce5764a22a11a71d02b00fe7a0a9da61459b95f697597e7198252e1d8
 VALIDATION2_CASES = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round2.jsonl"
 VALIDATION2_POLICY = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round2_policy.json"
 VALIDATION2_SHA256 = "777a4c78a20eeaa6f0408282dc4cbfdebf0f977cf19a485fd135951c56cb803f"
+VALIDATION3_CASES = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round3.jsonl"
+VALIDATION3_POLICY = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round3_policy.json"
+VALIDATION3_SHA256 = "b7adeee8ebd6f6872606fc8c1ac2ea5b0b035c2dd75ab901e77fd1eb9ca1f0a3"
 
 
 def _sha(path: Path) -> str:
@@ -216,10 +219,13 @@ async def run(output: Path) -> dict[str, Any]:
         raise RuntimeError("validation round 1 frozen task hash changed")
     if _sha(VALIDATION2_CASES) != VALIDATION2_SHA256:
         raise RuntimeError("validation round 2 frozen task hash changed")
+    if _sha(VALIDATION3_CASES) != VALIDATION3_SHA256:
+        raise RuntimeError("validation round 3 frozen task hash changed")
     original_cases = _load(ORIGINAL_CASES)
     r2_cases = _load(R2_CASES)
     validation_cases = _load(VALIDATION_CASES)
     validation2_cases = _load(VALIDATION2_CASES)
+    validation3_cases = _load(VALIDATION3_CASES)
     original_policy = json.loads(ORIGINAL_POLICY.read_text(encoding="utf-8"))["cases"]
     with tempfile.TemporaryDirectory(prefix="proofpick-r3-exposed-") as temporary:
         agent = _agent(Path(temporary))
@@ -228,6 +234,7 @@ async def run(output: Path) -> dict[str, Any]:
         r2_rows = []
         validation_rows = []
         validation2_rows = []
+        validation3_rows = []
         durations = []
         for case in original_cases:
             started = time.perf_counter()
@@ -252,6 +259,11 @@ async def run(output: Path) -> dict[str, Any]:
             report = await agent.run(case["question"])
             durations.append((time.perf_counter() - started) * 1000)
             validation2_rows.append(_row_from_report(case, report))
+        for case in validation3_cases:
+            started = time.perf_counter()
+            report = await agent.run(case["question"])
+            durations.append((time.perf_counter() - started) * 1000)
+            validation3_rows.append(_row_from_report(case, report))
 
     raw_r2 = {
         "frozen_case_sha256": R2_SHA256,
@@ -300,6 +312,18 @@ async def run(output: Path) -> dict[str, Any]:
         if candidate["model_id"] in item["recommended_ids"]
         and candidate["region"] not in item["report"]["product_scope"]["regions"]
     )
+    old_non_domain = sum(
+        1
+        for item in original_rows
+        for constraint in item["report"]["constraint_set"]["constraints"]
+        if constraint.get("active", True) and constraint["field"] not in pack.fields
+    )
+    r2_non_domain = sum(
+        1
+        for row in r2_rows
+        for constraint in row["active_constraints"]
+        if constraint["field"] not in pack.fields
+    )
     combined = {
         "task_accuracy": {
             "numerator": sum(item["task_correct"] for item in original_rows)
@@ -338,6 +362,7 @@ async def run(output: Path) -> dict[str, Any]:
             + r2_score["metrics"]["unknown_overclaimed"]
         ),
         "clarification_bypass": r2_score["metrics"]["clarification_bypass"],
+        "non_domain_field_activations": old_non_domain + r2_non_domain,
         "sufficient_evidence_empty_recommendation": {
             "numerator": sum(not item["recommended_ids"] for item in old_eligible_rows)
             + r2_score["metrics"]["sufficient_evidence_empty_recommendation"]["numerator"],
@@ -426,6 +451,10 @@ async def run(output: Path) -> dict[str, Any]:
             combined["clarification_bypass"]
             + validation_score["clarification_bypass"]
         ),
+        "non_domain_field_activations": (
+            combined["non_domain_field_activations"]
+            + validation_score["non_domain_field_activations"]
+        ),
     }
     final_tp = all_tp + validation2_score["clear_hard_constraint"]["tp"]
     final_fp = all_fp + validation2_score["clear_hard_constraint"]["fp"]
@@ -464,8 +493,92 @@ async def run(output: Path) -> dict[str, Any]:
                 "checker_scope_leakage",
                 "unknown_overclaimed",
                 "clarification_bypass",
+                "non_domain_field_activations",
             )
         },
+        "sufficient_evidence_empty_recommendation": {
+            "numerator": (
+                combined["sufficient_evidence_empty_recommendation"]["numerator"]
+                + validation_score["sufficient_evidence_empty_recommendation"]["numerator"]
+                + validation2_score["sufficient_evidence_empty_recommendation"]["numerator"]
+            ),
+            "denominator": (
+                combined["sufficient_evidence_empty_recommendation"]["denominator"]
+                + validation_score["sufficient_evidence_empty_recommendation"]["denominator"]
+                + validation2_score["sufficient_evidence_empty_recommendation"]["denominator"]
+            ),
+        },
+    }
+    raw_validation3 = {
+        "frozen_case_sha256": VALIDATION3_SHA256,
+        "cases": validation3_rows,
+    }
+    with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8", delete=False) as handle:
+        json.dump(raw_validation3, handle, ensure_ascii=False)
+        temporary_validation3 = Path(handle.name)
+    try:
+        validation3_score = score_validation(
+            temporary_validation3,
+            cases_path=VALIDATION3_CASES,
+            policy_path=VALIDATION3_POLICY,
+        )
+    finally:
+        temporary_validation3.unlink(missing_ok=True)
+    total_tp = final_tp + validation3_score["clear_hard_constraint"]["tp"]
+    total_fp = final_fp + validation3_score["clear_hard_constraint"]["fp"]
+    total_fn = final_fn + validation3_score["clear_hard_constraint"]["fn"]
+    total_precision = total_tp / (total_tp + total_fp) if total_tp + total_fp else 1.0
+    total_recall = total_tp / (total_tp + total_fn) if total_tp + total_fn else 1.0
+    all_exposed_122 = {
+        "task_accuracy": {
+            "numerator": all_exposed_98["task_accuracy"]["numerator"]
+            + validation3_score["task_accuracy"]["numerator"],
+            "denominator": 122,
+        },
+        "clear_hard_constraint": {
+            "tp": total_tp,
+            "fp": total_fp,
+            "fn": total_fn,
+            "precision": total_precision,
+            "recall": total_recall,
+            "f1": (
+                2 * total_precision * total_recall / (total_precision + total_recall)
+                if total_precision + total_recall else 0.0
+            ),
+        },
+        "recommendation_evidence_coverage": {
+            "numerator": all_exposed_98["recommendation_evidence_coverage"]["numerator"]
+            + validation3_score["recommendation_evidence_coverage"]["numerator"],
+            "denominator": all_exposed_98["recommendation_evidence_coverage"]["denominator"]
+            + validation3_score["recommendation_evidence_coverage"]["denominator"],
+        },
+        **{
+            key: all_exposed_98[key] + validation3_score[key]
+            for key in (
+                "wrong_configuration_recommendations",
+                "wrong_region_recommendations",
+                "candidate_scope_leakage",
+                "checker_scope_leakage",
+                "unknown_overclaimed",
+                "clarification_bypass",
+                "non_domain_field_activations",
+            )
+        },
+        "report_scope_leakage": all_exposed_98["candidate_scope_leakage"]
+        + validation3_score["candidate_scope_leakage"],
+        "sufficient_evidence_empty_recommendation": {
+            "numerator": (
+                all_exposed_98["sufficient_evidence_empty_recommendation"]["numerator"]
+                + validation3_score["sufficient_evidence_empty_recommendation"]["numerator"]
+            ),
+            "denominator": (
+                all_exposed_98["sufficient_evidence_empty_recommendation"]["denominator"]
+                + validation3_score["sufficient_evidence_empty_recommendation"]["denominator"]
+            ),
+        },
+        "provider_calls": 0,
+        "estimated_cost_cny": 0.0,
+        "average_latency_ms": statistics.mean(durations),
     }
     payload = {
         "schema_version": "proofpick-v2-6c-r3-exposed-regression-v1",
@@ -477,12 +590,14 @@ async def run(output: Path) -> dict[str, Any]:
             "laptop-r2-001-020": "exposed_holdout_regression_v2",
             "laptop-r3-v1-001-024": "exposed_post_freeze_validation_round1",
             "laptop-r3-v2-001-024": "exposed_post_freeze_validation_round2",
+            "laptop-r3-v3-001-024": "exposed_post_freeze_validation_round3",
         },
         "input_hashes": {
             "original_30": _sha(ORIGINAL_CASES),
             "r2_20": _sha(R2_CASES),
             "validation_round1_24": _sha(VALIDATION_CASES),
             "validation_round2_24": _sha(VALIDATION2_CASES),
+            "validation_round3_24": _sha(VALIDATION3_CASES),
         },
         "offline": True,
         "scoring_note": (
@@ -509,6 +624,9 @@ async def run(output: Path) -> dict[str, Any]:
         "validation_round2_exposed_regression": validation2_score,
         "validation_round2_rows": validation2_rows,
         "all_exposed_98": all_exposed_98,
+        "validation_round3_exposed_regression": validation3_score,
+        "validation_round3_rows": validation3_rows,
+        "all_exposed_122": all_exposed_122,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -520,7 +638,7 @@ def main() -> int:
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     result = asyncio.run(run(args.output))
-    print(json.dumps(result["metrics"], ensure_ascii=False, indent=2))
+    print(json.dumps(result["all_exposed_122"], ensure_ascii=False, indent=2))
     return 0
 
 
