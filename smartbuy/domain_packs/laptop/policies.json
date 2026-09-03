@@ -76,6 +76,9 @@
     "default_identity_fact_fields": ["configuration_id", "region"],
     "numeric_selector_fields": ["memory_gb", "storage_gb", "gpu_vram_gb"],
     "implicit_minimum_fields": ["memory_gb", "storage_gb"],
+    "unit_context_terms": {
+      "weight_kg": ["重量", "机身", "不重于", "轻于"]
+    },
     "requested_field_terms": {
       "configuration_id": ["配置", "配置号", "order code"],
       "upgradeability": ["升级", "扩展"]

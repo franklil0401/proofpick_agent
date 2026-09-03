@@ -175,6 +175,42 @@ def test_explicit_comparison_contains_only_named_configurations(
 @pytest.mark.parametrize(
     ("query", "expected"),
     [
+        (
+            "仅核对 A1-CFG 的规格，A2-CFG、A3-CFG 都不要混进来。",
+            {"acme-orbit-a1-us"},
+        ),
+        (
+            "SKU-A1 属于什么地区？不要扩展到其他 Orbit 配置。",
+            {"acme-orbit-a1-us"},
+        ),
+        (
+            "A2-CFG 仅接受 CA 资料并排除 US 地区证据。",
+            {"acme-orbit-a2-ca"},
+        ),
+        (
+            "核验 A1-CFG；A2-CFG 即使值相同也不能作为 A1-CFG 的事实。",
+            {"acme-orbit-a1-us"},
+        ),
+        (
+            "只把 A1-CFG、A2-CFG 放进比较范围，A3-CFG 明确排除。",
+            {"acme-orbit-a1-us", "acme-orbit-a2-ca"},
+        ),
+    ],
+)
+def test_exclusion_phrases_never_reverse_the_primary_reference(
+    resolver: ProductIdentityResolver,
+    products: dict[str, dict],
+    query: str,
+    expected: set[str],
+) -> None:
+    scope = resolver.resolve(query, products)
+    assert set(scope.product_ids) == expected
+    assert not set(scope.product_ids) & set(scope.exclude_product_ids)
+
+
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    [
         ("筛选内存足够的电脑", {"acme-orbit-a1-us", "acme-orbit-a2-ca", "acme-orbit-a3-us", "acme-nova-n1-de"}),
         ("只接受 US 配置", {"acme-orbit-a1-us", "acme-orbit-a3-us"}),
         ("只接受 US，不接受 CA 或 DE", {"acme-orbit-a1-us", "acme-orbit-a3-us"}),

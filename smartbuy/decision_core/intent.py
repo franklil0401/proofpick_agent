@@ -12,8 +12,9 @@ from smartbuy.identity import ProductScopeType, QueryIntent, ResolvedProductScop
 
 
 _COMPARISON = ("比较", "对比", "对照", "区分", "差异", "是否等同", "是不是同", "混成")
-_FACT = ("多少", "是什么", "哪个", "哪套", "属于", "核验", "确认", "是否", "能否", "查一下", "只查", "只核对", "事实")
+_FACT = ("多少", "是什么", "哪个", "哪套", "属于", "核验", "核对", "确认", "是否", "能否", "查一下", "只查", "事实")
 _FILTER = ("筛选", "筛出", "推荐", "想要", "需要", "只要", "找", "选择", "选 ", "返回对应")
+_EXPLICIT_FILTER = ("筛选", "筛出", "推荐", "想要", "只要", "只接受", "仅限", "找", "选择", "选 ", "返回对应")
 _CLARIFY = ("先确认", "先问", "没指定", "没有指定", "没决定", "还没决定", "请先问", "不明确")
 
 
@@ -61,8 +62,14 @@ class QueryUnderstandingEngine:
             ]
             if any(_contains_term(folded, term) for term in terms if term):
                 fields.append(field_id)
+        if re.search(r"(?:扩展|升级)到(?:其他|全部|全库|候选)", query):
+            fields = [item for item in fields if item != "upgradeability"]
+        if re.search(r"(?:其他|全部|全库|候选)\s*配置", query):
+            fields = [item for item in fields if item != "configuration_id"]
         # "内存/硬盘能否升级" asks about upgradeability, not their capacity.
-        if "upgradeability" in fields and re.search(r"(?:内存|硬盘|固态).{0,8}(?:升级|扩展)", query):
+        if "upgradeability" in fields and re.search(
+            r"(?:内存|硬盘|固态)[^，,。；;？！?]{0,8}(?:升级|扩展)", query
+        ):
             fields = [item for item in fields if item not in {"memory_gb", "storage_gb"}]
         bundles = understanding.get("requested_field_bundles", {})
         for field_id in tuple(fields):
@@ -84,6 +91,8 @@ class QueryUnderstandingEngine:
             intent = QueryIntent.EXPLICIT_COMPARISON
         elif any(marker in folded for marker in _CLARIFY):
             intent = QueryIntent.CLARIFICATION_REQUIRED
+        elif any(marker in folded for marker in _EXPLICIT_FILTER):
+            intent = QueryIntent.RECOMMENDATION_FILTER
         elif included_exact and any(marker in folded for marker in _FACT):
             intent = QueryIntent.EXACT_FACT_VERIFICATION
         elif scope.scope_type == ProductScopeType.PRODUCT_FAMILY and not any(

@@ -192,3 +192,30 @@ async def test_fact_filter_comparison_and_constraint_delta_are_separate(runtime)
     assert active[0].operator.value == "gte"
     deltas = ConstraintDeltaResolver.from_resolution(updated)
     assert deltas[-1].action == ConstraintDeltaAction.REPLACE
+
+
+@pytest.mark.asyncio
+async def test_unique_pack_unit_can_bind_a_numeric_constraint_without_field_label(runtime) -> None:
+    pack, _products, _resolver = runtime
+    resolution = await NaturalConstraintEngine(pack).resolve(
+        "从目录里找机身不重于 1200g 的配置",
+        source_turn=1,
+    )
+    active = [
+        item for item in resolution.constraint_set.active()
+        if item.provenance.value == "current_input"
+    ]
+    assert len(active) == 1
+    assert active[0].field == "weight_kg"
+    assert active[0].operator.value == "lte"
+    assert active[0].normalized_value == 1.2
+
+
+def test_scope_language_does_not_become_requested_upgradeability(runtime) -> None:
+    pack, products, resolver = runtime
+    configuration = "21YW0042US"
+    query = f"{configuration} 属于哪个地区、内存多大？不要扩展到其他配置。"
+    scope = resolver.resolve(query, products)
+    understanding = QueryUnderstandingEngine(pack).analyze(query, scope)
+    assert understanding.intent == QueryIntent.EXACT_FACT_VERIFICATION
+    assert set(understanding.requested_fields) == {"region", "memory_gb"}

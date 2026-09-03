@@ -27,8 +27,8 @@ _DIRECT_EXCLUDE = (
     "不应匹配", "不匹配",
 )
 _TRAILING_EXCLUDE = (
-    "不参与", "不能算进", "别加入", "不要扩展", "不能拿来", "不能据此",
-    "不能替代", "不要包含", "别扩展", "排除", "参数算进来", "资料算进来",
+    "不参与", "不能算进", "别加入", "不能拿来", "不能据此",
+    "不能替代", "不要包含", "不要混进", "别混进", "参数算进来", "资料算进来",
 )
 _REGION_ALIASES = {
     "中国大陆": "CN", "中国区": "CN", "中国版": "CN", "国行": "CN", "中国": "CN",
@@ -234,8 +234,9 @@ class ProductIdentityResolver:
         sentence_right = min(sentence_right_candidates) if sentence_right_candidates else len(query)
         sentence_prefix = query[sentence_left:match.start]
         sentence_suffix = query[match.end:sentence_right]
+        conditional_context = sentence_prefix + match.quote + sentence_suffix
         if (
-            re.search(r"(?:若|如果|即使|即便|就算)", sentence_prefix)
+            re.search(r"(?:若|如果|即使|即便|就算)", conditional_context)
             and re.search(r"(?:不能|不得|不应|不可以)", sentence_suffix)
         ):
             return ReferencePolarity.EXCLUDE
@@ -256,6 +257,8 @@ class ProductIdentityResolver:
         if any(marker in prefix for marker in ("不要", "排除", "不接受", "别加入", "除了", "别把")):
             return ReferencePolarity.EXCLUDE
         if any(marker in suffix[:36] for marker in _TRAILING_EXCLUDE):
+            return ReferencePolarity.EXCLUDE
+        if re.match(r"\s*(?:明确)?排除(?:\s|$)", suffix):
             return ReferencePolarity.EXCLUDE
         return ReferencePolarity.INCLUDE
 

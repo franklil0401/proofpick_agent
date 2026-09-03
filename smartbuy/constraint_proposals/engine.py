@@ -606,6 +606,9 @@ class DeterministicConstraintParser:
                 "implicit_minimum_fields", []
             )
         )
+        unit_context_terms = self.pack.pack.policies.get("understanding", {}).get(
+            "unit_context_terms", {}
+        )
         clauses = [
             match
             for match in re.finditer(
@@ -614,6 +617,15 @@ class DeterministicConstraintParser:
             )
             if match.group(0).strip()
         ]
+        unit_owners: dict[str, set[str]] = {}
+        for candidate_field, candidate in self.pack.fields.items():
+            if candidate.data_type.value not in {"number", "integer"}:
+                continue
+            for candidate_unit in {candidate.unit or "", *candidate.accepted_units}:
+                if candidate_unit:
+                    unit_owners.setdefault(self._fold(candidate_unit), set()).add(
+                        candidate_field
+                    )
 
         def append(
             field: str,
@@ -670,14 +682,54 @@ class DeterministicConstraintParser:
                         item for item in field_mentions
                         if clause.start() <= item.start() < clause.end()
                     ]
-                    if not local_mentions:
-                        continue
                     local = clause.group(0)
                     numbers = list(re.finditer(
                         rf"({_NUMBER})\s*({unit_pattern})(?![a-z])",
                         local,
                         flags=re.I,
                     ))
+                    if not local_mentions:
+                        # A unit owned by exactly one Pack field is itself an
+                        # unambiguous field discriminator (for example kg/g).
+                        # Shared units such as GB remain unresolved unless a
+                        # field alias is present in the same clause.
+                        for number in numbers:
+                            context = local[
+                                max(0, number.start() - 16):min(len(local), number.end() + 10)
+                            ]
+                            owners = unit_owners.get(self._fold(number.group(2)), set())
+                            contextual_owners = {
+                                owner for owner in owners
+                                if any(
+                                    self._fold(str(term)) in self._fold(context)
+                                    for term in unit_context_terms.get(owner, [])
+                                )
+                            }
+                            resolved_owners = contextual_owners or owners
+                            if resolved_owners != {field_id}:
+                                continue
+                            operator = (
+                                "lte"
+                                if re.search(
+                                    r"(?:不超过|至多|最多|以内|以下|上限|不重于|不高于)",
+                                    context,
+                                )
+                                else "gte"
+                                if re.search(
+                                    r"(?:至少|最低|不低于|不少于|以上|下限|不小于)",
+                                    context,
+                                )
+                                else "eq"
+                            )
+                            append(
+                                field_id,
+                                operator,
+                                _chinese_number(number.group(1)),
+                                clause.start() + number.start(),
+                                clause.start() + number.end(),
+                                unit=number.group(2),
+                            )
+                        continue
                     if not numbers:
                         vague = re.search(
                             rf"(?:{alias_pattern}).{{0,8}}(?:大些|大一点|高一点|轻一点|便宜点|别太贵|好一点|强一点)",
@@ -1141,9 +1193,19 @@ class DeterministicConstraintParser:
                 add(field, "eq", value, match, status="unsupported", reason="field_not_declared_by_domain_pack")
 
         raws.extend(self._pack_rules(query, previous=previous))
+        scope_or_evidence_language = bool(
+            re.search(
+                r"(?:不要|别)(?:混进|扩展到|加入候选)|"
+                r"(?:排除).{0,12}(?:候选|地区证据)|"
+                r"(?:不能|不得).{0,16}(?:替代|作为|算进).{0,8}(?:证据|事实|参数)",
+                query,
+                flags=re.I,
+            )
+        )
         if (
             "understanding" in self.pack.pack.policies
             and not raws
+            and not scope_or_evidence_language
             and re.search(r"(?:必须|要求|需要|至少|不超过)", query, flags=re.I)
         ):
             match = re.search(r"\S(?:.*\S)?", query)

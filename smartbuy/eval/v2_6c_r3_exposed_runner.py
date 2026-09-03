@@ -1,4 +1,4 @@
-"""Offline runner for all 50 exposed Laptop tasks.
+"""Offline runner for all exposed Laptop tasks.
 
 This runner never imports a cloud provider.  It preserves the two historical
 scoring contracts and reports their metrics separately before aggregating
@@ -25,6 +25,7 @@ from smartbuy.domain_packs import DomainPackLoader
 from smartbuy.eval.v2_6c_laptop_agent_runner import _score as score_original
 from smartbuy.eval.v2_6c_r2_laptop_runner import _first_error, _row_from_report
 from smartbuy.eval.v2_6c_r2_laptop_scorer import score_results as score_r2
+from smartbuy.eval.v2_6c_r3_validation_scorer import score_results as score_validation
 from smartbuy.memory import DomainPreferenceMemoryStore
 from smartbuy.product_packs import DomainProductPackManager
 from smartbuy.tools import ToolResult
@@ -43,6 +44,8 @@ ORIGINAL_CASES = ROOT / "smartbuy" / "eval" / "v2_6a_laptop_cases.jsonl"
 ORIGINAL_POLICY = ROOT / "smartbuy" / "eval" / "v2_6c_laptop_scoring_policy.json"
 R2_CASES = ROOT / "smartbuy" / "eval" / "v2_6c_r2_laptop_holdout.jsonl"
 R2_SHA256 = "dd17cf4a4bf794c77cc75b5406f9e603effc7be4e63f9e9b215a9d4d8ea9e24f"
+VALIDATION_CASES = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round1.jsonl"
+VALIDATION_SHA256 = "64ce5764a22a11a71d02b00fe7a0a9da61459b95f697597e7198252e1d87fe70"
 
 
 def _sha(path: Path) -> str:
@@ -206,14 +209,18 @@ async def run(output: Path) -> dict[str, Any]:
         raise RuntimeError("exposed regression output is immutable")
     if _sha(R2_CASES) != R2_SHA256:
         raise RuntimeError("R2 frozen task hash changed")
+    if _sha(VALIDATION_CASES) != VALIDATION_SHA256:
+        raise RuntimeError("validation round 1 frozen task hash changed")
     original_cases = _load(ORIGINAL_CASES)
     r2_cases = _load(R2_CASES)
+    validation_cases = _load(VALIDATION_CASES)
     original_policy = json.loads(ORIGINAL_POLICY.read_text(encoding="utf-8"))["cases"]
     with tempfile.TemporaryDirectory(prefix="proofpick-r3-exposed-") as temporary:
         agent = _agent(Path(temporary))
         original_rows = []
         original_reports = []
         r2_rows = []
+        validation_rows = []
         durations = []
         for case in original_cases:
             started = time.perf_counter()
@@ -228,6 +235,11 @@ async def run(output: Path) -> dict[str, Any]:
             row = _row_from_report(case, report)
             row["first_error_node"] = _first_error(case, row)
             r2_rows.append(row)
+        for case in validation_cases:
+            started = time.perf_counter()
+            report = await agent.run(case["question"])
+            durations.append((time.perf_counter() - started) * 1000)
+            validation_rows.append(_row_from_report(case, report))
 
     raw_r2 = {
         "frozen_case_sha256": R2_SHA256,
@@ -324,6 +336,70 @@ async def run(output: Path) -> dict[str, Any]:
         "estimated_cost_cny": 0.0,
         "average_latency_ms": statistics.mean(durations),
     }
+    raw_validation = {
+        "frozen_case_sha256": VALIDATION_SHA256,
+        "cases": validation_rows,
+    }
+    with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8", delete=False) as handle:
+        json.dump(raw_validation, handle, ensure_ascii=False)
+        temporary_validation = Path(handle.name)
+    try:
+        validation_score = score_validation(temporary_validation)
+    finally:
+        temporary_validation.unlink(missing_ok=True)
+    all_tp = tp + validation_score["clear_hard_constraint"]["tp"]
+    all_fp = fp + validation_score["clear_hard_constraint"]["fp"]
+    all_fn = fn + validation_score["clear_hard_constraint"]["fn"]
+    all_precision = all_tp / (all_tp + all_fp) if all_tp + all_fp else 1.0
+    all_recall = all_tp / (all_tp + all_fn) if all_tp + all_fn else 1.0
+    all_exposed = {
+        "task_accuracy": {
+            "numerator": combined["task_accuracy"]["numerator"]
+            + validation_score["task_accuracy"]["numerator"],
+            "denominator": 74,
+        },
+        "clear_hard_constraint": {
+            "tp": all_tp,
+            "fp": all_fp,
+            "fn": all_fn,
+            "precision": all_precision,
+            "recall": all_recall,
+            "f1": (
+                2 * all_precision * all_recall / (all_precision + all_recall)
+                if all_precision + all_recall else 0.0
+            ),
+        },
+        "recommendation_evidence_coverage": {
+            "numerator": combined["recommendation_evidence_coverage"]["numerator"]
+            + validation_score["recommendation_evidence_coverage"]["numerator"],
+            "denominator": combined["recommendation_evidence_coverage"]["denominator"]
+            + validation_score["recommendation_evidence_coverage"]["denominator"],
+        },
+        "wrong_configuration_recommendations": (
+            combined["wrong_configuration_recommendations"]
+            + validation_score["wrong_configuration_recommendations"]
+        ),
+        "wrong_region_recommendations": (
+            combined["wrong_region_recommendations"]
+            + validation_score["wrong_region_recommendations"]
+        ),
+        "candidate_scope_leakage": (
+            combined["candidate_scope_leakage"]
+            + validation_score["candidate_scope_leakage"]
+        ),
+        "checker_scope_leakage": (
+            combined["checker_scope_leakage"]
+            + validation_score["checker_scope_leakage"]
+        ),
+        "unknown_overclaimed": (
+            combined["unknown_overclaimed"]
+            + validation_score["unknown_overclaimed"]
+        ),
+        "clarification_bypass": (
+            combined["clarification_bypass"]
+            + validation_score["clarification_bypass"]
+        ),
+    }
     payload = {
         "schema_version": "proofpick-v2-6c-r3-exposed-regression-v1",
         "created_at": datetime.now(UTC).isoformat(),
@@ -332,10 +408,12 @@ async def run(output: Path) -> dict[str, Any]:
             "laptop-011-020": "exposed_holdout_regression_v1",
             "laptop-021-030": "unrun_exposed_specialist",
             "laptop-r2-001-020": "exposed_holdout_regression_v2",
+            "laptop-r3-v1-001-024": "exposed_post_freeze_validation_round1",
         },
         "input_hashes": {
             "original_30": _sha(ORIGINAL_CASES),
             "r2_20": _sha(R2_CASES),
+            "validation_round1_24": _sha(VALIDATION_CASES),
         },
         "offline": True,
         "scoring_note": (
@@ -356,6 +434,9 @@ async def run(output: Path) -> dict[str, Any]:
         "r2_20": r2_score,
         "r2_20_canonical_r3": r2_canonical,
         "r2_rows": r2_rows,
+        "validation_round1_exposed_regression": validation_score,
+        "validation_round1_rows": validation_rows,
+        "all_exposed_74": all_exposed,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
