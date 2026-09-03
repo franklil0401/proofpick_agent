@@ -40,6 +40,11 @@ class OrchestratorRequest(BaseModel):
     resume_value: Any = None
     clarification_question: str | None = Field(default=None, max_length=500)
     use_natural_constraints: bool = False
+    ranking_scenario: str | None = Field(default=None, max_length=64)
+    ranking_preferences: dict[str, Any] = Field(default_factory=dict)
+    ranking_weight_overrides: dict[str, float] | None = None
+    ranking_use_memory: bool | None = None
+    ranking_what_if: bool = False
     # Internal, validated V2 payload. ``Any`` avoids coupling the stable V1
     # orchestration contract module to the opt-in proposal package at import time.
     constraint_resolution: Any = None
@@ -91,6 +96,11 @@ class CompatibleAgent(Protocol):
         thread_id: str | None = None,
         event_callback: EventCallback | None = None,
         constraint_resolution: Any = None,
+        ranking_scenario: str | None = None,
+        ranking_preferences: dict[str, Any] | None = None,
+        ranking_weight_overrides: dict[str, float] | None = None,
+        ranking_use_memory: bool | None = None,
+        ranking_what_if: bool = False,
     ) -> DecisionReport: ...
 
 

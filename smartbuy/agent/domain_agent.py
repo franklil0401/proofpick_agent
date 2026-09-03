@@ -49,6 +49,16 @@ from smartbuy.decision_core.result import ResultClassificationInput, classify_re
 from smartbuy.decision_core.safety import CandidateChainViolation, assert_candidate_chain
 from smartbuy.memory import DomainPreferenceMemoryStore
 from smartbuy.orchestration.contracts import EventCallback, emit_event
+from smartbuy.ranking import (
+    DeterministicDecisionRanker,
+    RankingCandidateInput,
+    RankingEvidence,
+    RankingExplanation,
+    RankingProfileError,
+    RankingProfileLoader,
+    RankingRequest,
+    stable_fallback,
+)
 from smartbuy.tools.domain import (
     DomainConstraintCheckerTool,
     DomainEvidenceCheckTool,
@@ -83,6 +93,8 @@ def _verification_status(value: str) -> VerificationStatus:
 class DomainDecisionAgent:
     """Bounded workflow whose business vocabulary comes only from loaded packs."""
 
+    supports_v2_ranking = True
+
     def __init__(
         self,
         pack: LoadedDomainPack,
@@ -110,6 +122,25 @@ class DomainDecisionAgent:
         self.max_steps = max_steps
         self.max_tool_calls = max_tool_calls
         self._session_constraints: dict[str, ConstraintSet] = {}
+        self._ranking_profile_error: str | None = None
+        try:
+            loaded_profile = RankingProfileLoader.load(pack)
+            self.ranker: DeterministicDecisionRanker | None = DeterministicDecisionRanker(
+                loaded_profile
+            )
+            self.ranking_profile_version = loaded_profile.profile.profile_version
+        except RankingProfileError as exc:
+            self.ranker = None
+            self.ranking_profile_version = "unavailable"
+            self._ranking_profile_error = type(exc).__name__
+
+    def _session_key(self, session_id: str | None, user_id: str | None) -> str | None:
+        if not session_id:
+            return None
+        identity = user_id or "ephemeral"
+        return hashlib.sha256(
+            f"{self.pack.domain_id}\x1f{identity}\x1f{session_id}".encode("utf-8")
+        ).hexdigest()
 
     def _intent(self, query: str) -> str:
         folded = query.casefold()
@@ -921,6 +952,11 @@ class DomainDecisionAgent:
         thread_id: str | None = None,
         event_callback: EventCallback | None = None,
         constraint_resolution: ConstraintResolution | None = None,
+        ranking_scenario: str | None = None,
+        ranking_preferences: dict[str, Any] | None = None,
+        ranking_weight_overrides: dict[str, float] | None = None,
+        ranking_use_memory: bool | None = None,
+        ranking_what_if: bool = False,
     ) -> DecisionReport:
         if mode != ResearchMode.TRUSTED:
             raise ValueError("DomainDecisionAgent handles Trusted Mode only")
@@ -1001,9 +1037,22 @@ class DomainDecisionAgent:
                 },
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
-        previous = self._session_constraints.get(session_id or "")
+        session_key = self._session_key(session_id, user_id)
+        previous = self._session_constraints.get(session_key or "")
+        memory_requested = (
+            use_long_term_memory if ranking_use_memory is None else ranking_use_memory
+        )
+        memory_snapshot = self.preference_memory.recall_with_sources(
+            user_id,
+            requested=bool(memory_requested and user_id),
+        )
+        memory_preferences = dict(memory_snapshot["preferences"])
         if constraint_resolution is None:
-            preferences = self.preference_memory.recall(user_id or "anonymous", requested=use_long_term_memory)
+            preferences = {
+                key: value
+                for key, value in memory_preferences.items()
+                if key in self.preference_memory.allowed
+            }
             constraint_resolution = await self.constraint_engine.resolve(
                 query, source_turn=1, previous=previous, preferences=preferences,
             )
@@ -1083,8 +1132,8 @@ class DomainDecisionAgent:
             - active_constraint_fields
         )
         fields = (requested_fields | active_constraint_fields) & set(self.pack.fields)
-        if session_id and not pending:
-            self._session_constraints[session_id] = constraint_resolution.constraint_set
+        if session_key and not pending:
+            self._session_constraints[session_key] = constraint_resolution.constraint_set
         cross_region_inference = (
             intent != QueryIntent.RECOMMENDATION_FILTER
             and bool(set(scope.allowed_regions) - set(scope.regions))
@@ -1351,6 +1400,125 @@ class DomainDecisionAgent:
                 elimination_reason=("硬约束未全部通过或证据不足。" if checker_required and product_id not in recommended else None),
             ))
 
+        ranking: RankingExplanation | None = None
+        ranking_degraded_states: list[str] = []
+        if checker_required and recommended:
+            explicit_ranking_preferences = dict(ranking_preferences or {})
+            explicit_weights = ranking_weight_overrides
+            memory_weights = memory_preferences.get("ranking_weights")
+            weights = (
+                dict(explicit_weights)
+                if explicit_weights is not None
+                else dict(memory_weights) if isinstance(memory_weights, dict) else {}
+            )
+            weight_source = (
+                "explicit"
+                if explicit_weights is not None
+                else memory_snapshot["sources"].get("ranking_weights", "explicit")
+            )
+            ranking_request = RankingRequest(
+                domain_id=self.pack.domain_id,
+                scenario=ranking_scenario,
+                eligible_candidates=[
+                    RankingCandidateInput(
+                        product_id=product_id,
+                        configuration_id=products[product_id]["attributes"].get(
+                            "configuration_id"
+                        ),
+                        region=products[product_id]["region"],
+                        values=dict(products[product_id]["attributes"]),
+                        evidence=[
+                            RankingEvidence(
+                                evidence_id=row["evidence_id"],
+                                source_id=row["source_id"],
+                                source_type=row["source_type"],
+                                field_id=row["field_id"],
+                                normalized_value=row["normalized_value"],
+                                region=row["region"],
+                            )
+                            for row in products[product_id]["evidence"]
+                        ],
+                    )
+                    for product_id in recommended
+                ],
+                checker_eligible_ids=list(batch.eligible_model_ids),
+                explicit_preferences=explicit_ranking_preferences,
+                confirmed_memory_preferences=memory_preferences,
+                memory_preference_sources=dict(memory_snapshot["sources"]),
+                weight_overrides=weights,
+                weight_override_source=weight_source,
+                ranking_profile_version=self.ranking_profile_version,
+                data_version=self.repository.snapshot.data_version,
+                domain_pack_version=self.pack.version,
+                memory_enabled=bool(memory_snapshot["enabled"]),
+                what_if=ranking_what_if,
+            )
+            await emit_event(
+                event_callback,
+                {
+                    "type": "ranking_started",
+                    "domain_id": self.pack.domain_id,
+                    "eligible_count": len(recommended),
+                    "scenario": ranking_scenario,
+                    "what_if": ranking_what_if,
+                },
+            )
+            try:
+                if self.ranker is None:
+                    raise RankingProfileError(
+                        self._ranking_profile_error or "ranking_profile_unavailable"
+                    )
+                ranking = self.ranker.rank(ranking_request)
+            except Exception as exc:
+                ranking = stable_fallback(ranking_request, type(exc).__name__)
+                ranking_degraded_states.append("ranking_degraded")
+            if memory_snapshot.get("degraded_reasons"):
+                reasons = list(
+                    dict.fromkeys(
+                        [
+                            *ranking.degraded_reasons,
+                            *memory_snapshot["degraded_reasons"],
+                        ]
+                    )
+                )
+                ranking = ranking.model_copy(
+                    update={
+                        "degraded_reasons": reasons,
+                        "ranking_degraded": True,
+                    }
+                )
+                ranking_degraded_states.append("ranking_degraded")
+            recommended = ranking.ranked_ids
+            ranked_by_id = {
+                item.product_id: item for item in ranking.candidate_contributions
+            }
+            candidates = [
+                candidate.model_copy(
+                    update={
+                        "rank": ranked_by_id[candidate.model_id].rank,
+                        "ranking_score": ranked_by_id[candidate.model_id].total_score,
+                        "ranking_advantages": ranked_by_id[candidate.model_id].advantages,
+                        "ranking_tradeoffs": ranked_by_id[candidate.model_id].tradeoffs,
+                    }
+                )
+                if candidate.model_id in ranked_by_id
+                else candidate
+                for candidate in candidates
+            ]
+            await emit_event(
+                event_callback,
+                {
+                    "type": "ranking_completed",
+                    "domain_id": self.pack.domain_id,
+                    "scenario": ranking.active_scenario,
+                    "eligible_count": len(recommended),
+                    "ranked_product_ids": recommended,
+                    "ranking_degraded": ranking.ranking_degraded,
+                    "ranking_profile_version": ranking.ranking_profile_version,
+                    "memory_enabled": ranking.memory_enabled,
+                },
+            )
+
         unsupported = [item for item in constraint_resolution.proposals if item.status.value == "unsupported"]
         recommendation_task = intent == QueryIntent.RECOMMENDATION_FILTER
         evidence_complete_ids = {
@@ -1411,7 +1579,10 @@ class DomainDecisionAgent:
                     if cross_region_inference else []
                 ),
             ],
-            degraded_states=([kb_result.error_code or "kb_search_degraded"] if kb_result and kb_result.status in {"failed", "degraded"} else []),
+            degraded_states=(
+                ([kb_result.error_code or "kb_search_degraded"] if kb_result and kb_result.status in {"failed", "degraded"} else [])
+                + ranking_degraded_states
+            ),
             pending_questions=[item.clarification_question for item in unsupported if item.clarification_question],
             abstained=abstained,
             stop_reason=result_classification.reason,
@@ -1431,5 +1602,8 @@ class DomainDecisionAgent:
                 "result_status": result_classification.status.value,
                 "result_reason": result_classification.reason,
                 "safety_blocked": safety_blocked_reason is not None,
+                "ranking_profile_version": self.ranking_profile_version,
+                "ranking_model_calls": 0,
             },
+            ranking=ranking,
         )

@@ -83,6 +83,11 @@ class SmartBuyChatRequest(BaseModel):
     use_long_term_memory: bool = False
     use_natural_constraints: bool = False
     mode: ResearchMode = ResearchMode.TRUSTED
+    ranking_scenario: str | None = Field(default=None, max_length=64)
+    ranking_preferences: dict[str, Any] = Field(default_factory=dict)
+    ranking_weight_overrides: dict[str, float] | None = None
+    ranking_use_memory: bool | None = None
+    ranking_what_if: bool = False
 
 
 class PreferenceUpdate(BaseModel):
@@ -310,6 +315,7 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
                 "checker_terminal_", "domain_pack_", "product_pack_", "source_search_",
                 "web_extraction_", "open_evidence_", "open_research_",
                 "constraint_proposal", "clarification_",
+                "ranking_",
             )
         ):
             await queue.put(event)
@@ -326,6 +332,11 @@ async def _stream(request: SmartBuyChatRequest) -> AsyncIterator[str]:
                     use_long_term_memory=request.use_long_term_memory,
                     use_natural_constraints=request.use_natural_constraints,
                     mode=request.mode,
+                    ranking_scenario=request.ranking_scenario,
+                    ranking_preferences=request.ranking_preferences,
+                    ranking_weight_overrides=request.ranking_weight_overrides,
+                    ranking_use_memory=request.ranking_use_memory,
+                    ranking_what_if=request.ranking_what_if,
                 ),
                 event_callback=callback,
             )
@@ -380,6 +391,11 @@ async def chat(request: SmartBuyChatRequest):
                 use_long_term_memory=request.use_long_term_memory,
                 use_natural_constraints=request.use_natural_constraints,
                 mode=request.mode,
+                ranking_scenario=request.ranking_scenario,
+                ranking_preferences=request.ranking_preferences,
+                ranking_weight_overrides=request.ranking_weight_overrides,
+                ranking_use_memory=request.ranking_use_memory,
+                ranking_what_if=request.ranking_what_if,
             )
         )
     except Exception:

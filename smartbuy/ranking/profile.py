@@ -148,4 +148,3 @@ class RankingProfileLoader:
             profile=profile,
             scenarios={item.scenario_id: item for item in profile.scenarios},
         )
-

@@ -73,6 +73,16 @@ class ReactOrchestrator:
             arguments["thread_id"] = request.thread_id
         if request.constraint_resolution is not None:
             arguments["constraint_resolution"] = request.constraint_resolution
+        if getattr(self.agent, "supports_v2_ranking", False):
+            arguments.update(
+                {
+                    "ranking_scenario": request.ranking_scenario,
+                    "ranking_preferences": request.ranking_preferences,
+                    "ranking_weight_overrides": request.ranking_weight_overrides,
+                    "ranking_use_memory": request.ranking_use_memory,
+                    "ranking_what_if": request.ranking_what_if,
+                }
+            )
         report = await self.agent.run(request.query, **arguments)
         return OrchestratorResult(
             orchestrator=self.kind,

@@ -377,6 +377,92 @@ async def test_current_laptop_input_overrides_pack_owned_long_term_memory(tmp_pa
     assert active[0].provenance == ConstraintProvenance.CURRENT_INPUT
 
 
+@pytest.mark.asyncio
+async def test_domain_agent_ranks_only_checker_eligible_and_emits_public_events(
+    tmp_path: Path,
+) -> None:
+    agent = _agent(tmp_path)
+    query = "筛选内存至少 16GB 的笔记本，并按便携场景排序。"
+    events: list[dict[str, object]] = []
+    report = await agent.run(
+        query,
+        session_id="same-session",
+        user_id="user-a",
+        event_callback=lambda event: events.append(event),
+        ranking_scenario="portability",
+        ranking_what_if=True,
+        constraint_resolution=_resolution(query, ("memory_gb", "gte", 16, "GB")),
+    )
+    assert report.ranking is not None
+    assert report.ranking.active_scenario == "portability"
+    assert report.recommended_model_ids == report.ranking.ranked_ids
+    assert set(report.recommended_model_ids) == set(
+        report.constraint_verification.eligible_model_ids
+    )
+    assert all(item.model_id not in report.recommended_model_ids or item.rank for item in report.candidates)
+    assert all(
+        dimension.evidence_ids
+        for candidate in report.ranking.candidate_contributions
+        for dimension in candidate.dimension_scores
+        if dimension.status == "scored"
+    )
+    assert [item["type"] for item in events if str(item["type"]).startswith("ranking_")] == [
+        "ranking_started", "ranking_completed"
+    ]
+    completed = next(item for item in events if item["type"] == "ranking_completed")
+    assert "query" not in completed and "preferences" not in completed
+    assert report.usage["ranking_model_calls"] == 0
+
+
+@pytest.mark.asyncio
+async def test_ranking_failure_is_explicit_and_preserves_checker_set(tmp_path: Path) -> None:
+    agent = _agent(tmp_path)
+    agent.ranker = None
+    agent._ranking_profile_error = "broken_profile_fixture"
+    query = "筛选内存至少 32GB 的笔记本。"
+    report = await agent.run(
+        query,
+        constraint_resolution=_resolution(query, ("memory_gb", "gte", 32, "GB")),
+    )
+    assert report.ranking is not None and report.ranking.ranking_degraded
+    assert "ranking_degraded" in report.degraded_states
+    assert report.recommended_model_ids == sorted(
+        report.constraint_verification.eligible_model_ids
+    )
+
+
+@pytest.mark.asyncio
+async def test_react_and_langgraph_share_deterministic_ranking_and_memory_isolation(
+    tmp_path: Path,
+) -> None:
+    query = "筛选内存至少 16GB 的笔记本。"
+    resolution = _resolution(query, ("memory_gb", "gte", 16, "GB"))
+    request = OrchestratorRequest(
+        query=query,
+        session_id="session",
+        user_id="user",
+        thread_id="thread",
+        ranking_scenario="gaming",
+        ranking_weight_overrides={"gaming_refresh": 0.7},
+        ranking_what_if=True,
+        constraint_resolution=resolution,
+    )
+    react_agent = _agent(tmp_path / "react")
+    graph_agent = _agent(tmp_path / "graph")
+    react = await ReactOrchestrator(react_agent).run(request)
+    graph_runtime = LangGraphOrchestrator(graph_agent, InMemoryCheckpointBackend())
+    graph = await graph_runtime.run(request)
+    assert react.report is not None and graph.report is not None
+    assert react.report.ranking == graph.report.ranking
+    assert react.report.recommended_model_ids == graph.report.recommended_model_ids
+    assert react_agent._session_key("session", "user-a") != react_agent._session_key(
+        "session", "user-b"
+    )
+    session_key = react_agent._session_key("session", "user-a")
+    assert session_key is not None and "user-a" not in session_key and len(session_key) == 64
+    await graph_runtime.close()
+
+
 def test_generic_agent_modules_contain_no_laptop_business_field_constants() -> None:
     forbidden = {
         "cpu_model", "gpu_model", "memory_gb", "storage_gb", "battery_wh",
