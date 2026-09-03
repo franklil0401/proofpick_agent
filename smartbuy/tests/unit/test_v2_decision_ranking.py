@@ -151,17 +151,17 @@ def test_profile_schema_rejects_bad_weights_ranges_and_fields() -> None:
 @pytest.mark.parametrize(
     ("domain_id", "candidates", "scenario", "weights", "memory_enabled"),
     [
-        ("monitor", MONITORS, "office_text", None, False),
         ("monitor", MONITORS, "gaming", None, False),
-        ("monitor", MONITORS, "creative_color", {"creative_resolution": 0.8}, False),
-        ("monitor", MONITORS, "laptop_docking", {"dock_power": 0.75}, False),
-        ("monitor", MONITORS, "desk_fit", {"desk_width": 0.9}, False),
+        ("monitor", MONITORS, "creative_color", None, False),
+        ("monitor", MONITORS, "laptop_docking", None, False),
+        ("monitor", MONITORS, "desk_fit", None, False),
+        ("monitor", MONITORS, "office_text", {"text_resolution": 0.8}, False),
         ("monitor", MONITORS, None, None, True),
-        ("laptop", LAPTOPS, "office", None, False),
-        ("laptop", LAPTOPS, "software_development", {"dev_memory": 0.75}, False),
+        ("laptop", LAPTOPS, "software_development", None, False),
         ("laptop", LAPTOPS, "creative_work", None, False),
-        ("laptop", LAPTOPS, "gaming", {"gaming_refresh": 0.75}, False),
-        ("laptop", LAPTOPS, "portability", {"portable_weight": 0.8}, False),
+        ("laptop", LAPTOPS, "gaming", None, False),
+        ("laptop", LAPTOPS, "portability", None, False),
+        ("laptop", LAPTOPS, "office", {"office_memory": 0.75}, False),
         ("laptop", LAPTOPS, None, None, True),
     ],
 )
@@ -172,7 +172,13 @@ def test_twelve_what_if_cases_keep_set_and_explain_every_rank(
     weights: dict[str, float] | None,
     memory_enabled: bool,
 ) -> None:
-    memory = {"ranking_scenario": "gaming"} if memory_enabled else {}
+    memory = (
+        {"ranking_scenario": "gaming" if domain_id == "monitor" else "portability"}
+        if memory_enabled
+        else {}
+    )
+    baseline_ranker, baseline_request = _request(domain_id, candidates)
+    baseline = baseline_ranker.rank(baseline_request)
     ranker, request = _request(
         domain_id,
         candidates,
@@ -191,6 +197,9 @@ def test_twelve_what_if_cases_keep_set_and_explain_every_rank(
         for item in result.candidate_contributions
         for dimension in item.dimension_scores
         if dimension.status == "scored"
+    )
+    assert DeterministicDecisionRanker.canonical_bytes(result) != (
+        DeterministicDecisionRanker.canonical_bytes(baseline)
     )
 
 
