@@ -246,6 +246,12 @@ class ProductIdentityResolver:
             and re.search(r"(?:不能|不得|不应|不可以)", sentence_suffix)
         ):
             return ReferencePolarity.EXCLUDE
+        if re.search(
+            r"(?:参数|事实|资料|证据).{0,12}(?:不能|不得|不应|不可以)"
+            r".{0,10}(?:作为|用于|算作|计入).{0,12}(?:证据|依据|事实)",
+            suffix,
+        ):
+            return ReferencePolarity.EXCLUDE
         if "混成" in clause and ("不要把" in prefix or "别把" in prefix):
             return ReferencePolarity.INCLUDE
         transfer = re.search(r"(?:事实|参数|证据).{0,4}(?:写到|套到|用于)", clause)
@@ -262,7 +268,7 @@ class ProductIdentityResolver:
             return ReferencePolarity.EXCLUDE
         if any(marker in prefix for marker in ("不要", "排除", "剔除", "不接受", "别加入", "除了", "别把")):
             return ReferencePolarity.EXCLUDE
-        if any(marker in suffix[:36] for marker in _TRAILING_EXCLUDE):
+        if any(marker in suffix[:48] for marker in _TRAILING_EXCLUDE):
             return ReferencePolarity.EXCLUDE
         if re.match(r"\s*(?:明确)?排除(?:\s|$)", suffix):
             return ReferencePolarity.EXCLUDE

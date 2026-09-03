@@ -951,7 +951,11 @@ class DeterministicConstraintParser:
         compact = query.casefold()
         cancelled: set[str] = set()
         cancel_patterns = {
-            "price_cny": r"(?:取消预算(?:限制)?|预算不限|不再限制价格)",
+            "price_cny": (
+                r"(?:(?:取消|移除|撤销)(?:预算|价格)(?:要求|限制)?|"
+                r"(?:预算|价格)(?:要求|限制)?"
+                r"(?:不限|不用管|不用限制|不作限制|不再限制|移除|取消|撤销))"
+            ),
             "display_size_inch": r"(?:取消尺寸(?:限制)?|尺寸不限|不再限制尺寸)",
             "resolution": r"(?:分辨率不限|取消分辨率)",
             "refresh_rate_hz": r"(?:刷新率不限|取消刷新率)",
@@ -1337,6 +1341,22 @@ class NaturalConstraintEngine:
             previous=previous,
             preferences=preferences or {},
         )
+        existing_preference_fields = {
+            item.field
+            for item in base.constraints
+            if item.provenance == ConstraintProvenance.LONG_TERM_PREFERENCE
+        }
+        pack_preferences = [
+            item
+            for item in self._pack_preference_constraints(
+                preferences or {}, source_turn=source_turn
+            )
+            if item.field not in existing_preference_fields
+        ]
+        if pack_preferences:
+            base = base.model_copy(
+                update={"constraints": [*base.constraints, *pack_preferences]}
+            )
         constraint_set, activated, diffs = self._apply(base, proposals)
         pending = [
             item.proposal_id
@@ -1360,6 +1380,69 @@ class NaturalConstraintEngine:
             latency_ms=round(max((time.perf_counter() - started) * 1000, provider_latency), 3),
             estimated_cost_cny=cost,
         )
+
+    def _pack_preference_constraints(
+        self,
+        preferences: dict[str, Any],
+        *,
+        source_turn: int,
+    ) -> list[NormalizedConstraint]:
+        """Map Domain Pack memory keys without embedding category fields in code."""
+
+        allowed = self.pack.pack.policies.get("memory", {}).get("allowed_keys", {})
+        output: list[NormalizedConstraint] = []
+        for key, raw_value in preferences.items():
+            field_id = allowed.get(key)
+            if field_id not in self.pack.fields:
+                continue
+            definition = self.pack.fields[field_id]
+            if key.startswith("excluded_"):
+                operator = ConstraintOperator.NOT_IN
+            elif key.startswith(("min_", "budget_min_")):
+                operator = ConstraintOperator.GTE
+            elif key.startswith(("max_", "budget_max_")):
+                operator = ConstraintOperator.LTE
+            elif key.startswith("need_"):
+                operator = ConstraintOperator.EQ
+            elif key == "primary_use" and "contains_all" in definition.allowed_operators:
+                operator = ConstraintOperator.CONTAINS_ALL
+            else:
+                operator = ConstraintOperator.EQ
+            if operator.value not in definition.allowed_operators:
+                continue
+            values = raw_value if operator in {ConstraintOperator.NOT_IN, ConstraintOperator.CONTAINS_ALL} else [raw_value]
+            if not isinstance(values, list):
+                values = [values]
+            try:
+                normalized_values = [
+                    self.pack.normalize_value(field_id, value) for value in values
+                ]
+            except DomainPackValidationError:
+                continue
+            normalized: Any = (
+                normalized_values
+                if operator in {ConstraintOperator.NOT_IN, ConstraintOperator.CONTAINS_ALL}
+                else normalized_values[0]
+            )
+            output.append(
+                NormalizedConstraint(
+                    field=field_id,
+                    operator=operator,
+                    normalized_value=normalized,
+                    unit=definition.unit,
+                    hard_or_soft=(
+                        ConstraintStrength.SOFT
+                        if key.startswith("preferred_") or key == "primary_use"
+                        else ConstraintStrength.HARD
+                    ),
+                    provenance=ConstraintProvenance.LONG_TERM_PREFERENCE,
+                    source_text=f"已启用的 {self.pack.domain_id} 长期偏好：{key}",
+                    source_turn=source_turn,
+                    confidence=1.0,
+                    supported=True,
+                )
+            )
+        return output
 
     def _apply_current_input_precedence(
         self,

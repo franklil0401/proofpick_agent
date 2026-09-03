@@ -36,6 +36,7 @@ from smartbuy.tools.domain import (
     DomainProductQueryTool,
     DomainReadonlyRepository,
 )
+from smartbuy.tools import ToolResult
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -182,6 +183,161 @@ async def test_react_langgraph_and_gateway_share_eligibility(tmp_path: Path) -> 
     await graph.close()
 
 
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("case_id", "query"),
+    [
+        ("fact", "请查 H7606WI 的显存。"),
+        ("unique", "H7606 系列需要 RTX 5080 Laptop GPU 和 16GB 显存。"),
+        ("family", "XPS 13 9350 有哪些配置？"),
+        ("compare", "比较 H7606WI 和 H7606WX 的显卡与内存。"),
+        ("filter", "筛选内存至少 32GB 且存储至少 1TB 的笔记本。"),
+        ("empty", "筛选电池至少 200Wh 的笔记本。"),
+        ("region", "只看美国版且内存至少 32GB。"),
+        ("exclude", "筛选笔记本但排除 ASUS。"),
+        ("unsupported", "必须带摄像头的笔记本。"),
+        ("cancel", "预算不用管，内存至少 32GB，存储从 2TB 改成 1TB。"),
+    ],
+)
+async def test_ten_laptop_cases_have_react_langgraph_semantic_parity(
+    tmp_path: Path,
+    case_id: str,
+    query: str,
+) -> None:
+    react = ReactOrchestrator(_agent(tmp_path / f"react-{case_id}"))
+    graph = LangGraphOrchestrator(
+        _agent(tmp_path / f"graph-{case_id}"),
+        InMemoryCheckpointBackend(),
+    )
+    request = OrchestratorRequest(
+        query=query,
+        session_id=f"session-{case_id}",
+        thread_id=f"thread-{case_id}",
+    )
+    react_result = await react.run(request)
+    graph_result = await graph.run(request)
+    assert react_result.report is not None and graph_result.report is not None
+    left, right = react_result.report, graph_result.report
+    assert left.query_intent == right.query_intent
+    assert left.product_scope == right.product_scope
+    assert left.constraint_set.model_dump(mode="json") == right.constraint_set.model_dump(mode="json")
+    assert left.constraint_verification is not None
+    assert right.constraint_verification is not None
+    assert (
+        left.constraint_verification.eligible_model_ids
+        == right.constraint_verification.eligible_model_ids
+    )
+    assert left.recommended_model_ids == right.recommended_model_ids
+    assert left.abstained == right.abstained
+    assert left.clarification_state == right.clarification_state
+    assert set(left.recommended_model_ids) <= set(left.product_scope.product_ids)
+    assert set(right.recommended_model_ids) <= set(right.product_scope.product_ids)
+    await graph.close()
+
+
+@pytest.mark.asyncio
+async def test_generic_repairs_for_evidence_reference_result_and_alias_boundaries(
+    tmp_path: Path,
+) -> None:
+    agent = _agent(tmp_path)
+
+    evidence_reference = await agent.run(
+        "请查 H7606WI 的显存；H7606WX 的 24GB 参数不能作为 WI 的证据。"
+    )
+    assert evidence_reference.query_intent.value == "exact_fact_verification"
+    assert evidence_reference.product_scope.configuration_ids == ["H7606WI"]
+    assert not [
+        item
+        for item in evidence_reference.constraint_set.active()
+        if item.provenance == ConstraintProvenance.CURRENT_INPUT
+    ]
+    assert evidence_reference.abstained is False
+    assert {
+        item.configuration_id for item in evidence_reference.evidence
+    } == {"H7606WI"}
+
+    unique_configuration = await agent.run(
+        "H7606 系列中需要显卡 RTX 5080 Laptop GPU、显存 16GB，请给出唯一配置号。"
+    )
+    assert unique_configuration.product_scope.configuration_ids == ["H7606WW"]
+    assert unique_configuration.recommended_model_ids == [
+        "asus-proart-p16-h7606ww-cn"
+    ]
+    assert unique_configuration.abstained is False
+    assert unique_configuration.usage["result_status"] == "recommendation_available"
+    assert not any(
+        item.status.value == "unsupported"
+        for item in unique_configuration.constraint_proposals
+    )
+
+    alias_fact = await agent.run(
+        "核实 xps13-9350-oled-ca 对应的配置号、分辨率、操作系统。"
+    )
+    assert alias_fact.query_intent.value == "exact_fact_verification"
+    assert alias_fact.product_scope.configuration_ids == ["caexchcto9350lnl02"]
+    assert not [
+        item
+        for item in alias_fact.constraint_set.active()
+        if item.provenance == ConstraintProvenance.CURRENT_INPUT
+    ]
+    assert alias_fact.abstained is False
+    assert alias_fact.usage["result_status"] == "answer_available"
+
+    for query in (
+        "移除预算要求；内存最低 32G；固态原来至少 2T，改为至少 1T。",
+        "预算不用管；内存至少 32GB；固态先定 2TB，后来改成最低 1TB。",
+        "预算限制移除，保留内存不低于 32G；固态从至少 2T 覆盖成至少 1T。",
+    ):
+        cancelled = await agent.run(query)
+        assert cancelled.usage["result_status"] == "recommendation_available"
+        assert cancelled.abstained is False
+        assert cancelled.recommended_model_ids
+        assert "price_cny" not in {item.field for item in cancelled.unresolved_facts}
+
+
+@pytest.mark.asyncio
+async def test_checker_scope_expansion_emits_event_and_fails_closed(tmp_path: Path) -> None:
+    agent = _agent(tmp_path)
+
+    class ExpandingChecker:
+        VERSION = "malicious-checker-fixture"
+
+        @staticmethod
+        def run(*_args, **_kwargs) -> ToolResult:
+            return ToolResult(
+                tool="domain_constraint_checker",
+                status="success",
+                data={
+                    "results": [
+                        {
+                            "product_id": "asus-proart-p16-h7606wx-cn",
+                            "constraint_results": [],
+                        }
+                    ]
+                },
+                summary="malicious expansion fixture",
+            )
+
+    agent.checker = ExpandingChecker()
+    query = "只看 H7606WI，需要内存至少 32GB。"
+    events = []
+    report = await agent.run(
+        query,
+        event_callback=lambda event: events.append(event),
+        constraint_resolution=_resolution(
+            query,
+            ("memory_gb", "gte", 32, "GB"),
+        ),
+    )
+    assert report.abstained is True
+    assert report.recommended_model_ids == []
+    assert report.usage["result_status"] == "safety_blocked"
+    assert report.constraint_verification.degraded is True
+    violation = next(item for item in events if item["type"] == "scope_violation")
+    assert violation["stage"] == "after_checker"
+    assert violation["action"] == "fail_closed"
+
+
 def test_domain_memory_isolated_and_v1_frozen_hash_unchanged(tmp_path: Path) -> None:
     registry = DomainPackRegistry(DOMAIN_ROOT)
     laptop = DomainPreferenceMemoryStore(tmp_path, registry.load("laptop"))
@@ -191,9 +347,34 @@ def test_domain_memory_isolated_and_v1_frozen_hash_unchanged(tmp_path: Path) -> 
     assert monitor.recall("user", requested=True) == {}
     with pytest.raises(ValueError, match="Domain Pack"):
         monitor.upsert("user", {"min_memory_gb": 32}, explicitly_confirmed=True)
+    with pytest.raises(ValueError, match="explicit confirmation"):
+        laptop.upsert("pending", {"min_memory_gb": 32}, explicitly_confirmed=False)
+    with pytest.raises(ValueError, match="Domain Pack"):
+        laptop.upsert("unsupported", {"camera": True}, explicitly_confirmed=True)
+    laptop.set_enabled("user", False)
+    assert laptop.recall("user", requested=True) == {}
+    laptop.set_enabled("user", True)
+    laptop.delete("user", ["min_memory_gb"])
+    assert laptop.recall("user", requested=True) == {}
     laptop.delete("user")
     assert laptop.recall("user", requested=True) == {}
     assert hashlib.sha256(CASES.read_bytes()).hexdigest() == FROZEN_SHA
+
+
+@pytest.mark.asyncio
+async def test_current_laptop_input_overrides_pack_owned_long_term_memory(tmp_path: Path) -> None:
+    pack = DomainPackLoader().load(LAPTOP_DOMAIN)
+    memory = DomainPreferenceMemoryStore(tmp_path / "memory", pack)
+    memory.upsert("user", {"min_memory_gb": 64}, explicitly_confirmed=True)
+    resolution = await NaturalConstraintEngine(pack).resolve(
+        "内存至少 32GB。",
+        source_turn=1,
+        preferences=memory.recall("user", requested=True),
+    )
+    active = [item for item in resolution.constraint_set.active() if item.field == "memory_gb"]
+    assert len(active) == 1
+    assert active[0].normalized_value == 32
+    assert active[0].provenance == ConstraintProvenance.CURRENT_INPUT
 
 
 def test_generic_agent_modules_contain_no_laptop_business_field_constants() -> None:
