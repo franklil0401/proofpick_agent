@@ -29,4 +29,3 @@ Checker 已能确定候选是否满足硬约束，但合规候选仍缺少按用
 ## 回滚
 
 关闭 V2 Domain Agent/Ranking 参数即可回到 V1 默认路径；Checker 数据和 Product Pack 无需迁移。若 Profile 无法加载，运行时仍保留 Checker 合规集合并按 ID 稳定排序，同时标记降级。
-
