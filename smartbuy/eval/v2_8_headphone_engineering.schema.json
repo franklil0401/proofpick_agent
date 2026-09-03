@@ -1,0 +1,78 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "ProofPick V2-8 Headphone engineering case",
+  "type": "object",
+  "required": [
+    "case_id",
+    "category",
+    "question",
+    "constraints",
+    "gold_fields",
+    "expected_kind",
+    "expected_product_ids",
+    "required_tools",
+    "frozen_status"
+  ],
+  "properties": {
+    "case_id": {
+      "type": "string",
+      "pattern": "^headphone-e2e-[0-9]{3}$"
+    },
+    "category": {
+      "type": "string"
+    },
+    "question": {
+      "type": "string",
+      "minLength": 2
+    },
+    "constraints": {
+      "type": "array"
+    },
+    "gold_fields": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "expected_kind": {
+      "enum": [
+        "eligible",
+        "referenced",
+        "degraded_referenced",
+        "clarify",
+        "abstain",
+        "safety_blocked"
+      ]
+    },
+    "expected_product_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "required_tools": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "uniqueItems": true
+    },
+    "fault": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "ranking_scenario": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "frozen_status": {
+      "const": "frozen_unrun"
+    }
+  },
+  "additionalProperties": false
+}

@@ -62,11 +62,9 @@ def test_subjective_evidence_is_soft_only_and_cannot_support_checker() -> None:
     loaded = ProductPackLoader(domain_pack_path=HEADPHONE_DOMAIN).load(HEADPHONE_PACK)
     policy = loaded.domain_pack.pack.policies
     subjective = set(policy["product_pack"]["source_field_permissions"]["subjective_review"])
-    checker_hard_fields = set(policy["checker"]["hard_fields"])
+    checker_fields = set(policy["checker"]["supported_fields"])
     assert subjective == {"comfort_observation", "sound_signature", "call_quality_observation"}
-    # These fields may be parsed as soft preference proposals, but the
-    # deterministic Checker must never treat them as hard eligibility facts.
-    assert subjective.isdisjoint(checker_hard_fields)
+    assert subjective.isdisjoint(checker_fields)
     assert all(
         row["field_id"] in subjective
         for row in loaded.normalized_evidence

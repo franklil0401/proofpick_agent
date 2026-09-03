@@ -1,0 +1,24 @@
+{
+  "schema_version": "proofpick-v2-8-headphone-engineering-policy-v1",
+  "case_sha256": "851129b3eacac9b24bdbda675af5233912495c4d0d55bf8e4995e964de0b358d",
+  "domain_pack_version": "1.0.0",
+  "data_version": "headphone-governed-2026-09-03-v1",
+  "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+  "thresholds": {
+    "task_accuracy_min": 0.8,
+    "clear_constraint_f1_min": 0.9,
+    "recommendation_evidence_coverage_min": 0.95,
+    "negative_rejection_min": 0.9,
+    "explicit_violation_recommendations_max": 0,
+    "subjective_hard_fact_overrides_max": 0,
+    "wrong_configuration_recommendations_max": 0,
+    "wrong_region_recommendations_max": 0,
+    "scope_leakage_max": 0,
+    "checker_leakage_max": 0,
+    "report_leakage_max": 0,
+    "unknown_overclaims_max": 0,
+    "clarification_bypasses_max": 0
+  },
+  "case_count": 30,
+  "evaluation_independence": "工程评测集；首次运行前冻结，不宣称第三方盲测。"
+}

@@ -945,7 +945,11 @@ class DeterministicConstraintParser:
                     continue
                 append(
                     field_id,
-                    str(policy.get("operator", "eq")),
+                    (
+                        str(policy.get("operator", "eq"))
+                        if self.pack.fields[field_id].constraint_enabled
+                        else None
+                    ),
                     None,
                     match.start(),
                     match.end(),
