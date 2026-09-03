@@ -1,0 +1,31 @@
+{
+  "case_count": 24,
+  "case_sha256": "64ce5764a22a11a71d02b00fe7a0a9da61459b95f697597e7198252e1d87fe70",
+  "category_distribution": {
+    "catalog_filter": 2,
+    "clarification": 2,
+    "evidence_identity_isolation": 2,
+    "exact_configuration": 2,
+    "explicit_comparison": 2,
+    "fact_verification": 2,
+    "family_cross_region": 2,
+    "family_multi_configuration": 2,
+    "include_exclude": 2,
+    "numeric_and_unit": 2,
+    "unknown_or_refusal": 2,
+    "update_or_cancel": 2
+  },
+  "code_freeze_commit": "8859dcbe7cf346600c7fdfe4fe95d342a9f1f5e3",
+  "evaluation_state": "frozen_unrun",
+  "gold_checker_valid": true,
+  "gold_foreign_key_violations": 0,
+  "gold_sqlite_integrity": "ok",
+  "paid_api_calls": 0,
+  "policy_sha256": "95188ecc6d856a63da75f589c72e3d952571170e694b081899b65b45703c9d3a",
+  "questions_distinct_from_exposed_50": true,
+  "round": 1,
+  "run_count": 0,
+  "schema_sha256": "9451a05860a21fe9b31e2dc39dee218bee0075a7c904ce8dc8fd21134dc3e96a",
+  "schema_valid": true,
+  "schema_version": "proofpick-v2-6c-r3-validation-freeze-v1"
+}

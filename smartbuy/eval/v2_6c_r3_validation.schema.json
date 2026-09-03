@@ -1,0 +1,116 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://proofpick.local/schemas/v2-6c-r3-laptop-validation-v1.json",
+  "title": "ProofPick V2-6C-R3 post-code-freeze Laptop validation case",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "split", "category", "question", "evaluation_state", "run_count", "gold"],
+  "properties": {
+    "case_id": {"type": "string", "pattern": "^laptop-r3-v[1-3]-[0-9]{3}$"},
+    "split": {"const": "post_code_freeze_validation"},
+    "category": {
+      "enum": [
+        "exact_configuration", "family_multi_configuration", "family_cross_region",
+        "explicit_comparison", "catalog_filter", "include_exclude",
+        "fact_verification", "numeric_and_unit", "update_or_cancel",
+        "unknown_or_refusal", "clarification", "evidence_identity_isolation"
+      ]
+    },
+    "question": {"type": "string", "minLength": 8, "maxLength": 500},
+    "evaluation_state": {"const": "frozen_unrun"},
+    "run_count": {"const": 0},
+    "gold": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "domain_id", "scope", "constraints", "constraint_events", "tool_path",
+        "checker_candidate_ids", "result_kind", "final_candidate_ids", "abstain_reason",
+        "key_evidence", "forbidden_evidence_product_ids", "clarification_required",
+        "clarification_reason"
+      ],
+      "properties": {
+        "domain_id": {"const": "laptop"},
+        "scope": {"$ref": "#/$defs/scope"},
+        "constraints": {"type": "array", "items": {"$ref": "#/$defs/constraint"}},
+        "constraint_events": {"type": "array", "items": {"$ref": "#/$defs/constraintEvent"}},
+        "tool_path": {"$ref": "#/$defs/toolPath"},
+        "checker_candidate_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "result_kind": {"enum": ["eligible", "referenced", "abstain", "clarify"]},
+        "final_candidate_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "abstain_reason": {"type": ["string", "null"]},
+        "key_evidence": {"type": "array", "items": {"$ref": "#/$defs/evidenceRequirement"}},
+        "forbidden_evidence_product_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+        "clarification_required": {"type": "boolean"},
+        "clarification_reason": {"type": ["string", "null"]}
+      }
+    }
+  },
+  "$defs": {
+    "scope": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "scope_type", "mentioned_quotes", "family_ids", "product_ids", "configuration_ids",
+        "regions", "explicit_comparison", "clarification_required", "resolution_status",
+        "resolution_reason"
+      ],
+      "properties": {
+        "scope_type": {"enum": ["exact_configuration", "product_family", "explicit_comparison", "catalog_filter", "open_unknown_product", "ambiguous_product_scope"]},
+        "mentioned_quotes": {"type": "array", "items": {"type": "string", "minLength": 1}},
+        "family_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "product_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "configuration_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "regions": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "explicit_comparison": {"type": "boolean"},
+        "clarification_required": {"type": "boolean"},
+        "resolution_status": {"enum": ["resolved", "needs_clarification", "open_required"]},
+        "resolution_reason": {"type": "string", "minLength": 1}
+      }
+    },
+    "constraint": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "operator", "normalized_value", "unit", "hard_or_soft", "status", "active", "action"],
+      "properties": {
+        "field": {"type": "string", "minLength": 1},
+        "operator": {"enum": ["eq", "gte", "lte", "in", "not_in", "range", "contains_all"]},
+        "normalized_value": {},
+        "unit": {"type": ["string", "null"]},
+        "hard_or_soft": {"enum": ["hard", "soft"]},
+        "status": {"enum": ["supported", "ambiguous", "unsupported", "invalid"]},
+        "active": {"type": "boolean"},
+        "action": {"enum": ["add", "override", "cancel", "confirm"]}
+      }
+    },
+    "constraintEvent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["field", "action", "previous_value", "current_value", "active"],
+      "properties": {
+        "field": {"type": "string", "minLength": 1},
+        "action": {"enum": ["add", "override", "cancel", "confirm"]},
+        "previous_value": {}, "current_value": {}, "active": {"type": "boolean"}
+      }
+    },
+    "toolPath": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required_order", "forbidden"],
+      "properties": {
+        "required_order": {"type": "array", "items": {"enum": ["domain_product_query", "domain_kb_search", "domain_evidence_check", "domain_constraint_checker"]}},
+        "forbidden": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    },
+    "evidenceRequirement": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["product_id", "field_id", "expected_status", "evidence_ids"],
+      "properties": {
+        "product_id": {"type": "string", "minLength": 1},
+        "field_id": {"type": "string", "minLength": 1},
+        "expected_status": {"enum": ["matched", "not_matched", "unknown", "conflict"]},
+        "evidence_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}}
+      }
+    }
+  }
+}
