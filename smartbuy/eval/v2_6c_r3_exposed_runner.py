@@ -46,6 +46,9 @@ R2_CASES = ROOT / "smartbuy" / "eval" / "v2_6c_r2_laptop_holdout.jsonl"
 R2_SHA256 = "dd17cf4a4bf794c77cc75b5406f9e603effc7be4e63f9e9b215a9d4d8ea9e24f"
 VALIDATION_CASES = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round1.jsonl"
 VALIDATION_SHA256 = "64ce5764a22a11a71d02b00fe7a0a9da61459b95f697597e7198252e1d87fe70"
+VALIDATION2_CASES = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round2.jsonl"
+VALIDATION2_POLICY = ROOT / "smartbuy" / "eval" / "v2_6c_r3_validation_round2_policy.json"
+VALIDATION2_SHA256 = "777a4c78a20eeaa6f0408282dc4cbfdebf0f977cf19a485fd135951c56cb803f"
 
 
 def _sha(path: Path) -> str:
@@ -211,9 +214,12 @@ async def run(output: Path) -> dict[str, Any]:
         raise RuntimeError("R2 frozen task hash changed")
     if _sha(VALIDATION_CASES) != VALIDATION_SHA256:
         raise RuntimeError("validation round 1 frozen task hash changed")
+    if _sha(VALIDATION2_CASES) != VALIDATION2_SHA256:
+        raise RuntimeError("validation round 2 frozen task hash changed")
     original_cases = _load(ORIGINAL_CASES)
     r2_cases = _load(R2_CASES)
     validation_cases = _load(VALIDATION_CASES)
+    validation2_cases = _load(VALIDATION2_CASES)
     original_policy = json.loads(ORIGINAL_POLICY.read_text(encoding="utf-8"))["cases"]
     with tempfile.TemporaryDirectory(prefix="proofpick-r3-exposed-") as temporary:
         agent = _agent(Path(temporary))
@@ -221,6 +227,7 @@ async def run(output: Path) -> dict[str, Any]:
         original_reports = []
         r2_rows = []
         validation_rows = []
+        validation2_rows = []
         durations = []
         for case in original_cases:
             started = time.perf_counter()
@@ -240,6 +247,11 @@ async def run(output: Path) -> dict[str, Any]:
             report = await agent.run(case["question"])
             durations.append((time.perf_counter() - started) * 1000)
             validation_rows.append(_row_from_report(case, report))
+        for case in validation2_cases:
+            started = time.perf_counter()
+            report = await agent.run(case["question"])
+            durations.append((time.perf_counter() - started) * 1000)
+            validation2_rows.append(_row_from_report(case, report))
 
     raw_r2 = {
         "frozen_case_sha256": R2_SHA256,
@@ -347,6 +359,21 @@ async def run(output: Path) -> dict[str, Any]:
         validation_score = score_validation(temporary_validation)
     finally:
         temporary_validation.unlink(missing_ok=True)
+    raw_validation2 = {
+        "frozen_case_sha256": VALIDATION2_SHA256,
+        "cases": validation2_rows,
+    }
+    with tempfile.NamedTemporaryFile("w", suffix=".json", encoding="utf-8", delete=False) as handle:
+        json.dump(raw_validation2, handle, ensure_ascii=False)
+        temporary_validation2 = Path(handle.name)
+    try:
+        validation2_score = score_validation(
+            temporary_validation2,
+            cases_path=VALIDATION2_CASES,
+            policy_path=VALIDATION2_POLICY,
+        )
+    finally:
+        temporary_validation2.unlink(missing_ok=True)
     all_tp = tp + validation_score["clear_hard_constraint"]["tp"]
     all_fp = fp + validation_score["clear_hard_constraint"]["fp"]
     all_fn = fn + validation_score["clear_hard_constraint"]["fn"]
@@ -400,6 +427,46 @@ async def run(output: Path) -> dict[str, Any]:
             + validation_score["clarification_bypass"]
         ),
     }
+    final_tp = all_tp + validation2_score["clear_hard_constraint"]["tp"]
+    final_fp = all_fp + validation2_score["clear_hard_constraint"]["fp"]
+    final_fn = all_fn + validation2_score["clear_hard_constraint"]["fn"]
+    final_precision = final_tp / (final_tp + final_fp) if final_tp + final_fp else 1.0
+    final_recall = final_tp / (final_tp + final_fn) if final_tp + final_fn else 1.0
+    all_exposed_98 = {
+        "task_accuracy": {
+            "numerator": all_exposed["task_accuracy"]["numerator"]
+            + validation2_score["task_accuracy"]["numerator"],
+            "denominator": 98,
+        },
+        "clear_hard_constraint": {
+            "tp": final_tp,
+            "fp": final_fp,
+            "fn": final_fn,
+            "precision": final_precision,
+            "recall": final_recall,
+            "f1": (
+                2 * final_precision * final_recall / (final_precision + final_recall)
+                if final_precision + final_recall else 0.0
+            ),
+        },
+        "recommendation_evidence_coverage": {
+            "numerator": all_exposed["recommendation_evidence_coverage"]["numerator"]
+            + validation2_score["recommendation_evidence_coverage"]["numerator"],
+            "denominator": all_exposed["recommendation_evidence_coverage"]["denominator"]
+            + validation2_score["recommendation_evidence_coverage"]["denominator"],
+        },
+        **{
+            key: all_exposed[key] + validation2_score[key]
+            for key in (
+                "wrong_configuration_recommendations",
+                "wrong_region_recommendations",
+                "candidate_scope_leakage",
+                "checker_scope_leakage",
+                "unknown_overclaimed",
+                "clarification_bypass",
+            )
+        },
+    }
     payload = {
         "schema_version": "proofpick-v2-6c-r3-exposed-regression-v1",
         "created_at": datetime.now(UTC).isoformat(),
@@ -409,11 +476,13 @@ async def run(output: Path) -> dict[str, Any]:
             "laptop-021-030": "unrun_exposed_specialist",
             "laptop-r2-001-020": "exposed_holdout_regression_v2",
             "laptop-r3-v1-001-024": "exposed_post_freeze_validation_round1",
+            "laptop-r3-v2-001-024": "exposed_post_freeze_validation_round2",
         },
         "input_hashes": {
             "original_30": _sha(ORIGINAL_CASES),
             "r2_20": _sha(R2_CASES),
             "validation_round1_24": _sha(VALIDATION_CASES),
+            "validation_round2_24": _sha(VALIDATION2_CASES),
         },
         "offline": True,
         "scoring_note": (
@@ -437,6 +506,9 @@ async def run(output: Path) -> dict[str, Any]:
         "validation_round1_exposed_regression": validation_score,
         "validation_round1_rows": validation_rows,
         "all_exposed_74": all_exposed,
+        "validation_round2_exposed_regression": validation2_score,
+        "validation_round2_rows": validation2_rows,
+        "all_exposed_98": all_exposed_98,
     }
     output.parent.mkdir(parents=True, exist_ok=True)
     output.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

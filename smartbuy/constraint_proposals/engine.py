@@ -789,7 +789,7 @@ class DeterministicConstraintParser:
                             operator = "eq"
                         action = None
                         prefix = local[:number.start()]
-                        if position > 0 and re.search(r"(?:改成|改为|调整为|以后|后一个|最终)", prefix):
+                        if position > 0 and re.search(r"(?:改成|改为|调整为|覆盖成|覆盖为|以后|后一个|最终)", prefix):
                             action = "override"
                         append(
                             field_id,
@@ -846,7 +846,7 @@ class DeterministicConstraintParser:
                     for match in re.finditer(re.escape(alias), normalized_query, flags=re.I)
                 )
         update_pattern = re.compile(
-            rf"(?:改成|改为|调整为|以后(?:按|用)?|最终(?:按|用)?)\s*"
+            rf"(?:改成|改为|调整为|覆盖成|覆盖为|以后(?:按|用)?|最终(?:按|用)?)\s*"
             rf"(?:(至少|最低|不低于|不超过|至多|最多)\s*)?({_NUMBER})\s*([A-Za-z\u4e00-\u9fff]+)",
             flags=re.I,
         )
@@ -1044,7 +1044,7 @@ class DeterministicConstraintParser:
             )
             if explicit_resolution:
                 resolution_context = query[
-                    max(0, explicit_resolution.start() - 12):explicit_resolution.end() + 6
+                    max(0, explicit_resolution.start() - 24):explicit_resolution.end() + 10
                 ]
                 add(
                     "resolution",

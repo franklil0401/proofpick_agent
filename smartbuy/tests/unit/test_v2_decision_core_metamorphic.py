@@ -219,3 +219,82 @@ def test_scope_language_does_not_become_requested_upgradeability(runtime) -> Non
     understanding = QueryUnderstandingEngine(pack).analyze(query, scope)
     assert understanding.intent == QueryIntent.EXACT_FACT_VERIFICATION
     assert set(understanding.requested_fields) == {"region", "memory_gb"}
+
+
+@pytest.mark.parametrize(
+    ("query", "included", "excluded"),
+    [
+        (
+            "H7606WI 的显存是多少？即便 H7606WX 写着 24GB，也不能把该值套给 WI。",
+            {"H7606WI"},
+            {"H7606WX"},
+        ),
+        (
+            "仅核验 H7606WI 的显存；来自 H7606WX 的证据必须隔离。",
+            {"H7606WI"},
+            {"H7606WX"},
+        ),
+        (
+            "比较 H7606WI 与 H7606WX，H7606WW 不属于比较对象。",
+            {"H7606WI", "H7606WX"},
+            {"H7606WW"},
+        ),
+        (
+            "比较 H7606WI 与 H7606WX，剔除 H7606WW。",
+            {"H7606WI", "H7606WX"},
+            {"H7606WW"},
+        ),
+    ],
+)
+def test_reference_polarity_is_clause_local_and_supports_evidence_exclusion(
+    runtime, query: str, included: set[str], excluded: set[str]
+) -> None:
+    _pack, products, resolver = runtime
+    scope = resolver.resolve(query, products)
+    assert set(scope.include_configuration_ids) == included
+    assert set(scope.exclude_configuration_ids) == excluded
+    assert set(scope.product_ids) == {
+        product_id
+        for product_id, product in products.items()
+        if product["attributes"]["configuration_id"] in included
+    }
+
+
+@pytest.mark.asyncio
+async def test_pack_parser_handles_resolution_minimum_and_override_wording(runtime) -> None:
+    pack, _products, _resolver = runtime
+    resolution = await NaturalConstraintEngine(pack).resolve(
+        "全库筛选 16 英寸、最低 3840×2400 分辨率、固态至少 4TB。",
+        source_turn=1,
+    )
+    active = {
+        (item.field, item.operator.value, item.normalized_value)
+        for item in resolution.constraint_set.active(hard_only=True)
+        if item.provenance.value == "current_input"
+    }
+    assert ("resolution", "gte", "3840x2400") in active
+
+    updated = await NaturalConstraintEngine(pack).resolve(
+        "内存不低于 32G；固态从至少 2T 覆盖成至少 1T。",
+        source_turn=2,
+    )
+    current = [
+        item
+        for item in updated.constraint_set.active(hard_only=True)
+        if item.provenance.value == "current_input"
+    ]
+    assert {
+        (item.field, item.operator.value, item.normalized_value)
+        for item in current
+    } == {("memory_gb", "gte", 32.0), ("storage_gb", "gte", 1024.0)}
+    assert updated.clarification_state.value == "not_required"
+
+
+@pytest.mark.parametrize("marker", ["先澄清", "尚未决定", "没有选"])
+def test_generic_clarification_markers_pause_family_scope(runtime, marker: str) -> None:
+    pack, products, resolver = runtime
+    query = f"ProArt P16 H7606 有多个配置，我{marker}具体一套。"
+    scope = resolver.resolve(query, products)
+    understanding = QueryUnderstandingEngine(pack).analyze(query, scope)
+    assert scope.clarification_required is True
+    assert understanding.intent == QueryIntent.CLARIFICATION_REQUIRED

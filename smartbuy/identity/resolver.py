@@ -21,14 +21,18 @@ from .models import (
 
 _COMPARISON_MARKERS = ("比较", "对比", "对照", "区分", "是否等同", "是不是同", "混成")
 _FILTER_MARKERS = ("筛选", "筛出", "找", "只要", "只接受", "仅限", "需要", "选择", "选 ", "返回对应")
-_CLARIFICATION_MARKERS = ("先确认", "先问", "没指定", "没有指定", "没决定", "还没决定", "请先问", "先别替")
+_CLARIFICATION_MARKERS = (
+    "先确认", "先问", "先澄清", "没指定", "没有指定", "没决定",
+    "未决定", "尚未决定", "还没决定", "没有选", "请先问", "先别替",
+)
 _DIRECT_EXCLUDE = (
-    "不要", "排除", "不接受", "别加入", "不是", "除了", "别把",
+    "不要", "排除", "剔除", "不接受", "别加入", "不是", "除了", "别把",
     "不应匹配", "不匹配",
 )
 _TRAILING_EXCLUDE = (
     "不参与", "不能算进", "别加入", "不能拿来", "不能据此",
     "不能替代", "不要包含", "不要混进", "别混进", "参数算进来", "资料算进来",
+    "必须隔离", "需要隔离", "不属于比较对象",
 )
 _REGION_ALIASES = {
     "中国大陆": "CN", "中国区": "CN", "中国版": "CN", "国行": "CN", "中国": "CN",
@@ -218,8 +222,9 @@ class ProductIdentityResolver:
 
     @staticmethod
     def _clause(query: str, start: int, end: int) -> tuple[str, str]:
-        left = max(query.rfind(mark, 0, start) for mark in ("，", ",", "；", ";", "。", "：", ":")) + 1
-        right_candidates = [query.find(mark, end) for mark in ("，", ",", "；", ";", "。")]
+        separators = ("，", ",", "；", ";", "。", "：", ":", "？", "?", "！", "!")
+        left = max(query.rfind(mark, 0, start) for mark in separators) + 1
+        right_candidates = [query.find(mark, end) for mark in separators]
         right_candidates = [item for item in right_candidates if item >= 0]
         right = min(right_candidates) if right_candidates else len(query)
         return query[left:start], query[end:right]
@@ -228,8 +233,9 @@ class ProductIdentityResolver:
     def _polarity(cls, query: str, match: _Match) -> ReferencePolarity:
         prefix, suffix = cls._clause(query, match.start, match.end)
         clause = prefix + match.quote + suffix
-        sentence_left = max(query.rfind(mark, 0, match.start) for mark in ("；", ";", "。")) + 1
-        sentence_right_candidates = [query.find(mark, match.end) for mark in ("；", ";", "。")]
+        sentence_separators = ("；", ";", "。", "？", "?", "！", "!")
+        sentence_left = max(query.rfind(mark, 0, match.start) for mark in sentence_separators) + 1
+        sentence_right_candidates = [query.find(mark, match.end) for mark in sentence_separators]
         sentence_right_candidates = [item for item in sentence_right_candidates if item >= 0]
         sentence_right = min(sentence_right_candidates) if sentence_right_candidates else len(query)
         sentence_prefix = query[sentence_left:match.start]
@@ -254,7 +260,7 @@ class ProductIdentityResolver:
             return ReferencePolarity.INCLUDE
         if any(prefix.rstrip().endswith(marker) for marker in _DIRECT_EXCLUDE):
             return ReferencePolarity.EXCLUDE
-        if any(marker in prefix for marker in ("不要", "排除", "不接受", "别加入", "除了", "别把")):
+        if any(marker in prefix for marker in ("不要", "排除", "剔除", "不接受", "别加入", "除了", "别把")):
             return ReferencePolarity.EXCLUDE
         if any(marker in suffix[:36] for marker in _TRAILING_EXCLUDE):
             return ReferencePolarity.EXCLUDE
@@ -516,7 +522,10 @@ class ProductIdentityResolver:
                 )
                 explicit_deferred_choice = any(
                     marker in query
-                    for marker in ("没指定", "没有指定", "没决定", "还没决定", "先确认", "先别替")
+                    for marker in (
+                        "没指定", "没有指定", "没决定", "未决定", "尚未决定",
+                        "还没决定", "没有选", "先确认", "先澄清", "先别替",
+                    )
                 )
                 scope_type = (
                     ProductScopeType.PRODUCT_FAMILY
