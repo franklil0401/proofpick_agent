@@ -51,6 +51,9 @@
 - [V2-6C-R4 Laptop E2E 工程收尾报告](v2_6c_r4_laptop_engineering_closeout.md)
 - [V2-6C-R4 运行说明](v2_6c_r4_runtime.md)
 - [ADR-0017：确定性安全门与发布评测分离](../adr/0017-deterministic-safety-gates-and-release-evaluation.md)
+- [V2-7 可解释 Decision Ranker 报告](v2_7_explainable_ranking_report.md)
+- [V2-7 分层偏好 Memory 运行说明](v2_7_memory_runtime.md)
+- [ADR-0018：确定性排序与分层偏好 Memory](../adr/0018-deterministic-ranking-and-layered-memory.md)
 
 ## 当前状态
 
@@ -70,5 +73,7 @@
 - V2-6C-R2B 已完成该验证集唯一一次首次运行：任务 2/20、硬约束 F1 21.43%、推荐事实证据 32/36，并出现错误配置1、Scope越界1和澄清绕过1；结果与18条失败已不可覆盖保存，联合门槛未通过，禁止重跑或进入后续功能。
 - V2-6C-R3 落地了品类无关的意图、引用、Scope、约束和值变更契约，并完成三轮代码冻结后的单次验证。第三轮为任务 21/24、硬约束 F1 97.56%、推荐事实证据 93/93，但仍有 Scope 越界 1 和充分证据下错误空推荐 1/8；三轮上限已用尽，按规则硬停止，V2-6C 仍未完成。
 - V2-6C-R4 在不创建新 Holdout 的前提下完成工程收尾：122 条已暴露回归 116/122、硬约束 F1 96.60%、证据 436/445，Scope/Checker/Report 越界与充分证据下错误空推荐均为 0；1134 组变形断言、数据库外 Laptop Open Research、Memory、故障矩阵和 10 条双编排器一致性已验证。该结果不是泛化指标，独立 RC 评测推迟到 V2-9。
-- Ranker 的独立质量优化和 V2-7 均未开始；默认编排器仍是 ReAct。
+- V2-7 已实现 Domain Pack 驱动的纯确定性 Ranker：Monitor/Laptop 共 10 个场景，12/12 What-if 保持 Checker 合规集合不变，所有计分事实均可追溯到 Evidence，模型调用与费用为 0。
+- 长期 Memory 已分为 Global/Category，具备确认、来源、过期、版本失效、删除和开关语义；公开 Demo 不再共享固定用户身份，无可靠 user_id 时长期 Memory 默认关闭。
+- 默认编排器仍是 ReAct；V2-7 结果是功能与不变量验证，不是新 Holdout 或生产 SLA。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

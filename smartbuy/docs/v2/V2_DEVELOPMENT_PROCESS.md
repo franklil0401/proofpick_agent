@@ -689,6 +689,8 @@ V2-6A 推送后报告数据卡、字段缺失、评测分母、成本和跨品�
 
 ## 15. V2-7：Decision Ranker 与 Memory 升级
 
+> 状态（2026-09-03）：已完成。实现与验收证据见 [V2-7 Ranker 报告](v2_7_explainable_ranking_report.md)、[Memory 运行说明](v2_7_memory_runtime.md)和 [ADR-0018](../adr/0018-deterministic-ranking-and-layered-memory.md)。本阶段未生成新 Holdout，未改写 V2-6C 历史结果。
+
 ### 15.1 目标
 
 从“满足条件的型号列表”升级为“为什么该候选更适合用户”的可解释决策，同时不改变 Checker 资格。
@@ -711,6 +713,9 @@ V2-6A 推送后报告数据卡、字段缺失、评测分母、成本和跨品�
 - 用户可查看、修改、删除、关闭和失效长期偏好。
 - 报告说明哪些排序受到 Memory 影响。
 - Memory 关闭时回到显式输入。
+- Monitor/Laptop 共 10 个 Pack-owned 场景；数值固定范围、枚举和来源权限均来自 Profile。
+- Profile、Ranker 或 Memory 异常时保留 Checker 集合并按稳定 ID 顺序降级，公开 `ranking_degraded`。
+- Web Demo 使用浏览器本地随机匿名 ID；无法建立隔离身份时关闭长期 Memory。
 
 ### 15.4 验收指标
 
@@ -721,6 +726,8 @@ V2-6A 推送后报告数据卡、字段缺失、评测分母、成本和跨品�
 - 不同用户和会话交叉污染为 0。
 - 长期 Memory 中动态价格、库存和商品事实数量为 0。
 - Checker 额外模型调用仍为 0。
+
+实际验收：12 条 What-if `12/12`；Ranker/Checker 越权与恢复淘汰候选均为 0；候选维度可用率 `117/120`，实际计分事实 Evidence 追溯 `117/117`；确定性字节比较、Memory 生命周期及用户/会话/品类隔离通过；Ranker 与 Checker 新增模型调用均为 0。以上仅为固定夹具、回归和不变量验证。
 
 ### 15.5 提交与停止
 
@@ -952,6 +959,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-6C-R4 已完成 Laptop E2E 工程收尾。三轮冻结验证首测仍是失败，122 条结果只属于已暴露回归；V2-5B/5C、V2-6C-R2B 和 R3 全部历史首测继续原样保留。
+V2-7 已完成确定性 Decision Ranker、Pack-owned Ranking Profile、What-if 与 Global/Category 分层 Memory。V2-6C 三轮冻结首测仍是失败，122 条结果只属于已暴露回归；V2-5B/5C、V2-6C-R2B 和 R3 全部历史首测继续原样保留。
 
-下一步只能等待用户另行授权。不得自动进入 V2-7，不得创建新的 Laptop Holdout，不得切换默认编排器，也不得修改 V1 冻结数据与历史结果。新的独立 Release Candidate 评测只能在 V2-9 按预先冻结、单次运行和尽量独立复核的纪律执行。
+下一步只能等待用户另行授权。不得自动进入 V2-8，不得创建新的 Laptop Holdout，不得切换默认编排器，也不得修改 V1 冻结数据与历史结果。新的独立 Release Candidate 评测只能在 V2-9 按预先冻结、单次运行和尽量独立复核的纪律执行。

@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-03 |
-| 当前阶段 | V1 已冻结；V2-6C-R4 已完成 Laptop E2E 工程收尾，新的独立发布评测留待 V2-9 |
+| 当前阶段 | V1 已冻结；V2-7 已完成可解释确定性排序与分层偏好 Memory，新的独立发布评测留待 V2-9 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -135,7 +135,8 @@ proofpick_agent/
 │  │  │  ├─ 0014-validated-constraint-proposals-and-clarification.md
 │  │  │  ├─ 0015-server-verified-quote-to-span.md
 │  │  │  ├─ 0016-deterministic-product-identity-and-candidate-scope.md
-│  │  │  └─ 0017-deterministic-safety-gates-and-release-evaluation.md
+│  │  │  ├─ 0017-deterministic-safety-gates-and-release-evaluation.md
+│  │  │  └─ 0018-deterministic-ranking-and-layered-memory.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -182,7 +183,9 @@ proofpick_agent/
 │  │  │  ├─ v2_6c_r2b_second_holdout_report.md
 │  │  │  ├─ v2_6c_r3_generic_decision_core_report.md
 │  │  │  ├─ v2_6c_r4_laptop_engineering_closeout.md
-│  │  │  └─ v2_6c_r4_runtime.md
+│  │  │  ├─ v2_6c_r4_runtime.md
+│  │  │  ├─ v2_7_explainable_ranking_report.md
+│  │  │  └─ v2_7_memory_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -281,7 +284,13 @@ proofpick_agent/
 │  │     ├─ v2_6b_laptop_retrieval_first.json
 │  │     └─ v2_6c_*            # 历史失败、暴露回归及 R2/R3 冻结 RC、Journal、首次结果；不可覆盖
 │  ├─ memory/
-│  │  └─ store.py
+│  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
+│  │  └─ store.py              # V1 会话与长期偏好兼容实现
+│  ├─ ranking/
+│  │  ├─ __init__.py
+│  │  ├─ models.py             # 领域无关排名请求、候选、维度和解释契约
+│  │  ├─ profile.py            # Domain Pack Ranking Profile 校验与场景选择
+│  │  └─ ranker.py             # Checker 合规集合上的确定性 Evidence-backed 排序
 │  ├─ observability/
 │  │  ├─ __init__.py
 │  │  ├─ agent_events.py
@@ -462,6 +471,10 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_6c_r3_generic_decision_core_report.md` | 通用决策契约、暴露回归、三轮冻结验证、API 成本、第三轮失败与硬停止结论 |
 | `smartbuy/docs/v2/v2_6c_r4_laptop_engineering_closeout.md` / `v2_6c_r4_runtime.md` | 122 条暴露工程回归、确定性安全门、Laptop Open Research、Memory、故障矩阵、双编排器一致性及复核命令 |
 | `smartbuy/docs/adr/0017-deterministic-safety-gates-and-release-evaluation.md` | 保留三轮失败历史，以安全不变量和暴露回归完成工程收尾，并把新鲜 RC 评测推迟到 V2-9 |
+| `smartbuy/ranking/` | Domain Pack Profile 驱动、只排序 Checker 合规候选的确定性 Ranker 与公开解释契约 |
+| `smartbuy/memory/domain_store.py` | V2 Global/Category 分层偏好、确认/过期/版本失效及摘要身份存储 |
+| `smartbuy/docs/v2/v2_7_explainable_ranking_report.md` / `v2_7_memory_runtime.md` | V2-7 评分公式、10 个场景、12 条 What-if、不变量、Memory 生命周期与运行边界 |
+| `smartbuy/docs/adr/0018-deterministic-ranking-and-layered-memory.md` | Checker 唯一资格所有权、Pack-owned Profile、Evidence gate 和分层 Memory 决策 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
