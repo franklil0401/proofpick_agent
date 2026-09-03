@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 from datetime import UTC, datetime
+from pathlib import Path
 
 import httpx
 import pytest
@@ -9,6 +10,7 @@ import pytest
 from smartbuy.domain_packs.loader import DEFAULT_MONITOR_PACK, DomainPackLoader
 from smartbuy.open_research import (
     EvidenceNormalizer,
+    ExtractedSnippet,
     ExtractionStatus,
     OpenEvidenceChecker,
     OpenEvidenceRecord,
@@ -21,6 +23,7 @@ from smartbuy.open_research import (
     TemporaryEvidenceStore,
     URLSafetyError,
     URLSafetyPolicy,
+    WebExtractionResult,
     scope_token,
 )
 from smartbuy.source_search import SourceCandidate, SourceCandidateStatus
@@ -603,6 +606,76 @@ def test_search_summary_cannot_be_normalized_without_extraction() -> None:
         target_fields=["resolution"],
     )
     assert records == []
+
+
+def test_laptop_pack_normalizes_official_specification_rows() -> None:
+    laptop_pack = Path(__file__).resolve().parents[3] / "smartbuy" / "domain_packs" / "laptop"
+    normalizer = EvidenceNormalizer(DomainPackLoader().load(laptop_pack))
+    snippets = [
+        ExtractedSnippet(kind="specification", text=text, locator=f"spec:{index}")
+        for index, text in enumerate(
+            (
+                "Display size 14 inch",
+                "UX5406 display: 3K OLED at 120 Hz",
+                "UX5406 test configuration: 1 TB SSD, 32 GB RAM",
+                "Battery 57 watt-hours",
+                "Weight 2.65 lbs",
+                "Ports: two Thunderbolt 4 USB-C and one HDMI 2.1",
+                "Operating System Windows 11 Pro",
+            )
+        )
+    ]
+    extraction = WebExtractionResult(
+        requested_url="https://www.asus.com/us/example/ux5406",
+        final_url="https://www.asus.com/us/example/ux5406",
+        title="ASUS UX5406 official specifications",
+        detected_region="US",
+        fetched_at="2026-09-03T00:00:00Z",
+        http_status=200,
+        content_hash="a" * 64,
+        snippets=snippets,
+        status=ExtractionStatus.SUCCESS,
+    )
+    fields = [
+        "display_size_inch",
+        "resolution",
+        "refresh_rate_hz",
+        "panel_type",
+        "memory_gb",
+        "storage_gb",
+        "battery_wh",
+        "weight_kg",
+        "usb_c",
+        "thunderbolt",
+        "hdmi",
+        "operating_system",
+    ]
+    records, unsupported = normalizer.normalize(
+        extraction,
+        user_scope="a" * 32,
+        session_scope="b" * 32,
+        thread_scope="c" * 32,
+        request_scope="d" * 32,
+        provisional_product_id="asus-ux5406-us-open",
+        target_model="UX5406",
+        product_region="US",
+        target_fields=fields,
+        configuration="UX5406",
+    )
+    values = {item.field_name: item.normalized_value for item in records}
+    assert unsupported == []
+    assert values["memory_gb"] == 32
+    assert values["storage_gb"] == 1024
+    assert values["battery_wh"] == 57
+    assert values["resolution"] == "2880x1800"
+    assert values["refresh_rate_hz"] == 120
+    assert values["panel_type"] == "OLED"
+    assert values["weight_kg"] == pytest.approx(1.202019, abs=2e-6)
+    assert values["usb_c"] is True
+    assert values["thunderbolt"] is True
+    assert values["hdmi"] is True
+    assert len(set(values) & set(fields)) >= 8
+    assert all(item.usable_for_trusted_checker is False for item in records)
 
 
 def test_open_evidence_cannot_enter_trusted_checker() -> None:

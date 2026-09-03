@@ -11,7 +11,7 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 OPEN_RESEARCH_SCHEMA_VERSION = "proofpick-open-research-v1"
 EXTRACTOR_VERSION = "proofpick-static-html-extractor-v1"
 OPEN_EVIDENCE_SCHEMA_VERSION = "proofpick-open-evidence-v1"
-NORMALIZATION_VERSION = "proofpick-open-normalizer-v1"
+NORMALIZATION_VERSION = "proofpick-open-normalizer-v2"
 
 
 class FrozenModel(BaseModel):

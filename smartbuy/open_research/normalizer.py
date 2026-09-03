@@ -1,4 +1,4 @@
-"""Deterministic mapping from extracted official-page snippets to Monitor fields."""
+"""Deterministic mapping from extracted official-page snippets to Domain Pack fields."""
 
 from __future__ import annotations
 
@@ -29,6 +29,16 @@ _FIELD_TERMS: dict[str, set[str]] = {
     "stand_adjustment": {"stand", "height adjustment", "pivot", "swivel", "tilt", "支架"},
     "width_mm": {"width", "dimensions", "宽度"},
     "weight_kg": {"weight", "重量"},
+    "memory_gb": {"memory", "ram", "内存"},
+    "storage_gb": {"storage", "ssd", "solid state drive", "存储", "固态"},
+    "battery_wh": {"battery", "watt hour", "wh", "电池"},
+    "charger_w": {"adapter", "charger", "power supply", "适配器", "充电器"},
+    "cpu_model": {"processor", "cpu", "处理器"},
+    "gpu_model": {"graphics", "gpu", "显卡"},
+    "usb_c": {"usb-c", "usb type-c", "type-c"},
+    "thunderbolt": {"thunderbolt", "雷电", "雷雳"},
+    "hdmi": {"hdmi"},
+    "operating_system": {"operating system", "windows", "ubuntu", "操作系统"},
     "warranty": {"warranty", "保修"},
     "release_date": {"release date", "发布日期"},
 }
@@ -53,6 +63,19 @@ def _number(pattern: str, text: str) -> float | None:
     return float(match.group(1)) if match else None
 
 
+def _capacity_nearest_terms(text: str, terms: tuple[str, ...]) -> tuple[float, str] | None:
+    folded = text.casefold()
+    term_positions = [folded.find(term) for term in terms if term in folded]
+    matches = list(re.finditer(r"(?<!\d)(\d{1,4}(?:\.\d+)?)\s*(tb|gb)\b", text, re.I))
+    if not term_positions or not matches:
+        return None
+    match = min(
+        matches,
+        key=lambda item: min(abs(item.start() - position) for position in term_positions),
+    )
+    return float(match.group(1)), match.group(2).upper()
+
+
 def _propose(field_id: str, text: str, target_model: str) -> tuple[Any, str | None] | None:
     folded = text.casefold()
     if field_id == "display_size_inch":
@@ -66,7 +89,7 @@ def _propose(field_id: str, text: str, target_model: str) -> tuple[Any, str | No
         if explicit:
             return (f"{explicit.group(1)}x{explicit.group(2)}", None)
         if "resolution" in folded or "分辨率" in folded or target_model.casefold() in folded:
-            for token in ("8k", "5k", "4k", "qhd", "wqhd", "1440p"):
+            for token in ("8k", "5k", "4k", "3k", "qhd", "wqhd", "1440p"):
                 if token in folded:
                     return (token, None)
         return None
@@ -109,7 +132,43 @@ def _propose(field_id: str, text: str, target_model: str) -> tuple[Any, str | No
         if "weight" not in folded and "重量" not in text:
             return None
         value = _number(r"(?:weight|重量)\D{0,30}(\d{1,3}(?:\.\d+)?)\s*kg\b", text)
-        return (value, "kg") if value is not None else None
+        if value is not None:
+            return value, "kg"
+        pounds = _number(r"(?<!\d)(\d{1,3}(?:\.\d+)?)\s*(?:lb|lbs|pounds?)\b", text)
+        return (round(pounds * 0.45359237, 6), "kg") if pounds is not None else None
+    if field_id in {"memory_gb", "storage_gb"}:
+        terms = (
+            ("memory", "ram", "内存")
+            if field_id == "memory_gb"
+            else ("storage", "ssd", "solid state", "存储", "固态")
+        )
+        if not any(token in folded for token in terms):
+            return None
+        capacity = _capacity_nearest_terms(text, terms)
+        if capacity is None:
+            return None
+        value, unit = capacity
+        return (value * 1024 if unit == "TB" else value), "GB"
+    if field_id == "battery_wh":
+        if "battery" not in folded and "电池" not in text:
+            return None
+        value = _number(r"(?<!\d)(\d{2,3}(?:\.\d+)?)\s*w(?:att)?[- ]?h(?:our)?s?\b", text)
+        return (value, "Wh") if value is not None else None
+    if field_id == "charger_w":
+        if not any(token in folded for token in ("adapter", "charger", "power supply")):
+            return None
+        value = _number(r"(?<!\d)(\d{2,3}(?:\.\d+)?)\s*w\b", text)
+        return (value, "W") if value is not None else None
+    if field_id in {"usb_c", "thunderbolt", "hdmi"}:
+        tokens = {
+            "usb_c": ("usb-c", "usb type-c", "type-c"),
+            "thunderbolt": ("thunderbolt",),
+            "hdmi": ("hdmi",),
+        }[field_id]
+        return (True, None) if any(token in folded for token in tokens) else None
+    if field_id == "operating_system":
+        match = re.search(r"\b(windows\s+1[01](?:\s+(?:home|pro))?|ubuntu(?:\s+linux)?)\b", folded)
+        return (match.group(1).title(), None) if match else None
     if field_id == "stand_adjustment":
         abilities = [
             label

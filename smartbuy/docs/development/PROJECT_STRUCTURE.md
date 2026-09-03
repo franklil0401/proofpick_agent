@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-03 |
-| 当前阶段 | V1 已冻结；V2-6C-R3 三轮验证均未通过联合门槛，已按上限硬停止 |
+| 当前阶段 | V1 已冻结；V2-6C-R4 已完成 Laptop E2E 工程收尾，新的独立发布评测留待 V2-9 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -134,7 +134,8 @@ proofpick_agent/
 │  │  │  ├─ 0013-regional-evidence-comparability.md
 │  │  │  ├─ 0014-validated-constraint-proposals-and-clarification.md
 │  │  │  ├─ 0015-server-verified-quote-to-span.md
-│  │  │  └─ 0016-deterministic-product-identity-and-candidate-scope.md
+│  │  │  ├─ 0016-deterministic-product-identity-and-candidate-scope.md
+│  │  │  └─ 0017-deterministic-safety-gates-and-release-evaluation.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -179,7 +180,9 @@ proofpick_agent/
 │  │  │  ├─ v2_6c_identity_scope_repair_report.md
 │  │  │  ├─ v2_6c_second_holdout_data_card.md
 │  │  │  ├─ v2_6c_r2b_second_holdout_report.md
-│  │  │  └─ v2_6c_r3_generic_decision_core_report.md
+│  │  │  ├─ v2_6c_r3_generic_decision_core_report.md
+│  │  │  ├─ v2_6c_r4_laptop_engineering_closeout.md
+│  │  │  └─ v2_6c_r4_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -198,6 +201,8 @@ proofpick_agent/
 │  │  ├─ canonical.py
 │  │  ├─ delta.py
 │  │  ├─ intent.py
+│  │  ├─ result.py
+│  │  ├─ safety.py
 │  │  └─ scope.py
 │  ├─ identity/
 │  │  ├─ __init__.py
@@ -271,6 +276,7 @@ proofpick_agent/
 │  │  ├─ v2_6c_r3_validation_round*.jsonl
 │  │  ├─ v2_6c_r3_validation_round*_manifest.json
 │  │  ├─ v2_6c_r3_validation_round*_policy.json
+│  │  ├─ results/v2_6c_r4_exposed_regression_iteration*.json
 │  │  └─ results/
 │  │     ├─ v2_6b_laptop_retrieval_first.json
 │  │     └─ v2_6c_*            # 历史失败、暴露回归及 R2/R3 冻结 RC、Journal、首次结果；不可覆盖
@@ -358,6 +364,7 @@ proofpick_agent/
 │  │  ├─ verify_v2_source_search.py
 │  │  ├─ verify_v2_product_pack_live.py
 │  │  ├─ verify_v2_open_research.py
+│  │  ├─ verify_v2_6c_laptop_open_research.py
 │  │  ├─ verify_stage7_demos.py
 │  │  └─ verify_stage3_index.py
 │  └─ tests/
@@ -453,6 +460,8 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_6c_second_holdout_data_card.md` | R2A 第二套 20 条 Laptop 验证集的分布、确定性金标复核、冻结哈希、评分门槛和独立性边界 |
 | `smartbuy/docs/v2/v2_6c_r2b_second_holdout_report.md` | R2B 唯一首次运行的 RC、2/20 结果、18条失败、费用、安全门和 JavaScript 口径审计 |
 | `smartbuy/docs/v2/v2_6c_r3_generic_decision_core_report.md` | 通用决策契约、暴露回归、三轮冻结验证、API 成本、第三轮失败与硬停止结论 |
+| `smartbuy/docs/v2/v2_6c_r4_laptop_engineering_closeout.md` / `v2_6c_r4_runtime.md` | 122 条暴露工程回归、确定性安全门、Laptop Open Research、Memory、故障矩阵、双编排器一致性及复核命令 |
+| `smartbuy/docs/adr/0017-deterministic-safety-gates-and-release-evaluation.md` | 保留三轮失败历史，以安全不变量和暴露回归完成工程收尾，并把新鲜 RC 评测推迟到 V2-9 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -484,7 +493,7 @@ proofpick_agent/
 | `smartbuy/domain/models.py` | 需求、四态证据、轨迹、Checker 结果、候选和最终报告 Pydantic 契约 |
 | `smartbuy/identity/` | Product Pack 驱动的精确商品身份、不可变 Candidate Scope、版本/工具边界和证据闭包安全门 |
 | `smartbuy/agent/domain_agent.py` | 通用 Trusted Domain Agent；解析 Scope 并把同一范围传递给查询、KB、Evidence、Checker 和报告 |
-| `smartbuy/decision_core/` | 品类无关的查询意图、引用、Candidate Scope、Canonical Value 与 Constraint Delta 契约 |
+| `smartbuy/decision_core/` | 品类无关的查询意图、引用、Candidate Scope、Canonical Value、Constraint Delta、结果分类与候选链安全断言 |
 | `smartbuy/domain_packs/loader.py` / `settings.py` | 固定 JSON 文件集、版本/字段/策略校验及默认关闭的 Domain Pack 配置 |
 | `smartbuy/domain_packs/registry.py` / `evaluator.py` | 多 Pack fail-closed 注册与完全由 Pack 字段/操作符驱动的确定性比较；不含品类字段常量 |
 | `smartbuy/domain_packs/scope.py` | 把 domain 纳入 Memory/Checkpoint key，并拒绝跨品类 envelope 恢复 |
@@ -504,13 +513,15 @@ proofpick_agent/
 | `smartbuy/eval/v2_6c_r2_laptop_runner.py` | 隔离评测 Runner：冻结 RC、固定顺序执行、逐条 fsync Journal、预算限制和不可覆盖结果汇总 |
 | `smartbuy/eval/results/v2_6c_r2_*` | 第二验证集的 RC、20条追加 Journal 与唯一首次结果；不包含密钥、Prompt 或隐藏推理 |
 | `smartbuy/eval/v2_6c_r3_exposed_runner.py` | 汇总历史和已暴露验证失败的离线回归，不把暴露样本当作新 Holdout |
+| `smartbuy/eval/results/v2_6c_r4_exposed_regression_iteration*.json` | R4 每次独立保存的 122 条已暴露工程回归；不覆盖 R3 三轮冻结首测 |
+| `smartbuy/eval/results/v2_6c_r4_failure_diagnostic.json` / `v2_6c_r4_engineering_validation.json` | 第三轮三条首错节点的前后状态，以及 R4 暴露回归、Open Research、Memory、故障和双编排器脱敏摘要 |
 | `smartbuy/eval/v2_6c_r3_validation_*` | 三轮独立验证集生成、Schema、冻结策略、单次 Runner、Scorer、RC、Journal 与不可覆盖首次结果 |
 | `smartbuy/config/bailian.py` | 从继承进程安全加载百炼配置、派生三类端点和 Youtu 子进程映射 |
 | `smartbuy/providers/bailian.py` | 普通/流式/工具 Chat、1024 维 Embedding、Rerank、有限重试与降级实现 |
 | `smartbuy/providers/zhipu_search.py` | `search_pro` 与搜狗有界回退、重试/费用/延迟门、TTL 缓存和脱敏调用账本 |
 | `smartbuy/source_search/` | 可插拔 Provider 契约、候选状态、默认关闭配置、缓存和 URL/域名/型号/地区确定性验证 |
 | `smartbuy/tools/source_search.py` | Agent 显式来源发现工具、本地证据充分性门，以及 Source Candidate 与 Evidence/Checker 隔离 |
-| `smartbuy/open_research/` | URL/SSRF 安全、静态 HTML 抽取、Monitor 字段规范化、Open 四态核验、请求级仓库外临时存储和研究报告服务 |
+| `smartbuy/open_research/` | URL/SSRF 安全、静态 HTML 抽取、Domain Pack 字段规范化、Open 四态核验、请求级仓库外临时存储和研究报告服务 |
 | `smartbuy/tools/web_extractor.py` | 仅在显式 Open Mode 中接受本轮 Source Candidate 的 Agent 工具门，拒绝任意 URL 和 Trusted 晋升 |
 | `smartbuy/product_packs/models.py` / `schema/` | Product Pack、来源、字段证据、观察和临时证据的严格版本化 JSON/Pydantic 契约 |
 | `smartbuy/product_packs/loader.py` / `ledger.py` | 型号/品牌/别名/地区/配置版/单位/许可归一化门和统一字段级 Evidence Ledger |
@@ -583,6 +594,7 @@ proofpick_agent/
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
 | `smartbuy/scripts/verify_v2_source_search.py` | 8 条固定官方来源任务的有界真实搜索，只输出 URL 元数据、状态、计数、延迟和费用 |
 | `smartbuy/scripts/verify_v2_open_research.py` | 仓库外运行的数据库外商品/降级/canonical-hreflang 有界真实验收，只保存脱敏状态与哈希 |
+| `smartbuy/scripts/verify_v2_6c_laptop_open_research.py` | 动态发现数据库外 Laptop 官方页并在仓库外验证 Open Evidence；不硬编码目标 URL，不进入 Trusted Checker |
 | `smartbuy/scripts/verify_v2_product_pack_live.py` | 第 13 个型号真实 KB、四工具闭环、Reranker 降级、未完成索引与回滚的有界在线验收 |
 | `smartbuy/scripts/build_stage3_data.py` / `validate_stage3_data.py` | 生成并核验 processed 数据、事实卡和哈希清单 |
 | `smartbuy/scripts/build_stage3_index.py` / `verify_stage3_index.py` | 有界真实建库和不调用模型的 Chroma 契约复核 |

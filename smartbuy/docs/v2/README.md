@@ -48,6 +48,9 @@
 - [V2-6C-R2B 第二套 Laptop Holdout 首次运行报告](v2_6c_r2b_second_holdout_report.md)
 - [V2-6C-R3 通用商品理解与三轮验证报告](v2_6c_r3_generic_decision_core_report.md)
 - [ADR-0016：确定性商品身份与不可扩大的 Candidate Scope](../adr/0016-deterministic-product-identity-and-candidate-scope.md)
+- [V2-6C-R4 Laptop E2E 工程收尾报告](v2_6c_r4_laptop_engineering_closeout.md)
+- [V2-6C-R4 运行说明](v2_6c_r4_runtime.md)
+- [ADR-0017：确定性安全门与发布评测分离](../adr/0017-deterministic-safety-gates-and-release-evaluation.md)
 
 ## 当前状态
 
@@ -66,5 +69,6 @@
 - V2-6C-R1 已增加确定性商品身份与不可扩大的 Candidate Scope。只对已暴露 20 条执行零 API 回归：Regression 10/10、已暴露 Holdout 10/10、推荐事实证据 75/75、Scope/Checker 越界 0；这不是新 Holdout，V2-6C 仍未完成。
 - V2-6C-R2B 已完成该验证集唯一一次首次运行：任务 2/20、硬约束 F1 21.43%、推荐事实证据 32/36，并出现错误配置1、Scope越界1和澄清绕过1；结果与18条失败已不可覆盖保存，联合门槛未通过，禁止重跑或进入后续功能。
 - V2-6C-R3 落地了品类无关的意图、引用、Scope、约束和值变更契约，并完成三轮代码冻结后的单次验证。第三轮为任务 21/24、硬约束 F1 97.56%、推荐事实证据 93/93，但仍有 Scope 越界 1 和充分证据下错误空推荐 1/8；三轮上限已用尽，按规则硬停止，V2-6C 仍未完成。
-- Ranker、Memory 专项、完整故障矩阵和 V2-7 均未开始。
+- V2-6C-R4 在不创建新 Holdout 的前提下完成工程收尾：122 条已暴露回归 116/122、硬约束 F1 96.60%、证据 436/445，Scope/Checker/Report 越界与充分证据下错误空推荐均为 0；1134 组变形断言、数据库外 Laptop Open Research、Memory、故障矩阵和 10 条双编排器一致性已验证。该结果不是泛化指标，独立 RC 评测推迟到 V2-9。
+- Ranker 的独立质量优化和 V2-7 均未开始；默认编排器仍是 ReAct。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

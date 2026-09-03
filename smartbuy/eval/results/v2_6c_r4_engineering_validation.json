@@ -1,0 +1,75 @@
+{
+  "schema_version": "proofpick-v2-6c-r4-engineering-validation-v1",
+  "created_at": "2026-09-03T16:41:44.2286256+08:00",
+  "classification": "engineering_closeout_not_fresh_holdout",
+  "baseline_commit": "9900ee1122b3d063c693eeeb6de4bb27145c5fd3",
+  "historical_frozen_results_preserved": true,
+  "frozen_validation_history": {
+    "round1": "17/24",
+    "round2": "16/24",
+    "round3": "21/24",
+    "round3_status": "failed_joint_gate",
+    "round3_scope_leakage": 1,
+    "round3_sufficient_evidence_empty": "1/8"
+  },
+  "exposed_regression": {
+    "task_accuracy": "116/122",
+    "constraint_tp_fp_fn": "128/3/6",
+    "constraint_precision": 0.9770992366412213,
+    "constraint_recall": 0.9552238805970149,
+    "constraint_f1": 0.9660377358490565,
+    "recommendation_evidence_coverage": "436/445",
+    "candidate_scope_leakage": 0,
+    "checker_scope_leakage": 0,
+    "report_scope_leakage": 0,
+    "wrong_configuration_recommendations": 0,
+    "wrong_region_recommendations": 0,
+    "unknown_overclaimed": 0,
+    "clarification_bypass": 0,
+    "non_domain_field_activations": 0,
+    "sufficient_evidence_empty_recommendation": "0/44",
+    "provider_calls": 0,
+    "estimated_cost_cny": 0.0,
+    "metamorphic_assertions": 1134
+  },
+  "open_research": {
+    "target": "ASUS Zenbook S 14 UX5406",
+    "region": "US",
+    "outside_governed_catalog": true,
+    "source_discovered_not_hardcoded": true,
+    "matched_fields": ["resolution", "panel_type", "memory_gb", "storage_gb", "battery_wh", "usb_c"],
+    "conflict_fields": ["weight_kg"],
+    "unknown_fields": ["display_size_inch", "refresh_rate_hz", "thunderbolt"],
+    "temporary_evidence_count": 18,
+    "trusted_eligible_count": 0,
+    "trusted_checker_entry_count": 0,
+    "lineage_complete": true,
+    "content_sha256": "2ace066180ef9a94b639bcef380425752e14be9eb358335fbdde28b843b7466a"
+  },
+  "memory": {
+    "domain_isolation": true,
+    "current_input_precedence": true,
+    "override_cancel_delete": true,
+    "pending_and_unsupported_rejected": true,
+    "checkpoint_cross_domain_contamination": 0
+  },
+  "faults": {
+    "v1_controlled_matrix": "13/13",
+    "checker_fail_closed": true,
+    "completed_paid_tool_replay_after_resume": 0,
+    "sensitive_event_leaks": 0
+  },
+  "orchestrator_parity": {
+    "representative_cases": "10/10",
+    "default_orchestrator": "react",
+    "langgraph_default_enabled": false
+  },
+  "paid_api": {
+    "provider": "zhipu_source_search",
+    "requests": 9,
+    "tokens": null,
+    "retries": 0,
+    "estimated_cost_cny": 0.31
+  },
+  "release_candidate_evaluation": "deferred_to_v2_9"
+}

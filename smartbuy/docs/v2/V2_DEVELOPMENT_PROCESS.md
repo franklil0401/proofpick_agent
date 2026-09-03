@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-6C-R3 三轮冻结验证均未通过联合门槛；已按轮次上限硬停止，V2-6C 仍阻断** |
+| 当前状态 | **V2-6C-R4 已完成 Laptop E2E 工程收尾；新的独立 Release Candidate 评测推迟到 V2-9** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-03 |
 
@@ -658,6 +658,15 @@ R1 结果只能证明已知失败得到回归修复，不得当作新 Holdout �
 - 三轮共调用 Embedding 61 次、Reranker 61 次、LLM 0 次，估算成本 `¥0.204552`；没有 Source Search、Open Research 或重复收费任务。
 - 已达到允许的三轮验证上限，不得在本阶段继续修复、生成第四轮或进入 V2-7。完整证据见 [V2-6C-R3 报告](v2_6c_r3_generic_decision_core_report.md)。
 
+### 14.4.4 V2-6C-R4 Laptop E2E 工程收尾
+
+- R3 三轮冻结首测及失败结论原样保留；没有生成第四套验证集，也没有追溯修改门槛。
+- 原始 30 条、R2 20 条和 R3 三轮各 24 条合计 122 条永久作为 exposed/diagnostic regression。最终工程回归为 `116/122`，硬约束 F1 `96.60%`，推荐事实证据 `436/445`。
+- Checker 前、Checker 后和 Reporting 前建立通用候选集合不变量；Scope/Checker/Report 越界、错误配置/地区、unknown 误报、澄清绕过和充分证据下空推荐均为 0。
+- 1134 组变形断言通过；Laptop Open Research 验证了数据库外 ASUS UX5406/US 的 6 个 matched 字段并安全保留 1 个 conflict，所有 Open Evidence 均不能进入 Trusted Checker。
+- Memory 隔离、V1 控制故障矩阵 13/13、V2 扩展故障路径和 10 条 ReAct/LangGraph 语义一致性通过；默认编排器没有切换。
+- R4 结果只能称为工程收尾，不能称为新 Holdout 泛化结论。新的 RC 评测必须在 V2-9 由独立流程重新冻结和单次运行。详情见 [R4 报告](v2_6c_r4_laptop_engineering_closeout.md)与 [ADR-0017](../adr/0017-deterministic-safety-gates-and-release-evaluation.md)。
+
 ### 14.5 验收指标
 
 - 至少 12 个精确配置、4 个品牌、30 条冻结任务。
@@ -943,6 +952,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-6A 已完成 Laptop Domain Pack 与治理数据，V2-6B 已完成真实索引与工具闭环。V2-6C-R3 已完成通用商品理解重构和三轮冻结验证，但三轮均未通过联合门槛；第三轮仍有 Scope 越界 1 和充分证据下错误空推荐 `1/8`，因此已经硬停止。详情见 [V2-6C-R3 报告](v2_6c_r3_generic_decision_core_report.md)。V2-5B/5C 及 V2-6C 全部历史首测继续原样保留。
+V2-6C-R4 已完成 Laptop E2E 工程收尾。三轮冻结验证首测仍是失败，122 条结果只属于已暴露回归；V2-5B/5C、V2-6C-R2B 和 R3 全部历史首测继续原样保留。
 
-下一步只能等待用户为新的修复阶段重新授权。不得在 V2-6C-R3 内继续修复或生成第四轮，不得自动执行 Open Research、Memory 专项、完整故障矩阵或 V2-7，也不得切换默认编排器或修改 V1 冻结数据与历史结果。
+下一步只能等待用户另行授权。不得自动进入 V2-7，不得创建新的 Laptop Holdout，不得切换默认编排器，也不得修改 V1 冻结数据与历史结果。新的独立 Release Candidate 评测只能在 V2-9 按预先冻结、单次运行和尽量独立复核的纪律执行。
