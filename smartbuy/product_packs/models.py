@@ -68,8 +68,11 @@ class SourceInput(FrozenModel):
         "official_manual",
         "official_support",
         "official_product",
+        "official_spec",
         "public_retail",
         "professional_review",
+        "professional_measurement",
+        "subjective_review",
     ]
     title: str = Field(min_length=1, max_length=300)
     uri: HttpUrl
@@ -85,6 +88,19 @@ class SourceInput(FrozenModel):
     content_hash: str = Field(pattern=r"^[a-f0-9]{64}$")
     redistribution_status: Literal["redistributable", "metadata_and_summary_only"]
     access_policy: Literal["public_no_login"]
+    testing_organization: str | None = Field(default=None, max_length=200)
+    method_uri: HttpUrl | None = None
+    tested_at: str | None = None
+    firmware_version: str | None = Field(default=None, max_length=100)
+
+    @model_validator(mode="after")
+    def validate_source_tier(self) -> SourceInput:
+        if self.source_type == "official_spec" and not self.is_official:
+            raise ValueError("official_spec must be an official source")
+        if self.source_type == "professional_measurement":
+            if not self.testing_organization or self.method_uri is None or not self.tested_at:
+                raise ValueError("professional_measurement requires method metadata")
+        return self
 
 
 class EvidenceInput(FrozenModel):

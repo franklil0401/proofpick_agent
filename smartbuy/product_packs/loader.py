@@ -269,6 +269,13 @@ class ProductPackLoader:
             _iso(source.accessed_at, field="source.accessed_at")
             if source.published_at is not None:
                 _iso(source.published_at, field="source.published_at")
+            if source.tested_at is not None:
+                _iso(source.tested_at, field="source.tested_at")
+            if source.source_type in {"professional_measurement", "subjective_review"}:
+                if source.is_official:
+                    raise ProductPackValidationError(
+                        "review or measurement source cannot claim official status"
+                    )
             raw = source.model_dump(mode="json")
             if source.content_hash != source_content_hash(raw):
                 raise ProductPackValidationError("source governed capture hash does not match")

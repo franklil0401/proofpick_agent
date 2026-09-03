@@ -1,0 +1,67 @@
+{
+  "source_priority": {"official_spec":100,"professional_measurement":70,"subjective_review":40},
+  "checker": {
+    "implementation":"smartbuy.domain_packs.evaluator","version":"proofpick-domain-evaluator-v1","fail_closed":true,"unknown_eligible":false,"conflict_eligible":false,
+    "supported_fields":["product_id","family_id","model_name","brand","region","configuration_id","price_cny","form_factor","acoustic_design","wearing_style","bluetooth","bluetooth_version","wired_connection","usb_audio","wireless_dongle","multipoint","supported_codecs","supported_platforms","active_noise_cancellation","transparency_mode","microphone","detachable_microphone","spatial_audio","water_resistance","battery_hours","battery_hours_anc","case_battery_hours","charging_method","weight_g","measured_latency_ms"],
+    "hard_fields":["product_id","family_id","model_name","brand","region","configuration_id","price_cny","form_factor","acoustic_design","wearing_style","bluetooth","bluetooth_version","wired_connection","usb_audio","wireless_dongle","multipoint","supported_codecs","supported_platforms","active_noise_cancellation","transparency_mode","microphone","detachable_microphone","spatial_audio","water_resistance","battery_hours","battery_hours_anc","case_battery_hours","charging_method","weight_g","measured_latency_ms"],
+    "soft_only_fields":["quick_charge","measured_isolation","measured_microphone","comfort_observation","sound_signature","call_quality_observation","primary_use"],
+    "value_bounds":{"price_cny":[0,1000000],"bluetooth_version":[1,10],"battery_hours":[0.1,500],"battery_hours_anc":[0.1,500],"case_battery_hours":[0.1,500],"weight_g":[1,5000],"measured_latency_ms":[0,5000]}
+  },
+  "ranking": {
+    "implementation":"smartbuy.ranking.DeterministicDecisionRanker","hard_constraints_may_change_eligibility":false,
+    "profile":{"profile_version":"headphone-ranking-v1","compatible_domain_pack_versions":["1.0.0"],"default_scenario":"commute","scenario_preference_key":"ranking_scenario","scenario_aliases":{"通勤":"commute","commute":"commute","会议":"meeting","开会":"meeting","meeting":"meeting","游戏":"gaming","gaming":"gaming","音乐":"music","听歌":"music","music":"music"},"deterministic_tie_breaker":"product_id_ascending","scenarios":[
+      {"scenario_id":"commute","dimensions":[
+        {"dimension_id":"commute_anc","source_field":"active_noise_cancellation","direction":"maximize","normalization":"boolean","weight":0.30,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方 ANC 功能用于通勤相对排序。"},
+        {"dimension_id":"commute_battery","source_field":"battery_hours_anc","direction":"maximize","normalization":"fixed_range","fixed_range":[4,40],"weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方 ANC 续航用于通勤相对排序，不等同于实测续航。"},
+        {"dimension_id":"commute_multipoint","source_field":"multipoint","direction":"maximize","normalization":"boolean","weight":0.15,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方多设备连接能力用于通勤相对排序。"},
+        {"dimension_id":"commute_weight","source_field":"weight_g","direction":"minimize","normalization":"fixed_range","fixed_range":[5,400],"weight":0.15,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方重量用于便携相对排序。"},
+        {"dimension_id":"commute_comfort","source_field":"comfort_observation","direction":"maximize","normalization":"enum","enum_scores":{"uncomfortable":0.0,"mixed":0.5,"comfortable":1.0},"weight":0.15,"evidence_requirement":"required","allowed_source_types":["subjective_review"],"missing_value_policy":"zero_no_assumption","explanation_template":"专业媒体的主观佩戴观察只影响软排序。"}
+      ]},
+      {"scenario_id":"meeting","dimensions":[
+        {"dimension_id":"meeting_mic","source_field":"microphone","direction":"maximize","normalization":"boolean","weight":0.30,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方麦克风配置用于会议相对排序。"},
+        {"dimension_id":"meeting_multipoint","source_field":"multipoint","direction":"maximize","normalization":"boolean","weight":0.25,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方多设备连接能力用于会议相对排序。"},
+        {"dimension_id":"meeting_call","source_field":"call_quality_observation","direction":"maximize","normalization":"enum","enum_scores":{"poor":0.0,"mixed":0.5,"good":1.0},"weight":0.20,"evidence_requirement":"required","allowed_source_types":["subjective_review"],"missing_value_policy":"zero_no_assumption","explanation_template":"专业媒体的通话主观观察只影响软排序。"},
+        {"dimension_id":"meeting_comfort","source_field":"comfort_observation","direction":"maximize","normalization":"enum","enum_scores":{"uncomfortable":0.0,"mixed":0.5,"comfortable":1.0},"weight":0.15,"evidence_requirement":"required","allowed_source_types":["subjective_review"],"missing_value_policy":"zero_no_assumption","explanation_template":"专业媒体的佩戴观察只影响软排序。"},
+        {"dimension_id":"meeting_battery","source_field":"battery_hours","direction":"maximize","normalization":"fixed_range","fixed_range":[4,60],"weight":0.10,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方最长续航用于会议相对排序。"}
+      ]},
+      {"scenario_id":"gaming","dimensions":[
+        {"dimension_id":"gaming_latency","source_field":"measured_latency_ms","direction":"minimize","normalization":"fixed_range","fixed_range":[0,300],"weight":0.35,"evidence_requirement":"required","allowed_source_types":["professional_measurement"],"missing_value_policy":"zero_no_assumption","explanation_template":"可追溯方法的实测延迟用于游戏软排序；缺失不推测。"},
+        {"dimension_id":"gaming_dongle","source_field":"wireless_dongle","direction":"maximize","normalization":"boolean","weight":0.30,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方 2.4G 接收器能力用于游戏相对排序。"},
+        {"dimension_id":"gaming_mic","source_field":"microphone","direction":"maximize","normalization":"boolean","weight":0.20,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方麦克风配置用于游戏相对排序。"},
+        {"dimension_id":"gaming_comfort","source_field":"comfort_observation","direction":"maximize","normalization":"enum","enum_scores":{"uncomfortable":0.0,"mixed":0.5,"comfortable":1.0},"weight":0.15,"evidence_requirement":"required","allowed_source_types":["subjective_review"],"missing_value_policy":"zero_no_assumption","explanation_template":"专业媒体的佩戴观察只影响游戏软排序。"}
+      ]},
+      {"scenario_id":"music","dimensions":[
+        {"dimension_id":"music_wired","source_field":"wired_connection","direction":"maximize","normalization":"boolean","weight":0.20,"evidence_requirement":"required","allowed_source_types":["official_spec"],"missing_value_policy":"zero_no_assumption","explanation_template":"官方有线连接能力用于音乐场景相对排序。"},
+        {"dimension_id":"music_isolation","source_field":"measured_isolation","direction":"maximize","normalization":"enum","enum_scores":{"poor":0.0,"fair":0.33,"good":0.67,"excellent":1.0},"weight":0.25,"evidence_requirement":"required","allowed_source_types":["professional_measurement"],"missing_value_policy":"zero_no_assumption","explanation_template":"标准化测试的隔音等级用于音乐软排序。"},
+        {"dimension_id":"music_sound","source_field":"sound_signature","direction":"maximize","normalization":"enum","enum_scores":{"bass_emphasized":0.35,"v_shaped":0.5,"warm":0.75,"neutral":1.0},"weight":0.35,"evidence_requirement":"required","allowed_source_types":["subjective_review"],"missing_value_policy":"zero_no_assumption","explanation_template":"媒体声音倾向描述只影响可解释软排序，不是客观音质分。"},
+        {"dimension_id":"music_comfort","source_field":"comfort_observation","direction":"maximize","normalization":"enum","enum_scores":{"uncomfortable":0.0,"mixed":0.5,"comfortable":1.0},"weight":0.20,"evidence_requirement":"required","allowed_source_types":["subjective_review"],"missing_value_policy":"zero_no_assumption","explanation_template":"专业媒体佩戴观察只影响音乐软排序。"}
+      ]}
+    ]}
+  },
+  "memory": {
+    "implementation":"smartbuy.memory.store","schema_version":"proofpick-layered-memory-v1","global_allowed_keys":["excluded_brands"],"ranking_allowed_keys":["ranking_scenario","ranking_weights"],
+    "allowed_keys":{"preferred_form_factor":"form_factor","preferred_connection":"wired_connection","preferred_codec":"supported_codecs","preferred_platform":"supported_platforms","preferred_scenario":"primary_use","max_weight_g":"weight_g","anc_preference":"active_noise_cancellation","excluded_brands":"brand"}
+  },
+  "understanding": {
+    "default_comparison_fields":["configuration_id","form_factor","supported_codecs","supported_platforms"],"default_identity_fact_fields":["configuration_id","region"],"numeric_selector_fields":["weight_g","battery_hours","battery_hours_anc","measured_latency_ms"],"implicit_minimum_fields":["battery_hours","battery_hours_anc"],
+    "unit_context_terms":{"weight_g":["重量","不超过","轻于"],"measured_latency_ms":["延迟","毫秒"]},
+    "requested_field_terms":{"supported_codecs":["编码","codec","ldac"],"supported_platforms":["平台","ps5","xbox"],"multipoint":["多点连接","同时连"]},
+    "requested_field_bundles":{"active_noise_cancellation":["battery_hours_anc"],"wireless_dongle":["measured_latency_ms"]},
+    "string_list_triggers":{"supported_codecs":["支持","必须"],"supported_platforms":["支持","兼容"]},
+    "qualitative_terms":{"comfort_observation":{"terms":["舒服一点","佩戴舒服","长时间戴"],"operator":"eq","strength":"soft"},"measured_latency_ms":{"terms":["延迟不能太高","低延迟"],"operator":"lte","strength":"soft"},"sound_signature":{"terms":["不要低频太轰","声音自然"],"operator":"eq","strength":"soft"}}
+  },
+  "report": {"implementation":"smartbuy.agent.reporting","schema_version":"proofpick-domain-decision-v1","states":["matched","not_matched","unknown","conflict"],"allowed_fields":["product_id","family_id","model_name","brand","region","configuration_id","form_factor","wearing_style","bluetooth","wired_connection","usb_audio","wireless_dongle","multipoint","supported_codecs","supported_platforms","active_noise_cancellation","microphone","water_resistance","battery_hours","battery_hours_anc","weight_g","measured_latency_ms","measured_isolation","measured_microphone","comfort_observation","sound_signature","call_quality_observation"]},
+  "product_pack": {
+    "pack_id":"headphone-governed-v1","pack_version":"1.0.0","base_mode":"standalone","base_data_version":"headphone-empty-v0","data_version":"headphone-governed-2026-09-03-v1","compatible_data_versions":["headphone-empty-v0","headphone-governed-2026-09-03-v1"],
+    "counts":{"products":12,"brands":4,"sources":20,"evidence":336},
+    "identity_evidence_fields":["product_id","brand","model_name","region"],"identity_value_map":{"product_id":"product_id","brand":"brand","model_name":"model_name","region":"region"},
+    "attribute_fields":["family_id","configuration_id","source_version","price_cny","form_factor","acoustic_design","wearing_style","bluetooth","bluetooth_version","wired_connection","usb_audio","wireless_dongle","multipoint","supported_codecs","supported_platforms","active_noise_cancellation","transparency_mode","microphone","detachable_microphone","spatial_audio","water_resistance","battery_hours","battery_hours_anc","case_battery_hours","charging_method","quick_charge","weight_g","measured_latency_ms","measured_isolation","measured_microphone","comfort_observation","sound_signature","call_quality_observation","primary_use"],
+    "positive_fields":["price_cny","bluetooth_version","battery_hours","battery_hours_anc","case_battery_hours","weight_g","measured_latency_ms"],"date_fields":[],
+    "source_field_permissions":{
+      "official_spec":["product_id","family_id","model_name","brand","region","configuration_id","source_version","form_factor","acoustic_design","wearing_style","bluetooth","bluetooth_version","wired_connection","usb_audio","wireless_dongle","multipoint","supported_codecs","supported_platforms","active_noise_cancellation","transparency_mode","microphone","detachable_microphone","spatial_audio","water_resistance","battery_hours","battery_hours_anc","case_battery_hours","charging_method","quick_charge","weight_g"],
+      "professional_measurement":["measured_latency_ms","measured_isolation","measured_microphone"],
+      "subjective_review":["comfort_observation","sound_signature","call_quality_observation"]
+    }
+  },
+  "eval_fixtures":{"v2_8_headphone_cases":{"path":"smartbuy/eval/v2_8_headphone_cases.jsonl","case_count":30,"sha256":"0000000000000000000000000000000000000000000000000000000000000000"}}
+}

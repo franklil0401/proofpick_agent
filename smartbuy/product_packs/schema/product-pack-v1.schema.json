@@ -100,7 +100,8 @@
         "source_type": {
           "enum": [
             "official_manual", "official_support", "official_product",
-            "public_retail", "professional_review"
+            "official_spec", "public_retail", "professional_review",
+            "professional_measurement", "subjective_review"
           ]
         },
         "title": {"type": "string", "minLength": 1},
@@ -118,7 +119,11 @@
         "redistribution_status": {
           "enum": ["redistributable", "metadata_and_summary_only"]
         },
-        "access_policy": {"const": "public_no_login"}
+        "access_policy": {"const": "public_no_login"},
+        "testing_organization": {"type": ["string", "null"]},
+        "method_uri": {"type": ["string", "null"], "format": "uri"},
+        "tested_at": {"type": ["string", "null"]},
+        "firmware_version": {"type": ["string", "null"]}
       }
     },
     "evidence": {

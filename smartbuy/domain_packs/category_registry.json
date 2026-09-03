@@ -6,6 +6,9 @@
     },
     "laptop": {
       "aliases": ["laptop", "notebook", "笔记本", "笔记本电脑", "轻薄本", "商务本", "游戏本"]
+    },
+    "headphone": {
+      "aliases": ["headphone", "headset", "earbud", "耳机", "耳麦", "头戴式耳机", "真无线耳机", "游戏耳机"]
     }
   }
 }

@@ -1,0 +1,10 @@
+{
+  "manifest_schema_version": "1.0.0",
+  "domain_pack_version": "1.0.0",
+  "domain_id": "headphone",
+  "display_name": "Headphone exact-configuration domain",
+  "contract_versions": ["proofpick-domain-contract-v1"],
+  "compatible_loader_versions": ["1.0.0"],
+  "data_versions": ["headphone-empty-v0", "headphone-governed-2026-09-03-v1"],
+  "files": {"fields": "fields.json", "policies": "policies.json"}
+}
