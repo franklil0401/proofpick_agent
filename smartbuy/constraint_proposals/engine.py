@@ -828,7 +828,22 @@ class DeterministicConstraintParser:
                         )
             elif definition.data_type.value == "boolean":
                 for mention in field_mentions:
-                    context = normalized_query[max(0, mention.start() - 10):mention.end() + 8]
+                    clause = next(
+                        (
+                            item
+                            for item in clauses
+                            if item.start() <= mention.start() < item.end()
+                        ),
+                        None,
+                    )
+                    clause_start = clause.start() if clause is not None else 0
+                    # Negation can authorize a boolean value only when it
+                    # precedes the matched field inside the same clause.  A
+                    # later constraint such as ``重量不要超过`` must not negate
+                    # an earlier field such as ``主动降噪``.
+                    context = normalized_query[
+                        max(clause_start, mention.start() - 10):mention.end()
+                    ]
                     if re.search(r"(?:多少|是什么|是否|能否|有没有|存在|核验|确认)", context):
                         # Intent processing owns fact fields; do not infer a
                         # boolean purchase condition from a question form.

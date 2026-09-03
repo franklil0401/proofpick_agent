@@ -7,6 +7,7 @@ from pathlib import Path
 
 import pytest
 
+from smartbuy.agent import DomainDecisionAgent
 from smartbuy.constraint_proposals.engine import NaturalConstraintEngine
 from smartbuy.constraint_proposals.models import ProposalStatus
 from smartbuy.domain_packs import DomainPackLoader, DomainPackRegistry
@@ -241,3 +242,45 @@ async def test_headphone_pack_driven_cancel_does_not_enter_checker_or_memory(tmp
     memory = DomainPreferenceMemoryStore(tmp_path / "memory",pack)
     with pytest.raises(ValueError,match="explicit confirmation"):
         memory.upsert("user",{"anc_preference":True},explicitly_confirmed=False)
+
+
+async def _agent(tmp_path: Path) -> DomainDecisionAgent:
+    pack, _, repository, provider, index_manager = await _runtime(tmp_path)
+    return DomainDecisionAgent(
+        pack,
+        repository,
+        DomainProductQueryTool(repository),
+        DomainEvidenceCheckTool(repository),
+        DomainConstraintCheckerTool(repository),
+        NaturalConstraintEngine(pack),
+        DomainPreferenceMemoryStore(tmp_path / "agent-memory", pack),
+        kb_search=DomainKBSearchTool(index_manager, provider),
+    )
+
+
+@pytest.mark.asyncio
+async def test_later_numeric_negation_does_not_negate_earlier_boolean(tmp_path: Path) -> None:
+    report = await (await _agent(tmp_path)).run(
+        "耳机：需要主动降噪，重量不要超过 250 克。",
+        ranking_scenario="commute",
+    )
+    active = {item.field: item.normalized_value for item in report.constraint_set.active()}
+    assert active["active_noise_cancellation"] is True
+    assert active["weight_g"] == 250
+    assert report.recommended_model_ids
+
+
+@pytest.mark.asyncio
+async def test_detachable_microphone_fact_maps_to_specific_pack_field(tmp_path: Path) -> None:
+    report = await (await _agent(tmp_path)).run("耳机：G735-WHITE-US 的麦克风能否拆卸？")
+    assert "detachable_microphone" in report.requested_fields
+    assert {item.model_id for item in report.evidence} == {"logitech-g735-white-us"}
+    assert "detachable_microphone" in {item.field for item in report.evidence}
+
+
+@pytest.mark.asyncio
+async def test_subjective_microphone_quality_requires_clarification(tmp_path: Path) -> None:
+    report = await (await _agent(tmp_path)).run("耳机：开会用，麦克风要清楚。")
+    assert report.clarification_state.value == "pending"
+    assert report.recommended_model_ids == []
+    assert any(item.field == "call_quality_observation" for item in report.constraint_proposals)

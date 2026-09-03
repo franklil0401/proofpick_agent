@@ -197,7 +197,12 @@ def _score(case: dict[str, Any], report: Any) -> dict[str, Any]:
     }
 
 
-async def run(runtime_root: Path, output: Path) -> dict[str, Any]:
+async def run(
+    runtime_root: Path,
+    output: Path,
+    *,
+    regression_after_fix: bool = False,
+) -> dict[str, Any]:
     if output.exists():
         raise RuntimeError("first-run output already exists and is immutable")
     cases = _load_cases()
@@ -205,7 +210,7 @@ async def run(runtime_root: Path, output: Path) -> dict[str, Any]:
     if not RC_CONFIG.exists():
         raise RuntimeError("release candidate must be frozen before the run")
     frozen_rc = json.loads(RC_CONFIG.read_text(encoding="utf-8"))
-    if frozen_rc["config_hash"] != current_rc["config_hash"]:
+    if not regression_after_fix and frozen_rc["config_hash"] != current_rc["config_hash"]:
         raise RuntimeError("code/config changed after RC freeze")
     pack = DomainPackLoader().load(DOMAIN)
     data_manager = DomainProductPackManager(runtime_root / "data", domain_pack_path=DOMAIN)
@@ -268,7 +273,12 @@ async def run(runtime_root: Path, output: Path) -> dict[str, Any]:
     ):
         metrics[key] = sum(item[key] for item in rows)
     payload = {
-        "run_type": "v2_8_headphone_engineering_first", "run_number": 1,
+        "run_type": (
+            "v2_8_headphone_engineering_regression_after_fix"
+            if regression_after_fix else "v2_8_headphone_engineering_first"
+        ),
+        "run_number": 1,
+        "evaluation_phase": "exposed_regression" if regression_after_fix else "first_frozen_run",
         "run_id": f"v2-8-headphone-{datetime.now(UTC).strftime('%Y%m%dT%H%M%SZ')}",
         "created_at": datetime.now(UTC).isoformat(), "case_sha256": CASES_SHA256,
         "rc_config_sha256": current_rc["config_hash"], "metrics": metrics,
@@ -293,6 +303,7 @@ def main() -> int:
     parser.add_argument("--runtime-root", type=Path, required=True)
     parser.add_argument("--output", type=Path)
     parser.add_argument("--freeze-release-candidate", action="store_true")
+    parser.add_argument("--regression-after-fix", action="store_true")
     args = parser.parse_args()
     if args.freeze_release_candidate:
         payload = freeze(args.runtime_root)
@@ -300,7 +311,13 @@ def main() -> int:
         return 0
     if args.output is None:
         parser.error("--output is required")
-    result = asyncio.run(run(args.runtime_root, args.output))
+    result = asyncio.run(
+        run(
+            args.runtime_root,
+            args.output,
+            regression_after_fix=args.regression_after_fix,
+        )
+    )
     print(json.dumps({"status": "completed", "run_id": result["run_id"], "metrics": result["metrics"], "api_usage": result["api_usage"]}, ensure_ascii=False))
     return 0
 
