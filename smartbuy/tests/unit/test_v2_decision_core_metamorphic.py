@@ -12,6 +12,16 @@ from smartbuy.constraint_proposals.engine import NaturalConstraintEngine
 from smartbuy.decision_core.canonical import CanonicalValueNormalizer
 from smartbuy.decision_core.delta import ConstraintDeltaAction, ConstraintDeltaResolver
 from smartbuy.decision_core.intent import QueryUnderstandingEngine
+from smartbuy.decision_core.result import (
+    DecisionResultStatus,
+    ResultClassificationInput,
+    classify_result,
+)
+from smartbuy.decision_core.safety import (
+    CandidateChainViolation,
+    assert_candidate_chain,
+    assert_scope_restore,
+)
 from smartbuy.domain_packs import DomainPackLoader
 from smartbuy.domain_packs.evaluator import DomainConstraintEvaluator
 from smartbuy.identity import (
@@ -62,6 +72,10 @@ def test_at_least_500_generated_transformations_preserve_invariants(runtime) -> 
         "请查 {value}。",
         "SKU：{value}",
         "  核验  {value}  ",
+        "查询-{value}-参数",
+        "请查：{value}；只返回该配置",
+        "核对（{value}）",
+        "FACT {value} configuration",
     )
     for configuration, product_id in configurations:
         for transformed in (
@@ -143,6 +157,7 @@ def test_at_least_500_generated_transformations_preserve_invariants(runtime) -> 
             checked += 3
 
     assert checked >= 500
+    assert checked >= 1000
 
 
 @pytest.mark.asyncio
@@ -298,3 +313,88 @@ def test_generic_clarification_markers_pause_family_scope(runtime, marker: str) 
     understanding = QueryUnderstandingEngine(pack).analyze(query, scope)
     assert scope.clarification_required is True
     assert understanding.intent == QueryIntent.CLARIFICATION_REQUIRED
+
+
+def test_candidate_chain_and_checkpoint_restore_fail_closed(runtime) -> None:
+    _pack, products, resolver = runtime
+    configuration = sorted(
+        str(item["attributes"]["configuration_id"])
+        for item in products.values()
+    )[0]
+    scope = resolver.resolve(configuration, products)
+    product_id = scope.product_ids[0]
+    assert_candidate_chain(
+        catalog_ids=products,
+        scope=scope,
+        checker_pool_ids=[product_id],
+        checker_eligible_ids=[product_id],
+        report_ids=[product_id],
+        recommended_ids=[product_id],
+        stage="test",
+    )
+    with pytest.raises(CandidateChainViolation, match="checker_pool_outside_candidate_scope"):
+        assert_candidate_chain(
+            catalog_ids=products,
+            scope=scope,
+            checker_pool_ids=[next(item for item in products if item != product_id)],
+            stage="test",
+        )
+    assert_scope_restore(scope, [product_id])
+    with pytest.raises(CandidateChainViolation, match="checkpoint_scope_expansion"):
+        assert_scope_restore(scope, products)
+
+
+@pytest.mark.parametrize(
+    ("payload", "expected"),
+    [
+        (
+            ResultClassificationInput(
+                recommendation_task=True,
+                eligible_count=1,
+                evidence_complete_count=1,
+            ),
+            DecisionResultStatus.RECOMMENDATION_AVAILABLE,
+        ),
+        (
+            ResultClassificationInput(recommendation_task=True),
+            DecisionResultStatus.NO_MATCHING_CANDIDATE,
+        ),
+        (
+            ResultClassificationInput(
+                recommendation_task=True,
+                eligible_count=1,
+                evidence_complete_count=0,
+            ),
+            DecisionResultStatus.INSUFFICIENT_EVIDENCE,
+        ),
+        (
+            ResultClassificationInput(
+                recommendation_task=True,
+                clarification_required=True,
+                eligible_count=1,
+                evidence_complete_count=1,
+            ),
+            DecisionResultStatus.NEEDS_CLARIFICATION,
+        ),
+        (
+            ResultClassificationInput(
+                recommendation_task=True,
+                tool_failure=True,
+            ),
+            DecisionResultStatus.TOOL_FAILURE,
+        ),
+        (
+            ResultClassificationInput(
+                recommendation_task=True,
+                safety_blocked=True,
+                eligible_count=1,
+                evidence_complete_count=1,
+            ),
+            DecisionResultStatus.SAFETY_BLOCKED,
+        ),
+    ],
+)
+def test_result_classification_invariants(payload, expected) -> None:
+    result = classify_result(payload)
+    assert result.status == expected
+    assert result.abstained is (expected != DecisionResultStatus.RECOMMENDATION_AVAILABLE)

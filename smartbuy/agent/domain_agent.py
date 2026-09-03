@@ -45,6 +45,8 @@ from smartbuy.decision_core.delta import ConstraintDeltaResolver
 from smartbuy.decision_core.canonical import CanonicalValueError, CanonicalValueNormalizer
 from smartbuy.decision_core.intent import QueryUnderstandingEngine
 from smartbuy.decision_core.scope import CandidateScopeReducer
+from smartbuy.decision_core.result import ResultClassificationInput, classify_result
+from smartbuy.decision_core.safety import CandidateChainViolation, assert_candidate_chain
 from smartbuy.memory import DomainPreferenceMemoryStore
 from smartbuy.orchestration.contracts import EventCallback, emit_event
 from smartbuy.tools.domain import (
@@ -420,8 +422,32 @@ class DomainDecisionAgent:
                 ))
         if not additions:
             return resolution
+        # The primary parser may emit one whole-query unsupported fallback
+        # before Pack/catalog literals are bound.  Once deterministic Pack
+        # proposals explain the request, that broad fallback loses authority;
+        # narrow unsupported spans remain intact.
+        effective_existing = []
+        for proposal in resolution.proposals:
+            source = proposal.source_span
+            broad_fallback = bool(
+                proposal.field == "unsupported"
+                and proposal.reason == "field_not_declared_by_domain_pack"
+                and source is not None
+                and not query[:source.start].strip()
+                and not query[source.end:].strip()
+            )
+            effective_existing.append(
+                proposal.model_copy(
+                    update={
+                        "status": ProposalStatus.INVALID,
+                        "active": False,
+                        "reason": "superseded_by_pack_supported_proposals",
+                    }
+                )
+                if broad_fallback else proposal
+            )
         proposals = self.constraint_engine.parser._deduplicate_and_mark_conflicts(
-            [*resolution.proposals, *additions]
+            [*effective_existing, *additions]
         )
         base = ConstraintSet(
             constraints=[item for item in resolution.constraint_set.constraints if not item.active],
@@ -941,6 +967,11 @@ class DomainDecisionAgent:
             ProductScopeResolutionStatus.OPEN_REQUIRED,
             ProductScopeResolutionStatus.NO_MATCH,
         }:
+            initial_status = (
+                "insufficient_evidence"
+                if scope.resolution_status == ProductScopeResolutionStatus.OPEN_REQUIRED
+                else "no_matching_candidate"
+            )
             return DecisionReport(
                 request_summary=query,
                 product_scope=scope,
@@ -966,6 +997,7 @@ class DomainDecisionAgent:
                     "index_version": index_version,
                     "scope_fingerprint": scope.fingerprint,
                     "provider_calls": 0,
+                    "result_status": initial_status,
                 },
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
@@ -1035,6 +1067,7 @@ class DomainDecisionAgent:
                     "index_version": index_version,
                     "scope_fingerprint": scope.fingerprint,
                     "provider_calls": constraint_resolution.provider_calls,
+                    "result_status": "no_matching_candidate",
                 },
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
@@ -1043,7 +1076,13 @@ class DomainDecisionAgent:
             or scope.resolution_status == ProductScopeResolutionStatus.NEEDS_CLARIFICATION
             or intent == QueryIntent.CLARIFICATION_REQUIRED
         )
-        fields = (set(understanding.requested_fields) | {item["field"] for item in constraints}) & set(self.pack.fields)
+        active_constraint_fields = {item["field"] for item in constraints}
+        requested_fields = set(understanding.requested_fields)
+        requested_fields -= (
+            set(constraint_resolution.constraint_set.cancelled_fields)
+            - active_constraint_fields
+        )
+        fields = (requested_fields | active_constraint_fields) & set(self.pack.fields)
         if session_id and not pending:
             self._session_constraints[session_id] = constraint_resolution.constraint_set
         cross_region_inference = (
@@ -1073,11 +1112,33 @@ class DomainDecisionAgent:
                 stop_reason="等待用户澄清；未调用收费检索工具、Checker 或长期 Memory 写入。",
                 usage={"domain_id": self.pack.domain_id, "data_version": self.repository.snapshot.data_version,
                        "index_version": index_version, "scope_fingerprint": scope.fingerprint,
-                       "provider_calls": constraint_resolution.provider_calls},
+                       "provider_calls": constraint_resolution.provider_calls,
+                       "result_status": "needs_clarification"},
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
 
         candidate_ids = list(scope.product_ids)
+        safety_blocked_reason: str | None = None
+        try:
+            assert_candidate_chain(
+                catalog_ids=products,
+                scope=scope,
+                checker_pool_ids=candidate_ids if constraints else (),
+                stage="before_checker",
+            )
+        except CandidateChainViolation as exc:
+            safety_blocked_reason = exc.code
+            await emit_event(
+                event_callback,
+                {
+                    "type": "scope_violation",
+                    "stage": exc.stage,
+                    "reason": exc.code,
+                    "scope_count": len(scope.product_ids),
+                    "candidate_count": len(candidate_ids),
+                    "action": "fail_closed",
+                },
+            )
         evidence_candidate_ids = list(candidate_ids)
         query_result = None
         if constraints:
@@ -1134,7 +1195,7 @@ class DomainDecisionAgent:
                 QueryIntent.EXACT_FACT_VERIFICATION,
             }
         )
-        if checker_required and candidate_ids:
+        if checker_required and candidate_ids and safety_blocked_reason is None:
             checker_result = self.checker.run(
                 constraints,
                 candidate_ids=candidate_ids,
@@ -1145,13 +1206,97 @@ class DomainDecisionAgent:
             batch = self._batch(
                 checker_result, constraint_resolution.constraint_set, products, scope
             )
+            if batch.degraded and batch.degrade_reason == "checker_scope_mismatch":
+                safety_blocked_reason = batch.degrade_reason
+                await emit_event(
+                    event_callback,
+                    {
+                        "type": "scope_violation",
+                        "stage": "after_checker",
+                        "reason": batch.degrade_reason,
+                        "scope_count": len(scope.product_ids),
+                        "checker_pool_count": len(
+                            checker_result.data.get("results", [])
+                        ),
+                        "eligible_count": 0,
+                        "action": "fail_closed",
+                    },
+                )
         else:
             batch = self._empty_batch([], constraint_resolution.constraint_set, scope)
+
+        if checker_required and safety_blocked_reason is None:
+            try:
+                assert_candidate_chain(
+                    catalog_ids=products,
+                    scope=scope,
+                    checker_pool_ids=batch.candidate_pool_model_ids,
+                    checker_eligible_ids=batch.eligible_model_ids,
+                    stage="after_checker",
+                )
+            except CandidateChainViolation as exc:
+                safety_blocked_reason = exc.code
+                await emit_event(
+                    event_callback,
+                    {
+                        "type": "scope_violation",
+                        "stage": exc.stage,
+                        "reason": exc.code,
+                        "scope_count": len(scope.product_ids),
+                        "checker_pool_count": len(batch.candidate_pool_model_ids),
+                        "eligible_count": len(batch.eligible_model_ids),
+                        "action": "fail_closed",
+                    },
+                )
+        if safety_blocked_reason is not None:
+            batch = self._empty_batch(
+                sorted(set(scope.product_ids) & set(products)),
+                constraint_resolution.constraint_set,
+                scope,
+            ).model_copy(
+                update={
+                    "degraded": True,
+                    "degrade_reason": safety_blocked_reason,
+                }
+            )
 
         recommended = list(batch.eligible_model_ids) if checker_required else []
         report_ids = sorted(set(
             batch.candidate_pool_model_ids if checker_required else candidate_ids
         ))
+        try:
+            assert_candidate_chain(
+                catalog_ids=products,
+                scope=scope,
+                checker_pool_ids=(batch.candidate_pool_model_ids if checker_required else ()),
+                checker_eligible_ids=(batch.eligible_model_ids if checker_required else ()),
+                report_ids=report_ids,
+                recommended_ids=recommended,
+                stage="before_reporting",
+            )
+        except CandidateChainViolation as exc:
+            safety_blocked_reason = exc.code
+            await emit_event(
+                event_callback,
+                {
+                    "type": "scope_violation",
+                    "stage": exc.stage,
+                    "reason": exc.code,
+                    "scope_count": len(scope.product_ids),
+                    "report_count": len(report_ids),
+                    "recommendation_count": len(recommended),
+                    "action": "fail_closed",
+                },
+            )
+            recommended = []
+            report_ids = sorted(set(report_ids) & set(scope.product_ids) & set(products))
+            batch = self._empty_batch(
+                report_ids,
+                constraint_resolution.constraint_set,
+                scope,
+            ).model_copy(
+                update={"degraded": True, "degrade_reason": safety_blocked_reason}
+            )
         candidates = []
         all_evidence: list[EvidenceReference] = []
         unresolved: list[UnresolvedFact] = []
@@ -1207,22 +1352,32 @@ class DomainDecisionAgent:
             ))
 
         unsupported = [item for item in constraint_resolution.proposals if item.status.value == "unsupported"]
-        state_update_only = any(item.action.value in {"cancel", "confirm"} for item in constraint_resolution.proposals)
-        abstained = bool(
-            pending
-            or cross_region_inference
-            or unsupported
-            or (intent == QueryIntent.RECOMMENDATION_FILTER and constraints and not recommended)
-            or (
-                intent in {
-                    QueryIntent.EXACT_FACT_VERIFICATION,
-                    QueryIntent.EXPLICIT_COMPARISON,
-                    QueryIntent.FAMILY_OVERVIEW,
-                }
-                and (not candidate_ids or unresolved)
+        recommendation_task = intent == QueryIntent.RECOMMENDATION_FILTER
+        evidence_complete_ids = {
+            item.model_id
+            for item in candidates
+            if item.fields and all(field.status == ConstraintStatus.MATCHED for field in item.fields)
+        }
+        result_classification = classify_result(
+            ResultClassificationInput(
+                recommendation_task=recommendation_task,
+                clarification_required=pending,
+                unsupported_request=bool(unsupported),
+                tool_failure=any(item.status == "failed" for item in trace),
+                safety_blocked=safety_blocked_reason is not None,
+                candidate_count=len(candidates),
+                eligible_count=len(recommended),
+                evidence_complete_count=(
+                    len(evidence_complete_ids & set(recommended))
+                    if recommendation_task else len(evidence_complete_ids)
+                ),
+                unknown_or_conflict_count=sum(
+                    item.overall_status in {ConstraintStatus.UNKNOWN, ConstraintStatus.CONFLICT}
+                    for item in candidates
+                ) + int(cross_region_inference),
             )
-            or (intent == QueryIntent.RECOMMENDATION_FILTER and not constraints and not state_update_only)
         )
+        abstained = result_classification.abstained
         if kb_result and kb_result.status in {"success", "degraded"}:
             index_version = kb_result.data.get("index_version", index_version)
         return DecisionReport(
@@ -1259,7 +1414,7 @@ class DomainDecisionAgent:
             degraded_states=([kb_result.error_code or "kb_search_degraded"] if kb_result and kb_result.status in {"failed", "degraded"} else []),
             pending_questions=[item.clarification_question for item in unsupported if item.clarification_question],
             abstained=abstained,
-            stop_reason=("没有可由治理证据确定的合规候选。" if abstained else "已完成字段证据核验与确定性安全门。"),
+            stop_reason=result_classification.reason,
             trace=trace, tool_call_count=len(trace),
             latency_ms=(time.perf_counter() - started) * 1000,
             usage={
@@ -1273,5 +1428,8 @@ class DomainDecisionAgent:
                 "input_tokens": constraint_resolution.input_tokens,
                 "output_tokens": constraint_resolution.output_tokens,
                 "estimated_cost_cny": constraint_resolution.estimated_cost_cny,
+                "result_status": result_classification.status.value,
+                "result_reason": result_classification.reason,
+                "safety_blocked": safety_blocked_reason is not None,
             },
         )

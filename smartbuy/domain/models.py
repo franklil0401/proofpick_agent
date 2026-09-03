@@ -216,8 +216,18 @@ class DecisionReport(BaseModel):
                 raise ValueError("report expands the resolved product scope")
             if self.constraint_verification is not None:
                 checker_ids = set(self.constraint_verification.candidate_pool_model_ids)
+                checker_eligible = set(self.constraint_verification.eligible_model_ids)
                 if not checker_ids <= set(scope.product_ids):
                     raise ValueError("Checker report expands the resolved product scope")
+                if not set(self.recommended_model_ids) <= checker_eligible:
+                    raise ValueError("report recommendation exceeds Checker eligibility")
+                reported_eligible = {item.model_id for item in self.candidates if item.eligible}
+                if not reported_eligible <= checker_eligible:
+                    raise ValueError("report candidate eligibility exceeds Checker eligibility")
+                if self.constraint_verification.degraded and (
+                    self.recommended_model_ids or reported_eligible
+                ):
+                    raise ValueError("degraded Checker cannot authorize recommendation")
             for item in [*self.candidates, *self.evidence]:
                 if (
                     item.product_id != item.model_id
