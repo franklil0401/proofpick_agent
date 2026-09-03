@@ -1,0 +1,32 @@
+{
+  "case_count": 24,
+  "case_sha256": "b7adeee8ebd6f6872606fc8c1ac2ea5b0b035c2dd75ab901e77fd1eb9ca1f0a3",
+  "category_distribution": {
+    "catalog_filter": 2,
+    "clarification": 2,
+    "evidence_identity_isolation": 2,
+    "exact_configuration": 2,
+    "explicit_comparison": 2,
+    "fact_verification": 2,
+    "family_cross_region": 2,
+    "family_multi_configuration": 2,
+    "include_exclude": 2,
+    "numeric_and_unit": 2,
+    "unknown_or_refusal": 2,
+    "update_or_cancel": 2
+  },
+  "code_freeze_commit": "08c7381fdde9a4bf3f7836f74c982572dd5412d7",
+  "evaluation_state": "frozen_unrun",
+  "gold_checker_valid": true,
+  "gold_foreign_key_violations": 0,
+  "gold_sqlite_integrity": "ok",
+  "paid_api_calls": 0,
+  "policy_sha256": "53c7ca3cd152a18c39d6232dd19ea3a5b33b203fa23debde1b7030fc304a22bd",
+  "questions_distinct_from_exposed_50": true,
+  "questions_distinct_from_exposed_98": true,
+  "round": 3,
+  "run_count": 0,
+  "schema_sha256": "9451a05860a21fe9b31e2dc39dee218bee0075a7c904ce8dc8fd21134dc3e96a",
+  "schema_valid": true,
+  "schema_version": "proofpick-v2-6c-r3-validation-freeze-v1"
+}

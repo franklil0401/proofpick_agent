@@ -1,0 +1,24 @@
+{
+  "allowed_complete_runs": 1,
+  "case_count": 24,
+  "case_sha256": "b7adeee8ebd6f6872606fc8c1ac2ea5b0b035c2dd75ab901e77fd1eb9ca1f0a3",
+  "classification": "代码冻结后生成并单次运行的验证集",
+  "code_freeze_commit": "08c7381fdde9a4bf3f7836f74c982572dd5412d7",
+  "round": 3,
+  "schema_version": "proofpick-v2-6c-r3-validation-policy-v1",
+  "scoring": "exact scope, canonical hard constraints, tool subsequence, Checker pool, result, evidence and safety gates",
+  "seed_material_sha256": "9dcbafcb9fb520255d24aabfd4cb9a8edb793e3000423a5d21c9a507c5500e0b",
+  "thresholds": {
+    "candidate_scope_leakage_max": 0,
+    "checker_scope_leakage_max": 0,
+    "clarification_bypass_max": 0,
+    "clear_hard_constraint_f1_min": 0.9,
+    "non_domain_field_activations_max": 0,
+    "recommendation_evidence_coverage_min": 0.95,
+    "sufficient_evidence_empty_recommendation_rate_max": 0.1,
+    "task_accuracy_min": 0.8,
+    "unknown_overclaimed_max": 0,
+    "wrong_configuration_recommendations_max": 0,
+    "wrong_region_recommendations_max": 0
+  }
+}
