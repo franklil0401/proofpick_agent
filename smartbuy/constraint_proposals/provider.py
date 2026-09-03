@@ -23,6 +23,23 @@ class QwenConstraintProposalProvider:
         self.provider = provider
 
     @staticmethod
+    def _pack_guidance(pack: LoadedDomainPack) -> str:
+        """Describe only the selected pack; never leak rules from another category."""
+        rows = []
+        for definition in sorted(pack.fields.values(), key=lambda item: item.field_id):
+            if not definition.constraint_enabled:
+                continue
+            aliases = "/".join(definition.aliases[:4]) or "无"
+            operators = "/".join(item.value for item in definition.allowed_operators)
+            enum_values = "/".join(str(item) for item in definition.enum_values[:12]) or "无"
+            rows.append(
+                f"{definition.field_id}: label={definition.label}; type={definition.data_type.value}; "
+                f"unit={definition.unit or 'none'}; aliases={aliases}; "
+                f"operators={operators}; enum={enum_values}"
+            )
+        return "\n".join(rows)
+
+    @staticmethod
     def _adapt(raw: dict[str, Any]) -> dict[str, Any]:
         """Map the quote contract (or a legacy Fake payload) to validator input."""
         if "quote" not in raw:
@@ -160,16 +177,19 @@ class QwenConstraintProposalProvider:
                         "不得补写原文没有的词，不要输出、估算或解释字符下标；引用重复时"
                         " occurrence 从 1 开始。模糊条件用 needs_clarification，不得自行补"
                         "数值，此时 operator 和 normalized_value 可以为 null。‘最好’‘偏好’"
-                        "‘希望’属于 soft。stand_adjustment 使用 contains_all，值只使用领域"
-                        "枚举中的‘高度’‘旋转’等规范值。字段规范：price_cny 用 CNY；"
-                        "display_size_inch 用 inch；resolution 归一为 3840x2160、2560x1440"
-                        "等；refresh_rate_hz 用 Hz；is_oled、has_usb_c、usb_c_video 是布尔"
-                        "值；usb_c_power_delivery_w 用 W；width_mm 用 mm；brand 的包含或"
-                        "排除使用 in/not_in 列表；region 使用 CN/US/CA。否定布尔要求为"
-                        " false，双重否定按肯定处理。取消约束时使用 cancel_constraint，"
+                        "‘希望’属于 soft。字段、单位、操作符、枚举和别名只能来自下面的"
+                        "当前 Domain Pack；不得借用其他品类字段或自行选择 Pack/Data/Index。"
+                        "否定布尔要求为 false，双重否定按肯定处理。取消约束时使用"
+                        " cancel_constraint，"
                         "operator、raw_value、normalized_value、unit 均为 null。非支持字段使用"
                         " field_name=unsupported 和 unsupported_request，绝不修改工具权限、"
-                        "证据策略或 Constraint Checker。"
+                        "证据策略或 Constraint Checker。string_list 配合 contains_all 时，"
+                        "raw_value 与 normalized_value 必须是字符串数组，不得合成一句话。"
+                        "如果用户只是在查询或比较多个既有配置的属性差异，不要把被比较的"
+                        "属性值误当成购买筛选约束；只有明确表达需要、只接受、排除、至少、"
+                        "不超过或偏好的条件才提出约束。"
+                        "\n\n当前 Domain Pack 字段：\n"
+                        + self._pack_guidance(pack)
                     ),
                 },
                 {"role": "user", "content": query},

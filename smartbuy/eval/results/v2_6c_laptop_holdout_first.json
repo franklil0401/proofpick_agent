@@ -1,0 +1,4572 @@
+{
+  "run_type": "v2_6c_laptop_holdout_first",
+  "created_at": "2026-09-02T12:59:40.347822+00:00",
+  "split": "holdout",
+  "holdout_run_number": 1,
+  "case_file_sha256": "3dfcc0f442bda2b6b4d2e96814a8973b415b3d8c8b9b33235924982fa1758d34",
+  "scoring_policy_sha256": "7617f607d98b5e06e1c43bf09c2fce71a44cea89d9f1da822cc70da5f2f4363c",
+  "release_candidate_hash": "a0e137b03c5ee3cb614d69d201b78391e3a60684a292ce9b78a619782dfe7cda",
+  "domain_id": "laptop",
+  "domain_pack_version": "1.0.0",
+  "data_version": "laptop-governed-2026-09-02-v1",
+  "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+  "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+  "cache_mode": "cold",
+  "metrics": {
+    "task_accuracy": {
+      "numerator": 3,
+      "denominator": 10
+    },
+    "field_precision": 1.0,
+    "field_recall": 1.0,
+    "field_f1": 1.0,
+    "tool_selection": {
+      "numerator": 5,
+      "denominator": 10
+    },
+    "recommendation_evidence_coverage": {
+      "numerator": 3,
+      "denominator": 9
+    },
+    "checker_boundary_violations": 0,
+    "unknown_overclaimed": 0,
+    "average_latency_ms": 1536.238700011745,
+    "p95_latency_ms": 6188.031899975613,
+    "rule_only_cases": 8,
+    "qwen_fallback_cases": 2
+  },
+  "api_usage": {
+    "call_count": 20,
+    "successful_calls": 20,
+    "degraded_calls": 0,
+    "input_tokens": 108420,
+    "output_tokens": 452,
+    "estimated_cost_cny": 0.0565525
+  },
+  "cases": [
+    {
+      "case_id": "laptop-011",
+      "split": "holdout",
+      "category": "similar_configuration",
+      "expected_ids": [
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "task_correct": false,
+      "abstained": false,
+      "active_fields": [],
+      "proposal_fields": [],
+      "field_tp": 3,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": true,
+      "tools_used": [
+        "domain_kb_search",
+        "domain_evidence_check",
+        "domain_evidence_check",
+        "domain_evidence_check"
+      ],
+      "candidate_pool_size": 3,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 654.694200027734,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：区分 H7606WX 与 H7606WW 的显卡和显存。",
+        "task_type": "comparison",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [],
+        "clarification_state": "not_required",
+        "constraint_diff": [],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:25.639081Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "asus-proart-p16-h7606wi-cn",
+            "asus-proart-p16-h7606ww-cn",
+            "asus-proart-p16-h7606wx-cn"
+          ],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "640c7cf7c5b8d0dc38389ce2127bdf9ab1f003bb7d761a8fb3181487070ee576",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [
+          "默认展示中国大陆市场；未作为硬约束"
+        ],
+        "tools_used": [
+          "domain_kb_search",
+          "domain_evidence_check",
+          "domain_evidence_check",
+          "domain_evidence_check"
+        ],
+        "candidates": [
+          {
+            "model_id": "asus-proart-p16-h7606wi-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WI",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "gpu_model",
+                "status": "matched",
+                "actual_value": "GeForce RTX 4070 Laptop GPU",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wi-cn-gpu-model",
+                    "source_id": "src-asus-proart-p16-h7606wi-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wi-cn",
+                    "region": "CN",
+                    "field": "gpu_model",
+                    "value": "GeForce RTX 4070 Laptop GPU",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "gpu_vram_gb",
+                "status": "matched",
+                "actual_value": 8.0,
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wi-cn-gpu-vram-gb",
+                    "source_id": "src-asus-proart-p16-h7606wi-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wi-cn",
+                    "region": "CN",
+                    "field": "gpu_vram_gb",
+                    "value": 8.0,
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "asus-proart-p16-h7606ww-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WW",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "gpu_model",
+                "status": "matched",
+                "actual_value": "GeForce RTX 5080 Laptop GPU",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606ww-cn-gpu-model",
+                    "source_id": "src-asus-proart-p16-h7606ww-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606ww-cn",
+                    "region": "CN",
+                    "field": "gpu_model",
+                    "value": "GeForce RTX 5080 Laptop GPU",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "gpu_vram_gb",
+                "status": "matched",
+                "actual_value": 16.0,
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606ww-cn-gpu-vram-gb",
+                    "source_id": "src-asus-proart-p16-h7606ww-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606ww-cn",
+                    "region": "CN",
+                    "field": "gpu_vram_gb",
+                    "value": 16.0,
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WX",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "gpu_model",
+                "status": "matched",
+                "actual_value": "GeForce RTX 5090 Laptop GPU",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wx-cn-gpu-model",
+                    "source_id": "src-asus-proart-p16-h7606wx-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wx-cn",
+                    "region": "CN",
+                    "field": "gpu_model",
+                    "value": "GeForce RTX 5090 Laptop GPU",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "gpu_vram_gb",
+                "status": "matched",
+                "actual_value": 24.0,
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wx-cn-gpu-vram-gb",
+                    "source_id": "src-asus-proart-p16-h7606wx-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wx-cn",
+                    "region": "CN",
+                    "field": "gpu_vram_gb",
+                    "value": 24.0,
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          }
+        ],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wi-cn-gpu-model",
+            "source_id": "src-asus-proart-p16-h7606wi-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wi-cn",
+            "region": "CN",
+            "field": "gpu_model",
+            "value": "GeForce RTX 4070 Laptop GPU",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wi-cn-gpu-vram-gb",
+            "source_id": "src-asus-proart-p16-h7606wi-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wi-cn",
+            "region": "CN",
+            "field": "gpu_vram_gb",
+            "value": 8.0,
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606ww-cn-gpu-model",
+            "source_id": "src-asus-proart-p16-h7606ww-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606ww-cn",
+            "region": "CN",
+            "field": "gpu_model",
+            "value": "GeForce RTX 5080 Laptop GPU",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606ww-cn-gpu-vram-gb",
+            "source_id": "src-asus-proart-p16-h7606ww-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606ww-cn",
+            "region": "CN",
+            "field": "gpu_vram_gb",
+            "value": 16.0,
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wx-cn-gpu-model",
+            "source_id": "src-asus-proart-p16-h7606wx-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "region": "CN",
+            "field": "gpu_model",
+            "value": "GeForce RTX 5090 Laptop GPU",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wx-cn-gpu-vram-gb",
+            "source_id": "src-asus-proart-p16-h7606wx-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "region": "CN",
+            "field": "gpu_vram_gb",
+            "value": 24.0,
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          }
+        ],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": false,
+        "stop_reason": "已完成字段证据核验与确定性安全门。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 5 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 612.2507001273334
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "asus-proart-p16-h7606wi-cn",
+              "fields": [
+                "gpu_model",
+                "gpu_vram_gb"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 2 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          },
+          {
+            "step": 3,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "asus-proart-p16-h7606ww-cn",
+              "fields": [
+                "gpu_model",
+                "gpu_vram_gb"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 2 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          },
+          {
+            "step": 4,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "asus-proart-p16-h7606wx-cn",
+              "fields": [
+                "gpu_model",
+                "gpu_vram_gb"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 2 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          }
+        ],
+        "latency_ms": 654.694200027734,
+        "tool_call_count": 4,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 655.0614999141544
+    },
+    {
+      "case_id": "laptop-012",
+      "split": "holdout",
+      "category": "similar_configuration",
+      "expected_ids": [
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "recommended_ids": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us"
+      ],
+      "referenced_ids": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606ww-cn",
+        "asus-proart-p16-h7606wx-cn",
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us",
+        "hp-elitebook-840-g11-9g0c0et-il",
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-zbook-power-g9-6b8c1ea-global",
+        "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "task_correct": false,
+      "abstained": true,
+      "active_fields": [
+        "family_id"
+      ],
+      "proposal_fields": [
+        "is_oled"
+      ],
+      "field_tp": 3,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": true,
+      "tools_used": [
+        "domain_product_query",
+        "domain_kb_search",
+        "domain_evidence_check",
+        "domain_evidence_check",
+        "domain_evidence_check",
+        "domain_constraint_checker"
+      ],
+      "candidate_pool_size": 12,
+      "eligible_ids": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us"
+      ],
+      "recommendation_evidence_covered": 3,
+      "recommendation_evidence_denominator": 9,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 579.7528999391943,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+        "task_type": "filter",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            },
+            {
+              "field": "family_id",
+              "operator": "eq",
+              "normalized_value": "dell-xps13-9350",
+              "unit": null,
+              "hard_or_soft": "hard",
+              "provenance": "current_input",
+              "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": "deterministic_identity_binding"
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-3257dd3cc542b5186b24b09a",
+            "field": "is_oled",
+            "operator": "eq",
+            "normalized_value": true,
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "unsupported",
+            "source": "rule",
+            "source_span": {
+              "start": 19,
+              "end": 23,
+              "text": "OLED"
+            },
+            "source_quote": "OLED",
+            "span_source": "server_rule_match",
+            "occurrence": null,
+            "proposal_kind": null,
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 1.0,
+            "active": false,
+            "reason": "field_not_declared_by_domain_pack"
+          }
+        ],
+        "clarification_state": "not_required",
+        "constraint_diff": [],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:26.218784Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "asus-proart-p16-h7606wi-cn",
+            "asus-proart-p16-h7606ww-cn",
+            "asus-proart-p16-h7606wx-cn",
+            "dell-xps13-9350-caexchcto9350lnl02-ca",
+            "dell-xps13-9350-usexchcto9350lnl06-us",
+            "dell-xps13-9350-usexcpcto9350lnl04-us",
+            "hp-elitebook-840-g11-9g0c0et-il",
+            "hp-zbook-firefly14-g11-98n14et-il",
+            "hp-zbook-power-g9-6b8c1ea-global",
+            "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+          ],
+          "candidates": [
+            {
+              "model_id": "asus-proart-p16-h7606wi-cn",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "asus-proart-p16-h7606",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-asus-proart-p16-h7606wi-cn-family-id",
+                  "source_id": "src-asus-proart-p16-h7606wi-cn"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-asus-proart-p16-h7606wi-cn-family-id"
+              ],
+              "source_ids": [
+                "src-asus-proart-p16-h7606wi-cn"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "asus-proart-p16-h7606ww-cn",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "asus-proart-p16-h7606",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-asus-proart-p16-h7606ww-cn-family-id",
+                  "source_id": "src-asus-proart-p16-h7606ww-cn"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-asus-proart-p16-h7606ww-cn-family-id"
+              ],
+              "source_ids": [
+                "src-asus-proart-p16-h7606ww-cn"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "asus-proart-p16-h7606wx-cn",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "asus-proart-p16-h7606",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-asus-proart-p16-h7606wx-cn-family-id",
+                  "source_id": "src-asus-proart-p16-h7606wx-cn"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-asus-proart-p16-h7606wx-cn-family-id"
+              ],
+              "source_ids": [
+                "src-asus-proart-p16-h7606wx-cn"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+              "overall_status": "passed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "dell-xps13-9350",
+                  "status": "passed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-dell-xps13-9350-caexchcto9350lnl02-ca-family-id",
+                  "source_id": "src-dell-xps13-9350-caexchcto9350lnl02-ca"
+                }
+              ],
+              "eligible": true,
+              "violated_fields": [],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-dell-xps13-9350-caexchcto9350lnl02-ca-family-id"
+              ],
+              "source_ids": [
+                "src-dell-xps13-9350-caexchcto9350lnl02-ca"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+              "overall_status": "passed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "dell-xps13-9350",
+                  "status": "passed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-dell-xps13-9350-usexchcto9350lnl06-us-family-id",
+                  "source_id": "src-dell-xps13-9350-usexchcto9350lnl06-us"
+                }
+              ],
+              "eligible": true,
+              "violated_fields": [],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-dell-xps13-9350-usexchcto9350lnl06-us-family-id"
+              ],
+              "source_ids": [
+                "src-dell-xps13-9350-usexchcto9350lnl06-us"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+              "overall_status": "passed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "dell-xps13-9350",
+                  "status": "passed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-dell-xps13-9350-usexcpcto9350lnl04-us-family-id",
+                  "source_id": "src-dell-xps13-9350-usexcpcto9350lnl04-us"
+                }
+              ],
+              "eligible": true,
+              "violated_fields": [],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-dell-xps13-9350-usexcpcto9350lnl04-us-family-id"
+              ],
+              "source_ids": [
+                "src-dell-xps13-9350-usexcpcto9350lnl04-us"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "hp-elitebook-840-g11-9g0c0et-il",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "hp-elitebook-840-g11",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-hp-elitebook-840-g11-9g0c0et-il-family-id",
+                  "source_id": "src-hp-elitebook-840-g11-9g0c0et-il"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-hp-elitebook-840-g11-9g0c0et-il-family-id"
+              ],
+              "source_ids": [
+                "src-hp-elitebook-840-g11-9g0c0et-il"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "hp-zbook-firefly14-g11",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-family-id",
+                  "source_id": "src-hp-zbook-firefly14-g11-98n14et-il"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-hp-zbook-firefly14-g11-98n14et-il-family-id"
+              ],
+              "source_ids": [
+                "src-hp-zbook-firefly14-g11-98n14et-il"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "hp-zbook-power-g9",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-family-id",
+                  "source_id": "src-hp-zbook-power-g9-6b8c1ea-global"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-hp-zbook-power-g9-6b8c1ea-global-family-id"
+              ],
+              "source_ids": [
+                "src-hp-zbook-power-g9-6b8c1ea-global"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "lenovo-thinkpad-t14-g5-intel",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-lenovo-thinkpad-t14-g5-21ml000fgr-de-family-id",
+                  "source_id": "src-lenovo-thinkpad-t14-g5-21ml000fgr-de"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-lenovo-thinkpad-t14-g5-21ml000fgr-de-family-id"
+              ],
+              "source_ids": [
+                "src-lenovo-thinkpad-t14-g5-21ml000fgr-de"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "lenovo-thinkpad-t14s-g7-amd",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-lenovo-thinkpad-t14s-g7-21yw0042us-us-family-id",
+                  "source_id": "src-lenovo-thinkpad-t14s-g7-21yw0042us-us"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-lenovo-thinkpad-t14s-g7-21yw0042us-us-family-id"
+              ],
+              "source_ids": [
+                "src-lenovo-thinkpad-t14s-g7-21yw0042us-us"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            },
+            {
+              "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+              "overall_status": "failed",
+              "constraint_results": [
+                {
+                  "constraint": {
+                    "field": "family_id",
+                    "operator": "eq",
+                    "normalized_value": "dell-xps13-9350",
+                    "unit": null,
+                    "hard_or_soft": "hard",
+                    "provenance": "current_input",
+                    "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                    "source_turn": 1,
+                    "confidence": 1.0,
+                    "supported": true,
+                    "active": true,
+                    "ambiguous": false,
+                    "note": "deterministic_identity_binding"
+                  },
+                  "actual_value": "lenovo-x1-carbon-g13",
+                  "status": "failed",
+                  "reason": "deterministic_comparison",
+                  "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-family-id",
+                  "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph"
+                }
+              ],
+              "eligible": false,
+              "violated_fields": [
+                "family_id"
+              ],
+              "unknown_fields": [],
+              "conflict_fields": [],
+              "unsupported_constraints": [],
+              "evidence_ids": [
+                "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-family-id"
+              ],
+              "source_ids": [
+                "src-lenovo-x1-carbon-g13-21nx00k4ph-ph"
+              ],
+              "price_observed_at": null,
+              "checked_at": "2026-09-02T12:59:26.218784Z",
+              "verifier_version": "proofpick-domain-checker-v2-6b"
+            }
+          ],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [
+            "dell-xps13-9350-caexchcto9350lnl02-ca",
+            "dell-xps13-9350-usexchcto9350lnl06-us",
+            "dell-xps13-9350-usexcpcto9350lnl04-us"
+          ],
+          "rejected_model_ids": [
+            "asus-proart-p16-h7606wi-cn",
+            "asus-proart-p16-h7606ww-cn",
+            "asus-proart-p16-h7606wx-cn",
+            "hp-elitebook-840-g11-9g0c0et-il",
+            "hp-zbook-firefly14-g11-98n14et-il",
+            "hp-zbook-power-g9-6b8c1ea-global",
+            "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+          ],
+          "semantic_fingerprint": "514051ffa068cabe0878354e204f27c34e7da6362705ea185e68ddb1e848883a",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [
+          "默认展示中国大陆市场；未作为硬约束"
+        ],
+        "tools_used": [
+          "domain_product_query",
+          "domain_kb_search",
+          "domain_evidence_check",
+          "domain_evidence_check",
+          "domain_evidence_check",
+          "domain_constraint_checker"
+        ],
+        "candidates": [
+          {
+            "model_id": "asus-proart-p16-h7606wi-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WI",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "H7606WI",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wi-cn-configuration-id",
+                    "source_id": "src-asus-proart-p16-h7606wi-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wi-cn",
+                    "region": "CN",
+                    "field": "configuration_id",
+                    "value": "H7606WI",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "asus-proart-p16-h7606",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wi-cn-family-id",
+                    "source_id": "src-asus-proart-p16-h7606wi-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wi-cn",
+                    "region": "CN",
+                    "field": "family_id",
+                    "value": "asus-proart-p16-h7606",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "asus-proart-p16-h7606",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-asus-proart-p16-h7606wi-cn-family-id",
+                "source_id": "src-asus-proart-p16-h7606wi-cn"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "asus-proart-p16-h7606ww-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WW",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "H7606WW",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606ww-cn-configuration-id",
+                    "source_id": "src-asus-proart-p16-h7606ww-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606ww-cn",
+                    "region": "CN",
+                    "field": "configuration_id",
+                    "value": "H7606WW",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "asus-proart-p16-h7606",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606ww-cn-family-id",
+                    "source_id": "src-asus-proart-p16-h7606ww-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606ww-cn",
+                    "region": "CN",
+                    "field": "family_id",
+                    "value": "asus-proart-p16-h7606",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "asus-proart-p16-h7606",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-asus-proart-p16-h7606ww-cn-family-id",
+                "source_id": "src-asus-proart-p16-h7606ww-cn"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WX",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "H7606WX",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wx-cn-configuration-id",
+                    "source_id": "src-asus-proart-p16-h7606wx-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wx-cn",
+                    "region": "CN",
+                    "field": "configuration_id",
+                    "value": "H7606WX",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "asus-proart-p16-h7606",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wx-cn-family-id",
+                    "source_id": "src-asus-proart-p16-h7606wx-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wx-cn",
+                    "region": "CN",
+                    "field": "family_id",
+                    "value": "asus-proart-p16-h7606",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "asus-proart-p16-h7606",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-asus-proart-p16-h7606wx-cn-family-id",
+                "source_id": "src-asus-proart-p16-h7606wx-cn"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+            "brand": "Dell",
+            "model_name": "Dell XPS 13 9350 (caexchcto9350lnl02)",
+            "region": "CA",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "caexchcto9350lnl02",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-dell-xps13-9350-caexchcto9350lnl02-ca-configuration-id",
+                    "source_id": "src-dell-xps13-9350-caexchcto9350lnl02-ca",
+                    "source_url": "https://www.dell.com/en-ca/shop/laptops-ultrabooks/xps-13-laptop/spd/xps-13-9350-intel-laptop/caexchcto9350lnl02",
+                    "source_type": "official_product",
+                    "model_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+                    "region": "CA",
+                    "field": "configuration_id",
+                    "value": "caexchcto9350lnl02",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "dell-xps13-9350",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-dell-xps13-9350-caexchcto9350lnl02-ca-family-id",
+                    "source_id": "src-dell-xps13-9350-caexchcto9350lnl02-ca",
+                    "source_url": "https://www.dell.com/en-ca/shop/laptops-ultrabooks/xps-13-laptop/spd/xps-13-9350-intel-laptop/caexchcto9350lnl02",
+                    "source_type": "official_product",
+                    "model_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+                    "region": "CA",
+                    "field": "family_id",
+                    "value": "dell-xps13-9350",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": true,
+            "verifier_status": "passed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "dell-xps13-9350",
+                "status": "passed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-dell-xps13-9350-caexchcto9350lnl02-ca-family-id",
+                "source_id": "src-dell-xps13-9350-caexchcto9350lnl02-ca"
+              }
+            ],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": "所有已激活硬约束均通过确定性复核。",
+            "elimination_reason": null
+          },
+          {
+            "model_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+            "brand": "Dell",
+            "model_name": "Dell XPS 13 9350 (usexchcto9350lnl06)",
+            "region": "US",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "usexchcto9350lnl06",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-dell-xps13-9350-usexchcto9350lnl06-us-configuration-id",
+                    "source_id": "src-dell-xps13-9350-usexchcto9350lnl06-us",
+                    "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexchcto9350lnl06",
+                    "source_type": "official_product",
+                    "model_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+                    "region": "US",
+                    "field": "configuration_id",
+                    "value": "usexchcto9350lnl06",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "dell-xps13-9350",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-dell-xps13-9350-usexchcto9350lnl06-us-family-id",
+                    "source_id": "src-dell-xps13-9350-usexchcto9350lnl06-us",
+                    "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexchcto9350lnl06",
+                    "source_type": "official_product",
+                    "model_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+                    "region": "US",
+                    "field": "family_id",
+                    "value": "dell-xps13-9350",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": true,
+            "verifier_status": "passed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "dell-xps13-9350",
+                "status": "passed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-dell-xps13-9350-usexchcto9350lnl06-us-family-id",
+                "source_id": "src-dell-xps13-9350-usexchcto9350lnl06-us"
+              }
+            ],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": "所有已激活硬约束均通过确定性复核。",
+            "elimination_reason": null
+          },
+          {
+            "model_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+            "brand": "Dell",
+            "model_name": "Dell XPS 13 9350 (usexcpcto9350lnl04)",
+            "region": "US",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "usexcpcto9350lnl04",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-dell-xps13-9350-usexcpcto9350lnl04-us-configuration-id",
+                    "source_id": "src-dell-xps13-9350-usexcpcto9350lnl04-us",
+                    "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexcpcto9350lnl04",
+                    "source_type": "official_product",
+                    "model_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+                    "region": "US",
+                    "field": "configuration_id",
+                    "value": "usexcpcto9350lnl04",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "dell-xps13-9350",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-dell-xps13-9350-usexcpcto9350lnl04-us-family-id",
+                    "source_id": "src-dell-xps13-9350-usexcpcto9350lnl04-us",
+                    "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexcpcto9350lnl04",
+                    "source_type": "official_product",
+                    "model_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+                    "region": "US",
+                    "field": "family_id",
+                    "value": "dell-xps13-9350",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": true,
+            "verifier_status": "passed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "dell-xps13-9350",
+                "status": "passed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-dell-xps13-9350-usexcpcto9350lnl04-us-family-id",
+                "source_id": "src-dell-xps13-9350-usexcpcto9350lnl04-us"
+              }
+            ],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": "所有已激活硬约束均通过确定性复核。",
+            "elimination_reason": null
+          },
+          {
+            "model_id": "hp-elitebook-840-g11-9g0c0et-il",
+            "brand": "HP",
+            "model_name": "HP EliteBook 840 G11 (9G0C0ET)",
+            "region": "IL",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "9G0C0ET",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-elitebook-840-g11-9g0c0et-il-configuration-id",
+                    "source_id": "src-hp-elitebook-840-g11-9g0c0et-il",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/il-en/2102292289/pdf/9G0C0ET.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-elitebook-840-g11-9g0c0et-il",
+                    "region": "IL",
+                    "field": "configuration_id",
+                    "value": "9G0C0ET",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "hp-elitebook-840-g11",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-elitebook-840-g11-9g0c0et-il-family-id",
+                    "source_id": "src-hp-elitebook-840-g11-9g0c0et-il",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/il-en/2102292289/pdf/9G0C0ET.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-elitebook-840-g11-9g0c0et-il",
+                    "region": "IL",
+                    "field": "family_id",
+                    "value": "hp-elitebook-840-g11",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "hp-elitebook-840-g11",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-hp-elitebook-840-g11-9g0c0et-il-family-id",
+                "source_id": "src-hp-elitebook-840-g11-9g0c0et-il"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+            "brand": "HP",
+            "model_name": "HP ZBook Firefly 14 G11 (98N14ET)",
+            "region": "IL",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "98N14ET",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-configuration-id",
+                    "source_id": "src-hp-zbook-firefly14-g11-98n14et-il",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/spec-sheet/il-en/2102271142/pdf/98N14ET.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+                    "region": "IL",
+                    "field": "configuration_id",
+                    "value": "98N14ET",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "hp-zbook-firefly14-g11",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-family-id",
+                    "source_id": "src-hp-zbook-firefly14-g11-98n14et-il",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/spec-sheet/il-en/2102271142/pdf/98N14ET.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+                    "region": "IL",
+                    "field": "family_id",
+                    "value": "hp-zbook-firefly14-g11",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "hp-zbook-firefly14-g11",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-family-id",
+                "source_id": "src-hp-zbook-firefly14-g11-98n14et-il"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+            "brand": "HP",
+            "model_name": "HP ZBook Power 15.6 G9 (6B8C1EA)",
+            "region": "GLOBAL",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "6B8C1EA",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-configuration-id",
+                    "source_id": "src-hp-zbook-power-g9-6b8c1ea-global",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/ww-en/2101329734/pdf/6B8C1EA.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+                    "region": "GLOBAL",
+                    "field": "configuration_id",
+                    "value": "6B8C1EA",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "hp-zbook-power-g9",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-family-id",
+                    "source_id": "src-hp-zbook-power-g9-6b8c1ea-global",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/ww-en/2101329734/pdf/6B8C1EA.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+                    "region": "GLOBAL",
+                    "field": "family_id",
+                    "value": "hp-zbook-power-g9",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "hp-zbook-power-g9",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-family-id",
+                "source_id": "src-hp-zbook-power-g9-6b8c1ea-global"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "brand": "Lenovo",
+            "model_name": "Lenovo ThinkPad T14 Gen 5 Intel (21ML000FGR)",
+            "region": "DE",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "21ML000FGR",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-lenovo-thinkpad-t14-g5-21ml000fgr-de-configuration-id",
+                    "source_id": "src-lenovo-thinkpad-t14-g5-21ml000fgr-de",
+                    "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14_Gen_5_Intel?M=21ML000FGR",
+                    "source_type": "official_product",
+                    "model_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+                    "region": "DE",
+                    "field": "configuration_id",
+                    "value": "21ML000FGR",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "lenovo-thinkpad-t14-g5-intel",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-lenovo-thinkpad-t14-g5-21ml000fgr-de-family-id",
+                    "source_id": "src-lenovo-thinkpad-t14-g5-21ml000fgr-de",
+                    "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14_Gen_5_Intel?M=21ML000FGR",
+                    "source_type": "official_product",
+                    "model_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+                    "region": "DE",
+                    "field": "family_id",
+                    "value": "lenovo-thinkpad-t14-g5-intel",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "lenovo-thinkpad-t14-g5-intel",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-lenovo-thinkpad-t14-g5-21ml000fgr-de-family-id",
+                "source_id": "src-lenovo-thinkpad-t14-g5-21ml000fgr-de"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "brand": "Lenovo",
+            "model_name": "Lenovo ThinkPad T14s Gen 7 AMD (21YW0042US)",
+            "region": "US",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "21YW0042US",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-lenovo-thinkpad-t14s-g7-21yw0042us-us-configuration-id",
+                    "source_id": "src-lenovo-thinkpad-t14s-g7-21yw0042us-us",
+                    "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14s_Gen_7_AMD?M=21YW0042US",
+                    "source_type": "official_product",
+                    "model_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+                    "region": "US",
+                    "field": "configuration_id",
+                    "value": "21YW0042US",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "lenovo-thinkpad-t14s-g7-amd",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-lenovo-thinkpad-t14s-g7-21yw0042us-us-family-id",
+                    "source_id": "src-lenovo-thinkpad-t14s-g7-21yw0042us-us",
+                    "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14s_Gen_7_AMD?M=21YW0042US",
+                    "source_type": "official_product",
+                    "model_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+                    "region": "US",
+                    "field": "family_id",
+                    "value": "lenovo-thinkpad-t14s-g7-amd",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "lenovo-thinkpad-t14s-g7-amd",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-lenovo-thinkpad-t14s-g7-21yw0042us-us-family-id",
+                "source_id": "src-lenovo-thinkpad-t14s-g7-21yw0042us-us"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          },
+          {
+            "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "brand": "Lenovo",
+            "model_name": "Lenovo ThinkPad X1 Carbon Gen 13 (21NX00K4PH)",
+            "region": "PH",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "not_matched",
+            "fields": [
+              {
+                "field": "configuration_id",
+                "status": "matched",
+                "actual_value": "21NX00K4PH",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-configuration-id",
+                    "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph",
+                    "source_url": "https://psref.lenovo.com/Detail/ThinkPad_X1_Carbon_Gen_13_Aura_Edition?M=21NX00K4PH",
+                    "source_type": "official_product",
+                    "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+                    "region": "PH",
+                    "field": "configuration_id",
+                    "value": "21NX00K4PH",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              },
+              {
+                "field": "family_id",
+                "status": "matched",
+                "actual_value": "lenovo-x1-carbon-g13",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-family-id",
+                    "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph",
+                    "source_url": "https://psref.lenovo.com/Detail/ThinkPad_X1_Carbon_Gen_13_Aura_Edition?M=21NX00K4PH",
+                    "source_type": "official_product",
+                    "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+                    "region": "PH",
+                    "field": "family_id",
+                    "value": "lenovo-x1-carbon-g13",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": "failed",
+            "constraint_results": [
+              {
+                "constraint": {
+                  "field": "family_id",
+                  "operator": "eq",
+                  "normalized_value": "dell-xps13-9350",
+                  "unit": null,
+                  "hard_or_soft": "hard",
+                  "provenance": "current_input",
+                  "source_text": "笔记本：XPS 13 9350 美版 OLED 配置是哪一个 Order Code？",
+                  "source_turn": 1,
+                  "confidence": 1.0,
+                  "supported": true,
+                  "active": true,
+                  "ambiguous": false,
+                  "note": "deterministic_identity_binding"
+                },
+                "actual_value": "lenovo-x1-carbon-g13",
+                "status": "failed",
+                "reason": "deterministic_comparison",
+                "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-family-id",
+                "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph"
+              }
+            ],
+            "violated_fields": [
+              "family_id"
+            ],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": "proofpick-domain-checker-v2-6b",
+            "recommendation_reason": null,
+            "elimination_reason": "硬约束未全部通过或证据不足。"
+          }
+        ],
+        "recommended_model_ids": [
+          "dell-xps13-9350-caexchcto9350lnl02-ca",
+          "dell-xps13-9350-usexchcto9350lnl06-us",
+          "dell-xps13-9350-usexcpcto9350lnl04-us"
+        ],
+        "eliminated_model_ids": [
+          "asus-proart-p16-h7606wi-cn",
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn",
+          "hp-elitebook-840-g11-9g0c0et-il",
+          "hp-zbook-firefly14-g11-98n14et-il",
+          "hp-zbook-power-g9-6b8c1ea-global",
+          "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+          "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+          "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+        ],
+        "evidence": [
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wi-cn-configuration-id",
+            "source_id": "src-asus-proart-p16-h7606wi-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wi-cn",
+            "region": "CN",
+            "field": "configuration_id",
+            "value": "H7606WI",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wi-cn-family-id",
+            "source_id": "src-asus-proart-p16-h7606wi-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wi-cn",
+            "region": "CN",
+            "field": "family_id",
+            "value": "asus-proart-p16-h7606",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606ww-cn-configuration-id",
+            "source_id": "src-asus-proart-p16-h7606ww-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606ww-cn",
+            "region": "CN",
+            "field": "configuration_id",
+            "value": "H7606WW",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606ww-cn-family-id",
+            "source_id": "src-asus-proart-p16-h7606ww-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606ww-cn",
+            "region": "CN",
+            "field": "family_id",
+            "value": "asus-proart-p16-h7606",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wx-cn-configuration-id",
+            "source_id": "src-asus-proart-p16-h7606wx-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "region": "CN",
+            "field": "configuration_id",
+            "value": "H7606WX",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wx-cn-family-id",
+            "source_id": "src-asus-proart-p16-h7606wx-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "region": "CN",
+            "field": "family_id",
+            "value": "asus-proart-p16-h7606",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-xps13-9350-caexchcto9350lnl02-ca-configuration-id",
+            "source_id": "src-dell-xps13-9350-caexchcto9350lnl02-ca",
+            "source_url": "https://www.dell.com/en-ca/shop/laptops-ultrabooks/xps-13-laptop/spd/xps-13-9350-intel-laptop/caexchcto9350lnl02",
+            "source_type": "official_product",
+            "model_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+            "region": "CA",
+            "field": "configuration_id",
+            "value": "caexchcto9350lnl02",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-xps13-9350-caexchcto9350lnl02-ca-family-id",
+            "source_id": "src-dell-xps13-9350-caexchcto9350lnl02-ca",
+            "source_url": "https://www.dell.com/en-ca/shop/laptops-ultrabooks/xps-13-laptop/spd/xps-13-9350-intel-laptop/caexchcto9350lnl02",
+            "source_type": "official_product",
+            "model_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+            "region": "CA",
+            "field": "family_id",
+            "value": "dell-xps13-9350",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-xps13-9350-usexchcto9350lnl06-us-configuration-id",
+            "source_id": "src-dell-xps13-9350-usexchcto9350lnl06-us",
+            "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexchcto9350lnl06",
+            "source_type": "official_product",
+            "model_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+            "region": "US",
+            "field": "configuration_id",
+            "value": "usexchcto9350lnl06",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-xps13-9350-usexchcto9350lnl06-us-family-id",
+            "source_id": "src-dell-xps13-9350-usexchcto9350lnl06-us",
+            "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexchcto9350lnl06",
+            "source_type": "official_product",
+            "model_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+            "region": "US",
+            "field": "family_id",
+            "value": "dell-xps13-9350",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-xps13-9350-usexcpcto9350lnl04-us-configuration-id",
+            "source_id": "src-dell-xps13-9350-usexcpcto9350lnl04-us",
+            "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexcpcto9350lnl04",
+            "source_type": "official_product",
+            "model_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+            "region": "US",
+            "field": "configuration_id",
+            "value": "usexcpcto9350lnl04",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-dell-xps13-9350-usexcpcto9350lnl04-us-family-id",
+            "source_id": "src-dell-xps13-9350-usexcpcto9350lnl04-us",
+            "source_url": "https://www.dell.com/en-us/shop/dell-laptops/xps-13-laptop/spd/xps-13-9350-intel-laptop/usexcpcto9350lnl04",
+            "source_type": "official_product",
+            "model_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+            "region": "US",
+            "field": "family_id",
+            "value": "dell-xps13-9350",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-hp-elitebook-840-g11-9g0c0et-il-configuration-id",
+            "source_id": "src-hp-elitebook-840-g11-9g0c0et-il",
+            "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/il-en/2102292289/pdf/9G0C0ET.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-elitebook-840-g11-9g0c0et-il",
+            "region": "IL",
+            "field": "configuration_id",
+            "value": "9G0C0ET",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-hp-elitebook-840-g11-9g0c0et-il-family-id",
+            "source_id": "src-hp-elitebook-840-g11-9g0c0et-il",
+            "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/il-en/2102292289/pdf/9G0C0ET.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-elitebook-840-g11-9g0c0et-il",
+            "region": "IL",
+            "field": "family_id",
+            "value": "hp-elitebook-840-g11",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-configuration-id",
+            "source_id": "src-hp-zbook-firefly14-g11-98n14et-il",
+            "source_url": "https://pcb.inc.hp.com/dc/api/spec-sheet/il-en/2102271142/pdf/98N14ET.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+            "region": "IL",
+            "field": "configuration_id",
+            "value": "98N14ET",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-family-id",
+            "source_id": "src-hp-zbook-firefly14-g11-98n14et-il",
+            "source_url": "https://pcb.inc.hp.com/dc/api/spec-sheet/il-en/2102271142/pdf/98N14ET.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+            "region": "IL",
+            "field": "family_id",
+            "value": "hp-zbook-firefly14-g11",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-configuration-id",
+            "source_id": "src-hp-zbook-power-g9-6b8c1ea-global",
+            "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/ww-en/2101329734/pdf/6B8C1EA.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+            "region": "GLOBAL",
+            "field": "configuration_id",
+            "value": "6B8C1EA",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-family-id",
+            "source_id": "src-hp-zbook-power-g9-6b8c1ea-global",
+            "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/ww-en/2101329734/pdf/6B8C1EA.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+            "region": "GLOBAL",
+            "field": "family_id",
+            "value": "hp-zbook-power-g9",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lenovo-thinkpad-t14-g5-21ml000fgr-de-configuration-id",
+            "source_id": "src-lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14_Gen_5_Intel?M=21ML000FGR",
+            "source_type": "official_product",
+            "model_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "region": "DE",
+            "field": "configuration_id",
+            "value": "21ML000FGR",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lenovo-thinkpad-t14-g5-21ml000fgr-de-family-id",
+            "source_id": "src-lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14_Gen_5_Intel?M=21ML000FGR",
+            "source_type": "official_product",
+            "model_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "region": "DE",
+            "field": "family_id",
+            "value": "lenovo-thinkpad-t14-g5-intel",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lenovo-thinkpad-t14s-g7-21yw0042us-us-configuration-id",
+            "source_id": "src-lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14s_Gen_7_AMD?M=21YW0042US",
+            "source_type": "official_product",
+            "model_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "region": "US",
+            "field": "configuration_id",
+            "value": "21YW0042US",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lenovo-thinkpad-t14s-g7-21yw0042us-us-family-id",
+            "source_id": "src-lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "source_url": "https://psref.lenovo.com/Detail/ThinkPad_T14s_Gen_7_AMD?M=21YW0042US",
+            "source_type": "official_product",
+            "model_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "region": "US",
+            "field": "family_id",
+            "value": "lenovo-thinkpad-t14s-g7-amd",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-configuration-id",
+            "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "source_url": "https://psref.lenovo.com/Detail/ThinkPad_X1_Carbon_Gen_13_Aura_Edition?M=21NX00K4PH",
+            "source_type": "official_product",
+            "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "region": "PH",
+            "field": "configuration_id",
+            "value": "21NX00K4PH",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-family-id",
+            "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "source_url": "https://psref.lenovo.com/Detail/ThinkPad_X1_Carbon_Gen_13_Aura_Edition?M=21NX00K4PH",
+            "source_type": "official_product",
+            "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "region": "PH",
+            "field": "family_id",
+            "value": "lenovo-x1-carbon-g13",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          }
+        ],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": true,
+        "stop_reason": "没有可由治理证据确定的合规候选。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_product_query",
+            "arguments_summary": {
+              "constraint_fields": [
+                "configuration_id",
+                "family_id"
+              ]
+            },
+            "status": "success",
+            "result_summary": "只读查询检查 12 个完整候选",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 7.226499961689115
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 5 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 534.5176998525858
+          },
+          {
+            "step": 3,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+              "fields": [
+                "family_id"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 1 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          },
+          {
+            "step": 4,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+              "fields": [
+                "family_id"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 1 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          },
+          {
+            "step": 5,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+              "fields": [
+                "family_id"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 1 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          },
+          {
+            "step": 6,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_constraint_checker",
+            "arguments_summary": {
+              "candidate_pool_size": 12
+            },
+            "status": "success",
+            "result_summary": "确定性复核 12 个完整候选",
+            "next_action": "render_report",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          }
+        ],
+        "latency_ms": 579.7528999391943,
+        "tool_call_count": 6,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 580.318600172177
+    },
+    {
+      "case_id": "laptop-013",
+      "split": "holdout",
+      "category": "similar_configuration",
+      "expected_ids": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca",
+        "dell-xps13-9350-usexchcto9350lnl06-us",
+        "dell-xps13-9350-usexcpcto9350lnl04-us"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [],
+      "task_correct": false,
+      "abstained": true,
+      "active_fields": [],
+      "proposal_fields": [
+        "is_oled"
+      ],
+      "field_tp": 4,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": false,
+      "tools_used": [
+        "domain_kb_search"
+      ],
+      "candidate_pool_size": 3,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 535.0667999591678,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：比较 XPS 13 9350 的 16GB FHD 与 32GB OLED 配置。",
+        "task_type": "comparison",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-98a0b5b3051e30f716aa0f00",
+            "field": "is_oled",
+            "operator": "eq",
+            "normalized_value": true,
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "unsupported",
+            "source": "rule",
+            "source_span": {
+              "start": 37,
+              "end": 41,
+              "text": "OLED"
+            },
+            "source_quote": "OLED",
+            "span_source": "server_rule_match",
+            "occurrence": null,
+            "proposal_kind": null,
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 1.0,
+            "active": false,
+            "reason": "field_not_declared_by_domain_pack"
+          }
+        ],
+        "clarification_state": "not_required",
+        "constraint_diff": [],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:26.755288Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "dell-xps13-9350-caexchcto9350lnl02-ca",
+            "dell-xps13-9350-usexchcto9350lnl06-us",
+            "dell-xps13-9350-usexcpcto9350lnl04-us"
+          ],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "dcf556514097d43a4687356bfd828ca26bc0f6cf899241e11dd88ea8ce3cdbdc",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [
+          "默认展示中国大陆市场；未作为硬约束"
+        ],
+        "tools_used": [
+          "domain_kb_search"
+        ],
+        "candidates": [
+          {
+            "model_id": "dell-xps13-9350-caexchcto9350lnl02-ca",
+            "brand": "Dell",
+            "model_name": "Dell XPS 13 9350 (caexchcto9350lnl02)",
+            "region": "CA",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "dell-xps13-9350-usexchcto9350lnl06-us",
+            "brand": "Dell",
+            "model_name": "Dell XPS 13 9350 (usexchcto9350lnl06)",
+            "region": "US",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "dell-xps13-9350-usexcpcto9350lnl04-us",
+            "brand": "Dell",
+            "model_name": "Dell XPS 13 9350 (usexcpcto9350lnl04)",
+            "region": "US",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          }
+        ],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": true,
+        "stop_reason": "没有可由治理证据确定的合规候选。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 5 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 526.9075999967754
+          }
+        ],
+        "latency_ms": 535.0667999591678,
+        "tool_call_count": 1,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 535.4633999522775
+    },
+    {
+      "case_id": "laptop-014",
+      "split": "holdout",
+      "category": "similar_configuration",
+      "expected_ids": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [
+        "hp-zbook-firefly14-g11-98n14et-il",
+        "hp-zbook-power-g9-6b8c1ea-global"
+      ],
+      "task_correct": true,
+      "abstained": false,
+      "active_fields": [],
+      "proposal_fields": [],
+      "field_tp": 3,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": true,
+      "tools_used": [
+        "domain_kb_search",
+        "domain_evidence_check",
+        "domain_evidence_check"
+      ],
+      "candidate_pool_size": 2,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 1,
+      "input_tokens": 2401,
+      "output_tokens": 180,
+      "estimated_cost_cny": 0.0022808000000000004,
+      "latency_ms": 4962.022399995476,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：不要把 ZBook Firefly 98N14ET 和 ZBook Power 6B8C1EA 混成一个型号。",
+        "task_type": "comparison",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-c90a4c648f26f776a60eeb67",
+            "field": "model_name",
+            "operator": null,
+            "normalized_value": null,
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "invalid",
+            "source": "llm",
+            "source_span": {
+              "start": 4,
+              "end": 58,
+              "text": "不要把 ZBook Firefly 98N14ET 和 ZBook Power 6B8C1EA 混成一个型号"
+            },
+            "source_quote": "不要把 ZBook Firefly 98N14ET 和 ZBook Power 6B8C1EA 混成一个型号",
+            "span_source": "server_exact_quote",
+            "occurrence": 1,
+            "proposal_kind": "supported_constraint",
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 0.0,
+            "active": false,
+            "reason": "operator_not_allowed"
+          }
+        ],
+        "clarification_state": "not_required",
+        "constraint_diff": [],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:31.717361Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "hp-zbook-firefly14-g11-98n14et-il",
+            "hp-zbook-power-g9-6b8c1ea-global"
+          ],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "31997dc80a1d5b69f2912c910e519beae33c93241a7389f3f965ec505e75982d",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [
+          "默认展示中国大陆市场；未作为硬约束"
+        ],
+        "tools_used": [
+          "domain_kb_search",
+          "domain_evidence_check",
+          "domain_evidence_check"
+        ],
+        "candidates": [
+          {
+            "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+            "brand": "HP",
+            "model_name": "HP ZBook Firefly 14 G11 (98N14ET)",
+            "region": "IL",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "model_name",
+                "status": "matched",
+                "actual_value": "HP ZBook Firefly 14 G11 (98N14ET)",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-model-name",
+                    "source_id": "src-hp-zbook-firefly14-g11-98n14et-il",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/spec-sheet/il-en/2102271142/pdf/98N14ET.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+                    "region": "IL",
+                    "field": "model_name",
+                    "value": "HP ZBook Firefly 14 G11 (98N14ET)",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+            "brand": "HP",
+            "model_name": "HP ZBook Power 15.6 G9 (6B8C1EA)",
+            "region": "GLOBAL",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "model_name",
+                "status": "matched",
+                "actual_value": "HP ZBook Power 15.6 G9 (6B8C1EA)",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-model-name",
+                    "source_id": "src-hp-zbook-power-g9-6b8c1ea-global",
+                    "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/ww-en/2101329734/pdf/6B8C1EA.pdf",
+                    "source_type": "official_product",
+                    "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+                    "region": "GLOBAL",
+                    "field": "model_name",
+                    "value": "HP ZBook Power 15.6 G9 (6B8C1EA)",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          }
+        ],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [
+          {
+            "evidence_id": "ev-hp-zbook-firefly14-g11-98n14et-il-model-name",
+            "source_id": "src-hp-zbook-firefly14-g11-98n14et-il",
+            "source_url": "https://pcb.inc.hp.com/dc/api/spec-sheet/il-en/2102271142/pdf/98N14ET.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-zbook-firefly14-g11-98n14et-il",
+            "region": "IL",
+            "field": "model_name",
+            "value": "HP ZBook Firefly 14 G11 (98N14ET)",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          },
+          {
+            "evidence_id": "ev-hp-zbook-power-g9-6b8c1ea-global-model-name",
+            "source_id": "src-hp-zbook-power-g9-6b8c1ea-global",
+            "source_url": "https://pcb.inc.hp.com/dc/api/productsheet/ww-en/2101329734/pdf/6B8C1EA.pdf",
+            "source_type": "official_product",
+            "model_id": "hp-zbook-power-g9-6b8c1ea-global",
+            "region": "GLOBAL",
+            "field": "model_name",
+            "value": "HP ZBook Power 15.6 G9 (6B8C1EA)",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          }
+        ],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": false,
+        "stop_reason": "已完成字段证据核验与确定性安全门。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 5 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 644.4613998755813
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "hp-zbook-firefly14-g11-98n14et-il",
+              "fields": [
+                "model_name"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 1 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          },
+          {
+            "step": 3,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "hp-zbook-power-g9-6b8c1ea-global",
+              "fields": [
+                "model_name"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 1 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          }
+        ],
+        "latency_ms": 4962.022399995476,
+        "tool_call_count": 3,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 1,
+          "input_tokens": 2401,
+          "output_tokens": 180,
+          "estimated_cost_cny": 0.0022808000000000004
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 4962.358299875632
+    },
+    {
+      "case_id": "laptop-015",
+      "split": "holdout",
+      "category": "similar_configuration",
+      "expected_ids": [
+        "asus-proart-p16-h7606wi-cn",
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [],
+      "task_correct": false,
+      "abstained": false,
+      "active_fields": [],
+      "proposal_fields": [],
+      "field_tp": 3,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": false,
+      "tools_used": [
+        "domain_kb_search"
+      ],
+      "candidate_pool_size": 3,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 513.5810999199748,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：H7606WI 是否等同于 H7606WX？",
+        "task_type": "comparison",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [],
+        "clarification_state": "not_required",
+        "constraint_diff": [],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:32.231274Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "asus-proart-p16-h7606wi-cn",
+            "asus-proart-p16-h7606ww-cn",
+            "asus-proart-p16-h7606wx-cn"
+          ],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "640c7cf7c5b8d0dc38389ce2127bdf9ab1f003bb7d761a8fb3181487070ee576",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [
+          "默认展示中国大陆市场；未作为硬约束"
+        ],
+        "tools_used": [
+          "domain_kb_search"
+        ],
+        "candidates": [
+          {
+            "model_id": "asus-proart-p16-h7606wi-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WI",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "asus-proart-p16-h7606ww-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WW",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WX",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          }
+        ],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": false,
+        "stop_reason": "已完成字段证据核验与确定性安全门。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 5 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 505.7772998698056
+          }
+        ],
+        "latency_ms": 513.5810999199748,
+        "tool_call_count": 1,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 513.9425001107156
+    },
+    {
+      "case_id": "laptop-016",
+      "split": "holdout",
+      "category": "region_configuration",
+      "expected_ids": [
+        "dell-xps13-9350-caexchcto9350lnl02-ca"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [],
+      "task_correct": false,
+      "abstained": true,
+      "active_fields": [
+        "region"
+      ],
+      "proposal_fields": [
+        "region"
+      ],
+      "field_tp": 2,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": false,
+      "tools_used": [
+        "domain_product_query",
+        "domain_kb_search"
+      ],
+      "candidate_pool_size": 0,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 457.506800070405,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：核验 caexchcto9350lnl02 是加拿大版，不是美国版。",
+        "task_type": "fact",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": false,
+              "ambiguous": false,
+              "note": null
+            },
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "US",
+              "unit": null,
+              "hard_or_soft": "hard",
+              "provenance": "current_input",
+              "source_text": "美国版",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-3b06638d1ecf5bd6f6fad7ba",
+            "field": "region",
+            "operator": "eq",
+            "normalized_value": "US",
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "supported",
+            "source": "rule",
+            "source_span": {
+              "start": 34,
+              "end": 37,
+              "text": "美国版"
+            },
+            "source_quote": "美国版",
+            "span_source": "server_rule_match",
+            "occurrence": null,
+            "proposal_kind": null,
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 1.0,
+            "active": true,
+            "reason": "schema_and_domain_pack_validated"
+          }
+        ],
+        "clarification_state": "not_required",
+        "constraint_diff": [
+          {
+            "field": "region",
+            "action": "override",
+            "before": [
+              {
+                "field": "region",
+                "operator": "eq",
+                "normalized_value": "CN",
+                "unit": null,
+                "hard_or_soft": "soft",
+                "provenance": "system_default",
+                "source_text": "默认展示中国大陆市场；未作为硬约束",
+                "source_turn": 1,
+                "confidence": 1.0,
+                "supported": true,
+                "active": true,
+                "ambiguous": false,
+                "note": null
+              }
+            ],
+            "after": [
+              {
+                "field": "region",
+                "operator": "eq",
+                "normalized_value": "US",
+                "unit": null,
+                "hard_or_soft": "hard",
+                "provenance": "current_input",
+                "source_text": "美国版",
+                "source_turn": 1,
+                "confidence": 1.0,
+                "supported": true,
+                "active": true,
+                "ambiguous": false,
+                "note": null
+              }
+            ],
+            "proposal_id": "cp-3b06638d1ecf5bd6f6fad7ba"
+          }
+        ],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:32.689183Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "bf41836179489d6c5d5909d8c8f00519013d09a982dcb91d7a06660d01b8cffc",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [],
+        "tools_used": [
+          "domain_product_query",
+          "domain_kb_search"
+        ],
+        "candidates": [],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": true,
+        "stop_reason": "没有可由治理证据确定的合规候选。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_product_query",
+            "arguments_summary": {
+              "constraint_fields": [
+                "region"
+              ]
+            },
+            "status": "success",
+            "result_summary": "只读查询检查 12 个完整候选",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 7.710800040513277
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 1 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 441.32900005206466
+          }
+        ],
+        "latency_ms": 457.506800070405,
+        "tool_call_count": 2,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 457.90459983982146
+    },
+    {
+      "case_id": "laptop-017",
+      "split": "holdout",
+      "category": "region_configuration",
+      "expected_ids": [
+        "dell-xps13-9350-usexchcto9350lnl06-us"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [],
+      "task_correct": false,
+      "abstained": true,
+      "active_fields": [
+        "configuration_id"
+      ],
+      "proposal_fields": [
+        "configuration_id",
+        "region"
+      ],
+      "field_tp": 2,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": false,
+      "tools_used": [],
+      "candidate_pool_size": 0,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 1,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0,
+      "latency_ms": 6187.702300027013,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：不要把 usexchcto9350lnl06 的美国版事实写到加拿大版。",
+        "task_type": "filter",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            },
+            {
+              "field": "configuration_id",
+              "operator": "eq",
+              "normalized_value": "usexchcto9350lnl06",
+              "unit": null,
+              "hard_or_soft": "hard",
+              "provenance": "current_input",
+              "source_text": "不要把 usexchcto9350lnl06 的美国版事实写到加拿大版",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-74797f981aeeba486b8c65cd",
+            "field": "region",
+            "operator": "eq",
+            "normalized_value": "US",
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "needs_confirmation",
+            "source": "rule",
+            "source_span": {
+              "start": 28,
+              "end": 31,
+              "text": "美国版"
+            },
+            "source_quote": "美国版",
+            "span_source": "server_rule_match",
+            "occurrence": null,
+            "proposal_kind": null,
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 1.0,
+            "active": false,
+            "reason": "current_input_constraints_conflict"
+          },
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-903f9a939432ab153aace17b",
+            "field": "configuration_id",
+            "operator": "eq",
+            "normalized_value": "usexchcto9350lnl06",
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "supported",
+            "source": "llm",
+            "source_span": {
+              "start": 4,
+              "end": 39,
+              "text": "不要把 usexchcto9350lnl06 的美国版事实写到加拿大版"
+            },
+            "source_quote": "不要把 usexchcto9350lnl06 的美国版事实写到加拿大版",
+            "span_source": "server_exact_quote",
+            "occurrence": 1,
+            "proposal_kind": "supported_constraint",
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 1.0,
+            "active": true,
+            "reason": "schema_and_domain_pack_validated"
+          },
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-4658fd19e19c9102f8dcb890",
+            "field": "region",
+            "operator": "not_in",
+            "normalized_value": [
+              "美国版"
+            ],
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "needs_confirmation",
+            "source": "llm",
+            "source_span": {
+              "start": 4,
+              "end": 39,
+              "text": "不要把 usexchcto9350lnl06 的美国版事实写到加拿大版"
+            },
+            "source_quote": "不要把 usexchcto9350lnl06 的美国版事实写到加拿大版",
+            "span_source": "server_exact_quote",
+            "occurrence": 1,
+            "proposal_kind": "supported_constraint",
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 1.0,
+            "active": false,
+            "reason": "current_input_constraints_conflict"
+          }
+        ],
+        "clarification_state": "pending",
+        "constraint_diff": [
+          {
+            "field": "configuration_id",
+            "action": "add",
+            "before": [],
+            "after": [
+              {
+                "field": "configuration_id",
+                "operator": "eq",
+                "normalized_value": "usexchcto9350lnl06",
+                "unit": null,
+                "hard_or_soft": "hard",
+                "provenance": "current_input",
+                "source_text": "不要把 usexchcto9350lnl06 的美国版事实写到加拿大版",
+                "source_turn": 1,
+                "confidence": 1.0,
+                "supported": true,
+                "active": true,
+                "ambiguous": false,
+                "note": null
+              }
+            ],
+            "proposal_id": "cp-903f9a939432ab153aace17b"
+          }
+        ],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:38.877632Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "bf41836179489d6c5d5909d8c8f00519013d09a982dcb91d7a06660d01b8cffc",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [],
+        "tools_used": [],
+        "candidates": [],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [
+          "请确认这些条件是否应进入筛选：美国版 → region eq US；不要把 usexchcto9350lnl06 的美国版事实写到加拿大版 → region not_in ['美国版']。缺少具体数值时请直接补充数值。"
+        ],
+        "abstained": true,
+        "stop_reason": "等待用户澄清，未进入 Checker。",
+        "trace": [],
+        "latency_ms": 6187.702300027013,
+        "tool_call_count": 0,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": null,
+          "provider_calls": 1
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 6188.031899975613
+    },
+    {
+      "case_id": "laptop-018",
+      "split": "holdout",
+      "category": "region_configuration",
+      "expected_ids": [
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [
+        "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+      ],
+      "task_correct": true,
+      "abstained": false,
+      "active_fields": [],
+      "proposal_fields": [],
+      "field_tp": 2,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": true,
+      "tools_used": [
+        "domain_kb_search",
+        "domain_evidence_check"
+      ],
+      "candidate_pool_size": 1,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 484.1714999638498,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：21NX00K4PH 属于哪个地区配置？",
+        "task_type": "fact",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [],
+        "clarification_state": "not_required",
+        "constraint_diff": [],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:39.362383Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+          ],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "08bbd2e1039bbd2c18ca09eb239610bc48c5d907ddf321fb1efcdb226e660eef",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [
+          "默认展示中国大陆市场；未作为硬约束"
+        ],
+        "tools_used": [
+          "domain_kb_search",
+          "domain_evidence_check"
+        ],
+        "candidates": [
+          {
+            "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "brand": "Lenovo",
+            "model_name": "Lenovo ThinkPad X1 Carbon Gen 13 (21NX00K4PH)",
+            "region": "PH",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "region",
+                "status": "matched",
+                "actual_value": "PH",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-region",
+                    "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph",
+                    "source_url": "https://psref.lenovo.com/Detail/ThinkPad_X1_Carbon_Gen_13_Aura_Edition?M=21NX00K4PH",
+                    "source_type": "official_product",
+                    "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+                    "region": "PH",
+                    "field": "region",
+                    "value": "PH",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          }
+        ],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [
+          {
+            "evidence_id": "ev-lenovo-x1-carbon-g13-21nx00k4ph-ph-region",
+            "source_id": "src-lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "source_url": "https://psref.lenovo.com/Detail/ThinkPad_X1_Carbon_Gen_13_Aura_Edition?M=21NX00K4PH",
+            "source_type": "official_product",
+            "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "region": "PH",
+            "field": "region",
+            "value": "PH",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          }
+        ],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": false,
+        "stop_reason": "已完成字段证据核验与确定性安全门。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 1 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 468.3521999977529
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+              "fields": [
+                "region"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 1 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          }
+        ],
+        "latency_ms": 484.1714999638498,
+        "tool_call_count": 2,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 484.50230015441775
+    },
+    {
+      "case_id": "laptop-019",
+      "split": "holdout",
+      "category": "region_configuration",
+      "expected_ids": [
+        "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+      ],
+      "recommended_ids": [],
+      "referenced_ids": [],
+      "task_correct": false,
+      "abstained": true,
+      "active_fields": [],
+      "proposal_fields": [],
+      "field_tp": 2,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": false,
+      "tools_used": [
+        "domain_kb_search"
+      ],
+      "candidate_pool_size": 3,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 529.1892001405358,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：只接受 US 配置，不接受 DE 或 PH 的相似 ThinkPad。",
+        "task_type": "filter",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [],
+        "clarification_state": "not_required",
+        "constraint_diff": [],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:39.891823Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+          ],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "59e7a6189b146c64214fd06464adb47975f18d255cc385a5af738c88de7866dc",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [
+          "默认展示中国大陆市场；未作为硬约束"
+        ],
+        "tools_used": [
+          "domain_kb_search"
+        ],
+        "candidates": [
+          {
+            "model_id": "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+            "brand": "Lenovo",
+            "model_name": "Lenovo ThinkPad T14 Gen 5 Intel (21ML000FGR)",
+            "region": "DE",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+            "brand": "Lenovo",
+            "model_name": "Lenovo ThinkPad T14s Gen 7 AMD (21YW0042US)",
+            "region": "US",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          },
+          {
+            "model_id": "lenovo-x1-carbon-g13-21nx00k4ph-ph",
+            "brand": "Lenovo",
+            "model_name": "Lenovo ThinkPad X1 Carbon Gen 13 (21NX00K4PH)",
+            "region": "PH",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "unknown",
+            "fields": [],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          }
+        ],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [],
+        "unresolved_facts": [],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": true,
+        "stop_reason": "没有可由治理证据确定的合规候选。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 5 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 521.3266001082957
+          }
+        ],
+        "latency_ms": 529.1892001405358,
+        "tool_call_count": 1,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 529.579299967736
+    },
+    {
+      "case_id": "laptop-020",
+      "split": "holdout",
+      "category": "region_configuration",
+      "expected_ids": [],
+      "recommended_ids": [],
+      "referenced_ids": [
+        "asus-proart-p16-h7606wx-cn"
+      ],
+      "task_correct": true,
+      "abstained": true,
+      "active_fields": [
+        "region"
+      ],
+      "proposal_fields": [
+        "region"
+      ],
+      "field_tp": 2,
+      "field_fp": 0,
+      "field_fn": 0,
+      "tool_selection_correct": true,
+      "tools_used": [
+        "domain_product_query",
+        "domain_kb_search",
+        "domain_evidence_check"
+      ],
+      "candidate_pool_size": 1,
+      "eligible_ids": [],
+      "recommendation_evidence_covered": 0,
+      "recommendation_evidence_denominator": 0,
+      "unknown_overclaimed": 0,
+      "checker_boundary_violations": 0,
+      "provider_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.0,
+      "latency_ms": 454.8629999626428,
+      "degraded_states": [],
+      "report": {
+        "report_version": "smartbuy-decision-v3",
+        "mode": "trusted",
+        "request_summary": "笔记本：H7606WX 的国行字段能否用于美版？",
+        "task_type": "fact",
+        "constraint_set": {
+          "version": "smartbuy-constraint-set-v1",
+          "constraints": [
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "soft",
+              "provenance": "system_default",
+              "source_text": "默认展示中国大陆市场；未作为硬约束",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": false,
+              "ambiguous": false,
+              "note": null
+            },
+            {
+              "field": "region",
+              "operator": "eq",
+              "normalized_value": "CN",
+              "unit": null,
+              "hard_or_soft": "hard",
+              "provenance": "current_input",
+              "source_text": "国行",
+              "source_turn": 1,
+              "confidence": 1.0,
+              "supported": true,
+              "active": true,
+              "ambiguous": false,
+              "note": null
+            }
+          ],
+          "cancelled_fields": [],
+          "rejected_model_constraints": []
+        },
+        "constraint_proposals": [
+          {
+            "schema_version": "proofpick-constraint-proposal-v1",
+            "proposal_id": "cp-ef1ade8b67fd3a0d1e0d5d4e",
+            "field": "region",
+            "operator": "eq",
+            "normalized_value": "CN",
+            "unit": null,
+            "strength": "hard",
+            "action": "add",
+            "status": "supported",
+            "source": "rule",
+            "source_span": {
+              "start": 13,
+              "end": 15,
+              "text": "国行"
+            },
+            "source_quote": "国行",
+            "span_source": "server_rule_match",
+            "occurrence": null,
+            "proposal_kind": null,
+            "clarification_question": null,
+            "source_turn": 1,
+            "confidence": 1.0,
+            "active": true,
+            "reason": "schema_and_domain_pack_validated"
+          }
+        ],
+        "clarification_state": "not_required",
+        "constraint_diff": [
+          {
+            "field": "region",
+            "action": "override",
+            "before": [
+              {
+                "field": "region",
+                "operator": "eq",
+                "normalized_value": "CN",
+                "unit": null,
+                "hard_or_soft": "soft",
+                "provenance": "system_default",
+                "source_text": "默认展示中国大陆市场；未作为硬约束",
+                "source_turn": 1,
+                "confidence": 1.0,
+                "supported": true,
+                "active": true,
+                "ambiguous": false,
+                "note": null
+              }
+            ],
+            "after": [
+              {
+                "field": "region",
+                "operator": "eq",
+                "normalized_value": "CN",
+                "unit": null,
+                "hard_or_soft": "hard",
+                "provenance": "current_input",
+                "source_text": "国行",
+                "source_turn": 1,
+                "confidence": 1.0,
+                "supported": true,
+                "active": true,
+                "ambiguous": false,
+                "note": null
+              }
+            ],
+            "proposal_id": "cp-ef1ade8b67fd3a0d1e0d5d4e"
+          }
+        ],
+        "constraint_verification": {
+          "verifier_version": "proofpick-domain-checker-v2-6b",
+          "checked_at": "2026-09-02T12:59:40.346790Z",
+          "constraint_set_version": "smartbuy-constraint-set-v1",
+          "candidate_pool_model_ids": [
+            "asus-proart-p16-h7606wx-cn"
+          ],
+          "candidates": [],
+          "unsupported_constraints": [],
+          "eligible_model_ids": [],
+          "rejected_model_ids": [],
+          "semantic_fingerprint": "c04627c97ea79435be0176263da9ab1faacd789cb531ca4ff511c5b1be732238",
+          "degraded": false,
+          "degrade_reason": null
+        },
+        "hard_constraints": [],
+        "soft_preferences": [],
+        "tools_used": [
+          "domain_product_query",
+          "domain_kb_search",
+          "domain_evidence_check"
+        ],
+        "candidates": [
+          {
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "brand": "ASUS",
+            "model_name": "ASUS ProArt P16 H7606WX",
+            "region": "CN",
+            "price_cny": null,
+            "price_observed_at": null,
+            "overall_status": "matched",
+            "fields": [
+              {
+                "field": "region",
+                "status": "matched",
+                "actual_value": "CN",
+                "expected": null,
+                "reason": "governed_field_evidence",
+                "evidence": [
+                  {
+                    "evidence_id": "ev-asus-proart-p16-h7606wx-cn-region",
+                    "source_id": "src-asus-proart-p16-h7606wx-cn",
+                    "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+                    "source_type": "official_product",
+                    "model_id": "asus-proart-p16-h7606wx-cn",
+                    "region": "CN",
+                    "field": "region",
+                    "value": "CN",
+                    "location": "governed field evidence",
+                    "effective_time": "2026-09-02T00:00:00+08:00"
+                  }
+                ]
+              }
+            ],
+            "eligible": false,
+            "verifier_status": null,
+            "constraint_results": [],
+            "violated_fields": [],
+            "unknown_fields": [],
+            "conflict_fields": [],
+            "unsupported_constraints": [],
+            "verifier_version": null,
+            "recommendation_reason": null,
+            "elimination_reason": null
+          }
+        ],
+        "recommended_model_ids": [],
+        "eliminated_model_ids": [],
+        "evidence": [
+          {
+            "evidence_id": "ev-asus-proart-p16-h7606wx-cn-region",
+            "source_id": "src-asus-proart-p16-h7606wx-cn",
+            "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+            "source_type": "official_product",
+            "model_id": "asus-proart-p16-h7606wx-cn",
+            "region": "CN",
+            "field": "region",
+            "value": "CN",
+            "location": "governed field evidence",
+            "effective_time": "2026-09-02T00:00:00+08:00"
+          }
+        ],
+        "unresolved_facts": [
+          {
+            "model_id": null,
+            "field": "region",
+            "status": "unknown",
+            "values": [],
+            "reason": "目标地区配置没有可比治理证据，禁止跨地区推断。",
+            "evidence": []
+          }
+        ],
+        "degraded_states": [],
+        "pending_questions": [],
+        "abstained": true,
+        "stop_reason": "没有可由治理证据确定的合规候选。",
+        "trace": [
+          {
+            "step": 1,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_product_query",
+            "arguments_summary": {
+              "constraint_fields": [
+                "region"
+              ]
+            },
+            "status": "success",
+            "result_summary": "只读查询检查 12 个完整候选",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 7.211199961602688
+          },
+          {
+            "step": 2,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_kb_search",
+            "arguments_summary": {
+              "domain_id": "laptop"
+            },
+            "status": "success",
+            "result_summary": "返回 1 个治理文档",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 431.90770014189184
+          },
+          {
+            "step": 3,
+            "parent_step": null,
+            "task_summary": "laptop domain task",
+            "tool": "domain_evidence_check",
+            "arguments_summary": {
+              "product_id": "asus-proart-p16-h7606wx-cn",
+              "fields": [
+                "region"
+              ]
+            },
+            "status": "success",
+            "result_summary": "核验 1 个字段",
+            "next_action": "continue",
+            "stop_or_degrade_reason": null,
+            "duration_ms": 0.0
+          }
+        ],
+        "latency_ms": 454.8629999626428,
+        "tool_call_count": 3,
+        "constraint_check_latency_ms": 0.0,
+        "usage": {
+          "domain_id": "laptop",
+          "domain_pack_version": "1.0.0",
+          "data_version": "laptop-governed-2026-09-02-v1",
+          "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+          "complete_candidate_pool_size": 12,
+          "provider_calls": 0,
+          "input_tokens": 0,
+          "output_tokens": 0,
+          "estimated_cost_cny": 0.0
+        },
+        "open_research": null
+      },
+      "wall_latency_ms": 455.2246001549065
+    }
+  ]
+}

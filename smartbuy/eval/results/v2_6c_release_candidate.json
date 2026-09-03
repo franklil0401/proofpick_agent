@@ -1,0 +1,32 @@
+{
+  "schema_version": "proofpick-v2-6c-rc-v1",
+  "case_sha256": "3dfcc0f442bda2b6b4d2e96814a8973b415b3d8c8b9b33235924982fa1758d34",
+  "scoring_policy_sha256": "7617f607d98b5e06e1c43bf09c2fce71a44cea89d9f1da822cc70da5f2f4363c",
+  "domain_id": "laptop",
+  "domain_pack_version": "1.0.0",
+  "data_version": "laptop-governed-2026-09-02-v1",
+  "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+  "index_manifest_hash": "74a2c4467d53bd4ab265c61fd0cce42b0656bbb9a841c0f37bea5c5d86d8330f",
+  "orchestrator": "react",
+  "max_steps": 8,
+  "max_tool_calls": 12,
+  "temperature": 0,
+  "cache": "cold",
+  "files": {
+    "smartbuy/agent/domain_agent.py": "54dc05476840cf3fc365cf32616959cc7485b90db0b0df2bdf65ff13ff72a9d7",
+    "smartbuy/agent/domain_gateway.py": "eb7e6854ce7ae958f9a032bf1c3a45b8e5db6e8b668f5fa91509a1bcb5574317",
+    "smartbuy/domain_packs/category_registry.json": "3dec19967803a9444d629f814f5a83bca04d454b8acfee75ade793ceff6151fa",
+    "smartbuy/domain_packs/category_router.py": "ee80637cd88ade83e6d2812a22396943df1d716f954828da7010ccdbe13482a0",
+    "smartbuy/constraint_proposals/engine.py": "886b2dfd74d1b690623380439520a60f53148e01156645fa91f989753f14fe81",
+    "smartbuy/constraint_proposals/provider.py": "734489fbc8a336b577a31251ef7b95aaf4ed2e5cc56debbf567b0a0054541a22",
+    "smartbuy/domain_packs/laptop/manifest.json": "60584b5b27aec57c4209f3604f6bc75e73e24553d5540ffeebd89f86ee878a41",
+    "smartbuy/domain_packs/laptop/fields.json": "f060f1f3e5b9180d8dd47dae3b03cc6c516f1a8d2ce9b73ff85b6cc576667672",
+    "smartbuy/domain_packs/laptop/policies.json": "f063f4d9ea1db221fca6c1a8259c2adc576713abff8e34845ddf903a030bfe2f",
+    "smartbuy/product_packs/examples/laptop-v1/pack.json": "0417332b70d772e851f705c83df7932cd60f5d879425ee04f032f08d9c16dc2a",
+    "smartbuy/eval/v2_6a_laptop_cases.jsonl": "3dfcc0f442bda2b6b4d2e96814a8973b415b3d8c8b9b33235924982fa1758d34",
+    "smartbuy/eval/v2_6c_laptop_scoring_policy.json": "7617f607d98b5e06e1c43bf09c2fce71a44cea89d9f1da822cc70da5f2f4363c",
+    "smartbuy/eval/v2_6c_laptop_agent_runner.py": "f91f08135bd5bb9065ea594256eab05c0433130500250d18980d0124dfaddf6b"
+  },
+  "config_hash": "a0e137b03c5ee3cb614d69d201b78391e3a60684a292ce9b78a619782dfe7cda",
+  "frozen_at": "2026-09-02T12:59:10.407768+00:00"
+}

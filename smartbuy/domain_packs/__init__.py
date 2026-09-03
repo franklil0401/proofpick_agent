@@ -9,6 +9,12 @@ from smartbuy.domain_packs.loader import (
 from smartbuy.domain_packs.evaluator import ConstraintDecision, DomainConstraintEvaluator
 from smartbuy.domain_packs.registry import DomainPackRegistry
 from smartbuy.domain_packs.settings import DomainPackSettings
+from smartbuy.domain_packs.category_router import (
+    CategoryRoute,
+    CategoryRouteStatus,
+    CategoryRouter,
+    DEFAULT_CATEGORY_REGISTRY,
+)
 
 __all__ = [
     "DEFAULT_MONITOR_PACK",
@@ -19,4 +25,8 @@ __all__ = [
     "ConstraintDecision",
     "DomainConstraintEvaluator",
     "DomainPackRegistry",
+    "CategoryRoute",
+    "CategoryRouteStatus",
+    "CategoryRouter",
+    "DEFAULT_CATEGORY_REGISTRY",
 ]

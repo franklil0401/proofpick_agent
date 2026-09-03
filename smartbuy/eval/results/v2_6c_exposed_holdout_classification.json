@@ -1,0 +1,18 @@
+{
+  "schema_version": "proofpick-v2-6c-failure-classification-v1",
+  "classification": "exposed_holdout_regression_v1",
+  "original_result_path": "smartbuy/eval/results/v2_6c_laptop_holdout_first.json",
+  "original_result_sha256": "5d7009f7c262547a41d63727e5e2e70037cbca01f7d836c2bc10c2a28826aebc",
+  "original_run_metadata_preserved": true,
+  "first_run_count": 1,
+  "task_result": {"passed": 3, "total": 10},
+  "recommendation_evidence_coverage": {"covered": 3, "total": 9},
+  "release_candidate_config_hash": "a0e137b03c5ee3cb614d69d201b78391e3a60684a292ce9b78a619782dfe7cda",
+  "reuse_policy": {
+    "may_be_used_as_unseen_holdout": false,
+    "may_be_used_as_exposed_regression": true,
+    "may_overwrite_first_result": false,
+    "requires_new_holdout_for_unseen_claims": true
+  },
+  "stage_status": "blocked_not_completed"
+}

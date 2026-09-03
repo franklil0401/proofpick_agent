@@ -1,0 +1,11 @@
+{
+  "schema_version": "proofpick-category-registry-v1",
+  "domains": {
+    "monitor": {
+      "aliases": ["monitor", "display", "显示器", "屏幕", "外接屏"]
+    },
+    "laptop": {
+      "aliases": ["laptop", "notebook", "笔记本", "笔记本电脑", "轻薄本", "商务本", "游戏本"]
+    }
+  }
+}

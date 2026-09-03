@@ -315,6 +315,10 @@ class ConstraintProposalValidator:
             )
         value = raw.get("value", raw.get("normalized_value"))
         unit = raw.get("unit")
+        if source == ProposalSource.LLM and source_quote:
+            value, unit = self._numeric_from_exact_quote(
+                canonical, operator, source_quote, value, unit
+            )
         if status in {ProposalStatus.AMBIGUOUS, ProposalStatus.NEEDS_CONFIRMATION}:
             normalized = self._normalize_if_present(canonical, operator, value, unit)
             return ConstraintProposal(
@@ -488,11 +492,47 @@ class ConstraintProposalValidator:
                 raise ValueError("range requires two values")
             values = [self.pack.normalize_value(field, item, unit=unit) for item in value]
             return sorted(values)
-        if operator in {ConstraintOperator.IN, ConstraintOperator.NOT_IN, ConstraintOperator.CONTAINS_ALL}:
+        if operator == ConstraintOperator.CONTAINS_ALL:
+            if not isinstance(value, list) or not value:
+                raise ValueError("list operator requires values")
+            return self.pack.normalize_value(field, value, unit=unit)
+        if operator in {ConstraintOperator.IN, ConstraintOperator.NOT_IN}:
             if not isinstance(value, list) or not value:
                 raise ValueError("list operator requires values")
             return [self.pack.normalize_value(field, item, unit=unit) for item in value]
         return self.pack.normalize_value(field, value, unit=unit)
+
+    def _numeric_from_exact_quote(
+        self,
+        field: str,
+        operator: ConstraintOperator,
+        quote: str,
+        value: Any,
+        unit: str | None,
+    ) -> tuple[Any, str | None]:
+        definition = self.pack.fields[field]
+        if definition.data_type.value not in {"number", "integer"}:
+            return value, unit
+        if operator == ConstraintOperator.RANGE:
+            return value, unit
+        units = sorted(
+            {definition.unit or "", *definition.accepted_units}, key=len, reverse=True
+        )
+        units = [item for item in units if item]
+        if not units:
+            return value, unit
+        pattern = "|".join(re.escape(item) for item in units)
+        match = re.search(
+            rf"(?<![\d.])(\d+(?:\.\d+)?)\s*({pattern})(?![a-z])",
+            quote,
+            flags=re.I,
+        )
+        if match is None:
+            return value, unit
+        numeric = float(match.group(1))
+        if definition.data_type.value == "integer" and numeric.is_integer():
+            numeric = int(numeric)
+        return numeric, match.group(2)
 
     @staticmethod
     def _validate_bounds(field: str, value: Any) -> None:
@@ -670,8 +710,20 @@ class DeterministicConstraintParser:
                     )
 
         if "resolution" not in cancelled:
-            for alias in sorted(_RESOLUTIONS, key=len, reverse=True):
-                match = re.search(re.escape(alias), query, flags=re.I)
+            explicit_resolution = re.search(
+                r"(?<!\d)(\d{3,5})\s*[x×]\s*(\d{3,5})(?!\d)", query, flags=re.I
+            )
+            if explicit_resolution:
+                add(
+                    "resolution", "eq",
+                    f"{explicit_resolution.group(1)}x{explicit_resolution.group(2)}",
+                    explicit_resolution,
+                )
+            for alias in (() if explicit_resolution else sorted(_RESOLUTIONS, key=len, reverse=True)):
+                pattern = re.escape(alias)
+                if re.fullmatch(r"[a-z0-9.+-]+", alias, flags=re.I):
+                    pattern = rf"(?<![a-z0-9.]){pattern}(?![a-z0-9.])"
+                match = re.search(pattern, query, flags=re.I)
                 if match:
                     prefix = query[max(0, match.start() - 8):match.start()].casefold()
                     suffix = query[match.end():match.end() + 6].casefold()
@@ -787,7 +839,7 @@ class DeterministicConstraintParser:
                 )
 
         if "region" not in cancelled:
-            regions = ((r"(?:国行|中国大陆|中国版)", "CN"), (r"美国版", "US"), (r"加拿大版", "CA"))
+            regions = ((r"(?:国行|中国大陆|中国版|中国区)", "CN"), (r"(?:美国版|美国区)", "US"), (r"(?:加拿大版|加拿大区)", "CA"))
             for pattern, value in regions:
                 if match := re.search(pattern, query):
                     add("region", "eq", value, match)
@@ -860,6 +912,7 @@ class NaturalConstraintEngine:
         *,
         max_provider_calls: int = 1,
         max_cost_cny: float = 0.05,
+        always_use_provider: bool = False,
     ) -> None:
         self.pack = pack
         self.parser = DeterministicConstraintParser(pack)
@@ -867,6 +920,7 @@ class NaturalConstraintEngine:
         self.provider = provider
         self.max_provider_calls = max_provider_calls
         self.max_cost_cny = max_cost_cny
+        self.always_use_provider = always_use_provider
         self.legacy = ConstraintNormalizer()
 
     async def resolve(
@@ -885,7 +939,7 @@ class NaturalConstraintEngine:
         provider_calls = input_tokens = output_tokens = 0
         cost = provider_latency = 0.0
         if (
-            not proposals
+            (not proposals or self.always_use_provider)
             and self.provider is not None
             and self.max_provider_calls > 0
             and self._needs_fallback(query)
@@ -903,12 +957,15 @@ class NaturalConstraintEngine:
                 for raw in result.get("proposals", [])
                 if isinstance(raw, dict)
             ]
-            proposals = [
+            provider_proposals = [
                 self.validator.validate(
                     query, raw, source=ProposalSource.LLM, source_turn=source_turn
                 )
                 for raw in raw_proposals
             ]
+            proposals = self.parser._deduplicate_and_mark_conflicts(
+                [*proposals, *provider_proposals]
+            )
         base = self.legacy.build(
             "",
             source_turn=source_turn,
