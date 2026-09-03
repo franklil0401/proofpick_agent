@@ -1,0 +1,129 @@
+{
+  "cache": {
+    "main_assessment": "disabled_cold",
+    "query_cache_enabled": false
+  },
+  "checkpoint": {
+    "case_journal": "append_and_fsync",
+    "completed_cases_are_not_replayed": true,
+    "resume_same_run_id_only": true
+  },
+  "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+  "config_sha256": "555e4d8bcce61bb90aba5078c04aedce5f4ba2deca369ff0ad011a5119289224",
+  "data_manifest_hash": "d44373c8214cb996776445e5a5c1da60c233ce5d4b770c261399d913211ac1ad",
+  "data_version": "laptop-governed-2026-09-02-v1",
+  "dependency_versions": {
+    "chromadb": "1.3.4",
+    "httpx": "0.28.1",
+    "langgraph": "1.0.5",
+    "pydantic": "2.11.9"
+  },
+  "domain_id": "laptop",
+  "domain_pack_hashes": {
+    "fields.json": "f060f1f3e5b9180d8dd47dae3b03cc6c516f1a8d2ce9b73ff85b6cc576667672",
+    "manifest.json": "60584b5b27aec57c4209f3604f6bc75e73e24553d5540ffeebd89f86ee878a41",
+    "policies.json": "f063f4d9ea1db221fca6c1a8259c2adc576713abff8e34845ddf903a030bfe2f"
+  },
+  "domain_pack_version": "1.0.0",
+  "evaluation_runner_sha256": "570880b7b30d6675c51e6d50b875970cc172c8d72a09eda71e69458b47eec163",
+  "feature_flags": {
+    "domain_pack_path": true,
+    "langgraph": false,
+    "long_term_memory": false,
+    "open_research": false,
+    "source_search": false,
+    "web_extractor": false
+  },
+  "frozen_at": "2026-09-03T05:57:30.183854Z",
+  "holdout_case_count": 20,
+  "holdout_case_order": [
+    "laptop-r2-001",
+    "laptop-r2-002",
+    "laptop-r2-003",
+    "laptop-r2-004",
+    "laptop-r2-005",
+    "laptop-r2-006",
+    "laptop-r2-007",
+    "laptop-r2-008",
+    "laptop-r2-009",
+    "laptop-r2-010",
+    "laptop-r2-011",
+    "laptop-r2-012",
+    "laptop-r2-013",
+    "laptop-r2-014",
+    "laptop-r2-015",
+    "laptop-r2-016",
+    "laptop-r2-017",
+    "laptop-r2-018",
+    "laptop-r2-019",
+    "laptop-r2-020"
+  ],
+  "holdout_commit": "1112f8dad3410af821e11edc60e83ab7ac3112ce",
+  "holdout_schema_sha256": "4cc231fe9e7ee2a50c30ffb3e86da7abf1041280a2b2ecb3317fbab003cce7dc",
+  "holdout_sha256": "dd17cf4a4bf794c77cc75b5406f9e603effc7be4e63f9e9b215a9d4d8ea9e24f",
+  "index_chunk_count": 12,
+  "index_document_count": 12,
+  "index_manifest_hash": "74a2c4467d53bd4ab265c61fd0cce42b0656bbb9a841c0f37bea5c5d86d8330f",
+  "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+  "limits": {
+    "constraint_provider_calls_per_case": 1,
+    "max_qwen_plus_calls": 50,
+    "max_total_cost_cny": 2.0
+  },
+  "max_agent_steps": 8,
+  "max_tool_calls": 12,
+  "models": {
+    "embedding": "text-embedding-v4",
+    "embedding_dimensions": 1024,
+    "llm": "qwen-plus",
+    "reranker": "qwen3-rerank"
+  },
+  "orchestrator": "react",
+  "product_pack_sha256": "0417332b70d772e851f705c83df7932cd60f5d879425ee04f032f08d9c16dc2a",
+  "production_code_commit": "1112f8dad3410af821e11edc60e83ab7ac3112ce",
+  "production_file_sha256": {
+    "smartbuy/agent/domain_agent.py": "085242d496dacbe87df12daee7741c12ecd927354c465f0d42f5cac2bd9f6808",
+    "smartbuy/constraint_proposals/engine.py": "5228521d304d63eeef5a4bb7ff677b6817df22514be52c48c2d8ce5a9e750a49",
+    "smartbuy/constraint_proposals/provider.py": "734489fbc8a336b577a31251ef7b95aaf4ed2e5cc56debbf567b0a0054541a22",
+    "smartbuy/constraints/models.py": "605679133c8bce70f38c2789766d7cc5a64a346b73af92356f01e002bb57afbd",
+    "smartbuy/domain_packs/category_registry.json": "3dec19967803a9444d629f814f5a83bca04d454b8acfee75ade793ceff6151fa",
+    "smartbuy/domain_packs/laptop/fields.json": "f060f1f3e5b9180d8dd47dae3b03cc6c516f1a8d2ce9b73ff85b6cc576667672",
+    "smartbuy/domain_packs/laptop/manifest.json": "60584b5b27aec57c4209f3604f6bc75e73e24553d5540ffeebd89f86ee878a41",
+    "smartbuy/domain_packs/laptop/policies.json": "f063f4d9ea1db221fca6c1a8259c2adc576713abff8e34845ddf903a030bfe2f",
+    "smartbuy/identity/guards.py": "898a97d83e4047cb30911b037b5bc253c271820d3676546fd63e862a053c5c88",
+    "smartbuy/identity/models.py": "99ae7436a975209e04dd50e625329739bc682d521d71deffbbf4feaf291770aa",
+    "smartbuy/identity/resolver.py": "b576707893d55b17b5ade6e44e20f092b3a8aea6ab5289f9cddb2d42ccd1c034",
+    "smartbuy/orchestration/react_adapter.py": "f39ee75fd930682ba732fcca1e24bcd0c2aea60493a07147a8193fdf2907e9a1",
+    "smartbuy/retrieval/domain_index.py": "7e557a8c10607b5f13c17429a48c68a14fc206c3cae29366696bfe1710a88f22",
+    "smartbuy/tools/domain.py": "74c01e41085fbacf3f0e5bfd9dc6dc686463547cff640dc66db654a0feb33612"
+  },
+  "prompt_contract": {
+    "max_tokens": 600,
+    "name": "submit_constraint_proposals",
+    "provider_file_sha256": "734489fbc8a336b577a31251ef7b95aaf4ed2e5cc56debbf567b0a0054541a22",
+    "temperature": 0
+  },
+  "provider_timeout_seconds": 30,
+  "python_version": "3.12.3",
+  "retry_policy": {
+    "auth_401_403_retries": 0,
+    "base_delay_seconds": 0.25,
+    "max_delay_seconds": 2.0,
+    "max_retries": 2,
+    "retryable_statuses": [
+      429,
+      500,
+      502,
+      503,
+      504,
+      "timeout"
+    ]
+  },
+  "run_id": "v2-6c-r2b-20260903T055728Z-1ac7528b",
+  "run_number": 1,
+  "runtime_storage": "repository_external",
+  "schema_version": "proofpick-v2-6c-r2b-rc-v1",
+  "scoring_policy_sha256": "7cf3395ca1c2bdb5675577a42b885de78b1ebb8bb6962cbe2bd49d210c0a1c7a",
+  "scoring_script_sha256": "4fb494700ffb90558ffb2a5a0c49c6f0a0f854516ce5f7ced4e643eb7480edc8",
+  "uv_lock_sha256": "8e2e889757a4369d0dfef9d5a262f50b6934ef0eede063434a726bb7b8ab94d8"
+}
