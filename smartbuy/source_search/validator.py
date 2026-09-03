@@ -71,6 +71,8 @@ def infer_region(url: str) -> str:
     if first in {"en-ca", "en_ca", "ca"}:
         return "CA"
     known_other = {
+        "ie": "IE",
+        "en-ie": "IE",
         "tw": "TW",
         "zh-tw": "TW",
         "hk": "HK",

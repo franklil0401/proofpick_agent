@@ -55,7 +55,56 @@ def field_terms(pack: LoadedDomainPack, target_fields: list[str]) -> set[str]:
         output.add(definition.label)
         output.update(definition.aliases)
         output.update(_FIELD_TERMS.get(field_id, set()))
+        configured = (
+            pack.pack.policies.get("open_research", {})
+            .get("extractors", {})
+            .get(field_id, {})
+        )
+        output.update(configured.get("terms", []))
     return output
+
+
+def _configured_proposal(
+    pack: LoadedDomainPack,
+    field_id: str,
+    text: str,
+) -> tuple[Any, str | None] | None:
+    """Evaluate bounded, data-only extraction rules declared by a Domain Pack."""
+    rule = (
+        pack.pack.policies.get("open_research", {})
+        .get("extractors", {})
+        .get(field_id)
+    )
+    if not isinstance(rule, dict):
+        return None
+    folded = text.casefold()
+    terms = [str(item).casefold() for item in rule.get("terms", []) if item]
+    if terms and not any(item in folded for item in terms):
+        return None
+    mode = rule.get("mode")
+    if mode == "boolean_presence":
+        return True, None
+    if mode == "number_regex":
+        pattern = rule.get("pattern")
+        if not isinstance(pattern, str) or len(pattern) > 500:
+            return None
+        match = re.search(pattern, text, re.IGNORECASE)
+        return (float(match.group(1)), rule.get("unit")) if match else None
+    if mode == "enum_presence":
+        values = rule.get("values", {})
+        if not isinstance(values, dict):
+            return None
+        for token, value in values.items():
+            if str(token).casefold() in folded:
+                return value, None
+        return None
+    if mode == "string_list_presence":
+        values = rule.get("values", {})
+        if not isinstance(values, dict):
+            return None
+        found = [value for token, value in values.items() if str(token).casefold() in folded]
+        return (list(dict.fromkeys(found)), None) if found else None
+    return None
 
 
 def _number(pattern: str, text: str) -> float | None:
@@ -76,7 +125,17 @@ def _capacity_nearest_terms(text: str, terms: tuple[str, ...]) -> tuple[float, s
     return float(match.group(1)), match.group(2).upper()
 
 
-def _propose(field_id: str, text: str, target_model: str) -> tuple[Any, str | None] | None:
+def _propose(
+    field_id: str,
+    text: str,
+    target_model: str,
+    *,
+    pack: LoadedDomainPack | None = None,
+) -> tuple[Any, str | None] | None:
+    if pack is not None:
+        configured = _configured_proposal(pack, field_id, text)
+        if configured is not None:
+            return configured
     folded = text.casefold()
     if field_id == "display_size_inch":
         value = _number(
@@ -229,16 +288,20 @@ class EvidenceNormalizer:
                 unsupported.append(requested)
                 continue
             field_records = 0
+            identity_sensitive = set(
+                self.pack.pack.policies.get("open_research", {}).get(
+                    "identity_sensitive_fields", []
+                )
+            )
             for snippet in extraction.snippets:
                 # Marketing comparison carousels often contain dimensions and
                 # resolutions for neighbouring models. For these identity-
                 # sensitive fields, visible text is accepted only when the same
                 # bounded snippet names the target model. Structured table/JSON
                 # rows remain eligible without repeating the page model.
-                if snippet.kind == "visible_text" and field_id in {
-                    "display_size_inch",
-                    "resolution",
-                }:
+                if snippet.kind == "visible_text" and field_id in (
+                    {"display_size_inch", "resolution"} | identity_sensitive
+                ):
                     compact_model = re.sub(
                         r"[^a-z0-9]", "", target_model.casefold()
                     )
@@ -247,7 +310,12 @@ class EvidenceNormalizer:
                     )
                     if compact_model not in compact_snippet:
                         continue
-                proposal = _propose(field_id, snippet.text, target_model)
+                proposal = _propose(
+                    field_id,
+                    snippet.text,
+                    target_model,
+                    pack=self.pack,
+                )
                 if proposal is None:
                     continue
                 raw_value, unit = proposal

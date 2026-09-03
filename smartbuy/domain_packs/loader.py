@@ -213,7 +213,7 @@ class DomainPackLoader:
         if not isinstance(policies, dict):
             raise DomainPackValidationError("policies must be an object")
         required = {"source_priority", "checker", "ranking", "memory", "report", "product_pack", "eval_fixtures"}
-        optional = {"understanding"}
+        optional = {"understanding", "open_research"}
         if not required <= set(policies) or not set(policies) <= required | optional:
             raise DomainPackValidationError("domain policy sections are invalid")
         understanding = policies.get("understanding", {})

@@ -12,6 +12,10 @@ from smartbuy.constraint_proposals.engine import NaturalConstraintEngine
 from smartbuy.constraint_proposals.models import ProposalStatus
 from smartbuy.domain_packs import DomainPackLoader, DomainPackRegistry
 from smartbuy.memory import DomainPreferenceMemoryStore
+from smartbuy.orchestration.checkpoints import InMemoryCheckpointBackend
+from smartbuy.orchestration.contracts import OrchestratorRequest
+from smartbuy.orchestration.langgraph_adapter import LangGraphOrchestrator
+from smartbuy.orchestration.react_adapter import ReactOrchestrator
 from smartbuy.product_packs import DomainProductPackManager
 from smartbuy.providers.bailian import BailianError, ProviderResult
 from smartbuy.ranking import (
@@ -284,3 +288,40 @@ async def test_subjective_microphone_quality_requires_clarification(tmp_path: Pa
     assert report.clarification_state.value == "pending"
     assert report.recommended_model_ids == []
     assert any(item.field == "call_quality_observation" for item in report.constraint_proposals)
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("case_id", "query"),
+    [
+        ("filter", "耳机：必须支持 LDAC 且重量不超过 300 克。"),
+        ("configuration", "耳机：核验 NOVA-PRO-WL-XBOX-B-US 是否支持 Xbox。"),
+        ("clarify", "耳机：开会用，麦克风要清楚。"),
+    ],
+)
+async def test_headphone_react_and_langgraph_keep_identical_eligibility(
+    tmp_path: Path,
+    case_id: str,
+    query: str,
+) -> None:
+    react = ReactOrchestrator(await _agent(tmp_path / f"react-{case_id}"))
+    graph = LangGraphOrchestrator(
+        await _agent(tmp_path / f"graph-{case_id}"),
+        InMemoryCheckpointBackend(),
+    )
+    request = OrchestratorRequest(
+        query=query,
+        session_id=f"session-{case_id}",
+        thread_id=f"thread-{case_id}",
+    )
+    left = await react.run(request)
+    right = await graph.run(request)
+    assert left.report is not None and right.report is not None
+    assert left.report.product_scope == right.report.product_scope
+    assert (
+        left.report.constraint_verification.eligible_model_ids
+        == right.report.constraint_verification.eligible_model_ids
+    )
+    assert left.report.recommended_model_ids == right.report.recommended_model_ids
+    assert left.report.clarification_state == right.report.clarification_state
+    await graph.close()

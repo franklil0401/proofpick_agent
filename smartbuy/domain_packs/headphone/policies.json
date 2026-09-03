@@ -51,6 +51,20 @@
     "qualitative_terms":{"comfort_observation":{"terms":["舒服一点","佩戴舒服","长时间戴"],"operator":"eq","strength":"soft"},"measured_latency_ms":{"terms":["延迟不能太高","低延迟"],"operator":"lte","strength":"soft"},"sound_signature":{"terms":["不要低频太轰","声音自然"],"operator":"eq","strength":"soft"},"call_quality_observation":{"terms":["麦克风要清楚","通话清楚一点"],"operator":"eq","strength":"soft"}}
     ,"cancel_terms":{"wired_connection":["有线无线都可以","连接方式不限"],"bluetooth":["有线无线都可以","无线不限"],"active_noise_cancellation":["降噪不限","取消降噪要求"],"weight_g":["重量不限","取消重量要求"],"supported_codecs":["编码不限","取消编码要求"],"supported_platforms":["平台不限","取消平台要求"]}
   },
+  "open_research": {"identity_sensitive_fields":["form_factor","wearing_style","bluetooth","wireless_dongle","multipoint","active_noise_cancellation","transparency_mode","microphone","spatial_audio","battery_hours","weight_g","supported_codecs"],"extractors":{
+    "form_factor":{"mode":"enum_presence","terms":["headphones","earbuds","headband","in-ear","over-ear"],"values":{"true wireless":"in_ear_true_wireless","earbuds":"in_ear_true_wireless","in-ear":"in_ear_true_wireless","over-ear":"over_ear","headphones":"over_ear","headband":"over_ear"}},
+    "wearing_style":{"mode":"enum_presence","terms":["headband","in-ear","earbuds"],"values":{"in-ear":"in_ear","earbuds":"in_ear","headband":"headband"}},
+    "bluetooth":{"mode":"boolean_presence","terms":["bluetooth"]},
+    "wireless_dongle":{"mode":"boolean_presence","terms":["lightspeed","2.4 ghz","2.4ghz","wireless receiver"]},
+    "multipoint":{"mode":"boolean_presence","terms":["multipoint","multi-point","two devices"]},
+    "active_noise_cancellation":{"mode":"boolean_presence","terms":["noise cancel","noise cancelling","noise cancellation","anc"]},
+    "transparency_mode":{"mode":"boolean_presence","terms":["ambient sound","transparency mode"]},
+    "microphone":{"mode":"boolean_presence","terms":["microphone","mic"]},
+    "spatial_audio":{"mode":"boolean_presence","terms":["spatial audio","360 reality audio"]},
+    "battery_hours":{"mode":"number_regex","terms":["battery","hours"],"pattern":"(?:up to\\s*|battery(?: life)?[^0-9]{0,30})([0-9]{1,3}(?:\\.[0-9]+)?)\\s*(?:hours?|hrs?)","unit":"h"},
+    "weight_g":{"mode":"number_regex","terms":["weight","grams"," g"],"pattern":"(?:weight[^0-9]{0,30})([0-9]{1,4}(?:\\.[0-9]+)?)\\s*(?:g|grams?)","unit":"g"},
+    "supported_codecs":{"mode":"string_list_presence","terms":["codec","ldac","aac","sbc","lc3"],"values":{"ldac":"LDAC","aac":"AAC","sbc":"SBC","lc3":"LC3"}}
+  }},
   "report": {"implementation":"smartbuy.agent.reporting","schema_version":"proofpick-domain-decision-v1","states":["matched","not_matched","unknown","conflict"],"allowed_fields":["product_id","family_id","model_name","brand","region","configuration_id","form_factor","wearing_style","bluetooth","wired_connection","usb_audio","wireless_dongle","multipoint","supported_codecs","supported_platforms","active_noise_cancellation","microphone","water_resistance","battery_hours","battery_hours_anc","weight_g","measured_latency_ms","measured_isolation","measured_microphone","comfort_observation","sound_signature","call_quality_observation"]},
   "product_pack": {
     "pack_id":"headphone-governed-v1","pack_version":"1.0.0","base_mode":"standalone","base_data_version":"headphone-empty-v0","data_version":"headphone-governed-2026-09-03-v1","compatible_data_versions":["headphone-empty-v0","headphone-governed-2026-09-03-v1"],

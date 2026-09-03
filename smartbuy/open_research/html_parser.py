@@ -213,8 +213,18 @@ def parse_html(
     for index, (name, value) in enumerate(parser.definition_pairs[:1_000]):
         add("specification", f"{name} | {value}", f"definition-list[{index}]")
     previous = ""
+    target_context = ""
+    context_blocks_remaining = 0
+    compact_target = re.sub(r"[^a-z0-9]", "", target_model.casefold())
     for index, (tag, text) in enumerate(parser.blocks[:5_000]):
         combined = f"{previous} | {text}" if previous and len(text) < 800 else text
+        compact_text = re.sub(r"[^a-z0-9]", "", text.casefold())
+        if compact_target and compact_target in compact_text:
+            target_context = text[:300]
+            context_blocks_remaining = 8
+        elif target_context and context_blocks_remaining > 0:
+            combined = f"{target_context} | {combined}"
+            context_blocks_remaining -= 1
         add("visible_text", combined, f"{tag}[{index}]")
         previous = text
 
