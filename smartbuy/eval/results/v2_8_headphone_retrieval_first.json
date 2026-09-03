@@ -1,0 +1,1022 @@
+{
+  "run_type": "v2_8_headphone_retrieval_first",
+  "created_at": "2026-09-03T13:06:10.346318+00:00",
+  "case_file_sha256": "637c2b4a8fc61f97429af36cb6fc9e628b661212435c93497ae1b01d74e5efb1",
+  "case_count": 30,
+  "domain_id": "headphone",
+  "domain_pack_version": "1.0.0",
+  "data_version": "headphone-governed-2026-09-03-v1",
+  "data_manifest_hash": "70ca70d9d5c47b1fd29ab7cd48139e6967b0be84a09f92b10a1d4fd6076f946e",
+  "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+  "collection_name": "proofpick_headphone_v2_cae477364b46ccae",
+  "index_manifest_hash": "d93c123aa27da448ead90004f15beee13af66174c1f8305161390346da16e0ab",
+  "document_count": 12,
+  "chunk_count": 12,
+  "embedding_model": "text-embedding-v4",
+  "embedding_dimensions": 1024,
+  "metrics": {
+    "vector_recall_at_5": 0.8638888888888889,
+    "reranker_recall_at_5": 0.9777777777777777,
+    "vector_ndcg_at_5": 0.8484748438267248,
+    "reranker_ndcg_at_5": 0.9747309126743867,
+    "vector_exact_top1_errors": 1,
+    "reranker_exact_top1_errors": 0,
+    "exact_top1_denominator": 19,
+    "wrong_region_or_configuration_bindings": 0,
+    "cross_domain_hits": 0,
+    "vector_average_latency_ms": 338.3122133246313,
+    "vector_p95_latency_ms": 392.6421001087874,
+    "reranker_average_latency_ms": 220.80444667177895,
+    "reranker_p95_latency_ms": 281.32650000043213
+  },
+  "api_usage": {
+    "call_count": 62,
+    "successful_calls": 62,
+    "degraded_calls": 0,
+    "input_tokens": 354365,
+    "output_tokens": 0,
+    "estimated_cost_cny": 0.1771825
+  },
+  "agent_e2e_run": false,
+  "cases": [
+    {
+      "case_id": "hret-001",
+      "category": "exact_model",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "sony-wh-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "sony-wh-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wf-1000xm5-black-us",
+        "sony-inzone-h9-white-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "reranker_top5": [
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 332.277,
+      "reranker_latency_ms": 205.527,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-002",
+      "category": "exact_model",
+      "difficulty": "region",
+      "gold_product_ids": [
+        "sony-wh-1000xm5-black-ca"
+      ],
+      "vector_top5": [
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "logitech-astro-a50x-black-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 321.311,
+      "reranker_latency_ms": 184.204,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-003",
+      "category": "exact_model",
+      "difficulty": "similar_model",
+      "gold_product_ids": [
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "logitech-astro-a50x-black-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 302.585,
+      "reranker_latency_ms": 240.138,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-004",
+      "category": "configuration_id",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "sony-inzone-h9-white-us"
+      ],
+      "vector_top5": [
+        "sony-inzone-h9-white-us",
+        "sony-wh-1000xm5-black-us",
+        "logitech-g735-white-us",
+        "logitech-astro-a50x-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "reranker_top5": [
+        "sony-inzone-h9-white-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 307.72,
+      "reranker_latency_ms": 208.444,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-005",
+      "category": "exact_model",
+      "difficulty": "similar_generation",
+      "gold_product_ids": [
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "steelseries-arctis-nova-7p-black-us"
+      ],
+      "reranker_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 311.543,
+      "reranker_latency_ms": 214.21,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-006",
+      "category": "exact_model",
+      "difficulty": "similar_generation",
+      "gold_product_ids": [
+        "bose-qc-headphones-2g-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "reranker_top5": [
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 308.486,
+      "reranker_latency_ms": 244.36,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-007",
+      "category": "exact_model",
+      "difficulty": "form_factor",
+      "gold_product_ids": [
+        "bose-qc-ultra-earbuds-2g-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "reranker_top5": [
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 306.929,
+      "reranker_latency_ms": 212.663,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-008",
+      "category": "configuration_id",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "steelseries-arctis-nova-pro-wireless-ps-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "sony-inzone-h9-white-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-g735-white-us",
+        "bose-qc-ultra-earbuds-2g-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 308.36,
+      "reranker_latency_ms": 208.502,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-009",
+      "category": "configuration_id",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-astro-a50x-black-us",
+        "sony-wh-1000xm5-black-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "logitech-g735-white-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 948.183,
+      "reranker_latency_ms": 206.085,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-010",
+      "category": "exact_model",
+      "difficulty": "similar_model",
+      "gold_product_ids": [
+        "steelseries-arctis-nova-7p-black-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-7p-black-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "logitech-g735-white-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-7p-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 316.078,
+      "reranker_latency_ms": 223.104,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-011",
+      "category": "configuration_id",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "logitech-g735-white-us"
+      ],
+      "vector_top5": [
+        "logitech-g735-white-us",
+        "logitech-astro-a50x-black-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "logitech-g735-white-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 305.229,
+      "reranker_latency_ms": 215.544,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-012",
+      "category": "configuration_id",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "logitech-astro-a50x-black-us"
+      ],
+      "vector_top5": [
+        "logitech-astro-a50x-black-us",
+        "logitech-g735-white-us",
+        "sony-inzone-h9-white-us",
+        "sony-wh-1000xm5-black-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us"
+      ],
+      "reranker_top5": [
+        "logitech-astro-a50x-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 349.717,
+      "reranker_latency_ms": 211.252,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-013",
+      "category": "region",
+      "difficulty": "region",
+      "gold_product_ids": [
+        "sony-wh-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "sony-wh-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wf-1000xm5-black-us",
+        "logitech-astro-a50x-black-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 322.959,
+      "reranker_latency_ms": 229.099,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-014",
+      "category": "region",
+      "difficulty": "region",
+      "gold_product_ids": [
+        "sony-wh-1000xm5-black-ca"
+      ],
+      "vector_top5": [
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "sony-inzone-h9-white-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "reranker_top5": [
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "bose-qc-ultra-earbuds-2g-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 329.087,
+      "reranker_latency_ms": 209.705,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-015",
+      "category": "platform",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "steelseries-arctis-nova-pro-wireless-ps-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "sony-inzone-h9-white-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "sony-wf-1000xm5-black-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "sony-wh-1000xm5-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 346.386,
+      "reranker_latency_ms": 195.868,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-016",
+      "category": "platform",
+      "difficulty": "similar_configuration",
+      "gold_product_ids": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-astro-a50x-black-us",
+        "sony-wh-1000xm5-black-ca"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "sony-wf-1000xm5-black-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 308.397,
+      "reranker_latency_ms": 229.401,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-017",
+      "category": "codec",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "sony-wh-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wf-1000xm5-black-us",
+        "sony-inzone-h9-white-us",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "reranker_top5": [
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-inzone-h9-white-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 341.814,
+      "reranker_latency_ms": 189.942,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-018",
+      "category": "feature_filter",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 315.407,
+      "reranker_latency_ms": 221.751,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-019",
+      "category": "form_factor",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-inzone-h9-white-us",
+        "bose-qc-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-us"
+      ],
+      "reranker_top5": [
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "bose-qc-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 0.5,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.38685280723454163,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 302.614,
+      "reranker_latency_ms": 173.571,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-020",
+      "category": "platform",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "sony-inzone-h9-white-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "logitech-astro-a50x-black-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us"
+      ],
+      "vector_recall_at_5": 0.6666666666666666,
+      "reranker_recall_at_5": 0.6666666666666666,
+      "vector_ndcg_at_5": 0.6508205185601091,
+      "reranker_ndcg_at_5": 0.6508205185601091,
+      "vector_latency_ms": 306.095,
+      "reranker_latency_ms": 226.648,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-021",
+      "category": "platform",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "logitech-astro-a50x-black-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "logitech-astro-a50x-black-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-g735-white-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-astro-a50x-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "logitech-g735-white-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.9197207891481876,
+      "reranker_ndcg_at_5": 0.9197207891481876,
+      "vector_latency_ms": 306.516,
+      "reranker_latency_ms": 227.099,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-022",
+      "category": "weight",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "bose-qc-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "logitech-astro-a50x-black-us"
+      ],
+      "reranker_top5": [
+        "sony-wh-1000xm5-black-ca",
+        "bose-qc-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_recall_at_5": 0.6666666666666666,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.7039180890341347,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 310.757,
+      "reranker_latency_ms": 222.38,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-023",
+      "category": "meeting",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_recall_at_5": 0.75,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.8318724637288826,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 315.022,
+      "reranker_latency_ms": 206.822,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-024",
+      "category": "usb_audio",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "logitech-astro-a50x-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "logitech-astro-a50x-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "logitech-g735-white-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-astro-a50x-black-us",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.9060254355346823,
+      "reranker_ndcg_at_5": 0.9674679834891693,
+      "vector_latency_ms": 301.265,
+      "reranker_latency_ms": 223.423,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-025",
+      "category": "gaming",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "logitech-astro-a50x-black-us",
+        "logitech-g735-white-us",
+        "steelseries-arctis-nova-7p-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "logitech-astro-a50x-black-us",
+        "logitech-g735-white-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-7p-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "logitech-g735-white-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "bose-qc-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 0.6666666666666666,
+      "reranker_recall_at_5": 0.6666666666666666,
+      "vector_ndcg_at_5": 0.38364913903790027,
+      "reranker_ndcg_at_5": 0.7039180890341347,
+      "vector_latency_ms": 299.434,
+      "reranker_latency_ms": 281.327,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-026",
+      "category": "battery",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "logitech-astro-a50x-black-us"
+      ],
+      "reranker_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us",
+        "sony-wf-1000xm5-black-us",
+        "bose-qc-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 0.6666666666666666,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.6713860725233041,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 392.642,
+      "reranker_latency_ms": 192.356,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-027",
+      "category": "water_resistance",
+      "difficulty": "multi_candidate",
+      "gold_product_ids": [
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "sony-wh-1000xm5-black-ca",
+        "sony-wh-1000xm5-black-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "reranker_top5": [
+        "sony-wf-1000xm5-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "sony-wh-1000xm5-black-ca",
+        "bose-qc-ultra-headphones-2g-black-us"
+      ],
+      "vector_recall_at_5": 0.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 307.483,
+      "reranker_latency_ms": 195.84,
+      "exact_top1_required": false,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-028",
+      "category": "microphone",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "logitech-g735-white-us"
+      ],
+      "vector_top5": [
+        "logitech-g735-white-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-astro-a50x-black-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "bose-qc-headphones-2g-black-us"
+      ],
+      "reranker_top5": [
+        "logitech-g735-white-us",
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "bose-qc-ultra-headphones-2g-black-us",
+        "steelseries-arctis-nova-7p-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 295.956,
+      "reranker_latency_ms": 225.614,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-029",
+      "category": "codec",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "sony-wf-1000xm5-black-us"
+      ],
+      "vector_top5": [
+        "bose-qc-ultra-headphones-2g-black-us",
+        "sony-wh-1000xm5-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "sony-inzone-h9-white-us",
+        "bose-qc-headphones-2g-black-us"
+      ],
+      "reranker_top5": [
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-us",
+        "bose-qc-ultra-earbuds-2g-black-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "vector_recall_at_5": 0.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 0.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 334.329,
+      "reranker_latency_ms": 370.867,
+      "exact_top1_required": true,
+      "vector_exact_top1": false,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    },
+    {
+      "case_id": "hret-030",
+      "category": "evidence_tier",
+      "difficulty": "exact",
+      "gold_product_ids": [
+        "steelseries-arctis-nova-pro-wireless-ps-us"
+      ],
+      "vector_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "steelseries-arctis-nova-7p-black-us",
+        "logitech-g735-white-us",
+        "sony-inzone-h9-white-us"
+      ],
+      "reranker_top5": [
+        "steelseries-arctis-nova-pro-wireless-ps-us",
+        "steelseries-arctis-nova-pro-wireless-xbox-us",
+        "sony-wf-1000xm5-black-us",
+        "sony-wh-1000xm5-black-us",
+        "steelseries-arctis-nova-7p-black-us"
+      ],
+      "vector_recall_at_5": 1.0,
+      "reranker_recall_at_5": 1.0,
+      "vector_ndcg_at_5": 1.0,
+      "reranker_ndcg_at_5": 1.0,
+      "vector_latency_ms": 294.786,
+      "reranker_latency_ms": 228.389,
+      "exact_top1_required": true,
+      "vector_exact_top1": true,
+      "reranker_exact_top1": true,
+      "cross_domain_hits": 0
+    }
+  ]
+}

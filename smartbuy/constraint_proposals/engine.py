@@ -609,6 +609,7 @@ class DeterministicConstraintParser:
         unit_context_terms = self.pack.pack.policies.get("understanding", {}).get(
             "unit_context_terms", {}
         )
+        cancelled_fields: set[str] = set()
         clauses = [
             match
             for match in re.finditer(
@@ -656,8 +657,28 @@ class DeterministicConstraintParser:
                 "reason": reason,
             })
 
+        cancel_terms = self.pack.pack.policies.get("understanding", {}).get(
+            "cancel_terms", {}
+        )
+        for field_id, terms in cancel_terms.items():
+            if field_id not in self.pack.fields:
+                continue
+            for term in terms:
+                match = re.search(re.escape(str(term)), normalized_query, flags=re.I)
+                if match is not None:
+                    cancelled_fields.add(field_id)
+                    append(
+                        field_id,
+                        None,
+                        None,
+                        match.start(),
+                        match.end(),
+                        action="cancel",
+                    )
+                    break
+
         for field_id, definition in self.pack.fields.items():
-            if not definition.constraint_enabled:
+            if not definition.constraint_enabled or field_id in cancelled_fields:
                 continue
             aliases = sorted(
                 {definition.label, *definition.aliases, field_id},
@@ -775,14 +796,19 @@ class DeterministicConstraintParser:
                             max(0, min(local_nearest_start, number.start()) - 10):
                             min(len(local), max(local_nearest_end, number.end()) + 10)
                         ]
-                        if re.search(r"(?:不超过|至多|最多|以内|以下|上限)", context):
+                        # Operator words may sit just outside the nearest field/value
+                        # window (for example ``重量不要超过250克``).  The complete
+                        # clause is still deterministic and Pack-scoped, so inspect it
+                        # as a fallback instead of silently turning the bound into eq.
+                        operator_context = f"{context} {local}"
+                        if re.search(r"(?:不超过|不要超过|至多|最多|以内|以下|上限)", operator_context):
                             operator = "lte"
-                        elif re.search(r"(?:至少|最低|不低于|不少于|以上|下限)", context):
+                        elif re.search(r"(?:至少|最低|不低于|不少于|以上|下限)", operator_context):
                             operator = "gte"
                         elif (
                             field_id in implicit_minimum_fields
                             and number_end <= nearest.start()
-                            and re.search(r"(?:想要|需要|要求)", context)
+                            and re.search(r"(?:想要|需要|要求)", operator_context)
                         ):
                             operator = "gte"
                         else:
@@ -830,6 +856,29 @@ class DeterministicConstraintParser:
                     if match:
                         append(field_id, "eq", value_map[token], match.start(), match.end())
                         break
+            elif definition.data_type.value == "string_list":
+                value_map = {
+                    self._fold(key): value
+                    for key, value in definition.value_aliases.items()
+                }
+                matches: list[tuple[int, int, str]] = []
+                for token in sorted(value_map, key=len, reverse=True):
+                    match = re.search(
+                        rf"(?<![a-z0-9]){re.escape(token)}(?![a-z0-9])",
+                        self._fold(normalized_query),
+                    )
+                    if match is not None:
+                        matches.append((match.start(), match.end(), value_map[token]))
+                if matches:
+                    matches.sort()
+                    values = list(dict.fromkeys(item[2] for item in matches))
+                    append(
+                        field_id,
+                        "contains_all",
+                        values,
+                        min(item[0] for item in matches),
+                        max(item[1] for item in matches),
+                    )
         # A conversational replacement may omit the field in its second
         # clause ("storage was 2 TB; change it to at least 1 TB").  Bind the
         # replacement only when the closest preceding numeric field mention
