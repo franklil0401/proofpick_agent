@@ -768,6 +768,8 @@ feat(v2): add explainable ranking and isolated preference memory
 - 证据不足/困难负例正确拒答率目标不低于 90%。
 - 显示器和笔记本回归全部通过。
 
+实际验收：治理 12 个精确配置、4 个品牌、20 个来源和 336 条 Evidence；30 条冻结检索集的 Vector/Reranker Recall@5 为 86.39%/97.78%，nDCG@5 为 84.85%/97.47%。30 条工程集首次 27/30，保留三条失败；通用修复后的已暴露回归为 30/30、硬约束 F1 91.23%、推荐事实 Evidence 73/74、困难负例 9/9，全部安全越界为 0。8/8 What-if 保持 Checker 集合不变；未治理 AirPods Max 的 Open Research 完成 5 字段核验且 Trusted 晋升为 0；三品类字段、索引、Evidence 与 Memory 交叉污染为 0。完整口径见 [V2-8 阶段报告](v2_8_headphone_domain_report.md)。
+
 ### 16.5 提交与停止
 
 ```text

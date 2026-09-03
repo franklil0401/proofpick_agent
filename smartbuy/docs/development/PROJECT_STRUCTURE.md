@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-03 |
-| 当前阶段 | V1 已冻结；V2-7 已完成可解释确定性排序与分层偏好 Memory，新的独立发布评测留待 V2-9 |
+| 当前阶段 | V1 已冻结；V2-8 已完成 Headphone Domain Pack、三层证据权限与三品类交叉验证，新的独立发布评测留待 V2-9 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -78,6 +78,8 @@ proofpick_agent/
 │  │  ├─ __init__.py
 │  │  └─ bailian.py
 │  ├─ data/
+│  │  ├─ headphone/
+│  │  │  └─ headphone_configurations_v1.json
 │  │  ├─ laptop/
 │  │  │  └─ laptop_configurations_v1.json
 │  │  ├─ catalog/
@@ -136,7 +138,8 @@ proofpick_agent/
 │  │  │  ├─ 0015-server-verified-quote-to-span.md
 │  │  │  ├─ 0016-deterministic-product-identity-and-candidate-scope.md
 │  │  │  ├─ 0017-deterministic-safety-gates-and-release-evaluation.md
-│  │  │  └─ 0018-deterministic-ranking-and-layered-memory.md
+│  │  │  ├─ 0018-deterministic-ranking-and-layered-memory.md
+│  │  │  └─ 0019-headphone-source-authority-and-pack-reuse.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -185,7 +188,11 @@ proofpick_agent/
 │  │  │  ├─ v2_6c_r4_laptop_engineering_closeout.md
 │  │  │  ├─ v2_6c_r4_runtime.md
 │  │  │  ├─ v2_7_explainable_ranking_report.md
-│  │  │  └─ v2_7_memory_runtime.md
+│  │  │  ├─ v2_7_memory_runtime.md
+│  │  │  ├─ v2_8_headphone_domain_report.md
+│  │  │  ├─ v2_8_headphone_data_card.md
+│  │  │  ├─ v2_8_three_domain_evaluation.md
+│  │  │  └─ v2_8_headphone_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -213,6 +220,10 @@ proofpick_agent/
 │  │  ├─ models.py
 │  │  └─ resolver.py
 │  ├─ domain_packs/
+│  │  ├─ headphone/
+│  │  │  ├─ manifest.json
+│  │  │  ├─ fields.json
+│  │  │  └─ policies.json
 │  │  ├─ laptop/
 │  │  │  ├─ manifest.json
 │  │  │  ├─ fields.json
@@ -261,6 +272,10 @@ proofpick_agent/
 │  │  ├─ v2_6a_laptop_cases.jsonl
 │  │  ├─ v2_6b_laptop_retrieval_cases.jsonl
 │  │  ├─ v2_6b_laptop_retrieval_runner.py
+│  │  ├─ v2_8_headphone_retrieval_cases.jsonl
+│  │  ├─ v2_8_headphone_retrieval_runner.py
+│  │  ├─ v2_8_headphone_engineering_cases.jsonl
+│  │  ├─ v2_8_headphone_engineering_runner.py
 │  │  ├─ v2_6c_laptop_agent_runner.py
 │  │  ├─ v2_6c_laptop_scoring_policy.json
 │  │  ├─ v2_6c_r1_identity_scope_replay.py
@@ -282,7 +297,8 @@ proofpick_agent/
 │  │  ├─ results/v2_6c_r4_exposed_regression_iteration*.json
 │  │  └─ results/
 │  │     ├─ v2_6b_laptop_retrieval_first.json
-│  │     └─ v2_6c_*            # 历史失败、暴露回归及 R2/R3 冻结 RC、Journal、首次结果；不可覆盖
+│  │     ├─ v2_6c_*            # 历史失败、暴露回归及 R2/R3 冻结 RC、Journal、首次结果；不可覆盖
+│  │     └─ v2_8_headphone_*   # Headphone 检索、工程首次/暴露回归与 Open Research 脱敏结果
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -321,6 +337,8 @@ proofpick_agent/
 │  │  └─ zhipu_search.py
 │  ├─ product_packs/
 │  │  ├─ examples/
+│  │  │  ├─ headphone-v1/
+│  │  │  │  └─ pack.json
 │  │  │  ├─ laptop-v1/
 │  │  │  │  └─ pack.json
 │  │  │  └─ monitor-u2725qe-us/
@@ -360,6 +378,7 @@ proofpick_agent/
 │  ├─ scripts/
 │  │  ├─ __init__.py
 │  │  ├─ bootstrap.ps1
+│  │  ├─ build_headphone_product_pack.py
 │  │  ├─ build_laptop_product_pack.py
 │  │  ├─ build_stage3_data.py
 │  │  ├─ build_stage3_index.py
@@ -374,6 +393,7 @@ proofpick_agent/
 │  │  ├─ verify_v2_product_pack_live.py
 │  │  ├─ verify_v2_open_research.py
 │  │  ├─ verify_v2_6c_laptop_open_research.py
+│  │  ├─ verify_v2_8_headphone_open_research.py
 │  │  ├─ verify_stage7_demos.py
 │  │  └─ verify_stage3_index.py
 │  └─ tests/
@@ -382,6 +402,9 @@ proofpick_agent/
 │     │  └─ v2_checkpoint_worker.py
 │     ├─ integration/
 │     │  ├─ test_stage4_api.py
+│     │  ├─ test_v2_headphone_domain_pack.py
+│     │  ├─ test_v2_headphone_toolchain.py
+│     │  ├─ test_v2_three_domain_isolation.py
 │     │  ├─ test_v2_laptop_domain_pack.py
 │     │  ├─ test_v2_laptop_agent_e2e.py
 │     │  ├─ test_v2_open_research_agent.py
@@ -413,6 +436,7 @@ proofpick_agent/
 │        ├─ test_v2_domain_pack.py
 │        ├─ test_v2_product_pack.py
 │        ├─ test_v2_open_research.py
+│        ├─ test_v2_headphone_open_research.py
 │        ├─ test_v2_product_identity_scope.py
 │        └─ test_v2_source_search.py
 └─ vendor/
@@ -475,6 +499,10 @@ proofpick_agent/
 | `smartbuy/memory/domain_store.py` | V2 Global/Category 分层偏好、确认/过期/版本失效及摘要身份存储 |
 | `smartbuy/docs/v2/v2_7_explainable_ranking_report.md` / `v2_7_memory_runtime.md` | V2-7 评分公式、10 个场景、12 条 What-if、不变量、Memory 生命周期与运行边界 |
 | `smartbuy/docs/adr/0018-deterministic-ranking-and-layered-memory.md` | Checker 唯一资格所有权、Pack-owned Profile、Evidence gate 和分层 Memory 决策 |
+| `smartbuy/docs/v2/v2_8_headphone_domain_report.md` / `v2_8_headphone_runtime.md` | V2-8 Headphone 数据、真实索引、检索/工程评测、Open Research、成本及复现边界 |
+| `smartbuy/docs/v2/v2_8_headphone_data_card.md` | 12 个精确耳机配置、三层来源权限、缺失率、Evidence 覆盖和可重建哈希 |
+| `smartbuy/docs/v2/v2_8_three_domain_evaluation.md` | Monitor、Laptop、Headphone 的字段、数据、索引、Evidence、Memory 与编排资格隔离证据 |
+| `smartbuy/docs/adr/0019-headphone-source-authority-and-pack-reuse.md` | Headphone 三层来源权限、主观证据边界及通用 Checker/Ranker 复用决策 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -511,6 +539,7 @@ proofpick_agent/
 | `smartbuy/domain_packs/registry.py` / `evaluator.py` | 多 Pack fail-closed 注册与完全由 Pack 字段/操作符驱动的确定性比较；不含品类字段常量 |
 | `smartbuy/domain_packs/scope.py` | 把 domain 纳入 Memory/Checkpoint key，并拒绝跨品类 envelope 恢复 |
 | `smartbuy/domain_packs/laptop/` | 49 个 Laptop 字段、单位/别名/值域、来源权限、Checker、Ranking、Memory、报告和冻结评测配置 |
+| `smartbuy/domain_packs/headphone/` | 38 个 Headphone 字段、三层来源权限、30 个 Checker 字段、四个 Ranking Profile、Memory 与 Open Research 声明规则 |
 | `smartbuy/domain_packs/monitor/` | 映射 V1 显示器字段、单位、别名、来源、Checker、Ranking、Memory、报告和冻结哈希的首套 Pack |
 | `smartbuy/domain_packs/v1_adapter.py` / `orchestrator.py` | V1 请求/商品/Checker/报告的通用映射、资格一致性门和 opt-in 包装层 |
 | `smartbuy/memory/store.py` | 进程内会话状态及仓库外、显式确认的长期偏好生命周期 |
@@ -548,6 +577,7 @@ proofpick_agent/
 | `smartbuy/observability/eval_ledger.py` | 阶段 6 统一运行/步骤账本 Schema、脱敏校验与 JSONL 输出 |
 | `smartbuy/data/catalog/monitors_v1.json` | 12 个型号、来源、追加式价格和冲突证据的唯一 canonical 源数据 |
 | `smartbuy/data/laptop/laptop_configurations_v1.json` | Laptop Product Pack 的紧凑治理源：型号、地区、精确配置、官方来源与可核验字段；未知保留 null |
+| `smartbuy/data/headphone/headphone_configurations_v1.json` | Headphone Product Pack 的紧凑治理源：12 个精确配置、官方/专业实测/主观来源及字段级证据引用 |
 | `smartbuy/data/loader.py` / `derive.py` / `quality.py` | 加载、派生证据/事实卡和执行确定性数据质量门 |
 | `smartbuy/data/demo/` | Clone 后可用的 12 份自制事实卡及文件哈希清单 |
 | `smartbuy/data/processed/` | 可由 canonical 数据或真实评测重建的 JSONL、索引清单和脱敏指标结果 |
@@ -569,6 +599,9 @@ proofpick_agent/
 | `smartbuy/eval/v2_6a_laptop_cases.jsonl` | 首次正式 Laptop E2E 前冻结的 30 条结构化、相似配置、地区/配置、负例和自然约束金标 |
 | `smartbuy/eval/v2_6b_laptop_retrieval_cases.jsonl` / `v2_6b_laptop_retrieval_runner.py` | 在线调参前冻结的 30 条 Laptop 工具检索集，以及 Vector/Reranker 首次评测 Runner |
 | `smartbuy/eval/results/v2_6b_laptop_retrieval_first.json` | 不可覆盖的首次真实 1024 维检索、Reranker、延迟和费用脱敏结果 |
+| `smartbuy/eval/v2_8_headphone_retrieval_cases.jsonl` / `v2_8_headphone_retrieval_runner.py` | 30 条冻结 Headphone 检索集及真实 Vector/Reranker 指标 Runner |
+| `smartbuy/eval/v2_8_headphone_engineering_cases.jsonl` / `v2_8_headphone_engineering_runner.py` | 30 条 Headphone 工程任务、固定评分与不可覆盖首次/暴露回归执行入口 |
+| `smartbuy/eval/results/v2_8_headphone_*` | Headphone 检索、工程首次失败、修复后暴露回归及 Open Research 脱敏结果 |
 | `smartbuy/scripts/build_laptop_product_pack.py` | 将紧凑治理源确定性展开为完整 Laptop Product Pack，不抓取网页或调用模型 |
 | `smartbuy/tests/integration/test_v2_laptop_domain_pack.py` | Pack 隔离、字段/单位、来源权限、Evidence、幂等构建、SQLite、回滚、自然表达和冻结哈希验收 |
 | `smartbuy/tests/integration/test_v2_laptop_toolchain.py` | Product Query、真实索引合同、KB/Reranker 降级、Evidence/Checker、10 条组合与跨品类隔离测试 |
@@ -634,7 +667,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建兼容适配层、Monitor Domain Pack、Product Pack/Ledger、Source Search、Open Research，以及默认关闭的自然约束与主动澄清；V2-4C 已修复地区证据可比性，V2-5C 已将 LLM 字符下标替换为服务端精确 Quote-to-Span。默认仍使用 V1 数据与自研 ReAct。当前 LangGraph 只是显式启用、复用完整 V1 工作流的外壳；尚未创建自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 或第二品类。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker 和分层 Memory。默认仍使用 V1 数据与自研 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9 的独立发布评测、统一产品 UI 与 Windows 三品类发布复现尚未实施；自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 

@@ -54,6 +54,11 @@
 - [V2-7 可解释 Decision Ranker 报告](v2_7_explainable_ranking_report.md)
 - [V2-7 分层偏好 Memory 运行说明](v2_7_memory_runtime.md)
 - [ADR-0018：确定性排序与分层偏好 Memory](../adr/0018-deterministic-ranking-and-layered-memory.md)
+- [V2-8 Headphone Domain Pack 阶段报告](v2_8_headphone_domain_report.md)
+- [V2-8 Headphone 治理数据卡](v2_8_headphone_data_card.md)
+- [V2-8 三品类交叉验证](v2_8_three_domain_evaluation.md)
+- [V2-8 Headphone 运行说明](v2_8_headphone_runtime.md)
+- [ADR-0019：Headphone 来源权限与通用内核复用](../adr/0019-headphone-source-authority-and-pack-reuse.md)
 
 ## 当前状态
 
@@ -76,4 +81,6 @@
 - V2-7 已实现 Domain Pack 驱动的纯确定性 Ranker：Monitor/Laptop 共 10 个场景，12/12 What-if 保持 Checker 合规集合不变，所有计分事实均可追溯到 Evidence，模型调用与费用为 0。
 - 长期 Memory 已分为 Global/Category，具备确认、来源、过期、版本失效、删除和开关语义；公开 Demo 不再共享固定用户身份，无可靠 user_id 时长期 Memory 默认关闭。
 - 默认编排器仍是 ReAct；V2-7 结果是功能与不变量验证，不是新 Holdout 或生产 SLA。
+- V2-8 已新增 12 个精确耳机配置、三层来源权限、独立 1024 维索引和 30 条检索/工程集；工程首次 27/30，通用修复后的已暴露回归 30/30。主观证据进入硬事实为 0，三品类交叉污染为 0。
+- Headphone Open Research 对本地未治理的 AirPods Max 爱尔兰官方页完成 5 字段临时核验；Open Evidence 进入治理 Ledger/Checker 为 0。V2-8 总估算费用约 ¥1.145。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。
