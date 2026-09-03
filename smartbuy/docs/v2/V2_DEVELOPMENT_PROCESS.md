@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-6C 首次 Holdout 阻断；R1 已完成商品身份与 Candidate Scope 根因修复，但未创建或运行新 Holdout** |
+| 当前状态 | **V2-6C-R3 三轮冻结验证均未通过联合门槛；已按轮次上限硬停止，V2-6C 仍阻断** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-03 |
 
@@ -600,7 +600,7 @@ V2-6 拆分为三个独立验收阶段：
 
 - **V2-6A（已完成）**：Laptop Domain Pack、治理数据、离线派生产物和冻结任务。
 - **V2-6B（已完成）**：独立 SQLite/Chroma、Product Query、KB Search、Reranker、Evidence Check 与 Checker 工具闭环。
-- **V2-6C（阻断中）**：首次 E2E 失败已保留；R1 完成身份/Scope 根因修复，仍需新的未见 Holdout 才能继续验收。
+- **V2-6C（阻断中）**：R2B 首测失败与 R3 三轮验证均已保留；第三轮仍有 Scope 越界和充分证据下错误空推荐，已按三轮上限硬停止。
 
 ### 14.2 数据范围
 
@@ -648,6 +648,15 @@ V2-6B 不等于 Laptop Agent E2E。完整 30 条冻结 Agent 任务、自然语�
 - R1 仅离线重放暴露的 20 条：Regression `10/10`、已暴露 Holdout `10/10`、推荐事实证据 `75/75`，越界为 0，API 调用为 0。
 
 R1 结果只能证明已知失败得到回归修复，不得当作新 Holdout 泛化结论。详情见[失败链路审计](v2_6c_identity_scope_failure_audit.md)、[修复报告](v2_6c_identity_scope_repair_report.md)和 [ADR-0016](../adr/0016-deterministic-product-identity-and-candidate-scope.md)。
+
+### 14.4.3 V2-6C-R3 通用决策内核与硬停止
+
+- 将 Intent、Reference、Candidate Scope 和 Purchase Constraint 分离，并以 Product Pack Registry、Scope 单调收窄、Canonical Value 与 Constraint Delta 建立品类无关契约。
+- 最终暴露回归：历史 50 条为 `48/50`、F1 `95.83%`、证据 `158/163`；合并前两轮后 98 条为 `93/98`、F1 `96.00%`、证据 `343/352`，相关安全越界均为 0。
+- 三套验证均在代码冻结后生成、冻结并单次运行：轮 1 `17/24`，轮 2 `16/24`，轮 3 `21/24`。
+- 第三轮硬约束 F1 `97.56%`、证据 `93/93`，错误配置/地区/Checker 越界均为 0；但 Candidate Scope 越界为 1，充分证据下错误空推荐为 `1/8`，联合门槛未通过。
+- 三轮共调用 Embedding 61 次、Reranker 61 次、LLM 0 次，估算成本 `¥0.204552`；没有 Source Search、Open Research 或重复收费任务。
+- 已达到允许的三轮验证上限，不得在本阶段继续修复、生成第四轮或进入 V2-7。完整证据见 [V2-6C-R3 报告](v2_6c_r3_generic_decision_core_report.md)。
 
 ### 14.5 验收指标
 
@@ -934,6 +943,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-6A 已完成 Laptop Domain Pack、12 个精确配置、406 条字段 Evidence、离线可重复 Product Pack 和 30 条冻结任务；V2-6B 已完成真实索引与工具闭环。V2-6C 首次 Holdout 失败已原样保留，R1 只完成了通用商品身份和 Candidate Scope 根因修复。详情见 [R1 失败审计](v2_6c_identity_scope_failure_audit.md)与[修复报告](v2_6c_identity_scope_repair_report.md)。V2-5B/5C 的全部历史首测继续原样保留。
+V2-6A 已完成 Laptop Domain Pack 与治理数据，V2-6B 已完成真实索引与工具闭环。V2-6C-R3 已完成通用商品理解重构和三轮冻结验证，但三轮均未通过联合门槛；第三轮仍有 Scope 越界 1 和充分证据下错误空推荐 `1/8`，因此已经硬停止。详情见 [V2-6C-R3 报告](v2_6c_r3_generic_decision_core_report.md)。V2-5B/5C 及 V2-6C 全部历史首测继续原样保留。
 
-下一步只有在用户再次确认后，才能冻结并运行一组全新的未见 Holdout。不得运行已审阅但未运行的 10 条去冒充新 Holdout，不得自动执行 Open Research、Memory 专项、完整故障矩阵或 V2-7，也不得切换默认编排器或修改 V1 冻结数据与历史结果。
+下一步只能等待用户为新的修复阶段重新授权。不得在 V2-6C-R3 内继续修复或生成第四轮，不得自动执行 Open Research、Memory 专项、完整故障矩阵或 V2-7，也不得切换默认编排器或修改 V1 冻结数据与历史结果。
