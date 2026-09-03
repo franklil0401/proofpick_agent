@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-03 |
-| 当前阶段 | V1 已冻结；V2-6C 首次 Holdout 阻断，R1 已完成通用商品身份与 Candidate Scope 根因修复，等待新 Holdout 授权 |
+| 当前阶段 | V1 已冻结；V2-6C-R2A 已创建并冻结第二套 Laptop Holdout，尚未运行 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -176,7 +176,8 @@ proofpick_agent/
 │  │  │  ├─ v2_6b_laptop_index_runtime.md
 │  │  │  ├─ v2_6c_r_failed_holdout_audit.md
 │  │  │  ├─ v2_6c_identity_scope_failure_audit.md
-│  │  │  └─ v2_6c_identity_scope_repair_report.md
+│  │  │  ├─ v2_6c_identity_scope_repair_report.md
+│  │  │  └─ v2_6c_second_holdout_data_card.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -248,6 +249,10 @@ proofpick_agent/
 │  │  ├─ v2_6c_laptop_agent_runner.py
 │  │  ├─ v2_6c_laptop_scoring_policy.json
 │  │  ├─ v2_6c_r1_identity_scope_replay.py
+│  │  ├─ v2_6c_r2_laptop_holdout.jsonl
+│  │  ├─ v2_6c_r2_laptop_holdout.schema.json
+│  │  ├─ v2_6c_r2_laptop_scoring_policy.json
+│  │  ├─ v2_6c_r2_laptop_scorer.py
 │  │  └─ results/
 │  │     ├─ v2_6b_laptop_retrieval_first.json
 │  │     └─ v2_6c_*            # 首次失败、逐次修复和 R1 暴露回归；历史不可覆盖
@@ -427,6 +432,7 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_6b_laptop_toolchain_report.md` / `v2_6b_laptop_index_runtime.md` | Laptop 字段/缺失/分母审计、SQLite/真实索引、检索指标、五工具闭环、成本与复现边界 |
 | `smartbuy/docs/v2/v2_6c_identity_scope_failure_audit.md` | 30 条任务资格、七条失败链路、正确拒答案例和首错节点的不可覆盖审计 |
 | `smartbuy/docs/v2/v2_6c_identity_scope_repair_report.md` | R1 通用身份/Scope 契约、工具链边界、证据闭包、20 条暴露回归和新 Holdout 前置条件 |
+| `smartbuy/docs/v2/v2_6c_second_holdout_data_card.md` | R2A 第二套 20 条 Laptop 验证集的分布、确定性金标复核、冻结哈希、评分门槛和独立性边界 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -472,6 +478,8 @@ proofpick_agent/
 | `smartbuy/tools/domain.py` | 通用 EAV 只读 Product Query、领域索引 KB Search、四态 Evidence Check 与完整池 Checker |
 | `smartbuy/eval/v2_6c_r1_identity_scope_replay.py` | 只复用已暴露 Constraint Resolution 的零 API 20 条离线回归，不运行剩余 10 条 |
 | `smartbuy/eval/results/v2_6c_r1_exposed_regression.json` | R1 独立机器结果；不覆盖 V2-6C 首次失败和历次修复记录 |
+| `smartbuy/eval/v2_6c_r2_laptop_holdout.jsonl` / `.schema.json` | 代码冻结后创建的 20 条 `frozen_unrun` 第二验证集及严格单条任务 Schema |
+| `smartbuy/eval/v2_6c_r2_laptop_scoring_policy.json` / `v2_6c_r2_laptop_scorer.py` | 首次 E2E 前固定的指标、门槛与评分器；本轮只执行确定性金标校验入口 |
 | `smartbuy/config/bailian.py` | 从继承进程安全加载百炼配置、派生三类端点和 Youtu 子进程映射 |
 | `smartbuy/providers/bailian.py` | 普通/流式/工具 Chat、1024 维 Embedding、Rerank、有限重试与降级实现 |
 | `smartbuy/providers/zhipu_search.py` | `search_pro` 与搜狗有界回退、重试/费用/延迟门、TTL 缓存和脱敏调用账本 |

@@ -1,0 +1,66 @@
+{
+  "schema_version": "proofpick-v2-6c-r2-scoring-v1",
+  "evaluation_name": "V2-6C second Laptop holdout",
+  "code_baseline_commit": "5e1d710c416bceaf66c4cc1a5e7d5e20da04dfbc",
+  "frozen_case_sha256": "dd17cf4a4bf794c77cc75b5406f9e603effc7be4e63f9e9b215a9d4d8ea9e24f",
+  "domain_id": "laptop",
+  "domain_pack_version": "1.0.0",
+  "data_version": "laptop-governed-2026-09-02-v1",
+  "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+  "product_pack_sha256": "0417332b70d772e851f705c83df7932cd60f5d879425ee04f032f08d9c16dc2a",
+  "run_policy": {
+    "initial_state": "frozen_unrun",
+    "allowed_complete_runs": 1,
+    "first_run_is_immutable": true,
+    "partial_preview_before_first_run": false,
+    "case_selection_before_first_run": false,
+    "paid_provider_calls_during_freeze": 0
+  },
+  "task_correct_definition": {
+    "all_required": [
+      "domain_id exact match",
+      "scope_type and sorted family/product/configuration/region sets exact match",
+      "scope clarification and resolution status exact match",
+      "active constraint tuples exact match",
+      "required tool order appears as a subsequence and forbidden tools are absent",
+      "checker candidate set exact match",
+      "result_kind exact match",
+      "final candidate set exact match",
+      "clarification and abstention behavior exact match"
+    ],
+    "set_ordering": "ignored after deterministic sort",
+    "recommendation_order": "not scored"
+  },
+  "metrics": {
+    "task_accuracy": "number of task_correct cases / 20",
+    "clear_hard_constraint_precision": "TP / (TP + FP) over active supported hard constraint tuples",
+    "clear_hard_constraint_recall": "TP / (TP + FN) over active supported hard constraint tuples",
+    "clear_hard_constraint_f1": "harmonic mean of clear hard-constraint precision and recall",
+    "recommendation_evidence_coverage": "identity-closed matched key Evidence requirements present / all matched key Evidence requirements for returned candidates",
+    "wrong_configuration_recommendations": "returned candidate configurations outside frozen expected scope",
+    "wrong_region_recommendations": "returned candidate regions outside frozen expected scope",
+    "candidate_scope_leakage": "tool or report product IDs outside resolved scope",
+    "checker_scope_leakage": "Checker input IDs outside or different from frozen checker candidate set",
+    "unknown_overclaimed": "unknown key Evidence requirement rendered as matched or as a supported fact",
+    "clarification_bypass": "clarification_required case that executes decision tools or returns a candidate",
+    "sufficient_evidence_empty_recommendation_rate": "eligible cases with empty final set despite at least one frozen eligible candidate / all eligible cases"
+  },
+  "blocking_thresholds": {
+    "task_accuracy_min": 0.8,
+    "clear_hard_constraint_f1_min": 0.9,
+    "recommendation_evidence_coverage_min": 0.95,
+    "wrong_configuration_recommendations_max": 0,
+    "wrong_region_recommendations_max": 0,
+    "candidate_scope_leakage_max": 0,
+    "checker_scope_leakage_max": 0,
+    "unknown_overclaimed_max": 0,
+    "clarification_bypass_max": 0,
+    "sufficient_evidence_empty_recommendation_rate_max": 0.1
+  },
+  "not_claimed": [
+    "third-party blind test",
+    "production accuracy or SLA",
+    "multi-category generalization",
+    "real-time price or Web Search coverage"
+  ]
+}

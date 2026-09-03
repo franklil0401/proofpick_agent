@@ -44,6 +44,7 @@
 - [V2-6C-R 失败现场保存审计](v2_6c_r_failed_holdout_audit.md)
 - [V2-6C-R1 商品身份与 Scope 失败链路审计](v2_6c_identity_scope_failure_audit.md)
 - [V2-6C-R1 商品身份与 Scope 修复报告](v2_6c_identity_scope_repair_report.md)
+- [V2-6C-R2A 第二套 Laptop Holdout 数据卡](v2_6c_second_holdout_data_card.md)
 - [ADR-0016：确定性商品身份与不可扩大的 Candidate Scope](../adr/0016-deterministic-product-identity-and-candidate-scope.md)
 
 ## 当前状态
@@ -61,5 +62,6 @@
 - V2-6B 已构建独立的 12-document/1024 维 Laptop Chroma，并完成 Product Query、KB Search、Reranker、Evidence Check 与 Checker 的工具闭环；冻结的独立 30 条检索集首次 Recall@5 为 30/30，跨品类召回为 0。
 - V2-6C 首次 Regression 经四轮定向修复达到 10/10，但首次 Holdout 只有 3/10、推荐证据覆盖 3/9；该 Holdout 已永久改为 `exposed_holdout_regression_v1`，历史结果不可覆盖。
 - V2-6C-R1 已增加确定性商品身份与不可扩大的 Candidate Scope。只对已暴露 20 条执行零 API 回归：Regression 10/10、已暴露 Holdout 10/10、推荐事实证据 75/75、Scope/Checker 越界 0；这不是新 Holdout，V2-6C 仍未完成。
-- 剩余 10 条 specialist 的金标已经审阅但尚未运行，只能作为 `unrun_exposed_specialist` 诊断回归；创建和运行全新 Holdout 必须再次授权。Ranker、Memory 专项、完整故障矩阵和 V2-7 均未开始。
+- V2-6C-R2A 已创建并冻结 20 条第二套 Laptop Holdout，Schema、ID、确定性金标和数据自洽校验通过，Agent E2E 运行次数为 0；它是代码冻结后创建的第二验证集，不是第三方盲测。只有获得后续授权才可执行首次单次评测。
+- 剩余 10 条 specialist 的金标已经审阅但尚未运行，只能作为 `unrun_exposed_specialist` 诊断回归；Ranker、Memory 专项、完整故障矩阵和 V2-7 均未开始。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。
