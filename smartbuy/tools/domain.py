@@ -20,6 +20,13 @@ from smartbuy.product_packs.loader import ProductPackValidationError
 from smartbuy.providers.bailian import BailianError
 from smartbuy.retrieval.domain_index import DomainIndexManager
 from smartbuy.tools.base import ToolResult
+from smartbuy.identity import (
+    ProductIdentityMismatch,
+    ProductScopeResolutionStatus,
+    ResolvedProductScope,
+    product_identity,
+    require_product_in_scope,
+)
 
 
 _IDENTITY_FIELDS = {
@@ -124,7 +131,12 @@ class DomainProductQueryTool:
         self.max_rows = max_rows
         self.evaluator = DomainConstraintEvaluator(repository.domain_pack)
 
-    def run(self, constraints: Sequence[dict[str, Any]]) -> ToolResult:
+    def run(
+        self,
+        constraints: Sequence[dict[str, Any]],
+        *,
+        scope: ResolvedProductScope | None = None,
+    ) -> ToolResult:
         if not constraints:
             return ToolResult(tool="domain_product_query", status="failed", summary="至少需要一个约束", error_code="empty_constraints")
         try:
@@ -134,6 +146,20 @@ class DomainProductQueryTool:
                 self.repository.domain_pack.validate_operator(field, str(item["operator"]))
                 normalized.append({**item, "field": field})
             products = self.repository.load()
+            if scope is not None:
+                scope.assert_runtime(
+                    domain_id=self.repository.domain_pack.domain_id,
+                    data_version=self.repository.snapshot.data_version,
+                )
+                if scope.resolution_status != ProductScopeResolutionStatus.RESOLVED:
+                    raise ProductIdentityMismatch("unresolved scope cannot query products")
+                products = {
+                    product_id: products[product_id]
+                    for product_id in scope.product_ids
+                    if product_id in products
+                }
+                if set(products) != set(scope.product_ids):
+                    raise ProductIdentityMismatch("scope contains an unknown product")
             rows = []
             for product in products.values():
                 evidence_fields = {item["field_id"] for item in product["evidence"]}
@@ -141,9 +167,9 @@ class DomainProductQueryTool:
                     product["attributes"], normalized, evidenced_fields=evidence_fields
                 )
                 rows.append({
-                    "domain_id": product["domain_id"], "product_id": product["product_id"],
-                    "configuration_id": product["attributes"].get("configuration_id"),
-                    "region": product["region"], "data_version": self.repository.snapshot.data_version,
+                    **product_identity(
+                        product, data_version=self.repository.snapshot.data_version
+                    ),
                     "status": "matched" if eligible else (
                         "unknown" if any(item.state == FieldState.UNKNOWN for item in decisions) else "not_matched"
                     ),
@@ -155,11 +181,18 @@ class DomainProductQueryTool:
                 tool="domain_product_query", status="success",
                 data={"domain_id": self.repository.domain_pack.domain_id,
                       "data_version": self.repository.snapshot.data_version,
+                      "scope_fingerprint": scope.fingerprint if scope else None,
                       "candidate_pool_size": len(rows), "rows": rows[: self.max_rows],
                       "read_only": True, "statement_count": 1},
                 summary=f"只读查询检查 {len(rows)} 个完整候选",
             )
-        except (KeyError, ValueError, ProductPackValidationError, DomainPackValidationError) as exc:
+        except (
+            KeyError,
+            ValueError,
+            ProductIdentityMismatch,
+            ProductPackValidationError,
+            DomainPackValidationError,
+        ) as exc:
             return ToolResult(tool="domain_product_query", status="failed", summary="查询被安全门拒绝", error_code=type(exc).__name__)
 
 
@@ -177,6 +210,7 @@ class DomainKBSearchTool:
         product_id: str | None = None,
         configuration_id: str | None = None,
         region: str | None = None,
+        scope: ResolvedProductScope | None = None,
         vector_top_k: int = 12,
         top_k: int = 5,
         use_reranker: bool = True,
@@ -188,6 +222,22 @@ class DomainKBSearchTool:
                 tool="domain_kb_search", status="failed", degraded=True,
                 summary="索引状态不可用，已拒绝检索", error_code="index_fail_closed",
             )
+        if scope is not None:
+            try:
+                scope.assert_runtime(
+                    domain_id=self.index_manager.domain_id,
+                    data_version=snapshot.data_version,
+                    index_version=snapshot.index_version,
+                )
+                if scope.resolution_status != ProductScopeResolutionStatus.RESOLVED:
+                    raise ProductIdentityMismatch("unresolved scope cannot search the index")
+                if product_id is not None and not scope.permits(product_id):
+                    raise ProductIdentityMismatch("KB product filter is outside candidate scope")
+            except (ValueError, ProductIdentityMismatch):
+                return ToolResult(
+                    tool="domain_kb_search", status="failed", degraded=True,
+                    summary="检索身份与候选范围不一致", error_code="kb_scope_mismatch",
+                )
         try:
             embedding = await self.provider.embed([query])
         except BailianError:
@@ -210,6 +260,8 @@ class DomainKBSearchTool:
             for key, value in (("product_id", product_id), ("configuration_id", configuration_id), ("region", region)):
                 if value is not None:
                     filters.append({key: value})
+            if scope is not None and product_id is None:
+                filters.append({"product_id": {"$in": list(scope.product_ids)}})
             where = {"$and": filters} if len(filters) > 1 else filters[0]
             result = collection.query(
                 query_embeddings=[vector], n_results=min(vector_top_k, collection.count()),
@@ -248,6 +300,20 @@ class DomainKBSearchTool:
         hits = []
         for rank, source_index in enumerate(order):
             metadata = dict(metadatas[source_index])
+            if scope is not None:
+                identity_ok = (
+                    metadata.get("domain_id") == scope.domain_id
+                    and metadata.get("data_version") == scope.data_version
+                    and metadata.get("index_version") == snapshot.index_version
+                    and scope.permits(str(metadata.get("product_id")))
+                    and metadata.get("configuration_id") in scope.configuration_ids
+                    and metadata.get("region") in scope.regions
+                )
+                if not identity_ok:
+                    return ToolResult(
+                        tool="domain_kb_search", status="failed", degraded=True,
+                        summary="索引命中越过候选身份边界", error_code="kb_identity_mismatch",
+                    )
             hits.append({
                 "rank": rank + 1, "score": scores[rank], "vector_score": vector_scores[source_index],
                 "content": documents[source_index], "domain_id": metadata["domain_id"],
@@ -261,7 +327,8 @@ class DomainKBSearchTool:
             tool="domain_kb_search", status="degraded" if degraded else "success", degraded=degraded,
             data={"domain_id": self.index_manager.domain_id, "data_version": snapshot.data_version,
                   "index_version": snapshot.index_version, "hits": hits,
-                  "reranker_degraded": degraded},
+                  "reranker_degraded": degraded,
+                  "scope_fingerprint": scope.fingerprint if scope else None},
             summary=f"返回 {len(hits)} 个治理文档" + ("；Reranker 降级" if degraded else ""),
         )
 
@@ -272,10 +339,22 @@ class DomainEvidenceCheckTool:
     def __init__(self, repository: DomainReadonlyRepository) -> None:
         self.repository = repository
 
-    def run(self, product_id: str, constraints: Sequence[dict[str, Any]]) -> ToolResult:
+    def run(
+        self,
+        product_id: str,
+        constraints: Sequence[dict[str, Any]],
+        *,
+        scope: ResolvedProductScope | None = None,
+    ) -> ToolResult:
         try:
             product = self.repository.load()[product_id]
-        except (KeyError, ProductPackValidationError):
+            if scope is not None:
+                require_product_in_scope(
+                    product,
+                    scope,
+                    data_version=self.repository.snapshot.data_version,
+                )
+        except (KeyError, ValueError, ProductIdentityMismatch, ProductPackValidationError):
             return ToolResult(tool="domain_evidence_check", status="failed", summary="商品或数据不可用", error_code="product_unavailable")
         evaluator = DomainConstraintEvaluator(self.repository.domain_pack)
         output = []
@@ -322,9 +401,11 @@ class DomainEvidenceCheckTool:
                 output.append({"field_id": str(constraint.get("field", "")), "state": "unknown", "reason": "unsupported_constraint", "evidence_ids": [], "source_ids": []})
         return ToolResult(
             tool="domain_evidence_check", status="success",
-            data={"domain_id": product["domain_id"], "product_id": product_id,
-                  "region": product["region"], "configuration_id": product["attributes"].get("configuration_id"),
-                  "data_version": self.repository.snapshot.data_version, "field_results": output},
+            data={
+                **product_identity(product, data_version=self.repository.snapshot.data_version),
+                "field_results": output,
+                "scope_fingerprint": scope.fingerprint if scope else None,
+            },
             summary=f"核验 {len(output)} 个字段",
         )
 
@@ -338,12 +419,27 @@ class DomainConstraintCheckerTool:
         self.repository = repository
         self.evaluator = DomainConstraintEvaluator(repository.domain_pack)
 
-    def run(self, constraints: Sequence[dict[str, Any]], *, candidate_ids: Iterable[str] | None = None) -> ToolResult:
+    def run(
+        self,
+        constraints: Sequence[dict[str, Any]],
+        *,
+        candidate_ids: Iterable[str] | None = None,
+        scope: ResolvedProductScope | None = None,
+    ) -> ToolResult:
         try:
             products = self.repository.load()
             requested = set(candidate_ids or products)
             if not requested or not requested <= set(products):
                 raise ProductPackValidationError("candidate pool identity is invalid")
+            if scope is not None:
+                scope.assert_runtime(
+                    domain_id=self.repository.domain_pack.domain_id,
+                    data_version=self.repository.snapshot.data_version,
+                )
+                if scope.resolution_status != ProductScopeResolutionStatus.RESOLVED:
+                    raise ProductIdentityMismatch("unresolved scope cannot enter Checker")
+                if requested != set(scope.product_ids):
+                    raise ProductIdentityMismatch("Checker candidate pool differs from scope")
             hard_fields = set(self.repository.domain_pack.pack.policies["checker"].get("hard_fields", []))
             normalized = []
             unsupported = []
@@ -373,9 +469,9 @@ class DomainConstraintCheckerTool:
                 conflict_fields = [item.field_id for item in decisions if item.field_id in conflicts]
                 eligible = bool(decisions) and not (violations or unknowns or conflict_fields or unsupported)
                 results.append({
-                    "domain_id": product["domain_id"], "product_id": product_id,
-                    "configuration_id": product["attributes"].get("configuration_id"),
-                    "region": product["region"], "data_version": self.repository.snapshot.data_version,
+                    **product_identity(
+                        product, data_version=self.repository.snapshot.data_version
+                    ),
                     "eligible": eligible, "violations": violations, "unknown_fields": unknowns,
                     "conflicts": conflict_fields, "unsupported_constraints": unsupported,
                     "evidence_ids": sorted({row["evidence_id"] for field in {item.field_id for item in decisions} for row in evidence_by_field.get(field, [])}),
@@ -387,10 +483,17 @@ class DomainConstraintCheckerTool:
                 data={"domain_id": self.repository.domain_pack.domain_id,
                       "data_version": self.repository.snapshot.data_version,
                       "candidate_pool_size": len(results), "results": results,
+                      "scope_fingerprint": scope.fingerprint if scope else None,
                       "fail_closed": True},
                 summary=f"确定性复核 {len(results)} 个完整候选",
             )
-        except (KeyError, ValueError, ProductPackValidationError, DomainPackValidationError):
+        except (
+            KeyError,
+            ValueError,
+            ProductIdentityMismatch,
+            ProductPackValidationError,
+            DomainPackValidationError,
+        ):
             return ToolResult(
                 tool="domain_constraint_checker", status="failed", degraded=True,
                 data={"eligible": [], "fail_closed": True}, summary="Checker 异常，已关闭推荐",

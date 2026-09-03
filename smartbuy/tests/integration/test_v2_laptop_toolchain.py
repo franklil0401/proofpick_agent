@@ -11,6 +11,7 @@ import pytest
 
 from smartbuy.domain_packs import DomainPackLoader
 from smartbuy.domain_packs.scope import DomainExecutionScope
+from smartbuy.identity import ProductIdentityResolver
 from smartbuy.product_packs import DomainProductPackManager
 from smartbuy.providers.bailian import BailianError, ProviderResult
 from smartbuy.retrieval.domain_index import DomainIndexManager
@@ -119,17 +120,28 @@ async def test_domain_index_is_atomic_scoped_and_reranker_degrades(tmp_path: Pat
     index.activate(built.index_version)
     products = DomainReadonlyRepository(snapshot, pack).load()
     product_id = next(key for key, value in products.items() if value["attributes"]["configuration_id"] == "H7606WX")
+    scope = ProductIdentityResolver(
+        domain_id="laptop",
+        data_version=snapshot.data_version,
+        index_version=built.index_version,
+    ).resolve("核验 H7606WX 接口", products)
     normal = await DomainKBSearchTool(index, FakeProvider()).run(
-        "H7606WX 接口", product_id=product_id, configuration_id="H7606WX", top_k=5
+        "H7606WX 接口", product_id=product_id, configuration_id="H7606WX", scope=scope, top_k=5
     )
     assert normal.status == "success" and len(normal.data["hits"]) == 1
+    assert normal.data["scope_fingerprint"] == scope.fingerprint
     hit = normal.data["hits"][0]
     assert hit["domain_id"] == "laptop" and hit["configuration_id"] == "H7606WX"
     degraded = await DomainKBSearchTool(index, FakeProvider(fail_rerank=True)).run(
-        "H7606WX 接口", product_id=product_id, configuration_id="H7606WX", top_k=5
+        "H7606WX 接口", product_id=product_id, configuration_id="H7606WX", scope=scope, top_k=5
     )
     assert degraded.status == "degraded" and degraded.data["reranker_degraded"] is True
     assert degraded.data["hits"][0]["product_id"] == product_id
+    outside = next(item for item in products if item not in scope.product_ids)
+    rejected = await DomainKBSearchTool(index, FakeProvider()).run(
+        "范围外配置", product_id=outside, scope=scope, top_k=5
+    )
+    assert rejected.status == "failed" and rejected.error_code == "kb_scope_mismatch"
     wrong_region = await DomainKBSearchTool(index, FakeProvider()).run(
         "H7606WX 接口", product_id=product_id, region="ZZ", top_k=5
     )

@@ -9,7 +9,7 @@ import time
 from datetime import UTC, datetime
 from typing import Any
 
-from smartbuy.constraint_proposals import ClarificationState, ConstraintResolution
+from smartbuy.constraint_proposals import ClarificationState, ConstraintResolution, ProposalStatus
 from smartbuy.constraint_proposals.models import ProposalSource
 from smartbuy.constraint_proposals.engine import NaturalConstraintEngine
 from smartbuy.constraints import (
@@ -34,6 +34,14 @@ from smartbuy.domain.models import (
     UnresolvedFact,
 )
 from smartbuy.domain_packs import LoadedDomainPack
+from smartbuy.identity import (
+    ProductIdentityResolver,
+    ProductScopeResolutionStatus,
+    ProductScopeType,
+    ResolvedProductScope,
+    evidence_identity_status,
+    require_product_in_scope,
+)
 from smartbuy.memory import DomainPreferenceMemoryStore
 from smartbuy.orchestration.contracts import EventCallback, emit_event
 from smartbuy.tools.domain import (
@@ -47,6 +55,7 @@ from smartbuy.tools.domain import (
 
 _FACT_MARKERS = ("多少", "是什么", "哪个", "属于", "核验", "是否", "能否", "比较", "区分")
 _COMPARE_MARKERS = ("比较", "对比", "区分", "是否等同", "不要把", "不能混")
+_IDENTITY_FIELDS = {"product_id", "family_id", "model_name", "region", "configuration_id", "part_number"}
 
 
 def _compact(value: str) -> str:
@@ -109,121 +118,114 @@ class DomainDecisionAgent:
         folded = query.casefold()
         output = []
         for field_id, definition in self.pack.fields.items():
-            terms = [field_id, definition.label, *definition.aliases]
-            if any(term and term.casefold() in folded for term in terms):
+            terms = [
+                field_id,
+                definition.label,
+                *definition.aliases,
+                *definition.enum_values,
+                *definition.value_aliases,
+            ]
+            if any(
+                term
+                and re.search(
+                    rf"(?<![a-z0-9]){re.escape(term.casefold())}(?![a-z0-9])",
+                    folded,
+                )
+                for term in terms
+            ):
                 output.append(field_id)
         return list(dict.fromkeys(output))
 
-    @staticmethod
-    def _identity_values(product: dict[str, Any]) -> list[str]:
-        attributes = product["attributes"]
-        values = [
-            product["product_id"], product["model_name"], product["brand"],
-            *product.get("aliases", []),
-        ]
-        for field_id, value in attributes.items():
-            if field_id.endswith("_id") or field_id in {"part_number", "model_name"}:
-                if value is not None:
-                    values.append(str(value))
-        return values
-
-    def _mentioned_products(self, query: str, products: dict[str, dict[str, Any]]) -> list[str]:
-        compact_query = _compact(query)
-        scored: list[tuple[int, str]] = []
-        for product_id, product in products.items():
-            matches = []
-            for value in self._identity_values(product):
-                compact = _compact(value)
-                if compact and len(compact) >= 4 and compact in compact_query:
-                    matches.append(len(compact))
-                matches.extend(
-                    len(token)
-                    for token in re.findall(r"[a-z0-9]+", value.casefold())
-                    if len(token) >= 4 and token in compact_query
-                )
-            if matches:
-                scored.append((max(matches), product_id))
-        if not scored:
-            return []
-        longest = max(score for score, _ in scored)
-        # Exact configuration identifiers win; family/model mentions intentionally keep siblings.
-        threshold = longest if longest >= 8 else 4
-        return sorted(product_id for score, product_id in scored if score >= threshold)
-
-    @staticmethod
-    def _narrow_fact_by_literal_values(
-        query: str,
-        candidate_ids: list[str],
-        products: dict[str, dict[str, Any]],
-    ) -> list[str]:
-        """Use literal catalog values only as fact-query identity qualifiers."""
-        if len(candidate_ids) < 2:
-            return candidate_ids
-        compact_query = _compact(query)
-        narrowed = set(candidate_ids)
-        fields = set().union(*(products[item]["attributes"] for item in candidate_ids))
-        for field in fields:
-            matching = {
-                product_id
-                for product_id in candidate_ids
-                if isinstance((value := products[product_id]["attributes"].get(field)), str)
-                and len(_compact(value)) >= 3
-                and _compact(value) in compact_query
-            }
-            if matching and matching != set(candidate_ids):
-                narrowed &= matching
-        return sorted(narrowed or set(candidate_ids))
-
-    def _repair_pack_list_proposals(
+    def _repair_pack_proposals(
         self,
         query: str,
         resolution: ConstraintResolution,
         products: dict[str, dict[str, Any]],
     ) -> ConstraintResolution:
         repaired = []
+        superseded_ids: set[str] = set()
         for proposal in resolution.proposals:
-            if proposal.status.value != "invalid" or proposal.source_span is None:
+            if proposal.source_span is None:
                 continue
             definition = self.pack.fields.get(proposal.field)
-            if definition is None or definition.data_type.value != "string_list":
+            if proposal.status.value == "invalid" and definition is not None and definition.data_type.value == "string_list":
+                vocabulary = sorted({
+                    str(value)
+                    for product in products.values()
+                    for value in (product["attributes"].get(proposal.field) or [])
+                    if isinstance(value, str)
+                })
+                chosen = []
+                for value in vocabulary:
+                    related = [
+                        field
+                        for field in self.pack.fields.values()
+                        if field.field_id == value or field.field_id.startswith(value + "_")
+                    ]
+                    terms = [value, *(term for field in related for term in (field.label, *field.aliases))]
+                    if any(term and term.casefold() in proposal.source_span.text.casefold() for term in terms):
+                        chosen.append(value)
+                if chosen:
+                    repaired.append(self.constraint_engine.validator.validate(
+                        query,
+                        {
+                            "field": proposal.field, "operator": "contains_all", "value": chosen,
+                            "unit": None, "strength": proposal.strength.value, "status": "supported",
+                            "action": proposal.action.value, "span_start": proposal.source_span.start,
+                            "span_end": proposal.source_span.end, "span_text": proposal.source_span.text,
+                            "confidence": 1.0, "reason": "pack_vocabulary_rule",
+                        },
+                        source=ProposalSource.RULE,
+                        source_turn=proposal.source_turn,
+                    ))
                 continue
-            vocabulary = sorted({
-                str(value)
-                for product in products.values()
-                for value in (product["attributes"].get(proposal.field) or [])
-                if isinstance(value, str)
-            })
-            chosen = []
-            for value in vocabulary:
-                related = [
-                    field
-                    for field in self.pack.fields.values()
-                    if field.field_id == value or field.field_id.startswith(value + "_")
-                ]
-                terms = [value, *(term for field in related for term in (field.label, *field.aliases))]
-                if any(term and term.casefold() in proposal.source_span.text.casefold() for term in terms):
-                    chosen.append(value)
-            if not chosen:
+            if proposal.status.value != "unsupported":
                 continue
-            repaired.append(self.constraint_engine.validator.validate(
-                query,
-                {
-                    "field": proposal.field, "operator": "contains_all", "value": chosen,
-                    "unit": None, "strength": proposal.strength.value, "status": "supported",
-                    "action": proposal.action.value, "span_start": proposal.source_span.start,
-                    "span_end": proposal.source_span.end, "span_text": proposal.source_span.text,
-                    "confidence": 1.0, "reason": "pack_vocabulary_rule",
-                },
-                source=ProposalSource.RULE,
-                source_turn=proposal.source_turn,
-            ))
+            literal = proposal.source_span.text.casefold()
+            for target in self.pack.fields.values():
+                value_map = {key.casefold(): value for key, value in target.value_aliases.items()}
+                value_map.update({value.casefold(): value for value in target.enum_values})
+                if literal not in value_map or "eq" not in {item.value for item in target.allowed_operators}:
+                    continue
+                repaired.append(self.constraint_engine.validator.validate(
+                    query,
+                    {
+                        "field": target.field_id,
+                        "operator": "eq",
+                        "value": value_map[literal],
+                        "unit": target.unit,
+                        "strength": proposal.strength.value,
+                        "status": "supported",
+                        "action": proposal.action.value,
+                        "span_start": proposal.source_span.start,
+                        "span_end": proposal.source_span.end,
+                        "span_text": proposal.source_span.text,
+                        "confidence": 1.0,
+                        "reason": "pack_literal_rule",
+                    },
+                    source=ProposalSource.RULE,
+                    source_turn=proposal.source_turn,
+                ))
+                superseded_ids.add(proposal.proposal_id)
+                break
         if not repaired:
             return resolution
         constraint_set, activated, diffs = self.constraint_engine._apply(
             resolution.constraint_set, repaired
         )
+        proposals = [
+            item.model_copy(
+                update={
+                    "status": ProposalStatus.INVALID,
+                    "active": False,
+                    "reason": "superseded_by_pack_literal",
+                }
+            )
+            if item.proposal_id in superseded_ids else item
+            for item in resolution.proposals
+        ]
         return resolution.model_copy(update={
-            "proposals": [*resolution.proposals, *activated],
+            "proposals": [*proposals, *activated],
             "constraint_set": constraint_set,
             "diff": [*resolution.diff, *diffs],
         })
@@ -266,6 +268,107 @@ class DomainDecisionAgent:
                 ))
         return resolution.model_copy(
             update={"constraint_set": resolution.constraint_set.model_copy(update={"constraints": updated})}
+        )
+
+    @staticmethod
+    def _scope_identity_values(
+        field: str,
+        scope: ResolvedProductScope,
+        products: dict[str, dict[str, Any]],
+    ) -> set[str]:
+        values = set()
+        for product_id in scope.product_ids:
+            product = products[product_id]
+            value = product.get(field, product["attributes"].get(field))
+            if value is not None:
+                values.add(str(value).casefold())
+        return values
+
+    def _reconcile_identity_resolution(
+        self,
+        resolution: ConstraintResolution,
+        scope: ResolvedProductScope,
+        products: dict[str, dict[str, Any]],
+    ) -> ConstraintResolution:
+        """Keep identity history, but let only registry-resolved identity control scope."""
+        if scope.resolution_status != ProductScopeResolutionStatus.RESOLVED:
+            return resolution
+        invalidated_proposal_ids: set[str] = set()
+        constraints = []
+        for item in resolution.constraint_set.constraints:
+            if item.field not in _IDENTITY_FIELDS:
+                constraints.append(item)
+                continue
+            allowed = self._scope_identity_values(item.field, scope, products)
+            values = item.normalized_value if isinstance(item.normalized_value, list) else [item.normalized_value]
+            normalized = {str(value).casefold() for value in values if value is not None}
+            compatible = (
+                bool(allowed & normalized)
+                if item.operator in {ConstraintOperator.EQ, ConstraintOperator.IN}
+                else not bool(allowed & normalized)
+                if item.operator == ConstraintOperator.NOT_IN
+                else False
+            )
+            if item.active and not compatible:
+                item = item.model_copy(
+                    update={
+                        "active": False,
+                        "note": "superseded_by_deterministic_product_identity",
+                    }
+                )
+            constraints.append(item)
+        proposals = []
+        for proposal in resolution.proposals:
+            if proposal.field not in _IDENTITY_FIELDS:
+                proposals.append(proposal)
+                continue
+            allowed = self._scope_identity_values(proposal.field, scope, products)
+            raw_values = (
+                proposal.normalized_value
+                if isinstance(proposal.normalized_value, list)
+                else [proposal.normalized_value]
+            )
+            normalized = {str(value).casefold() for value in raw_values if value is not None}
+            compatible = (
+                bool(allowed & normalized)
+                if proposal.operator in {ConstraintOperator.EQ, ConstraintOperator.IN}
+                else not bool(allowed & normalized)
+                if proposal.operator == ConstraintOperator.NOT_IN
+                else False
+            )
+            if proposal.status in {
+                ProposalStatus.AMBIGUOUS,
+                ProposalStatus.NEEDS_CONFIRMATION,
+            } or not compatible:
+                invalidated_proposal_ids.add(proposal.proposal_id)
+                proposal = proposal.model_copy(
+                    update={
+                        "status": ProposalStatus.INVALID,
+                        "active": False,
+                        "reason": "superseded_by_deterministic_product_identity",
+                    }
+                )
+            proposals.append(proposal)
+        pending_ids = [
+            proposal_id
+            for proposal_id in resolution.pending_proposal_ids
+            if proposal_id not in invalidated_proposal_ids
+        ]
+        return resolution.model_copy(
+            update={
+                "proposals": proposals,
+                "constraint_set": resolution.constraint_set.model_copy(
+                    update={"constraints": constraints}
+                ),
+                "clarification_state": (
+                    ClarificationState.PENDING
+                    if pending_ids else ClarificationState.NOT_REQUIRED
+                ),
+                "clarification_question": (
+                    resolution.clarification_question if pending_ids else None
+                ),
+                "pending_proposal_ids": pending_ids,
+            }
         )
 
     async def _trace(
@@ -322,16 +425,37 @@ class DomainDecisionAgent:
         self,
         product: dict[str, Any],
         fields: set[str],
+        scope: ResolvedProductScope,
+        *,
+        index_version: str | None = None,
     ) -> list[EvidenceReference]:
+        try:
+            require_product_in_scope(
+                product,
+                scope,
+                data_version=self.repository.snapshot.data_version,
+                index_version=index_version,
+            )
+        except ValueError:
+            return []
         output = []
         for row in product["evidence"]:
             if row["field_id"] not in fields:
+                continue
+            valid, _ = evidence_identity_status(product, row, field=row["field_id"])
+            if not valid:
                 continue
             output.append(
                 EvidenceReference(
                     evidence_id=row["evidence_id"], source_id=row["source_id"],
                     source_url=row["source_url"], source_type=row["source_type"],
-                    model_id=product["product_id"], region=row["region"],
+                    model_id=product["product_id"], product_id=product["product_id"],
+                    domain_id=product["domain_id"],
+                    family_id=product["attributes"].get("family_id"),
+                    configuration_id=product["attributes"].get("configuration_id"),
+                    region=row["region"],
+                    data_version=self.repository.snapshot.data_version,
+                    index_version=index_version,
                     field=row["field_id"], value=row["normalized_value"],
                     location="governed field evidence", effective_time=row["observed_at"],
                 )
@@ -343,6 +467,7 @@ class DomainDecisionAgent:
         result: Any,
         constraint_set: ConstraintSet,
         products: dict[str, dict[str, Any]],
+        scope: ResolvedProductScope,
     ) -> VerificationBatch:
         now = _utc_now()
         if result.status != "success":
@@ -352,13 +477,25 @@ class DomainDecisionAgent:
                 semantic_fingerprint=hashlib.sha256(b"checker-failed").hexdigest(),
                 degraded=True, degrade_reason=result.error_code or "checker_failed",
             )
+        result_ids = {str(row.get("product_id")) for row in result.data.get("results", [])}
+        if result_ids != set(scope.product_ids):
+            return VerificationBatch(
+                verifier_version=self.checker.VERSION,
+                checked_at=now,
+                constraint_set_version=constraint_set.version,
+                semantic_fingerprint=hashlib.sha256(b"checker-scope-mismatch").hexdigest(),
+                degraded=True,
+                degrade_reason="checker_scope_mismatch",
+            )
         active = {item.field: item for item in constraint_set.active(hard_only=True, supported_only=True)}
         candidates = []
         for row in result.data["results"]:
             converted = []
             for decision in row["constraint_results"]:
                 constraint = active[decision["field_id"]]
-                refs = self._references(products[row["product_id"]], {decision["field_id"]})
+                refs = self._references(
+                    products[row["product_id"]], {decision["field_id"]}, scope
+                )
                 converted.append(
                     ConstraintResult(
                         constraint=constraint,
@@ -374,7 +511,10 @@ class DomainDecisionAgent:
                 VerificationStatus.FAILED if row["violations"] else
                 VerificationStatus.CONFLICT if row["conflicts"] else VerificationStatus.UNKNOWN
             )
-            source_ids = sorted({item.source_id for item in self._references(products[row["product_id"]], set(active))})
+            source_ids = sorted({
+                item.source_id
+                for item in self._references(products[row["product_id"]], set(active), scope)
+            })
             candidates.append(
                 CandidateVerification(
                     model_id=row["product_id"], overall_status=overall,
@@ -392,6 +532,7 @@ class DomainDecisionAgent:
                 {
                     "constraints": [item.model_dump(mode="json") for item in active.values()],
                     "pool": [item.model_id for item in candidates],
+                    "scope": scope.fingerprint,
                     "data_version": self.repository.snapshot.data_version,
                 },
                 ensure_ascii=False,
@@ -408,10 +549,21 @@ class DomainDecisionAgent:
         )
 
     @staticmethod
-    def _empty_batch(candidate_ids: list[str], constraint_set: ConstraintSet) -> VerificationBatch:
+    def _empty_batch(
+        candidate_ids: list[str],
+        constraint_set: ConstraintSet,
+        scope: ResolvedProductScope | None = None,
+    ) -> VerificationBatch:
         now = _utc_now()
         fingerprint = hashlib.sha256(
-            json.dumps({"pool": candidate_ids, "constraints": []}, sort_keys=True).encode()
+            json.dumps(
+                {
+                    "pool": candidate_ids,
+                    "constraints": [],
+                    "scope": scope.fingerprint if scope else None,
+                },
+                sort_keys=True,
+            ).encode()
         ).hexdigest()
         return VerificationBatch(
             verifier_version="proofpick-domain-checker-v2-6b", checked_at=now,
@@ -440,6 +592,71 @@ class DomainDecisionAgent:
                                           "data_version": self.repository.snapshot.data_version})
         products = self.repository.load()
         intent = self._intent(query)
+        index_version = getattr(self.kb_search, "index_version", None)
+        index_manager = getattr(self.kb_search, "index_manager", None)
+        if index_manager is not None:
+            try:
+                index_version = index_manager.current().index_version
+            except Exception:
+                index_version = None
+        scope = ProductIdentityResolver(
+            domain_id=self.pack.domain_id,
+            data_version=self.repository.snapshot.data_version,
+            index_version=index_version,
+        ).resolve(query, products)
+        await emit_event(
+            event_callback,
+            {
+                "type": "product_scope_resolved",
+                "domain_id": scope.domain_id,
+                "scope_type": scope.scope_type.value,
+                "resolution_status": scope.resolution_status.value,
+                "candidate_count": len(scope.product_ids),
+                "mention_count": len(scope.mentions),
+                "clarification_required": scope.clarification_required,
+                "scope_fingerprint": scope.fingerprint,
+            },
+        )
+        if scope.resolution_status != ProductScopeResolutionStatus.RESOLVED:
+            clarification = scope.scope_type == ProductScopeType.AMBIGUOUS_PRODUCT_SCOPE
+            return DecisionReport(
+                request_summary=query,
+                product_scope=scope,
+                task_type=(
+                    "comparison" if intent == "comparison" else
+                    "filter" if intent == "filter" else "fact"
+                ),
+                clarification_state=(
+                    ClarificationState.PENDING
+                    if clarification else ClarificationState.NOT_REQUIRED
+                ),
+                constraint_verification=self._empty_batch([], ConstraintSet(), scope),
+                pending_questions=(
+                    ["请明确需要核验的具体配置、SKU 或要比较的配置。"]
+                    if clarification else []
+                ),
+                unresolved_facts=(
+                    [UnresolvedFact(
+                        field="product_id",
+                        status="unknown",
+                        reason="本地治理目录中没有该商品身份；不得替换为相似商品。",
+                    )]
+                    if scope.scope_type == ProductScopeType.OPEN_UNKNOWN_PRODUCT else []
+                ),
+                abstained=True,
+                stop_reason=(
+                    "商品身份存在歧义，等待用户澄清。"
+                    if clarification else "本地目录没有该商品，Trusted Mode 已停止。"
+                ),
+                usage={
+                    "domain_id": self.pack.domain_id,
+                    "data_version": self.repository.snapshot.data_version,
+                    "index_version": index_version,
+                    "scope_fingerprint": scope.fingerprint,
+                    "provider_calls": 0,
+                },
+                latency_ms=(time.perf_counter() - started) * 1000,
+            )
         previous = self._session_constraints.get(session_id or "")
         if constraint_resolution is None:
             preferences = self.preference_memory.recall(user_id or "anonymous", requested=use_long_term_memory)
@@ -448,17 +665,25 @@ class DomainDecisionAgent:
             )
         if constraint_resolution is None:
             constraint_resolution = ConstraintResolution(query=query, source_turn=1)
-        mentioned = self._mentioned_products(query, products)
-        if intent == "fact":
-            mentioned = self._narrow_fact_by_literal_values(query, mentioned, products)
-        constraint_resolution = self._repair_pack_list_proposals(query, constraint_resolution, products)
+        mentioned = list(scope.product_ids)
+        constraint_resolution = self._repair_pack_proposals(query, constraint_resolution, products)
         constraint_resolution = self._canonicalize_resolution(
             query, constraint_resolution, products, mentioned, intent
+        )
+        constraint_resolution = self._reconcile_identity_resolution(
+            constraint_resolution, scope, products
         )
         if session_id and constraint_resolution.clarification_state != ClarificationState.PENDING:
             self._session_constraints[session_id] = constraint_resolution.constraint_set
         constraints = self._tool_constraints(constraint_resolution)
         fields = set(self._field_mentions(query)) | {item["field"] for item in constraints}
+        if scope.mentions:
+            fields.update({"configuration_id", "region"} & set(self.pack.fields))
+            if scope.scope_type in {
+                ProductScopeType.PRODUCT_FAMILY,
+                ProductScopeType.EXPLICIT_COMPARISON,
+            }:
+                fields.update({"family_id"} & set(self.pack.fields))
         pending = constraint_resolution.clarification_state == ClarificationState.PENDING
         cross_region_inference = (
             intent != "filter"
@@ -466,9 +691,9 @@ class DomainDecisionAgent:
             and any(item.field == "region" for item in constraint_resolution.constraint_set.active())
         )
         if pending:
-            batch = self._empty_batch([], constraint_resolution.constraint_set)
+            batch = self._empty_batch([], constraint_resolution.constraint_set, scope)
             return DecisionReport(
-                request_summary=query, task_type="filter",
+                request_summary=query, product_scope=scope, task_type="filter",
                 constraint_set=constraint_resolution.constraint_set,
                 constraint_proposals=constraint_resolution.proposals,
                 clarification_state=constraint_resolution.clarification_state,
@@ -476,19 +701,20 @@ class DomainDecisionAgent:
                 constraint_verification=batch, pending_questions=[constraint_resolution.clarification_question or "请确认约束。"],
                 abstained=True, stop_reason="等待用户澄清，未进入 Checker。",
                 usage={"domain_id": self.pack.domain_id, "data_version": self.repository.snapshot.data_version,
-                       "index_version": None, "provider_calls": constraint_resolution.provider_calls},
+                       "index_version": index_version, "scope_fingerprint": scope.fingerprint,
+                       "provider_calls": constraint_resolution.provider_calls},
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
 
-        candidate_ids = mentioned or sorted(products)
+        candidate_ids = list(scope.product_ids)
         query_result = None
         if constraints:
             tool_started = time.perf_counter()
-            query_result = self.product_query.run(constraints)
+            query_result = self.product_query.run(constraints, scope=scope)
             await self._trace(event_callback, trace, query_result.tool, query_result.status,
                               query_result.summary, arguments={"constraint_fields": sorted(fields)},
                               duration_ms=(time.perf_counter() - tool_started) * 1000)
-            if intent != "filter" and query_result.status == "success":
+            if intent == "fact" and query_result.status == "success":
                 matched_ids = {
                     row["product_id"] for row in query_result.data.get("rows", [])
                     if row["status"] == "matched"
@@ -501,6 +727,7 @@ class DomainDecisionAgent:
             kb_result = await self.kb_search.run(
                 query,
                 product_id=mentioned[0] if len(mentioned) == 1 else None,
+                scope=scope,
                 vector_top_k=12,
                 top_k=5,
             )
@@ -523,18 +750,26 @@ class DomainDecisionAgent:
                     and "eq" in {item.value for item in self.pack.fields[field].allowed_operators}
                 ]
             if requested:
-                evidence_result = self.evidence_check.run(product_id, requested)
+                evidence_result = self.evidence_check.run(
+                    product_id, requested, scope=scope
+                )
                 await self._trace(event_callback, trace, evidence_result.tool, evidence_result.status,
                                   evidence_result.summary, arguments={"product_id": product_id,
                                                                      "fields": [item["field"] for item in requested]})
 
         if constraints and intent == "filter":
-            checker_result = self.checker.run(constraints, candidate_ids=sorted(products))
+            checker_result = self.checker.run(
+                constraints,
+                candidate_ids=scope.product_ids,
+                scope=scope,
+            )
             await self._trace(event_callback, trace, checker_result.tool, checker_result.status,
-                              checker_result.summary, arguments={"candidate_pool_size": len(products)})
-            batch = self._batch(checker_result, constraint_resolution.constraint_set, products)
+                              checker_result.summary, arguments={"candidate_pool_size": len(scope.product_ids)})
+            batch = self._batch(
+                checker_result, constraint_resolution.constraint_set, products, scope
+            )
         else:
-            batch = self._empty_batch(candidate_ids, constraint_resolution.constraint_set)
+            batch = self._empty_batch(candidate_ids, constraint_resolution.constraint_set, scope)
 
         recommended = list(batch.eligible_model_ids) if constraints and intent == "filter" else []
         report_ids = sorted(set(
@@ -546,7 +781,9 @@ class DomainDecisionAgent:
         verified_by_id = {item.model_id: item for item in batch.candidates}
         for product_id in report_ids:
             product = products[product_id]
-            refs = self._references(product, fields)
+            refs = self._references(
+                product, fields, scope, index_version=index_version
+            )
             all_evidence.extend(refs)
             verification = verified_by_id.get(product_id)
             field_assessments = []
@@ -570,8 +807,16 @@ class DomainDecisionAgent:
                 ConstraintStatus.MATCHED if field_assessments and all(item.status == ConstraintStatus.MATCHED for item in field_assessments) else ConstraintStatus.UNKNOWN
             )
             candidates.append(CandidateDecision(
-                model_id=product_id, brand=product["brand"], model_name=product["model_name"],
-                region=product["region"], overall_status=overall,
+                model_id=product_id,
+                product_id=product_id,
+                domain_id=product["domain_id"],
+                family_id=product["attributes"].get("family_id"),
+                configuration_id=product["attributes"].get("configuration_id"),
+                brand=product["brand"], model_name=product["model_name"],
+                region=product["region"],
+                data_version=self.repository.snapshot.data_version,
+                index_version=index_version,
+                overall_status=overall,
                 fields=field_assessments, eligible=bool(verification and verification.eligible),
                 verifier_status=verification.overall_status if verification else None,
                 constraint_results=verification.constraint_results if verification else [],
@@ -597,6 +842,7 @@ class DomainDecisionAgent:
         index_version = kb_result.data.get("index_version") if kb_result and kb_result.status in {"success", "degraded"} else None
         return DecisionReport(
             request_summary=query,
+            product_scope=scope,
             task_type="comparison" if intent == "comparison" else "filter" if intent == "filter" else "fact",
             constraint_set=constraint_resolution.constraint_set,
             constraint_proposals=constraint_resolution.proposals,
@@ -629,7 +875,8 @@ class DomainDecisionAgent:
                 "domain_pack_version": self.pack.version,
                 "data_version": self.repository.snapshot.data_version,
                 "index_version": index_version,
-                "complete_candidate_pool_size": len(products),
+                "complete_candidate_pool_size": len(scope.product_ids),
+                "scope_fingerprint": scope.fingerprint,
                 "provider_calls": constraint_resolution.provider_calls,
                 "input_tokens": constraint_resolution.input_tokens,
                 "output_tokens": constraint_resolution.output_tokens,

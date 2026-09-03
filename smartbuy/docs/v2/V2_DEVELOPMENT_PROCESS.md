@@ -9,9 +9,9 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-6B 已完成 Laptop SQLite、独立真实索引和五工具闭环；Agent E2E 与冻结 Holdout 尚未运行** |
+| 当前状态 | **V2-6C 首次 Holdout 阻断；R1 已完成商品身份与 Candidate Scope 根因修复，但未创建或运行新 Holdout** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
-| 最后更新 | 2026-09-02 |
+| 最后更新 | 2026-09-03 |
 
 关联文档：
 
@@ -211,7 +211,7 @@ Decision Ranker
 | V2-3 | 真实 Source Search | Agent 能发现官方网络来源 | 是，先 smoke |
 | V2-4 | Web Extractor 与 Open 模式 | 数据库外商品研究 | 是，受预算限制 |
 | V2-5 | 自然约束与主动澄清 | 支持口语、歧义、覆盖和取消 | 是，离线优先 |
-| V2-6 | Laptop Domain Pack | 6A 数据与 Pack 已完成；6B 工具闭环、6C E2E 待授权 | 6A 否；后续索引/E2E 可能少量调用 |
+| V2-6 | Laptop Domain Pack | 6A/6B 完成；6C 首次失败已保留，R1 身份/Scope 已修复，待新 Holdout | R1 为 0；后续需单独预算 |
 | V2-7 | Ranker 与 Memory 升级 | 个性化且可解释的合规排序 | 是，主逻辑可离线测 |
 | V2-8 | Headphone Pack 与跨品类评测 | 第三品类与隔离验证 | 是，冻结评测受预算限制 |
 | V2-9 | UI、完整评测和发布 | 五分钟可理解的 V2 作品集 | 是，发布候选单次运行 |
@@ -600,7 +600,7 @@ V2-6 拆分为三个独立验收阶段：
 
 - **V2-6A（已完成）**：Laptop Domain Pack、治理数据、离线派生产物和冻结任务。
 - **V2-6B（已完成）**：独立 SQLite/Chroma、Product Query、KB Search、Reranker、Evidence Check 与 Checker 工具闭环。
-- **V2-6C（未开始）**：冻结 E2E、开放研究与跨品类验收。
+- **V2-6C（阻断中）**：首次 E2E 失败已保留；R1 完成身份/Scope 根因修复，仍需新的未见 Holdout 才能继续验收。
 
 ### 14.2 数据范围
 
@@ -638,6 +638,16 @@ V2-6A 没有实现笔记本结构化查询、真实 KB、正式 Evidence/Checker
 - 10 条工具组合任务、两品类字段/索引/Memory/Checkpoint 隔离；没有运行 V2-6A 的 Agent Holdout。
 
 V2-6B 不等于 Laptop Agent E2E。完整 30 条冻结 Agent 任务、自然语言规划、开放研究与端到端报告属于 V2-6C，必须再次授权。
+
+### 14.4.2 V2-6C 首次失败与 R1 修复
+
+- Regression 历史 `4/10 → 5/10 → 10/10`，原 Holdout 首次 `3/10`、推荐证据覆盖 `3/9`；全部原始结果永久保留。
+- 原 Holdout 已暴露并分类为 `exposed_holdout_regression_v1`，不能再作为未见测试。
+- 30 条任务中的 21～30 已审阅金标但未运行，只能标为 `unrun_exposed_specialist`。
+- R1 以 Product Pack Registry 精确解析 `ResolvedProductScope`，同一 Scope 贯穿 Product Query、KB、Evidence、Checker、报告与 Checkpoint。
+- R1 仅离线重放暴露的 20 条：Regression `10/10`、已暴露 Holdout `10/10`、推荐事实证据 `75/75`，越界为 0，API 调用为 0。
+
+R1 结果只能证明已知失败得到回归修复，不得当作新 Holdout 泛化结论。详情见[失败链路审计](v2_6c_identity_scope_failure_audit.md)、[修复报告](v2_6c_identity_scope_repair_report.md)和 [ADR-0016](../adr/0016-deterministic-product-identity-and-candidate-scope.md)。
 
 ### 14.5 验收指标
 
@@ -924,6 +934,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-6A 已完成 Laptop Domain Pack、12 个精确配置、406 条字段 Evidence、离线可重复 Product Pack 和 30 条冻结任务；V2-6B 已完成真实索引与工具闭环。详情见 [V2-6A 阶段报告](v2_6a_laptop_domain_and_data_report.md)、[数据卡](v2_6a_laptop_data_card.md)、[V2-6B 报告](v2_6b_laptop_toolchain_report.md)和[运行说明](v2_6b_laptop_index_runtime.md)。V2-5B/5C 的全部历史首测继续原样保留。
+V2-6A 已完成 Laptop Domain Pack、12 个精确配置、406 条字段 Evidence、离线可重复 Product Pack 和 30 条冻结任务；V2-6B 已完成真实索引与工具闭环。V2-6C 首次 Holdout 失败已原样保留，R1 只完成了通用商品身份和 Candidate Scope 根因修复。详情见 [R1 失败审计](v2_6c_identity_scope_failure_audit.md)与[修复报告](v2_6c_identity_scope_repair_report.md)。V2-5B/5C 的全部历史首测继续原样保留。
 
-下一步只有在用户再次确认后才能执行 V2-6C：冻结 Laptop Agent E2E、跨品类端到端和开放研究验收。不得自动进入 V2-6C/V2-7，不得切换默认编排器或修改 V1 冻结数据与历史结果。
+下一步只有在用户再次确认后，才能冻结并运行一组全新的未见 Holdout。不得运行已审阅但未运行的 10 条去冒充新 Holdout，不得自动执行 Open Research、Memory 专项、完整故障矩阵或 V2-7，也不得切换默认编排器或修改 V1 冻结数据与历史结果。

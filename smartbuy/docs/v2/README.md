@@ -41,6 +41,10 @@
 - [V2-6A Laptop Pack 本地运行说明](v2_6a_laptop_runtime.md)
 - [V2-6B Laptop SQLite、真实索引与工具闭环报告](v2_6b_laptop_toolchain_report.md)
 - [V2-6B Laptop 索引与工具运行说明](v2_6b_laptop_index_runtime.md)
+- [V2-6C-R 失败现场保存审计](v2_6c_r_failed_holdout_audit.md)
+- [V2-6C-R1 商品身份与 Scope 失败链路审计](v2_6c_identity_scope_failure_audit.md)
+- [V2-6C-R1 商品身份与 Scope 修复报告](v2_6c_identity_scope_repair_report.md)
+- [ADR-0016：确定性商品身份与不可扩大的 Candidate Scope](../adr/0016-deterministic-product-identity-and-candidate-scope.md)
 
 ## 当前状态
 
@@ -55,5 +59,7 @@
 - V2-5C 保留上述历史并改用服务端精确 Quote-to-Span；新的 20 条一次性 Live Holdout V2 首测为 Schema 20/20、服务端 span 28/28、清晰硬约束 F1 96.97%、任务 16/20，安全误激活仍为 0。
 - V2-6A 已新增配置驱动的 Laptop Domain Pack，以及 12 个精确配置、4 个品牌、12 个官方来源和 406 条字段证据；30 条 Laptop 任务已冻结。离线 Product Pack、EAV SQLite、事实卡和待索引文档可重复生成。
 - V2-6B 已构建独立的 12-document/1024 维 Laptop Chroma，并完成 Product Query、KB Search、Reranker、Evidence Check 与 Checker 的工具闭环；冻结的独立 30 条检索集首次 Recall@5 为 30/30，跨品类召回为 0。
-- Laptop Agent E2E、V2-6A 冻结 Holdout、开放研究和 Ranker 仍未开始；不得把工具闭环描述为已完成笔记本购买推荐。Evidence Promotion 和浏览器渲染亦未实现。
+- V2-6C 首次 Regression 经四轮定向修复达到 10/10，但首次 Holdout 只有 3/10、推荐证据覆盖 3/9；该 Holdout 已永久改为 `exposed_holdout_regression_v1`，历史结果不可覆盖。
+- V2-6C-R1 已增加确定性商品身份与不可扩大的 Candidate Scope。只对已暴露 20 条执行零 API 回归：Regression 10/10、已暴露 Holdout 10/10、推荐事实证据 75/75、Scope/Checker 越界 0；这不是新 Holdout，V2-6C 仍未完成。
+- 剩余 10 条 specialist 的金标已经审阅但尚未运行，只能作为 `unrun_exposed_specialist` 诊断回归；创建和运行全新 Holdout 必须再次授权。Ranker、Memory 专项、完整故障矩阵和 V2-7 均未开始。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

@@ -20,6 +20,7 @@ from smartbuy.constraint_proposals.models import (
     ConstraintResolution,
 )
 from smartbuy.open_research.models import OpenResearchReport, ResearchMode
+from smartbuy.identity import ResolvedProductScope
 
 
 class ConstraintStatus(StrEnum):
@@ -72,11 +73,23 @@ class EvidenceReference(BaseModel):
     source_url: str
     source_type: str
     model_id: str
+    product_id: str | None = None
+    domain_id: str | None = None
+    family_id: str | None = None
+    configuration_id: str | None = None
     region: str
+    data_version: str | None = None
+    index_version: str | None = None
     field: str | None = None
     value: Any = None
     location: str | None = None
     effective_time: str | None = None
+
+    @model_validator(mode="after")
+    def validate_product_identity(self) -> EvidenceReference:
+        if self.product_id is not None and self.product_id != self.model_id:
+            raise ValueError("evidence product identity differs from model identity")
+        return self
 
 
 class FieldAssessment(BaseModel):
@@ -90,9 +103,15 @@ class FieldAssessment(BaseModel):
 
 class CandidateDecision(BaseModel):
     model_id: str
+    product_id: str | None = None
+    domain_id: str | None = None
+    family_id: str | None = None
+    configuration_id: str | None = None
     brand: str | None = None
     model_name: str | None = None
     region: str | None = None
+    data_version: str | None = None
+    index_version: str | None = None
     price_cny: float | None = None
     price_observed_at: str | None = None
     overall_status: ConstraintStatus
@@ -107,6 +126,12 @@ class CandidateDecision(BaseModel):
     verifier_version: str | None = None
     recommendation_reason: str | None = None
     elimination_reason: str | None = None
+
+    @model_validator(mode="after")
+    def validate_candidate_identity(self) -> CandidateDecision:
+        if self.product_id is not None and self.product_id != self.model_id:
+            raise ValueError("candidate product identity differs from model identity")
+        return self
 
 
 class ToolTrace(BaseModel):
@@ -139,6 +164,7 @@ class DecisionReport(BaseModel):
     report_version: str = "smartbuy-decision-v3"
     mode: ResearchMode = ResearchMode.TRUSTED
     request_summary: str
+    product_scope: ResolvedProductScope | None = None
     task_type: Literal["fact", "filter", "comparison", "dynamic", "unrelated"] = "fact"
     constraint_set: ConstraintSet = Field(default_factory=ConstraintSet)
     constraint_proposals: list[ConstraintProposal] = Field(default_factory=list)
@@ -173,6 +199,31 @@ class DecisionReport(BaseModel):
                 raise ValueError("Open Mode cannot expose Trusted eligible recommendations")
         elif self.open_research is not None:
             raise ValueError("Trusted Mode cannot contain open_research evidence")
+        if self.product_scope is not None:
+            scope = self.product_scope
+            public_ids = {
+                *self.recommended_model_ids,
+                *self.eliminated_model_ids,
+                *(item.model_id for item in self.candidates),
+                *(item.model_id for item in self.evidence),
+            }
+            if not public_ids <= set(scope.product_ids):
+                raise ValueError("report expands the resolved product scope")
+            if self.constraint_verification is not None:
+                checker_ids = set(self.constraint_verification.candidate_pool_model_ids)
+                if not checker_ids <= set(scope.product_ids):
+                    raise ValueError("Checker report expands the resolved product scope")
+            for item in [*self.candidates, *self.evidence]:
+                if (
+                    item.product_id != item.model_id
+                    or item.domain_id != scope.domain_id
+                    or item.family_id not in scope.family_ids
+                    or item.configuration_id not in scope.configuration_ids
+                    or item.region not in scope.regions
+                    or item.data_version != scope.data_version
+                    or item.index_version != scope.index_version
+                ):
+                    raise ValueError("report item has an incomplete product identity envelope")
         return self
 
     def to_markdown(self) -> str:
@@ -215,6 +266,19 @@ class DecisionReport(BaseModel):
             "# SmartBuy 消费决策报告", "", f"**需求摘要：** {self.request_summary}",
             f"**任务类型：** {self.task_type}", "",
         ]
+        if self.product_scope is not None:
+            lines.extend(
+                [
+                    "## 商品身份与候选范围",
+                    "",
+                    f"- Scope：`{self.product_scope.scope_type.value}` / "
+                    f"`{self.product_scope.resolution_status.value}`",
+                    f"- 候选上限：{len(self.product_scope.product_ids)}",
+                    f"- 配置：{', '.join(self.product_scope.configuration_ids) or '未确定'}",
+                    f"- 地区：{', '.join(self.product_scope.regions) or '未确定'}",
+                    "",
+                ]
+            )
         if self.hard_constraints:
             lines.extend(["## 硬约束", ""])
             for item in self.hard_constraints:
@@ -342,6 +406,7 @@ class AgentState(BaseModel):
     session_id: str
     user_id: str | None = None
     query: str
+    product_scope: ResolvedProductScope | None = None
     mode: ResearchMode = ResearchMode.TRUSTED
     thread_id: str | None = None
     turn_number: int = Field(default=1, ge=1)

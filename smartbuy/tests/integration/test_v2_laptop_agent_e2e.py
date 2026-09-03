@@ -98,8 +98,10 @@ def test_category_router_is_registry_driven_and_fails_closed() -> None:
 async def test_generic_agent_checks_complete_pool_and_unknown_without_overclaim(tmp_path: Path) -> None:
     agent = _agent(tmp_path)
     query = "筛选笔记本：内存至少 32GB 且存储至少 1TB。"
+    events = []
     report = await agent.run(
         query,
+        event_callback=lambda event: events.append(event),
         constraint_resolution=_resolution(
             query,
             ("memory_gb", "gte", 32, "GB"),
@@ -112,6 +114,9 @@ async def test_generic_agent_checks_complete_pool_and_unknown_without_overclaim(
     assert report.recommended_model_ids
     assert all(item.eligible == (item.model_id in report.recommended_model_ids) for item in report.candidates)
     assert report.tool_call_count <= 12
+    scope_event = next(item for item in events if item["type"] == "product_scope_resolved")
+    assert scope_event["candidate_count"] == 12
+    assert "mentioned_quotes" not in scope_event and "query" not in scope_event
     budget = "筛选预算八千以内的笔记本。"
     unknown = await agent.run(
         budget,
@@ -122,6 +127,10 @@ async def test_generic_agent_checks_complete_pool_and_unknown_without_overclaim(
     fact = await agent.run("笔记本 H7606WI 的屏幕刷新率是多少？")
     assert fact.abstained and fact.recommended_model_ids == []
     assert any(item.field == "refresh_rate_hz" for item in fact.unresolved_facts)
+    assert fact.product_scope.configuration_ids == ["H7606WI"]
+    family = await agent.run("XPS 13 9350 有哪些配置？")
+    assert family.clarification_state.value == "pending"
+    assert family.recommended_model_ids == [] and family.abstained
 
 
 @pytest.mark.asyncio
@@ -144,9 +153,17 @@ async def test_react_langgraph_and_gateway_share_eligibility(tmp_path: Path) -> 
     assert react_result.report is not None and graph_result.report is not None
     assert react_result.report.constraint_set == graph_result.report.constraint_set
     assert react_result.report.recommended_model_ids == graph_result.report.recommended_model_ids
+    assert react_result.report.product_scope == graph_result.report.product_scope
     assert (
         react_result.report.constraint_verification.candidate_pool_model_ids
         == graph_result.report.constraint_verification.candidate_pool_model_ids
+    )
+    assert graph._graph is not None
+    checkpoint = await graph._graph.aget_state(
+        graph._config(graph._identity(request, request.thread_id or request.session_id))
+    )
+    assert checkpoint.values["resolved_product_scope"] == graph_result.report.product_scope.model_dump(
+        mode="json"
     )
     runtimes = DomainRuntimeRegistry()
     runtimes.register(DomainRuntimeContext(

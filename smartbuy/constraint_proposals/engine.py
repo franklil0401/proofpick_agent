@@ -495,7 +495,9 @@ class ConstraintProposalValidator:
         if operator == ConstraintOperator.CONTAINS_ALL:
             if not isinstance(value, list) or not value:
                 raise ValueError("list operator requires values")
-            return self.pack.normalize_value(field, value, unit=unit)
+            if self.pack.fields[field].data_type.value == "string_list":
+                return self.pack.normalize_value(field, value, unit=unit)
+            return [self.pack.normalize_value(field, item, unit=unit) for item in value]
         if operator in {ConstraintOperator.IN, ConstraintOperator.NOT_IN}:
             if not isinstance(value, list) or not value:
                 raise ValueError("list operator requires values")

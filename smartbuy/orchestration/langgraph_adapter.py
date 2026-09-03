@@ -35,6 +35,7 @@ class LangGraphState(TypedDict, total=False):
     clarification_question: str | None
     clarification_answer: Any
     report: dict[str, Any]
+    resolved_product_scope: dict[str, Any] | None
     checker_terminal_completed: bool
     checker_terminal_status: str
     final_report: dict[str, Any]
@@ -126,7 +127,13 @@ class LangGraphOrchestrator:
             arguments["constraint_resolution"] = request.constraint_resolution
         report = await self.agent.run(request.query, **arguments)
         await self._emit("graph_node_completed", node="execute_react", status="completed")
-        return {"report": report.model_dump(mode="json")}
+        return {
+            "report": report.model_dump(mode="json"),
+            "resolved_product_scope": (
+                report.product_scope.model_dump(mode="json")
+                if report.product_scope is not None else None
+            ),
+        }
 
     async def _checker_terminal(self, state: LangGraphState) -> dict[str, Any]:
         await self._emit("checker_terminal_started", node="checker_terminal", status="running")
