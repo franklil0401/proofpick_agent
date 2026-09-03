@@ -3,12 +3,13 @@
 from __future__ import annotations
 
 import asyncio
+import hmac
 import json
 import os
 from pathlib import Path
-from typing import Any, AsyncIterator
+from typing import Any, AsyncIterator, Literal
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Header, HTTPException
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel, Field
 
@@ -25,12 +26,13 @@ from smartbuy.constraint_proposals.settings import NaturalConstraintSettings
 from smartbuy.db.build_database import DEFAULT_OUTPUT
 from smartbuy.domain_packs import (
     DomainPackLoader,
+    DomainPackRegistry,
     DomainPackSettings,
     DomainPackValidationError,
 )
 from smartbuy.domain_packs.loader import DEFAULT_MONITOR_PACK
 from smartbuy.domain_packs.orchestrator import DomainPackOrchestrator
-from smartbuy.memory import LongTermPreferenceStore
+from smartbuy.memory import DomainPreferenceMemoryStore, LongTermPreferenceStore
 from smartbuy.observability import UsageLedger, agent_monitor
 from smartbuy.open_research import (
     OpenResearchService,
@@ -70,6 +72,7 @@ from smartbuy.tools import (
 router = APIRouter(prefix="/api/smartbuy", tags=["SmartBuy"])
 _agent: PurchaseDecisionAgent | None = None
 _orchestrator: Orchestrator | OrchestratorSelector | None = None
+_domain_memories: dict[str, DomainPreferenceMemoryStore] = {}
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -93,14 +96,20 @@ class SmartBuyChatRequest(BaseModel):
 class PreferenceUpdate(BaseModel):
     preferences: dict[str, Any]
     explicitly_confirmed: bool = False
+    domain_id: str | None = None
+    scope: Literal["global", "category"] = "category"
+    expires_at: str | None = None
 
 
 class PreferenceDelete(BaseModel):
     fields: list[str] | None = None
+    domain_id: str | None = None
+    scope: Literal["global", "category"] = "category"
 
 
 class PreferenceEnabled(BaseModel):
     enabled: bool
+    domain_id: str | None = None
 
 
 def get_smartbuy_agent() -> PurchaseDecisionAgent:
@@ -420,26 +429,101 @@ def _preferences() -> LongTermPreferenceStore:
     return get_smartbuy_agent().preference_memory
 
 
+def _domain_preferences(domain_id: str) -> DomainPreferenceMemoryStore:
+    if domain_id not in _domain_memories:
+        pack = DomainPackRegistry(PROJECT_ROOT / "smartbuy" / "domain_packs").load(
+            domain_id
+        )
+        root = Path(
+            os.getenv("PROOFPICK_V2_MEMORY_PATH", "C:/ai/proofpick-v2/memory")
+        ).resolve()
+        try:
+            root.relative_to(PROJECT_ROOT.resolve())
+        except ValueError:
+            pass
+        else:
+            raise ValueError("V2 memory path must stay outside the repository")
+        _domain_memories[domain_id] = DomainPreferenceMemoryStore(root, pack)
+    return _domain_memories[domain_id]
+
+
+def _require_v2_memory_identity(user_id: str, identity: str | None) -> None:
+    if identity is None or not hmac.compare_digest(user_id, identity):
+        raise HTTPException(status_code=403, detail="memory identity does not match")
+
+
 @router.get("/memory/{user_id}")
-async def view_memory(user_id: str) -> dict[str, Any]:
-    return _preferences().view(user_id)
+async def view_memory(
+    user_id: str,
+    domain_id: str | None = None,
+    memory_identity: str | None = Header(default=None, alias="X-ProofPick-Identity"),
+) -> dict[str, Any]:
+    try:
+        if domain_id:
+            _require_v2_memory_identity(user_id, memory_identity)
+        return (
+            _domain_preferences(domain_id).view(user_id)
+            if domain_id
+            else _preferences().view(user_id)
+        )
+    except (ValueError, DomainPackValidationError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from None
 
 
 @router.put("/memory/{user_id}")
-async def update_memory(user_id: str, request: PreferenceUpdate) -> dict[str, Any]:
+async def update_memory(
+    user_id: str,
+    request: PreferenceUpdate,
+    memory_identity: str | None = Header(default=None, alias="X-ProofPick-Identity"),
+) -> dict[str, Any]:
     try:
+        if request.domain_id:
+            _require_v2_memory_identity(user_id, memory_identity)
+            return _domain_preferences(request.domain_id).upsert(
+                user_id,
+                request.preferences,
+                explicitly_confirmed=request.explicitly_confirmed,
+                scope=request.scope,
+                expires_at=request.expires_at,
+            )
         return _preferences().upsert(
-            user_id, request.preferences, explicitly_confirmed=request.explicitly_confirmed
+            user_id,
+            request.preferences,
+            explicitly_confirmed=request.explicitly_confirmed,
         )
-    except ValueError as exc:
+    except (ValueError, DomainPackValidationError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from None
 
 
 @router.delete("/memory/{user_id}")
-async def delete_memory(user_id: str, request: PreferenceDelete | None = None) -> dict[str, Any]:
+async def delete_memory(
+    user_id: str,
+    request: PreferenceDelete | None = None,
+    memory_identity: str | None = Header(default=None, alias="X-ProofPick-Identity"),
+) -> dict[str, Any]:
+    if request and request.domain_id:
+        try:
+            _require_v2_memory_identity(user_id, memory_identity)
+            return _domain_preferences(request.domain_id).delete(
+                user_id, request.fields, scope=request.scope
+            )
+        except (ValueError, DomainPackValidationError) as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from None
     return _preferences().delete(user_id, request.fields if request else None)
 
 
 @router.post("/memory/{user_id}/enabled")
-async def enable_memory(user_id: str, request: PreferenceEnabled) -> dict[str, Any]:
+async def enable_memory(
+    user_id: str,
+    request: PreferenceEnabled,
+    memory_identity: str | None = Header(default=None, alias="X-ProofPick-Identity"),
+) -> dict[str, Any]:
+    if request.domain_id:
+        try:
+            _require_v2_memory_identity(user_id, memory_identity)
+            return _domain_preferences(request.domain_id).set_enabled(
+                user_id, request.enabled
+            )
+        except (ValueError, DomainPackValidationError) as exc:
+            raise HTTPException(status_code=422, detail=str(exc)) from None
     return _preferences().set_enabled(user_id, request.enabled)
