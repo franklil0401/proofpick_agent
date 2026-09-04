@@ -65,6 +65,8 @@
 - [V2-9A 发布、回滚与独立评测交接](v2_9a_handoff.md)
 - [ADR-0019：Headphone 来源权限与通用内核复用](../adr/0019-headphone-source-authority-and-pack-reuse.md)
 - [V2-9C 独立评测通用修复报告](v2_9c_independent_evaluation_repair_report.md)
+- [V2-9C RC2 冻结 Manifest](v2_release_candidate_rc2_manifest.md)
+- [V2-9C RC2 独立评测交接](v2_9c_rc2_handoff.md)
 - [ADR-0020：查询意图、商品范围与购买约束分离](../adr/0020-separate-query-intent-scope-and-purchase-constraints.md)
 
 ## 当前状态
@@ -92,5 +94,6 @@
 - Headphone Open Research 对本地未治理的 AirPods Max 爱尔兰官方页完成 5 字段临时核验；Open Evidence 进入治理 Ledger/Checker 为 0。V2-8 总估算费用约 ¥1.145。
 - V2-9A 已形成三品类统一产品首页、Trusted/Open 展示、五个脱敏 Demo、仓库外 Windows bootstrap 与无 Key Offline Replay；新短 ASCII 路径完成三 SQLite、三索引、HTTP 与端口释放验证。
 - V2-9B 独立首次评测结论为 `Needs revision`：Trusted 64/90，Online 安全终态 15/15 但真实网页 Evidence 仅 2/15。V2-9C 通用修复后的同题 exposed regression 为 86/90、Evidence 297/297、安全越界 0；该结果不能替代新的独立发布集。
-- 当前没有创建 PR、合并 `main`、Tag 或 Release；新的发布判断仍须由独立评测方在新 RC 上完成。
+- V2-9C 修复后生产代码已冻结为 `proofpick-v2-9c-rc2`，冻结对象是 Commit `2d41773981c69b815efa21c0bf21675d095b920d` 及其 Tree；RC2 只是文档化候选，不是 Tag 或 Release，新的发布判断仍须由独立评测方完成。
+- 当前没有创建 PR、合并 `main`、Tag 或 Release，也没有创建或运行新的 Holdout。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

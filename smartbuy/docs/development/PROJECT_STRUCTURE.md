@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-04 |
-| 当前阶段 | V1 已冻结；V2-9B 独立结论为 Needs revision，V2-9C 已完成通用修复与 exposed regression，等待新 RC 独立评测 |
+| 当前阶段 | V1 已冻结；V2-9B 独立结论为 Needs revision；V2-9C 修复后代码已冻结为 RC2，等待新的独立评测 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -520,6 +520,8 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_release_candidate_manifest.md` | V2-9B 使用的 Commit、锁、Pack/Data/Index、模型、Schema、数据和评测哈希快照 |
 | `smartbuy/docs/v2/v2_9a_handoff.md` | 未发布的 PR 草案、V1/V2 边界、回滚与独立评测纪律 |
 | `smartbuy/docs/v2/v2_9c_independent_evaluation_repair_report.md` | V2-9B 首次 26 条失败的七类归因、通用修复、90 条 exposed regression、Online 边界与发布判断 |
+| `smartbuy/docs/v2/v2_release_candidate_rc2_manifest.md` | RC2 的生产 Commit/Tree、完整冻结成员列表、聚合哈希、三品类运行版本与质量基线 |
+| `smartbuy/docs/v2/v2_9c_rc2_handoff.md` | RC2 历史结果边界、Windows 复现证据及下一轮独立评测纪律 |
 | `smartbuy/eval/results/v2_9c_exposed_regression_summary.json` | 同一独立题集的脱敏已暴露回归评分；不是新 Holdout 或发布结论 |
 | `smartbuy/docs/release/v2_portfolio_release_notes_draft.md` | 仅供后续审核的 V2 Portfolio Release Notes 草案，本轮不发布 |
 | `smartbuy/docs/adr/0019-headphone-source-authority-and-pack-reuse.md` | Headphone 三层来源权限、主观证据边界及通用 Checker/Ranker 复用决策 |
@@ -692,7 +694,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9B 独立评测已完成并给出 `Needs revision`；V2-9C 仅完成通用修复与已暴露回归，新的独立发布验证仍未执行。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9B 独立评测已完成并给出 `Needs revision`；V2-9C 完成通用修复与已暴露回归后，已将生产 Commit/Tree 文档化冻结为 RC2，但新的独立发布验证仍未执行。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 
