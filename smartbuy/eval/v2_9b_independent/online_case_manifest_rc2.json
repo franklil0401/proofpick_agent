@@ -1,0 +1,13 @@
+{
+  "schema_version": "proofpick-v2-9b-independent-online-case-freeze-v2",
+  "classification": "replacement set frozen after evaluator-only RC1 abort",
+  "case_count": 15,
+  "domain_counts": {"monitor": 5, "laptop": 5, "headphone": 5},
+  "case_sha256": "1032b085a5fe9ce85804f9e9c682be58dfa979a61133334f3feab4feaf533dd2",
+  "replaced_case": "web-mon-001",
+  "replacement_case": "web-mon-006",
+  "unchanged_unrun_cases": 14,
+  "reason": "RC1 evaluator aborted after web-mon-001 because it used request_count instead of UsageLedger.call_count.",
+  "first_run_completed": false,
+  "production_changes": 0
+}
