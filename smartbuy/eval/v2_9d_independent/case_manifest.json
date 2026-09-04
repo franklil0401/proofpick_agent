@@ -1,0 +1,21 @@
+{
+  "schema_version": "proofpick-v2-9d-independent-case-freeze-v1",
+  "classification": "independently authored pre-run RC2 release evaluation",
+  "trusted_case_count": 90,
+  "trusted_domain_counts": {
+    "monitor": 30,
+    "laptop": 30,
+    "headphone": 30
+  },
+  "trusted_case_sha256": "bb9edd89e183b04e23ba016b73e51d981525776e193c086f3108f39b8d92ea0f",
+  "online_case_count": 15,
+  "online_domain_counts": {
+    "monitor": 5,
+    "laptop": 5,
+    "headphone": 5
+  },
+  "online_case_sha256": "1dd98a3040bff3e21cba385320e183246f771b8b40f06eb54a8dee4560c97fcb",
+  "exact_historical_question_duplicates": 0,
+  "first_run_completed": false,
+  "gold_source": "frozen governed records, independently read without production evaluator"
+}

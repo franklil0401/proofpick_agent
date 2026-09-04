@@ -1,0 +1,42 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "proofpick-v2-9d-independent-trusted-case-v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["case_id", "domain_id", "category", "question", "expected_kind", "expected_product_ids", "expected_constraints", "required_evidence", "forbidden_product_ids", "hard_negative", "evaluation_state", "run_count"],
+  "properties": {
+    "case_id": {"type": "string", "pattern": "^v2-9d-(mon|lap|hph)-[0-9]{3}$"},
+    "domain_id": {"enum": ["monitor", "laptop", "headphone"]},
+    "category": {"type": "string", "minLength": 1},
+    "question": {"type": "string", "minLength": 4},
+    "expected_kind": {"enum": ["eligible", "referenced", "abstain", "clarify"]},
+    "expected_product_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string", "minLength": 1}},
+    "expected_constraints": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["field", "operator", "value", "unit"],
+        "properties": {
+          "field": {"type": "string"},
+          "operator": {"enum": ["eq", "gte", "lte", "contains_all"]},
+          "value": {}, "unit": {"type": ["string", "null"]}
+        }
+      }
+    },
+    "required_evidence": {
+      "type": "array",
+      "items": {
+        "type": "object", "additionalProperties": false,
+        "required": ["product_id", "field_id", "status"],
+        "properties": {
+          "product_id": {"type": "string"}, "field_id": {"type": "string"},
+          "status": {"enum": ["matched", "unknown", "conflict"]}
+        }
+      }
+    },
+    "forbidden_product_ids": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+    "hard_negative": {"type": "boolean"},
+    "evaluation_state": {"const": "frozen_unrun"},
+    "run_count": {"const": 0}
+  }
+}
