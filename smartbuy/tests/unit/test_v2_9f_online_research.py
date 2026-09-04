@@ -1,11 +1,13 @@
 from __future__ import annotations
 
 from pathlib import Path
+from types import SimpleNamespace
 
 import httpx
 import pytest
 
 from smartbuy.domain_packs import DomainPackLoader
+from smartbuy.eval.run_v2_9f_online_regression import _report_stop_reason
 from smartbuy.open_research import (
     EvidenceNormalizer,
     ExtractedSnippet,
@@ -24,6 +26,18 @@ from smartbuy.source_search import SourceCandidate, SourceCandidateStatus
 
 async def _public_resolver(_hostname: str) -> list[str]:
     return ["93.184.216.34"]
+
+
+def test_online_runner_uses_existing_open_report_contract_for_stop_reason() -> None:
+    completed = SimpleNamespace(
+        report=SimpleNamespace(degraded_reasons=[], status="completed")
+    )
+    degraded = SimpleNamespace(
+        report=SimpleNamespace(degraded_reasons=["requested_field_missing"], status="degraded")
+    )
+    assert _report_stop_reason(completed, "success") == "completed"
+    assert _report_stop_reason(degraded, "success") == "requested_field_missing"
+    assert _report_stop_reason(None, "no_official_source") == "no_official_source"
 
 
 def _minimal_text_pdf(text: str) -> bytes:

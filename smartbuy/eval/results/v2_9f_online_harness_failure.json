@@ -1,0 +1,24 @@
+{
+  "schema_version": "proofpick-v2-9f-online-harness-failure-v1",
+  "classification": "exposed regression harness failure; not a completed evaluation run",
+  "created_at": "2026-09-04T15:11:22Z",
+  "production_commit": "f38933b",
+  "evaluator_commit": "126486861e08a33a94d4c6c5ffeafc121db2ee5e",
+  "failed_case_id": "web2-mon-001",
+  "completed_case_count": 0,
+  "result_file_created": false,
+  "error_type": "AttributeError",
+  "sanitized_error": "OpenResearchReport has no stop_reason attribute",
+  "root_cause": "The V2-9F result serializer referenced a field not present in the existing OpenResearchReport contract.",
+  "api_accounting": {
+    "exact_call_count_observable": false,
+    "possible_search_calls": {
+      "minimum": 1,
+      "maximum": 4
+    },
+    "maximum_estimated_cost_cny": 0.14,
+    "tokens": "not_reported_by_web_search_provider"
+  },
+  "credential_or_response_content_saved": false,
+  "disposition": "Preserved before the corrected one-time exposed regression run; this record is never scored as an evaluation result."
+}

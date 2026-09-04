@@ -47,6 +47,13 @@ V2_9F_CLASSIFICATION = (
 )
 
 
+def _report_stop_reason(outcome: Any | None, search_status: str) -> str:
+    if outcome is None:
+        return search_status
+    reasons = outcome.report.degraded_reasons
+    return reasons[0] if reasons else outcome.report.status
+
+
 def _extraction_row(outcome: Any, candidate_status: str) -> dict[str, Any]:
     all_extractions = [outcome.extraction, *outcome.additional_extractions]
     return {
@@ -285,7 +292,7 @@ async def run_online(module: Any, runtime_root: Path, output: Path) -> dict[str,
                 # A safely exhausted search remains a degraded terminal result;
                 # it must not be confused with a successful evidence closure.
                 "terminal_status": outcome.report.status if outcome else "degraded",
-                "stop_reason": outcome.report.stop_reason if outcome else search.status.value,
+                "stop_reason": _report_stop_reason(outcome, search.status.value),
                 "source": (
                     None
                     if not accepted
