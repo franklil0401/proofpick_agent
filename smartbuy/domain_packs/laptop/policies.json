@@ -153,6 +153,21 @@
       }
     }
   },
+  "open_research": {
+    "official_domains": {
+      "ASUS": ["asus.com"],
+      "Dell": ["dell.com"],
+      "HP": ["hp.com"],
+      "Lenovo": ["lenovo.com"],
+      "Microsoft": ["microsoft.com"]
+    },
+    "identity_sensitive_fields": [
+      "configuration_id", "cpu_model", "gpu_model", "memory_gb", "storage_gb",
+      "weight_kg", "battery_wh", "display_size_inch", "resolution",
+      "refresh_rate_hz", "panel_type", "usb_c", "thunderbolt", "usb4"
+    ],
+    "extractors": {}
+  },
   "report": {
     "implementation": "smartbuy.agent.reporting",
     "schema_version": "proofpick-domain-decision-v1",

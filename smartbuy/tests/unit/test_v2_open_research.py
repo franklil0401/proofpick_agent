@@ -279,7 +279,8 @@ async def test_extractor_rejects_bad_redirect_non_html_oversize_timeout_and_dyna
             200, content=b"%PDF", headers={"content-type": "application/pdf"}, request=request
         )
     )
-    assert non_html.status == ExtractionStatus.NON_HTML
+    assert non_html.status == ExtractionStatus.EXTRACTION_INCOMPLETE
+    assert non_html.error == "pdf_parse_failed"
 
     oversized = await run(
         lambda request: httpx.Response(

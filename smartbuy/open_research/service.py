@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from smartbuy.source_search.validator import infer_region, model_matches_url
+
 from smartbuy.domain_packs.loader import LoadedDomainPack
 from smartbuy.open_research.evidence_check import OpenEvidenceChecker
 from smartbuy.open_research.extractor import StaticHTMLExtractor
@@ -10,6 +12,7 @@ from smartbuy.open_research.models import (
     OpenEvidenceStatus,
     OpenResearchOutcome,
     OpenResearchReport,
+    WebExtractionResult,
 )
 from smartbuy.open_research.normalizer import EvidenceNormalizer, field_terms
 from smartbuy.open_research.settings import OpenResearchSettings
@@ -56,6 +59,10 @@ class OpenResearchService:
     ) -> OpenResearchOutcome:
         terms = field_terms(self.pack, target_fields)
         trace = ["source_candidate_validated"]
+        opaque_user = scope_token(user_id, "anonymous")
+        opaque_session = scope_token(session_id, "stateless")
+        opaque_thread = scope_token(thread_id, session_id or "stateless")
+        opaque_request = scope_token(request_id, "request")
         selected = candidate
         recovery_attempted = False
         recovery_succeeded = False
@@ -144,6 +151,86 @@ class OpenResearchService:
                     )
                 else:
                     extraction = inspection
+        initial_extraction = extraction
+        additional_extractions: list[WebExtractionResult] = []
+        related_needed = extraction.status != ExtractionStatus.SUCCESS
+        if extraction.status == ExtractionStatus.SUCCESS:
+            probe_records, _ = self.normalizer.normalize(
+                extraction,
+                user_scope=opaque_user,
+                session_scope=opaque_session,
+                thread_scope=opaque_thread,
+                request_scope=opaque_request,
+                provisional_product_id=provisional_product_id,
+                target_model=candidate.target_model,
+                product_region=candidate.target_region,
+                target_fields=target_fields,
+                configuration=configuration,
+            )
+            related_needed = not set(target_fields).issubset(
+                {item.field_name for item in probe_records}
+            )
+        if related_needed and extraction.related_links and self.settings.max_related_fetches:
+            trace.append("model_bound_related_links_discovered")
+            followed_urls = {value for value in (extraction.requested_url, extraction.final_url) if value}
+            for link in extraction.related_links[: self.settings.max_related_fetches]:
+                if link.url in followed_urls:
+                    continue
+                followed_urls.add(link.url)
+                observed_region = infer_region(link.url)
+                inherited_region = (
+                    observed_region == "unknown"
+                    and extraction.detected_region == candidate.target_region
+                )
+                if observed_region not in {"unknown", candidate.target_region}:
+                    continue
+                related_candidate = SourceCandidate(
+                    title=link.label or extraction.title or candidate.title,
+                    url=link.url,
+                    hostname=None,
+                    site_name=candidate.site_name,
+                    date_published=candidate.date_published,
+                    queried_at=candidate.queried_at,
+                    local_request_id=candidate.local_request_id,
+                    provider=candidate.provider,
+                    engine="official_page_related_link",
+                    target_model=candidate.target_model,
+                    target_region=candidate.target_region,
+                    observed_region=(
+                        candidate.target_region if inherited_region else observed_region
+                    ),
+                    status=SourceCandidateStatus.REGION_MATCHED,
+                    model_match_source=(
+                        "url"
+                        if model_matches_url(candidate.target_model, link.url)
+                        else "title"
+                    ),
+                    region_match_source=(
+                        "target_region_page_link" if inherited_region else "url"
+                    ),
+                )
+                related_extraction = await self.extractor.extract(
+                    related_candidate,
+                    target_fields=target_fields,
+                    field_terms=terms,
+                    allowed_domains=allowed_domains,
+                )
+                additional_extractions.append(related_extraction)
+                trace.append(f"related_{link.kind}_extraction_completed")
+            if extraction.status != ExtractionStatus.SUCCESS:
+                recovered = next(
+                    (
+                        item
+                        for item in additional_extractions
+                        if item.status == ExtractionStatus.SUCCESS
+                    ),
+                    None,
+                )
+                if recovered is not None:
+                    extraction = recovered
+                    recovery_attempted = True
+                    recovery_succeeded = True
+                    trace.append("related_source_recovery_succeeded")
         trace.append("web_extractor_completed")
         if extraction.status != ExtractionStatus.SUCCESS:
             report = OpenResearchReport(
@@ -165,27 +252,39 @@ class OpenResearchService:
             return OpenResearchOutcome(
                 report=report,
                 extraction=extraction,
+                additional_extractions=additional_extractions,
                 temporary_store_status="empty",
                 canonical_recovery_attempted=recovery_attempted,
                 canonical_recovery_succeeded=recovery_succeeded,
             )
 
-        opaque_user = scope_token(user_id, "anonymous")
-        opaque_session = scope_token(session_id, "stateless")
-        opaque_thread = scope_token(thread_id, session_id or "stateless")
-        opaque_request = scope_token(request_id, "request")
-        records, unsupported = self.normalizer.normalize(
-            extraction,
-            user_scope=opaque_user,
-            session_scope=opaque_session,
-            thread_scope=opaque_thread,
-            request_scope=opaque_request,
-            provisional_product_id=provisional_product_id,
-            target_model=candidate.target_model,
-            product_region=candidate.target_region,
-            target_fields=target_fields,
-            configuration=configuration,
-        )
+        records = []
+        unsupported = []
+        normalization_sources = [
+            item
+            for item in [initial_extraction, *additional_extractions]
+            if item.status == ExtractionStatus.SUCCESS
+        ]
+        seen_evidence: set[str] = set()
+        for source in normalization_sources:
+            source_records, source_unsupported = self.normalizer.normalize(
+                source,
+                user_scope=opaque_user,
+                session_scope=opaque_session,
+                thread_scope=opaque_thread,
+                request_scope=opaque_request,
+                provisional_product_id=provisional_product_id,
+                target_model=candidate.target_model,
+                product_region=candidate.target_region,
+                target_fields=target_fields,
+                configuration=configuration,
+            )
+            for record in source_records:
+                if record.evidence_id not in seen_evidence:
+                    records.append(record)
+                    seen_evidence.add(record.evidence_id)
+            unsupported.extend(source_unsupported)
+        unsupported = list(dict.fromkeys(unsupported))
         trace.append("evidence_normalizer_completed")
         store_status = "empty"
         store_degraded: str | None = None
@@ -255,6 +354,7 @@ class OpenResearchService:
         return OpenResearchOutcome(
             report=report,
             extraction=extraction,
+            additional_extractions=additional_extractions,
             evidence=records,
             temporary_store_status=store_status,
             canonical_recovery_attempted=recovery_attempted,

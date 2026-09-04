@@ -9,7 +9,7 @@ from html.parser import HTMLParser
 from typing import Any
 from urllib.parse import urljoin
 
-from smartbuy.open_research.models import AlternateLink, ExtractedSnippet
+from smartbuy.open_research.models import AlternateLink, ExtractedSnippet, RelatedLink
 
 
 _BLOCK_TAGS = {"h1", "h2", "h3", "h4", "h5", "h6", "p", "li"}
@@ -35,6 +35,7 @@ class ParsedHTML:
     language: str | None
     canonical_url: str | None
     alternate_links: list[AlternateLink]
+    related_links: list[RelatedLink]
     snippets: list[ExtractedSnippet]
     visible_text_length: int
     script_count: int
@@ -56,6 +57,9 @@ class _Parser(HTMLParser):
         self.embedded_json_depth = 0
         self.embedded_json_parts: list[str] = []
         self.embedded_json_documents: list[str] = []
+        self.inline_state_depth = 0
+        self.inline_state_parts: list[str] = []
+        self.inline_state_documents: list[str] = []
         self.meta_entries: list[tuple[str, str]] = []
         self.block_tag: str | None = None
         self.block_parts: list[str] = []
@@ -68,6 +72,9 @@ class _Parser(HTMLParser):
         self.definition_pairs: list[tuple[str, str]] = []
         self.last_dt: str | None = None
         self.text_nodes: list[tuple[str, str]] = []
+        self.anchor_href: str | None = None
+        self.anchor_parts: list[str] = []
+        self.anchors: list[tuple[str, str]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         tag = tag.casefold()
@@ -82,7 +89,12 @@ class _Parser(HTMLParser):
                 self.meta_entries.append((name[:100], content[:2_000]))
             locale_name = (name or attributes.get("http-equiv") or "").casefold()
             if content and locale_name in {"og:locale", "content-language"}:
-                self.language = self.language or content[:32]
+                explicit = content[:32]
+                current = (self.language or "").replace("_", "-")
+                # A generic <html lang="en"> does not establish region. Prefer
+                # a bounded locale metadata value such as en_US when available.
+                if not self.language or len(current.split("-")) < 2:
+                    self.language = explicit
         if tag == "link":
             rel = (attributes.get("rel") or "").casefold().split()
             href = attributes.get("href")
@@ -99,6 +111,9 @@ class _Parser(HTMLParser):
             elif script_type in {"application/json", "application/product+json"}:
                 self.embedded_json_depth += 1
                 self.embedded_json_parts = []
+            elif not attributes.get("src") and len(self.inline_state_documents) < 30:
+                self.inline_state_depth += 1
+                self.inline_state_parts = []
             else:
                 self.skip_depth += 1
             return
@@ -107,6 +122,9 @@ class _Parser(HTMLParser):
             return
         if self.skip_depth:
             return
+        if tag == "a" and attributes.get("href") and self.anchor_href is None:
+            self.anchor_href = str(attributes["href"])[:2_048]
+            self.anchor_parts = []
         if tag in _BLOCK_TAGS and self.block_tag is None:
             self.block_tag = tag
             self.block_parts = []
@@ -133,6 +151,12 @@ class _Parser(HTMLParser):
             if document:
                 self.embedded_json_documents.append(document[:500_000])
             self.embedded_json_parts = []
+        elif tag == "script" and self.inline_state_depth:
+            self.inline_state_depth -= 1
+            document = "".join(self.inline_state_parts).strip()
+            if document:
+                self.inline_state_documents.append(document[:500_000])
+            self.inline_state_parts = []
         elif tag in _SKIP_TAGS and self.skip_depth:
             self.skip_depth -= 1
         elif not self.skip_depth:
@@ -159,6 +183,11 @@ class _Parser(HTMLParser):
                 if self.last_dt and value:
                     self.definition_pairs.append((self.last_dt, value))
                 self.dd_parts = None
+            if tag == "a" and self.anchor_href is not None:
+                label = _clean(" ".join(self.anchor_parts))[:300]
+                self.anchors.append((self.anchor_href, label))
+                self.anchor_href = None
+                self.anchor_parts = []
         if self.stack:
             self.stack.pop()
 
@@ -168,6 +197,10 @@ class _Parser(HTMLParser):
             return
         if self.embedded_json_depth:
             self.embedded_json_parts.append(data)
+            return
+        if self.inline_state_depth:
+            if sum(len(item) for item in self.inline_state_parts) < 500_000:
+                self.inline_state_parts.append(data)
             return
         if self.skip_depth:
             return
@@ -186,6 +219,8 @@ class _Parser(HTMLParser):
             self.dt_parts.append(text)
         if self.dd_parts is not None:
             self.dd_parts.append(text)
+        if self.anchor_href is not None:
+            self.anchor_parts.append(text)
 
 
 def _walk_json(value: Any, path: str = "jsonld") -> list[tuple[str, str]]:
@@ -246,6 +281,45 @@ def parse_html(
         for locator, text in _walk_json(payload, f"embedded[{document_index}]")[:5_000]:
             add("embedded_json", text, locator)
 
+    # Modern storefronts frequently serialize product state as JavaScript
+    # rather than valid JSON. Never execute it: retain only bounded windows near
+    # requested terms from a script that also contains the exact model token.
+    compact_model = re.sub(r"[^a-z0-9]", "", target_model.casefold())
+    for document_index, document in enumerate(parser.inline_state_documents[:30]):
+        if not compact_model or compact_model not in re.sub(
+            r"[^a-z0-9]", "", document.casefold()
+        ):
+            continue
+        folded = document.casefold()
+        positions = []
+        seen_positions: set[int] = set()
+        for term in sorted(
+            {item.strip().casefold() for item in target_terms if len(item.strip()) >= 3},
+            key=lambda item: (-len(item), item),
+        ):
+            for match in re.finditer(re.escape(term), folded):
+                if match.start() not in seen_positions:
+                    positions.append(match.start())
+                    seen_positions.add(match.start())
+                if len(positions) >= 500:
+                    break
+            if len(positions) >= 500:
+                break
+        if not positions:
+            positions = [
+                match.start()
+                for match in re.finditer(re.escape(target_model.casefold()), folded)
+            ][:50]
+        for position in positions:
+            window = document[max(0, position - 250) : position + 750]
+            window = (
+                window.replace("\\u0026", "&")
+                .replace("\\u003c", "<")
+                .replace("\\u003e", ">")
+                .replace("\\\"", '"')
+            )
+            add("embedded_state", f"{target_model} | {window}", f"inline-state[{document_index}]@{position}")
+
     for index, (name, content) in enumerate(parser.meta_entries):
         add("visible_text", f"{name}: {content}", f"meta[{index}]")
 
@@ -282,6 +356,31 @@ def parse_html(
             alternates.append(item)
         if len(alternates) >= 30:
             break
+    related: list[RelatedLink] = []
+    compact_model = re.sub(r"[^a-z0-9]", "", target_model.casefold())
+    for href, label in parser.anchors[:2_000]:
+        absolute = urljoin(base_url, href)
+        link_text = f"{absolute} {label}".casefold()
+        compact_link = re.sub(r"[^a-z0-9]", "", link_text)
+        if not compact_model or compact_model not in compact_link:
+            continue
+        if re.search(r"\.pdf(?:$|[?#])", absolute, re.IGNORECASE):
+            kind = "attachment"
+        elif any(
+            token in link_text
+            for token in (
+                "spec", "technical", "techspec", "support", "manual",
+                "datasheet", "data-sheet", "user guide", "download",
+            )
+        ):
+            kind = "support" if "support" in link_text or "manual" in link_text else "specification"
+        else:
+            continue
+        item = RelatedLink(url=absolute, label=label or None, kind=kind)
+        if item not in related:
+            related.append(item)
+        if len(related) >= 20:
+            break
     title = _clean(" ".join(parser.title_parts))[:500] or None
     visible_length = sum(len(text) for _, text in parser.text_nodes)
     return ParsedHTML(
@@ -289,6 +388,7 @@ def parse_html(
         language=(parser.language[:32] if parser.language else None),
         canonical_url=(urljoin(base_url, parser.canonical) if parser.canonical else None),
         alternate_links=alternates,
+        related_links=related,
         snippets=snippets,
         visible_text_length=visible_length,
         script_count=parser.script_count,

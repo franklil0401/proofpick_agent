@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import re
 from pathlib import Path
 from typing import Any
 
@@ -235,6 +236,62 @@ class DomainPackLoader:
         declared = {item.field_id for item in fields if item.constraint_enabled}
         if supported != declared or not supported <= field_ids:
             raise DomainPackValidationError("checker fields disagree with field definitions")
+        open_research = policies.get("open_research", {})
+        if not isinstance(open_research, dict):
+            raise DomainPackValidationError("open research policy is invalid")
+        identity_fields = open_research.get("identity_sensitive_fields", [])
+        extractors = open_research.get("extractors", {})
+        official_domains = open_research.get("official_domains", {})
+        if (
+            not isinstance(identity_fields, list)
+            or not set(identity_fields) <= field_ids
+            or not isinstance(extractors, dict)
+            or not set(extractors) <= field_ids
+            or not isinstance(official_domains, dict)
+        ):
+            raise DomainPackValidationError("open research fields are invalid")
+        for brand, domains in official_domains.items():
+            if (
+                not isinstance(brand, str)
+                or not brand
+                or not isinstance(domains, list)
+                or not domains
+                or not all(
+                    isinstance(domain, str)
+                    and re.fullmatch(
+                        r"(?=.{1,253}$)(?:[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?\.)+[a-z]{2,63}",
+                        domain.casefold(),
+                    )
+                    for domain in domains
+                )
+            ):
+                raise DomainPackValidationError("official source domain policy is invalid")
+        allowed_modes = {
+            "boolean_presence", "number_regex", "enum_presence", "string_list_presence"
+        }
+        for field_id, rule in extractors.items():
+            if not isinstance(rule, dict) or rule.get("mode") not in allowed_modes:
+                raise DomainPackValidationError("open research extractor is invalid")
+            terms = rule.get("terms", [])
+            exclude_terms = rule.get("exclude_terms", [])
+            if not isinstance(terms, list) or not all(
+                isinstance(item, str) and item for item in terms
+            ) or not isinstance(exclude_terms, list) or not all(
+                isinstance(item, str) and item for item in exclude_terms
+            ):
+                raise DomainPackValidationError("open research extractor terms are invalid")
+            if rule["mode"] == "number_regex":
+                pattern = rule.get("pattern")
+                if not isinstance(pattern, str) or len(pattern) > 500:
+                    raise DomainPackValidationError("open research regex is invalid")
+                try:
+                    re.compile(pattern)
+                except re.error as exc:
+                    raise DomainPackValidationError("open research regex is invalid") from exc
+            if rule["mode"] in {"enum_presence", "string_list_presence"} and not isinstance(
+                rule.get("values"), dict
+            ):
+                raise DomainPackValidationError("open research values are invalid")
         memory_keys = policies["memory"].get("allowed_keys", {})
         if not isinstance(memory_keys, dict) or not all(
             isinstance(key, str) and isinstance(value, str)

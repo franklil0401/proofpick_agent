@@ -79,6 +79,38 @@
       "primary_use": "primary_use"
     }
   },
+  "open_research": {
+    "official_domains": {
+      "Dell": ["dell.com"],
+      "ASUS": ["asus.com", "asus.com.cn"],
+      "LG": ["lg.com"],
+      "BenQ": ["benq.com", "benq.com.cn"],
+      "Sony": ["sony.com"]
+    },
+    "identity_sensitive_fields": [
+      "display_size_inch", "resolution", "refresh_rate_hz", "panel_type",
+      "is_oled", "has_usb_c", "usb_c_video", "usb_c_power_delivery_w"
+    ],
+    "extractors": {
+      "display_size_inch": {
+        "mode": "number_regex",
+        "terms": ["screen size", "display size", "diagonal", "inch"],
+        "pattern": "(?:screen size|display size|diagonal)[^0-9]{0,30}([0-9]{2}(?:\\.[0-9]+)?)\\s*(?:[-–—]\\s*)?(?:inch(?:es)?|[\\\"″])",
+        "unit": "inch"
+      },
+      "refresh_rate_hz": {
+        "mode": "number_regex",
+        "terms": ["refresh rate", "hz"],
+        "pattern": "(?:refresh rate[^0-9]{0,30})?([0-9]{2,3}(?:\\.[0-9]+)?)\\s*hz",
+        "unit": "Hz"
+      },
+      "panel_type": {
+        "mode": "enum_presence",
+        "terms": ["panel", "ips", "oled", "va", "tn"],
+        "values": {"qd-oled": "QD-OLED", "woled": "WOLED", "oled": "OLED", "ips": "IPS", "va": "VA", "tn": "TN"}
+      }
+    }
+  },
   "report": {
     "implementation": "smartbuy.agent.reporting",
     "schema_version": "smartbuy-decision-v3",

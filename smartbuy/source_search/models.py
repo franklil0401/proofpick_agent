@@ -89,6 +89,9 @@ class SourceCandidate(BaseModel):
     observed_region: str
     status: SourceCandidateStatus
     model_match_source: Literal["url", "title"] | None = None
+    region_match_source: Literal[
+        "url", "page_language", "hreflang", "target_region_page_link"
+    ] | None = None
     usable_for_evidence: Literal[False] = False
     usable_for_checker: Literal[False] = False
 
@@ -166,6 +169,10 @@ class SourceSearchAttempt(BaseModel):
     usable_result_count: int
     navigation_result_count: int
     rejected_result_count: int
+    valid_url_count: int = 0
+    domain_matched_count: int = 0
+    model_matched_count: int = 0
+    region_matched_count: int = 0
     requested_at: str
     latency_ms: float
     local_request_id: str
@@ -195,7 +202,7 @@ class SourceSearchResult(BaseModel):
     usable_candidates: list[SourceCandidate] = Field(default_factory=list, max_length=10)
     navigation_candidates: list[SourceCandidate] = Field(default_factory=list, max_length=10)
     rejected_candidates: list[SourceCandidate] = Field(default_factory=list, max_length=10)
-    attempts: list[SourceSearchAttempt] = Field(default_factory=list, max_length=2)
+    attempts: list[SourceSearchAttempt] = Field(default_factory=list, max_length=4)
     requested_at: str
     latency_ms: float = Field(ge=0)
     request_id: str

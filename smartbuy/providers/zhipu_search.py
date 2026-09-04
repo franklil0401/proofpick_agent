@@ -56,7 +56,7 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
     """Search official pages; never extract or promote their contents to evidence."""
 
     name = "zhipu"
-    version = "v2-9e.1"
+    version = "v2-9f.1"
     _RETRYABLE_STATUS = frozenset({429, 500, 502, 503, 504})
 
     def __init__(
@@ -447,34 +447,53 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         budget = _SearchBudget()
         outcomes = []
 
-        primary_request = request.model_copy(
-            update={"query": self._query_variant(request, fallback=False)}
-        )
-        primary = await self._search_engine(
-            primary_request,
-            self.settings.primary_engine,
-            budget,
-            query_strategy="official_fields_region",
-            use_provider_domain_filter=True,
-        )
-        outcomes.append(primary)
-        auth_failed = primary.error == "ZhipuSourceSearchAuthError"
-        if (
-            not primary.usable_candidates
-            and not auth_failed
-            and budget.calls < self.settings.max_search_calls
-        ):
-            fallback_request = request.model_copy(
-                update={"query": self._query_variant(request, fallback=True)}
+        # One provider response often contains a marketing page but omits the
+        # technical/support page that carries the requested fields.  Execute a
+        # small, deterministic query plan and merge URLs locally.  Provider-side
+        # site filters remain recall hints; every item crosses the same local
+        # domain/model/region validator after every call.
+        query_plan = [
+            (self.settings.primary_engine, "official_fields_region", True),
+            (self.settings.primary_engine, "official_support_region", True),
+            (self.settings.primary_engine, "official_identity_broad", False),
+            (self.settings.fallback_engine, "official_fields_broad_fallback", False),
+        ]
+        primary_failed = False
+        for plan_index, (engine, strategy, use_domain_filter) in enumerate(query_plan):
+            if budget.calls >= self.settings.max_search_calls:
+                break
+            if primary_failed and engine == self.settings.primary_engine:
+                continue
+            planned_request = request.model_copy(
+                update={"query": self._query_variant(request, strategy=strategy)}
             )
-            fallback = await self._search_engine(
-                fallback_request,
-                self.settings.fallback_engine,
+            outcome = await self._search_engine(
+                planned_request,
+                engine,
                 budget,
-                query_strategy="official_identity_broad_fallback",
-                use_provider_domain_filter=False,
+                query_strategy=strategy,
+                use_provider_domain_filter=use_domain_filter,
             )
-            outcomes.append(fallback)
+            outcomes.append(outcome)
+            if outcome.error == "ZhipuSourceSearchAuthError":
+                break
+            if outcome.error and engine == self.settings.primary_engine:
+                primary_failed = True
+                continue
+            distinct_usable = {
+                item.url
+                for item_outcome in outcomes
+                for item in item_outcome.usable_candidates
+            }
+            # Two independently discovered target-region pages give the
+            # extractor a bounded alternative when a storefront blocks static
+            # fetches.  A single result therefore receives one final broad
+            # search_pro query; search_pro_sogou remains reserved for the case
+            # where the primary engine found no usable page at all.
+            if plan_index == 1 and len(distinct_usable) >= 2:
+                break
+            if plan_index == 2 and distinct_usable:
+                break
 
         usable = []
         navigation = []
@@ -514,6 +533,10 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
                 usable_result_count=len(item.usable_candidates),
                 navigation_result_count=len(item.navigation_candidates),
                 rejected_result_count=len(item.rejected_candidates),
+                valid_url_count=item.stats.valid_url_count,
+                domain_matched_count=item.stats.domain_matched_count,
+                model_matched_count=item.stats.model_matched_count,
+                region_matched_count=item.stats.region_matched_count,
                 requested_at=item.requested_at,
                 latency_ms=item.latency_ms,
                 local_request_id=item.local_request_id,
@@ -562,19 +585,27 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         )
 
     @staticmethod
-    def _query_variant(request: SourceSearchRequest, *, fallback: bool) -> str:
-        """Build two bounded, auditable queries without product-specific rules."""
+    def _query_variant(request: SourceSearchRequest, *, strategy: str) -> str:
+        """Build bounded, auditable queries without product or brand patches."""
         fields = " ".join(field.replace("_", " ") for field in request.target_fields)
         domain = request.allowed_domains[0]
-        if fallback:
-            # Keep the recovery query identity-focused.  Long field lists and
-            # provider domain filters both reduce recall on product pages whose
-            # snippets omit a requested specification.  Trust is unaffected:
-            # every result still crosses the local allowlist/model/region gate.
-            value = f'{request.target_model} {request.region} official specifications'
-        else:
+        region_terms = {
+            "US": "United States en-us",
+            "CN": "China zh-cn",
+            "CA": "Canada en-ca",
+            "IE": "Ireland en-ie",
+        }.get(request.region, request.region)
+        if strategy == "official_fields_region":
             value = (
-                f'{request.target_model} {request.region} official site:{domain} '
-                f'{fields} {request.query}'
+                f'{request.target_model} {region_terms} official site:{domain} {fields}'
             )
+        elif strategy == "official_support_region":
+            value = (
+                f'{request.target_model} {region_terms} official technical specifications '
+                f'support manual site:{domain}'
+            )
+        elif strategy == "official_identity_broad":
+            value = f'{request.target_model} {region_terms} official specifications {fields}'
+        else:
+            value = f'"{request.target_model}" {request.region} official {fields}'
         return " ".join(value.split())[:200]

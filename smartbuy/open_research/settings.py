@@ -22,7 +22,10 @@ class OpenResearchSettings(BaseModel):
     total_timeout_seconds: float = Field(default=20.0, ge=1.0, le=60.0)
     max_redirects: int = Field(default=3, ge=0, le=3)
     max_html_bytes: int = Field(default=5 * 1024 * 1024, ge=64 * 1024, le=5 * 1024 * 1024)
+    max_pdf_bytes: int = Field(default=8 * 1024 * 1024, ge=64 * 1024, le=10 * 1024 * 1024)
+    max_pdf_pages: int = Field(default=80, ge=1, le=100)
     max_snippets: int = Field(default=100, ge=1, le=100)
+    max_related_fetches: int = Field(default=2, ge=0, le=3)
 
     @classmethod
     def from_environment(cls) -> OpenResearchSettings:

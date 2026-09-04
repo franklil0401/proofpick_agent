@@ -200,16 +200,18 @@ async def test_search_pro_falls_back_to_sogou_and_preserves_safe_lists() -> None
     await provider.aclose()
 
     assert result.status == SourceSearchStatus.SUCCESS
-    assert engines == ["search_pro", "search_pro_sogou"]
-    assert queries[0] != queries[1]
+    assert engines == ["search_pro", "search_pro", "search_pro", "search_pro_sogou"]
+    assert len(set(queries)) == 4
     assert "U2723QE" in queries[0] and "site:dell.com" in queries[0]
-    assert queries[1] == "U2723QE CN official specifications"
-    assert provider_domain_filters == ["dell.com", None]
+    assert "technical specifications" in queries[1]
+    assert queries[2].startswith("U2723QE China zh-cn official specifications")
+    assert queries[3].startswith('"U2723QE" CN official')
+    assert provider_domain_filters == ["dell.com", "dell.com", None, None]
     assert result.usable_result_count == 1
     assert result.usable_candidates[0].observed_region == "CN"
     assert result.navigation_candidates[0].observed_region == "US"
-    assert result.estimated_cost_cny == pytest.approx(0.08)
-    assert ledger.summary()["call_count"] == 2
+    assert result.estimated_cost_cny == pytest.approx(0.14)
+    assert ledger.summary()["call_count"] == 4
 
 
 @pytest.mark.asyncio
@@ -295,10 +297,10 @@ async def test_retryable_errors_are_bounded(failure: str) -> None:
     result = await provider.search(source_request())
     await provider.aclose()
 
-    assert calls == 2
+    assert calls == 4
     assert result.status == SourceSearchStatus.SUCCESS
     assert result.retries == 1
-    assert ledger.summary()["call_count"] == 2
+    assert ledger.summary()["call_count"] == 4
 
 
 @pytest.mark.asyncio
@@ -317,7 +319,7 @@ async def test_empty_results_are_not_cached_or_fabricated() -> None:
 
     assert first.status == SourceSearchStatus.NO_OFFICIAL_SOURCE
     assert second.status == SourceSearchStatus.NO_OFFICIAL_SOURCE
-    assert calls == 4
+    assert calls == 8
     assert first.usable_candidates == second.usable_candidates == []
 
 
@@ -338,7 +340,7 @@ async def test_complete_results_have_consistent_cold_and_hot_cache_outputs() -> 
     hot = await provider.search(source_request())
     await provider.aclose()
 
-    assert calls == 1
+    assert calls == 3
     assert cold.usable_candidates == hot.usable_candidates
     assert cold.cache_status.value == "miss"
     assert hot.cache_status.value == "hit"

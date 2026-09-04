@@ -9,9 +9,9 @@ from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 
 OPEN_RESEARCH_SCHEMA_VERSION = "proofpick-open-research-v1"
-EXTRACTOR_VERSION = "proofpick-static-html-extractor-v1"
+EXTRACTOR_VERSION = "proofpick-bounded-official-extractor-v2"
 OPEN_EVIDENCE_SCHEMA_VERSION = "proofpick-open-evidence-v1"
-NORMALIZATION_VERSION = "proofpick-open-normalizer-v2"
+NORMALIZATION_VERSION = "proofpick-open-normalizer-v3"
 
 
 class FrozenModel(BaseModel):
@@ -48,8 +48,18 @@ class AlternateLink(FrozenModel):
     hreflang: str | None = Field(default=None, max_length=32)
 
 
+class RelatedLink(FrozenModel):
+    """A model-bound official link discovered in fetched page markup."""
+
+    url: str = Field(max_length=2_048)
+    label: str | None = Field(default=None, max_length=300)
+    kind: Literal["specification", "support", "attachment"]
+
+
 class ExtractedSnippet(FrozenModel):
-    kind: Literal["json_ld", "embedded_json", "specification", "visible_text"]
+    kind: Literal[
+        "json_ld", "embedded_json", "embedded_state", "specification", "visible_text", "pdf_text"
+    ]
     text: str = Field(min_length=1, max_length=1_000)
     locator: str = Field(min_length=1, max_length=300)
 
@@ -61,6 +71,7 @@ class WebExtractionResult(FrozenModel):
     title: str | None = Field(default=None, max_length=500)
     canonical_url: str | None = Field(default=None, max_length=2_048)
     alternate_links: list[AlternateLink] = Field(default_factory=list, max_length=30)
+    related_links: list[RelatedLink] = Field(default_factory=list, max_length=20)
     detected_region: str = "unknown"
     detected_language: str | None = Field(default=None, max_length=32)
     fetched_at: str
@@ -259,6 +270,9 @@ class OpenResearchReport(FrozenModel):
 class OpenResearchOutcome(FrozenModel):
     report: OpenResearchReport
     extraction: WebExtractionResult
+    additional_extractions: list[WebExtractionResult] = Field(
+        default_factory=list, max_length=3
+    )
     evidence: list[OpenEvidenceRecord] = Field(default_factory=list)
     temporary_store_status: Literal["stored", "empty", "disabled", "failed"]
     canonical_recovery_attempted: bool = False

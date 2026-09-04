@@ -89,6 +89,9 @@ def _configured_proposal(
     terms = [str(item).casefold() for item in rule.get("terms", []) if item]
     if terms and not any(item in folded for item in terms):
         return None
+    excluded = [str(item).casefold() for item in rule.get("exclude_terms", []) if item]
+    if excluded and any(item in folded for item in excluded):
+        return None
     mode = rule.get("mode")
     if mode == "boolean_presence":
         return True, None
@@ -120,6 +123,24 @@ def _number(pattern: str, text: str) -> float | None:
     return float(match.group(1)) if match else None
 
 
+def _number_nearest_terms(
+    text: str,
+    *,
+    number_pattern: str,
+    terms: tuple[str, ...],
+) -> float | None:
+    folded = text.casefold()
+    positions = [match.start() for term in terms for match in re.finditer(re.escape(term), folded)]
+    matches = list(re.finditer(number_pattern, text, re.IGNORECASE))
+    if not positions or not matches:
+        return None
+    selected = min(
+        matches,
+        key=lambda item: min(abs(item.start() - position) for position in positions),
+    )
+    return float(selected.group(1))
+
+
 def _capacity_nearest_terms(text: str, terms: tuple[str, ...]) -> tuple[float, str] | None:
     folded = text.casefold()
     term_positions = [folded.find(term) for term in terms if term in folded]
@@ -141,13 +162,24 @@ def _propose(
     pack: LoadedDomainPack | None = None,
 ) -> tuple[Any, str | None] | None:
     if pack is not None:
+        configured_rule = (
+            pack.pack.policies.get("open_research", {})
+            .get("extractors", {})
+            .get(field_id)
+        )
+        if isinstance(configured_rule, dict) and any(
+            str(item).casefold() in text.casefold()
+            for item in configured_rule.get("exclude_terms", [])
+            if item
+        ):
+            return None
         configured = _configured_proposal(pack, field_id, text)
         if configured is not None:
             return configured
     folded = text.casefold()
     if field_id == "display_size_inch":
         value = _number(
-            r"(?<!\d)(\d{2}(?:\.\d+)?)\s*(?:[\"”“″]|inch(?:es)?\b|英寸)",
+            r"(?<!\d)(\d{2}(?:\.\d+)?)\s*(?:[-–—]\s*)?(?:[\"”“″]|inch(?:es)?\b|英寸)",
             text,
         )
         return (value, "inch") if value is not None else None
@@ -168,11 +200,12 @@ def _propose(
     if field_id == "usb_c_power_delivery_w":
         if not any(token in folded for token in ("usb-c", "usb type-c", "thunderbolt", "power delivery", "供电")):
             return None
-        values = [float(item) for item in re.findall(r"(?<!\d)(\d{2,3}(?:\.\d+)?)\s*w\b", text, re.IGNORECASE)]
-        if not values:
-            return None
-        nearby = max(values)
-        return nearby, "W"
+        nearby = _number_nearest_terms(
+            text,
+            number_pattern=r"(?<!\d)(\d{2,3}(?:\.\d+)?)\s*w\b",
+            terms=("power delivery", "usb-c", "usb type-c", "thunderbolt"),
+        )
+        return (nearby, "W") if nearby is not None else None
     if field_id == "has_usb_c":
         if any(token in folded for token in ("usb-c", "usb type-c", "type-c", "thunderbolt")):
             return True, None
@@ -288,7 +321,7 @@ def _propose(
         ]
         return (list(dict.fromkeys(values)), None) if values else None
     if field_id == "water_resistance":
-        match = re.search(r"\b(ipx[457])\b", folded)
+        match = re.search(r"\b(ip(?:x\d|\d{2}))\b", folded)
         return (match.group(1).upper(), None) if match else None
     if field_id == "operating_system":
         match = re.search(r"\b(windows\s+1[01](?:\s+(?:home|pro))?|ubuntu(?:\s+linux)?)\b", folded)
@@ -432,7 +465,7 @@ class EvidenceNormalizer:
                         expires_at=expires,
                         confidence=(
                             "high"
-                            if snippet.kind in {"json_ld", "specification"}
+                            if snippet.kind in {"json_ld", "specification", "pdf_text"}
                             else "medium"
                         ),
                         status=OpenEvidenceStatus.MATCHED,

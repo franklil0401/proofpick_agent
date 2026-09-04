@@ -252,6 +252,9 @@ class DeterministicSourceValidator:
                 observed_region=observed_region,
                 status=status,
                 model_match_source=model_match_source if normalized_url else None,
+                region_match_source=(
+                    "url" if observed_region != "unknown" and model_match_source else None
+                ),
             )
             if not site_name:
                 counters["site_name_missing_count"] += 1

@@ -9,13 +9,16 @@ from typing import Protocol
 from urllib.parse import urljoin
 
 import httpx
+from PyPDF2.errors import PdfReadError
 
 from smartbuy.open_research.html_parser import ParsedHTML, parse_html
 from smartbuy.open_research.models import (
     AlternateLink,
     ExtractionStatus,
+    RelatedLink,
     WebExtractionResult,
 )
+from smartbuy.open_research.pdf_parser import parse_pdf
 from smartbuy.open_research.settings import OpenResearchSettings
 from smartbuy.open_research.url_safety import URLSafetyError, URLSafetyPolicy
 from smartbuy.source_search import SourceCandidate, SourceCandidateStatus
@@ -92,7 +95,7 @@ class StaticHTMLExtractor:
             trust_env=False,
             headers={
                 "User-Agent": "ProofPick/2.0 (+https://github.com/franklil0401/proofpick_agent)",
-                "Accept": "text/html,application/xhtml+xml",
+                "Accept": "text/html,application/xhtml+xml,application/pdf;q=0.9",
             },
         )
 
@@ -131,7 +134,7 @@ class StaticHTMLExtractor:
         allowed_domains: list[str],
         target_model: str,
         page_model_confirmed: bool,
-    ) -> tuple[str | None, list[AlternateLink]]:
+    ) -> tuple[str | None, list[AlternateLink], list[RelatedLink]]:
         canonical: str | None = None
         if parsed.canonical_url and (
             page_model_confirmed or model_matches_url(target_model, parsed.canonical_url)
@@ -155,7 +158,18 @@ class StaticHTMLExtractor:
                 alternates.append(alternate)
             if len(alternates) >= 30:
                 break
-        return canonical, alternates
+        related: list[RelatedLink] = []
+        for item in parsed.related_links:
+            try:
+                safe = await self.safety_policy.validate(item.url, allowed_domains)
+            except URLSafetyError:
+                continue
+            safe_item = item.model_copy(update={"url": safe.url})
+            if safe_item not in related:
+                related.append(safe_item)
+            if len(related) >= 20:
+                break
+        return canonical, alternates, related
 
     async def _fetch(
         self,
@@ -248,7 +262,11 @@ class StaticHTMLExtractor:
                                 http_status=status_code,
                                 content_type=content_type or None,
                             )
-                        if content_type not in {"text/html", "application/xhtml+xml"}:
+                        is_pdf = content_type == "application/pdf" or current_url.casefold().endswith(".pdf")
+                        if content_type not in {
+                            "text/html", "application/xhtml+xml", "application/pdf",
+                            "application/octet-stream",
+                        }:
                             return self._result(
                                 requested_url,
                                 ExtractionStatus.NON_HTML,
@@ -259,8 +277,9 @@ class StaticHTMLExtractor:
                                 http_status=status_code,
                                 content_type=content_type or None,
                             )
+                        content_limit = self.settings.max_pdf_bytes if is_pdf else self.settings.max_html_bytes
                         header_length = response.headers.get("content-length")
-                        if header_length and header_length.isdigit() and int(header_length) > self.settings.max_html_bytes:
+                        if header_length and header_length.isdigit() and int(header_length) > content_limit:
                             return self._result(
                                 requested_url,
                                 ExtractionStatus.CONTENT_TOO_LARGE,
@@ -274,7 +293,7 @@ class StaticHTMLExtractor:
                         body = bytearray()
                         async for chunk in response.aiter_bytes():
                             body.extend(chunk)
-                            if len(body) > self.settings.max_html_bytes:
+                            if len(body) > content_limit:
                                 return self._result(
                                     requested_url,
                                     ExtractionStatus.CONTENT_TOO_LARGE,
@@ -285,6 +304,72 @@ class StaticHTMLExtractor:
                                     http_status=status_code,
                                     content_type=content_type,
                                 )
+                        if is_pdf or (content_type == "application/octet-stream" and bytes(body).startswith(b"%PDF-")):
+                            try:
+                                pdf_title, snippets, _, page_model_confirmed = parse_pdf(
+                                    bytes(body),
+                                    target_terms=field_terms | set(target_fields),
+                                    target_model=candidate.target_model,
+                                    max_pages=self.settings.max_pdf_pages,
+                                    max_snippets=self.settings.max_snippets,
+                                )
+                            except (PdfReadError, ValueError, OSError, TypeError, KeyError):
+                                return self._result(
+                                    requested_url,
+                                    ExtractionStatus.EXTRACTION_INCOMPLETE,
+                                    redirect_chain=redirects,
+                                    final_url=current_url,
+                                    fetched_at=fetched_at,
+                                    error="pdf_parse_failed",
+                                    http_status=status_code,
+                                    content_type=content_type or None,
+                                )
+                            detected_region = _detected_region(current_url, None)
+                            if (
+                                detected_region == "unknown"
+                                and candidate.region_match_source
+                                in {"hreflang", "target_region_page_link"}
+                            ):
+                                detected_region = candidate.target_region
+                            if not page_model_confirmed:
+                                status = ExtractionStatus.EXTRACTION_INCOMPLETE
+                                error = "final_page_model_not_matched"
+                            elif not allow_navigation and detected_region != candidate.target_region:
+                                status = ExtractionStatus.EXTRACTION_INCOMPLETE
+                                error = "final_page_region_not_matched"
+                            elif not snippets:
+                                status = ExtractionStatus.EXTRACTION_INCOMPLETE
+                                error = "pdf_relevant_text_empty"
+                            else:
+                                status = ExtractionStatus.SUCCESS
+                                error = None
+                            return WebExtractionResult(
+                                requested_url=requested_url,
+                                final_url=current_url,
+                                redirect_chain=redirects,
+                                title=pdf_title or candidate.title,
+                                detected_region=detected_region,
+                                fetched_at=fetched_at,
+                                http_status=status_code,
+                                content_type="application/pdf",
+                                content_length=len(body),
+                                content_hash=hashlib.sha256(body).hexdigest(),
+                                snippets=snippets,
+                                status=status,
+                                degraded=status != ExtractionStatus.SUCCESS,
+                                error=error,
+                            )
+                        if content_type == "application/octet-stream":
+                            return self._result(
+                                requested_url,
+                                ExtractionStatus.NON_HTML,
+                                redirect_chain=redirects,
+                                final_url=current_url,
+                                fetched_at=fetched_at,
+                                error="content_type_rejected",
+                                http_status=status_code,
+                                content_type=content_type or None,
+                            )
                         encoding = response.encoding or "utf-8"
                         text = bytes(body).decode(encoding, errors="replace")
                         parsed = parse_html(
@@ -297,13 +382,19 @@ class StaticHTMLExtractor:
                         page_model_confirmed = _page_matches_model(
                             parsed, candidate.target_model, current_url
                         )
-                        canonical, alternates = await self._safe_links(
+                        canonical, alternates, related = await self._safe_links(
                             parsed,
                             allowed_domains=allowed_domains,
                             target_model=candidate.target_model,
                             page_model_confirmed=page_model_confirmed,
                         )
                         detected_region = _detected_region(current_url, parsed.language)
+                        if (
+                            detected_region == "unknown"
+                            and candidate.region_match_source
+                            in {"hreflang", "target_region_page_link"}
+                        ):
+                            detected_region = candidate.target_region
                         if not page_model_confirmed:
                             status = ExtractionStatus.EXTRACTION_INCOMPLETE
                             error = "final_page_model_not_matched"
@@ -328,6 +419,7 @@ class StaticHTMLExtractor:
                             title=parsed.title,
                             canonical_url=canonical,
                             alternate_links=alternates,
+                            related_links=related,
                             detected_region=detected_region,
                             detected_language=parsed.language,
                             fetched_at=fetched_at,
@@ -418,6 +510,11 @@ class StaticHTMLExtractor:
                     observed_region=candidate.target_region,
                     status=SourceCandidateStatus.REGION_MATCHED,
                     model_match_source=candidate.model_match_source,
+                    region_match_source=(
+                        "page_language"
+                        if infer_region(safe.url) == "unknown"
+                        else "url"
+                    ),
                 )
         links: list[tuple[str, str]] = []
         if inspection.canonical_url:
@@ -458,5 +555,6 @@ class StaticHTMLExtractor:
                 model_match_source=(
                     "url" if model_matches_url(candidate.target_model, safe.url) else "title"
                 ),
+                region_match_source="hreflang",
             )
         return inspection, None

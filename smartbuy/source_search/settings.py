@@ -19,6 +19,15 @@ DEFAULT_OFFICIAL_DOMAINS = (
     "benq.com",
     "www.benq.com",
     "benq.com.cn",
+    "sony.com",
+    "hp.com",
+    "lenovo.com",
+    "microsoft.com",
+    "bose.com",
+    "logitechg.com",
+    "logitech.com",
+    "steelseries.com",
+    "apple.com",
 )
 
 
