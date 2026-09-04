@@ -1,0 +1,83 @@
+{
+  "schema_version": "proofpick-v2-9d-independent-summary-v1",
+  "release_candidate": "proofpick-v2-9c-rc2",
+  "production_commit": "2d41773981c69b815efa21c0bf21675d095b920d",
+  "decision": "needs_revision_not_authorized_for_release",
+  "trusted": {
+    "case_sha256": "bb9edd89e183b04e23ba016b73e51d981525776e193c086f3108f39b8d92ea0f",
+    "task_accuracy": {"correct": 72, "total": 90, "rate": 0.8},
+    "per_domain": {
+      "monitor": {"correct": 23, "total": 30, "rate": 0.7666666666666667},
+      "laptop": {"correct": 28, "total": 30, "rate": 0.9333333333333333},
+      "headphone": {"correct": 21, "total": 30, "rate": 0.7}
+    },
+    "hard_constraint_field_f1": 0.9320388349514563,
+    "constraint_operator_value_exact": {"matches": 95, "total": 103, "rate": 0.9223300970873787},
+    "evidence_coverage": {"covered": 343, "required": 357, "rate": 0.9607843137254902},
+    "hard_negative_rejection": {"correct": 8, "total": 15, "rate": 0.5333333333333333},
+    "extra_or_wrong_recommendations": 10,
+    "scope_leakage": 0,
+    "checker_leakage": 0,
+    "unknown_overclaim": 0,
+    "clarification_bypass": 5,
+    "api_requests": 349,
+    "estimated_cost_cny": 1.0326617,
+    "all_mandatory_gates_passed": false
+  },
+  "online": {
+    "case_sha256": "2bd87699e2041473fb9608aa6f6b0ae187a2deaf40add4766f7a471f7574ffb4",
+    "safe_terminal": {"passed": 15, "total": 15, "rate": 1.0},
+    "accepted_source_precision": 1.0,
+    "lineage_and_open_boundary_rate": 1.0,
+    "actual_evidence_completion": {"completed": 0, "total": 15, "rate": 0.0},
+    "per_domain_completion": {
+      "monitor": {"completed": 0, "total": 5, "rate": 0.0},
+      "laptop": {"completed": 0, "total": 5, "rate": 0.0},
+      "headphone": {"completed": 0, "total": 5, "rate": 0.0}
+    },
+    "evidence_producing_cases": 2,
+    "requested_fields_verified_on_evidence_cases": {"verified": 3, "requested": 6, "rate": 0.5},
+    "open_evidence_entered_trusted_checker": 0,
+    "search_calls": 28,
+    "estimated_cost_cny": 1.1,
+    "all_mandatory_gates_passed": false
+  },
+  "engineering": {
+    "full_ci_equivalent": "479/479",
+    "v1_original_files_current": "98/98",
+    "ruff": "passed",
+    "compileall": "passed",
+    "javascript": "13/13",
+    "powershell_ast": "6/6",
+    "markdown_links": "438/438",
+    "preflight": "11/11 after preserving a 10/11 nested-shell PATH failure",
+    "demo_contracts": "5/5",
+    "http_smoke": "root/health/monitor/capabilities/minio all 200",
+    "offline_replay": "HTTP 200",
+    "ports_after_stop": 0,
+    "credential_findings": 0
+  },
+  "cost": {
+    "bootstrap_cny": 0.015586,
+    "trusted_cny": 1.0326617,
+    "online_cny": 1.1,
+    "total_estimated_cny": 2.1482477
+  },
+  "immutable_result_sha256": {
+    "trusted": "5f14f510ec193ffcb32c9577bcc755aa991d5f7fd38251ba19704cc16896047d",
+    "online": "df53fd44b41d7e18d93c14b3680a40342ec58aaad54a02ea0e5212d07ac43afe"
+  },
+  "harness_incident": {
+    "completed_before_abort": 8,
+    "cause": "evaluator omitted SourceSearchRequest query maxLength=70",
+    "completed_cases_replayed": 0,
+    "gold_fields_changed": 0,
+    "preserved": true
+  },
+  "reproducibility": {
+    "repository_members": "166/166",
+    "runtime_raw_byte_hashes": "2/7",
+    "runtime_semantic_contract": "passed",
+    "portable_raw_runtime_hash_gate": false
+  }
+}

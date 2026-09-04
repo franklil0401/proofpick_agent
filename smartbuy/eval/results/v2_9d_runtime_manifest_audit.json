@@ -1,0 +1,38 @@
+{
+  "schema_version": "proofpick-v2-9d-runtime-manifest-audit-v1",
+  "release_candidate": "proofpick-v2-9c-rc2",
+  "audit_result": "byte_hash_not_cross_machine_reproducible",
+  "repository_freeze_groups": {
+    "groups_checked": 16,
+    "members_checked": 166,
+    "aggregate_mismatches": 0,
+    "passed": true
+  },
+  "runtime_index_manifests": {
+    "expected_aggregate_sha256": "e415a13e43475863ad5171b3dfd2b0b68f000784a91e02b205f8a86427bf3f20",
+    "rebuilt_aggregate_sha256": "bc46c713cc63d14dafbdfba3cc056d3b96bafee99c6766d53b7c4b054bcc3e95",
+    "exact_matches": 2,
+    "members": [
+      {"logical_path": "monitor/index_manifest.json", "expected_sha256": "e7e4052e2270f2b77db2dd247c2afa18c0b61cfe4167133c40dc6059b94f3fa0", "rebuilt_sha256": "247448c6cb11b96adbfbcac0e4333f81aa8169c5bc324f55b5f6cb83a342da00", "exact": false},
+      {"logical_path": "laptop/data/current.json", "expected_sha256": "16e1dc34475ff459f794d2b82797679822e85367191504d0e76f7fb55a527f94", "rebuilt_sha256": "16e1dc34475ff459f794d2b82797679822e85367191504d0e76f7fb55a527f94", "exact": true},
+      {"logical_path": "laptop/index/current_laptop_index.json", "expected_sha256": "f98daf59ee310ebfa9d50e1b52fe70b6c5d1a5b709405d341efeeb6cba24ec99", "rebuilt_sha256": "f3d7acac568d6565fa162ba476dc56e5e3d9a2f403c525c17740a7a8651640ef", "exact": false},
+      {"logical_path": "laptop/index/index_manifest.json", "expected_sha256": "c211ee7ba89efa239040a17873932634f9326b171b6cf8d7e39d72c7ce5d6943", "rebuilt_sha256": "8bd46c35f6bd56b6444a52fe09c002efbd26177265be0498cd94bdf68503db99", "exact": false},
+      {"logical_path": "headphone/data/current.json", "expected_sha256": "4e848647eb2595bc143471b543f6720d250dc88810e88eba38589913c7fb56ae", "rebuilt_sha256": "4e848647eb2595bc143471b543f6720d250dc88810e88eba38589913c7fb56ae", "exact": true},
+      {"logical_path": "headphone/index/current_headphone_index.json", "expected_sha256": "99791167936aefae9188daeef53d766cbc82c7e43037cfe7d957f92870a5d051", "rebuilt_sha256": "e9acfaa71b7f73e327e52529f39b19eb61033637189baf60b7411b3e5be05a2c", "exact": false},
+      {"logical_path": "headphone/index/index_manifest.json", "expected_sha256": "cb93f392349504d0b47977531958b5da774ce620a118d350d450cbb55eccabfe", "rebuilt_sha256": "49d88c92881319998ecdab639960037f8df9a5be69d2ca27a5234808cef0c1b7", "exact": false}
+    ]
+  },
+  "semantic_runtime_contract": {
+    "monitor_products": 12,
+    "monitor_chunks": 60,
+    "laptop_products": 12,
+    "laptop_documents": 12,
+    "headphone_products": 12,
+    "headphone_documents": 12,
+    "embedding_dimensions": 1024,
+    "sqlite_integrity": "ok",
+    "foreign_key_violations": 0,
+    "passed": true
+  },
+  "interpretation": "raw rebuilt index manifests include run-specific created_at and latency/usage values; data pointers are byte-identical and semantic Data/Index contracts pass, but RC2's seven-file raw-byte aggregate is not a portable clean-machine reproducibility gate"
+}
