@@ -9,9 +9,9 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-6C-R4 已完成 Laptop E2E 工程收尾；新的独立 Release Candidate 评测推迟到 V2-9** |
+| 当前状态 | **V2-9A 产品 UI、五 Demo 与 Windows RC 复现已完成；等待 V2-9B 独立发布评测** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
-| 最后更新 | 2026-09-03 |
+| 最后更新 | 2026-09-04 |
 
 关联文档：
 
@@ -778,7 +778,9 @@ feat(v2): add headphone domain pack and cross-domain evaluation
 
 推送后报告三品类对比、主观证据边界和交叉污染测试，然后停止。
 
-## 17. V2-9：产品 UI、完整评测和发布
+## 17. V2-9：产品 UI、独立评测和发布
+
+V2-9 拆分为职责隔离的两个子阶段：V2-9A 由开发 Agent 完成产品 UI、五 Demo、Windows 干净克隆与 RC Manifest；V2-9B 由新的独立 Agent 在冻结 RC 上创建、哈希并单次运行最终发布集。V2-9A 不得同时出题、调参或运行最终 Holdout。
 
 ### 17.1 目标
 
@@ -961,6 +963,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-7 已完成确定性 Decision Ranker、Pack-owned Ranking Profile、What-if 与 Global/Category 分层 Memory。V2-6C 三轮冻结首测仍是失败，122 条结果只属于已暴露回归；V2-5B/5C、V2-6C-R2B 和 R3 全部历史首测继续原样保留。
+V2-9A 已完成统一三品类产品 UI、五个真实证据支持的脱敏 Demo、Windows 仓库外数据/索引/服务复现和 RC 冻结。历史首测、已暴露回归、V1 数据与默认 ReAct 路由均保持原样。
 
-下一步只能等待用户另行授权。不得自动进入 V2-8，不得创建新的 Laptop Holdout，不得切换默认编排器，也不得修改 V1 冻结数据与历史结果。新的独立 Release Candidate 评测只能在 V2-9 按预先冻结、单次运行和尽量独立复核的纪律执行。
+下一步只能等待用户授权新的独立 Agent 执行 V2-9B。评测 Agent 必须读取 RC Manifest，在首次运行前冻结新任务和评分器，不得使用 V2-9A 开发 Agent继续调参；任何生产修复都必须生成新的 RC 编号与 Manifest Hash。未经确认不得创建 PR、合并 `main`、Tag 或 Release。

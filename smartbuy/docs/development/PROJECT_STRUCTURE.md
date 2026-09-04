@@ -4,8 +4,8 @@
 
 | 项目 | 内容 |
 |---|---|
-| 最后更新时间 | 2026-09-03 |
-| 当前阶段 | V1 已冻结；V2-8 已完成 Headphone Domain Pack、三层证据权限与三品类交叉验证，新的独立发布评测留待 V2-9 |
+| 最后更新时间 | 2026-09-04 |
+| 当前阶段 | V1 已冻结；V2-9A 已完成统一产品 UI、五 Demo、Windows RC 复现与 Manifest，等待独立 V2-9B 评测 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -73,6 +73,7 @@ proofpick_agent/
 │  │  ├─ models.py
 │  │  └─ product_pack.py
 │  ├─ api/
+│  │  ├─ portfolio_runtime.py  # 默认关闭的 Laptop/Headphone V2 UI 运行时
 │  │  └─ router.py
 │  ├─ config/
 │  │  ├─ __init__.py
@@ -355,6 +356,10 @@ proofpick_agent/
 │  │  ├─ loader.py
 │  │  ├─ models.py
 │  │  └─ runtime.py
+│  ├─ portfolio/
+│  │  ├─ demos.py              # 严格加载五个脱敏回放
+│  │  ├─ dynamic_facts.py      # URL/币种/时间/TTL/hash 动态观察安全判断
+│  │  └─ models.py             # UI 候选、Evidence、轨迹和回放 Schema
 │  ├─ retrieval/
 │  │  ├─ __init__.py
 │  │  ├─ domain_index.py
@@ -384,6 +389,7 @@ proofpick_agent/
 │  │  ├─ build_stage3_index.py
 │  │  ├─ check_markdown_links.py
 │  │  ├─ preflight.ps1
+│  │  ├─ replay.ps1
 │  │  ├─ start.ps1
 │  │  ├─ start_youtu_rag.ps1
 │  │  ├─ stop.ps1
@@ -394,6 +400,8 @@ proofpick_agent/
 │  │  ├─ verify_v2_open_research.py
 │  │  ├─ verify_v2_6c_laptop_open_research.py
 │  │  ├─ verify_v2_8_headphone_open_research.py
+│  │  ├─ verify_v2_9a_demos.py
+│  │  ├─ build_v2_release_runtime.py
 │  │  ├─ verify_stage7_demos.py
 │  │  └─ verify_stage3_index.py
 │  └─ tests/
@@ -438,11 +446,15 @@ proofpick_agent/
 │        ├─ test_v2_open_research.py
 │        ├─ test_v2_headphone_open_research.py
 │        ├─ test_v2_product_identity_scope.py
+│        ├─ test_v2_portfolio.py
 │        └─ test_v2_source_search.py
 └─ vendor/
    └─ youtu-rag/
       ├─ configs/
-      ├─ frontend/
+      ├─ frontend/rag_webui/
+      │  ├─ app.html            # ProofPick V2 产品首页
+      │  ├─ classic.html        # 保留的 Youtu-RAG 经典入口
+      │  └─ assets/             # V2 CSS、JS 与五 Demo 脱敏 JSON
       ├─ tests/
       ├─ utu/
       ├─ LICENSE
@@ -502,6 +514,12 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_8_headphone_domain_report.md` / `v2_8_headphone_runtime.md` | V2-8 Headphone 数据、真实索引、检索/工程评测、Open Research、成本及复现边界 |
 | `smartbuy/docs/v2/v2_8_headphone_data_card.md` | 12 个精确耳机配置、三层来源权限、缺失率、Evidence 覆盖和可重建哈希 |
 | `smartbuy/docs/v2/v2_8_three_domain_evaluation.md` | Monitor、Laptop、Headphone 的字段、数据、索引、Evidence、Memory 与编排资格隔离证据 |
+| `smartbuy/docs/v2/v2_9a_release_candidate_report.md` | V2-9A 产品 UI、五 Demo、动态事实边界、成本、RC 与 V2-9B 交接结论 |
+| `smartbuy/docs/v2/v2_9a_windows_reproduction.md` | 新短 ASCII 克隆、冻结依赖、三 SQLite/索引、HTTP、回放与端口释放实测 |
+| `smartbuy/docs/v2/v2_demo_guide.md` | 五个固定输入的在线/本地真实路径、脱敏回放、预期结果与失败备用步骤 |
+| `smartbuy/docs/v2/v2_release_candidate_manifest.md` | V2-9B 使用的 Commit、锁、Pack/Data/Index、模型、Schema、数据和评测哈希快照 |
+| `smartbuy/docs/v2/v2_9a_handoff.md` | 未发布的 PR 草案、V1/V2 边界、回滚与独立评测纪律 |
+| `smartbuy/docs/release/v2_portfolio_release_notes_draft.md` | 仅供后续审核的 V2 Portfolio Release Notes 草案，本轮不发布 |
 | `smartbuy/docs/adr/0019-headphone-source-authority-and-pack-reuse.md` | Headphone 三层来源权限、主观证据边界及通用 Checker/Ranker 复用决策 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
@@ -636,6 +654,8 @@ proofpick_agent/
 | `smartbuy/docs/release_checklist.md` | 评测、运行、数据许可、安全、工程质量和推送清单 |
 | `smartbuy/docs/release/v1.0.0-portfolio-release-notes.md` | 已发布的 `v1.0.0-portfolio` GitHub Release 基础文案与 V1 能力边界 |
 | `smartbuy/docs/assets/` | 实际 WebUI、明确标注非实时的脱敏回放与 README 专用架构图 |
+| `smartbuy/api/portfolio_runtime.py` | 仅在显式开关开启且仓库外 Data/Index 指针通过校验时装配 Laptop/Headphone 通用 Agent |
+| `smartbuy/portfolio/` | 五 Demo 公开 Schema、固定脱敏回放加载与动态观察的 fail-closed 合同 |
 | `smartbuy/scripts/start_youtu_rag.ps1` | 从继承进程安全映射百炼变量并在回环地址启动 Youtu-RAG |
 | `smartbuy/scripts/verify_bailian_stage2.py` | 有界真实 API 验证；只输出脱敏统计，不输出模型正文或 Key |
 | `smartbuy/scripts/verify_v2_source_search.py` | 8 条固定官方来源任务的有界真实搜索，只输出 URL 元数据、状态、计数、延迟和费用 |
@@ -647,6 +667,8 @@ proofpick_agent/
 | `smartbuy/scripts/check_markdown_links.py` | 在本地与 CI 中检查根文档和 `smartbuy/docs/` 的相对链接目标 |
 | `smartbuy/scripts/preflight.ps1` / `bootstrap.ps1` | Windows 依赖与脱敏配置预检、冻结依赖、数据/SQLite/Chroma 幂等构建 |
 | `smartbuy/scripts/start.ps1` / `stop.ps1` | 仓库外运行目录中的 MinIO/FastAPI 启停、HTTP 检查和精确进程树清理 |
+| `smartbuy/scripts/build_v2_release_runtime.py` | 仓库外幂等发布 Laptop/Headphone Product Pack，并在显式请求时构建独立 1024 维索引 |
+| `smartbuy/scripts/replay.ps1` / `verify_v2_9a_demos.py` | 无 Key/MinIO 脱敏回放启停，以及零 API 的五 Demo 数据/代码合同复核 |
 | `smartbuy/scripts/verify_stage7_demos.py` | 调用本地 API 验证四个固定 Demo 并保存脱敏摘要 |
 | `smartbuy/tests/fixtures/stage1_baseline.md` | 自制、无隐私的 Markdown 上传与知识库配置冒烟夹具 |
 | `smartbuy/tests/unit/` | 百炼统一配置、请求契约、重试、维度与降级单元测试 |
@@ -667,7 +689,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker 和分层 Memory。默认仍使用 V1 数据与自研 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9 的独立发布评测、统一产品 UI 与 Windows 三品类发布复现尚未实施；自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9A 已完成 Windows 三品类发布复现与 RC 冻结；V2-9B 独立发布评测、自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 

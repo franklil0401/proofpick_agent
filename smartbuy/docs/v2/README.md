@@ -58,6 +58,11 @@
 - [V2-8 Headphone 治理数据卡](v2_8_headphone_data_card.md)
 - [V2-8 三品类交叉验证](v2_8_three_domain_evaluation.md)
 - [V2-8 Headphone 运行说明](v2_8_headphone_runtime.md)
+- [V2-9A Release Candidate 报告](v2_9a_release_candidate_report.md)
+- [V2-9A Windows 干净克隆复现](v2_9a_windows_reproduction.md)
+- [V2 五分钟 Demo](v2_demo_guide.md)
+- [V2 Release Candidate Manifest](v2_release_candidate_manifest.md)
+- [V2-9A 发布、回滚与独立评测交接](v2_9a_handoff.md)
 - [ADR-0019：Headphone 来源权限与通用内核复用](../adr/0019-headphone-source-authority-and-pack-reuse.md)
 
 ## 当前状态
@@ -83,4 +88,6 @@
 - 默认编排器仍是 ReAct；V2-7 结果是功能与不变量验证，不是新 Holdout 或生产 SLA。
 - V2-8 已新增 12 个精确耳机配置、三层来源权限、独立 1024 维索引和 30 条检索/工程集；工程首次 27/30，通用修复后的已暴露回归 30/30。主观证据进入硬事实为 0，三品类交叉污染为 0。
 - Headphone Open Research 对本地未治理的 AirPods Max 爱尔兰官方页完成 5 字段临时核验；Open Evidence 进入治理 Ledger/Checker 为 0。V2-8 总估算费用约 ¥1.145。
+- V2-9A 已形成三品类统一产品首页、Trusted/Open 展示、五个脱敏 Demo、仓库外 Windows bootstrap 与无 Key Offline Replay；新短 ASCII 路径完成三 SQLite、三索引、HTTP 与端口释放验证。
+- V2 Release Candidate 只用于移交 V2-9B 独立评测。本开发阶段没有创建或运行最终发布 Holdout，也没有创建 PR、合并 `main`、Tag 或 Release。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

@@ -447,7 +447,7 @@ async def portfolio_capabilities() -> dict[str, Any]:
         "replay_available": True,
         "replay_disclosure": bundle.disclosure,
         "domains": {
-            "monitor": {"configuration_count": 13, "online_route": "v1_compatible"},
+            "monitor": {"configuration_count": 12, "online_route": "v1_compatible"},
             "laptop": {"configuration_count": 12, "online_route": "explicit_v2"},
             "headphone": {"configuration_count": 12, "online_route": "explicit_v2"},
         },

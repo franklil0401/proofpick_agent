@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - chore/portfolio-polish
+      - feature/proofpick-v2
   pull_request:
   workflow_dispatch:
 
@@ -61,6 +62,16 @@ jobs:
 
       - name: Compile Python sources
         run: uv run --project vendor/youtu-rag --frozen python -m compileall -q smartbuy
+
+      - name: Check tracked JavaScript syntax
+        shell: pwsh
+        run: |
+          $files = @(git ls-files -- '*.js')
+          foreach ($file in $files) {
+            node --check $file
+            if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          }
+          Write-Host "JavaScript syntax: $($files.Count)/$($files.Count)"
 
       - name: Parse PowerShell scripts
         shell: pwsh
