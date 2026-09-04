@@ -1,0 +1,20 @@
+{
+  "schema_version": "proofpick-v2-9d-independent-online-rc2-freeze-v1",
+  "classification": "evaluator-only correction after immutable harness failure",
+  "case_count": 15,
+  "domain_counts": {
+    "monitor": 5,
+    "laptop": 5,
+    "headphone": 5
+  },
+  "base_case_sha256": "1dd98a3040bff3e21cba385320e183246f771b8b40f06eb54a8dee4560c97fcb",
+  "case_sha256": "2bd87699e2041473fb9608aa6f6b0ae187a2deaf40add4766f7a471f7574ffb4",
+  "completed_prefix_count": 8,
+  "completed_prefix_unchanged": true,
+  "changed_unreached_case_ids": [
+    "web2-hph-002",
+    "web2-lap-004"
+  ],
+  "gold_fields_changed": 0,
+  "evaluation_state": "frozen_partially_executed_after_harness_abort"
+}
