@@ -1,0 +1,74 @@
+{
+  "cache": "cold_disabled",
+  "config_sha256": "9e9ddbab84b4e389cc42a699db3dcfd370e17ba14e15f181c16cefb67c35060c",
+  "definitions": {
+    "smartbuy/eval/v2_9d_independent/case_manifest.json": "eb4d980c05267f08471777b97623849c6c2c990f36bf06d5003d45d20f467eca",
+    "smartbuy/eval/v2_9d_independent/generate_cases.py": "f32f0476daa1b0bfc71326ea317026011950bfe75c8b7ee9487116d72196e642",
+    "smartbuy/eval/v2_9d_independent/online_case.schema.json": "9a133e053fa7c52e848589b55fc589e96aed9fa859cea3e4215f23bf12b62753",
+    "smartbuy/eval/v2_9d_independent/online_cases.jsonl": "1dd98a3040bff3e21cba385320e183246f771b8b40f06eb54a8dee4560c97fcb",
+    "smartbuy/eval/v2_9d_independent/runner.py": "a1bf559065e30c2d4577950cb65cabfc03ed9eb975f96551011cb0dcafd2aa22",
+    "smartbuy/eval/v2_9d_independent/scorer.py": "ffe9fe6f2dc242ae76d6f0a579a343a0fe75d3bae71c8c99a5edae7c9f2607b8",
+    "smartbuy/eval/v2_9d_independent/scoring_policy.json": "4f4b302cd45543754a088d0818fd26a6713d000211065496418140961cd34b2b",
+    "smartbuy/eval/v2_9d_independent/trusted_case.schema.json": "0bd471dfd5ba51aade72fd6fcd7d1979f82c9425ad04e011d6cfbe15911ff9eb",
+    "smartbuy/eval/v2_9d_independent/trusted_cases.jsonl": "bb9edd89e183b04e23ba016b73e51d981525776e193c086f3108f39b8d92ea0f",
+    "smartbuy/eval/v2_9d_independent/validate_freeze.py": "6853a42a05bce6f829fdaa7aeb83b8d35b533b766883d08494d150d78ea22abc"
+  },
+  "frozen_at": "2026-09-04T12:11:11.212817Z",
+  "limits": {
+    "online_cost_cny": 2.0,
+    "online_search_calls": 30,
+    "trusted_cost_cny": 10.0,
+    "trusted_provider_requests": 500
+  },
+  "orchestrator": "react",
+  "production_commit": "2d41773981c69b815efa21c0bf21675d095b920d",
+  "production_tree": "9273e9f41a3ad62ac6712a02a6ee6a4486a90f24",
+  "rc_manifest_commit": "104a11e298d6f97d92b1a10a69a63c7b0d218a55",
+  "rc_manifest_payload_sha256": "026e1ccff278c8285231223e3f2510f658e0ce2e68921c6ea94bf0a84eec1e2b",
+  "release_candidate": "proofpick-v2-9c-rc2",
+  "run_id": "v2-9d-independent-20260904T121111Z-94672285",
+  "runtime": {
+    "headphone": {
+      "chunk_count": 12,
+      "collection_name": "proofpick_headphone_v2_cae477364b46ccae",
+      "data_counts": {
+        "evidence_records": 336,
+        "price_observations": 0,
+        "product_attributes": 408,
+        "products": 12,
+        "source_records": 20
+      },
+      "data_manifest_hash": "36c0bf08ce945a67e7ecd0e485a9a269e7ad942788d428f2cb8af925208e8018",
+      "data_version": "headphone-governed-2026-09-03-v1",
+      "document_count": 12,
+      "domain_pack_fingerprint": "994e5dc4e3015dcfd2d4380bfbb227cac1a5b8ea9c38a5ea7b2bf188d6ee9aee",
+      "domain_pack_version": "1.0.0",
+      "index_manifest_hash": "8dd3e03921ff838ea7323caf15c97c169633583843241f5321d21dabaeb16e86",
+      "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1"
+    },
+    "laptop": {
+      "chunk_count": 12,
+      "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+      "data_counts": {
+        "evidence_records": 406,
+        "price_observations": 0,
+        "product_attributes": 540,
+        "products": 12,
+        "source_records": 12
+      },
+      "data_manifest_hash": "c9ae040dd8220febb417537418d45532f3afba35c2f35ab0d8b7c5c361692623",
+      "data_version": "laptop-governed-2026-09-02-v1",
+      "document_count": 12,
+      "domain_pack_fingerprint": "b54fb8288bce1861f146beb4b436b8f065c6be821b65815bccc8c2ae7dd76cec",
+      "domain_pack_version": "1.0.0",
+      "index_manifest_hash": "8aeec201ded4dcd44ecb1c5df092e6dc4d6382465e958cd7f68f6a8a0dd41642",
+      "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1"
+    },
+    "monitor": {
+      "database_sha256": "d808873c176691c805e247b2ba444ace64899df65ff4015451b8e24c278fe2c4",
+      "index_manifest_sha256": "247448c6cb11b96adbfbcac0e4333f81aa8169c5bc324f55b5f6cb83a342da00"
+    }
+  },
+  "schema_version": "proofpick-v2-9d-independent-rc-v1",
+  "v1_commit": "d51b6668a6a45c1b01ef4e64da3c4b9ac84ed10c"
+}
