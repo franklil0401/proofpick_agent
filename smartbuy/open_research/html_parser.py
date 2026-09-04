@@ -56,6 +56,7 @@ class _Parser(HTMLParser):
         self.embedded_json_depth = 0
         self.embedded_json_parts: list[str] = []
         self.embedded_json_documents: list[str] = []
+        self.meta_entries: list[tuple[str, str]] = []
         self.block_tag: str | None = None
         self.block_parts: list[str] = []
         self.blocks: list[tuple[str, str]] = []
@@ -74,6 +75,14 @@ class _Parser(HTMLParser):
         self.stack.append(tag)
         if tag == "html":
             self.language = attributes.get("lang") or self.language
+        if tag == "meta":
+            name = attributes.get("name") or attributes.get("property") or attributes.get("itemprop")
+            content = attributes.get("content")
+            if name and content and len(self.meta_entries) < 200:
+                self.meta_entries.append((name[:100], content[:2_000]))
+            locale_name = (name or attributes.get("http-equiv") or "").casefold()
+            if content and locale_name in {"og:locale", "content-language"}:
+                self.language = self.language or content[:32]
         if tag == "link":
             rel = (attributes.get("rel") or "").casefold().split()
             href = attributes.get("href")
@@ -83,7 +92,7 @@ class _Parser(HTMLParser):
                 self.alternates.append((href, attributes.get("hreflang")))
         if tag == "script":
             self.script_count += 1
-            script_type = (attributes.get("type") or "").casefold()
+            script_type = (attributes.get("type") or "").split(";", 1)[0].strip().casefold()
             if script_type == "application/ld+json":
                 self.json_ld_depth += 1
                 self.json_ld_parts = []
@@ -236,6 +245,9 @@ def parse_html(
             continue
         for locator, text in _walk_json(payload, f"embedded[{document_index}]")[:5_000]:
             add("embedded_json", text, locator)
+
+    for index, (name, content) in enumerate(parser.meta_entries):
+        add("visible_text", f"{name}: {content}", f"meta[{index}]")
 
     for index, row in enumerate(parser.rows[:1_000]):
         add("specification", " | ".join(row), f"table-row[{index}]")

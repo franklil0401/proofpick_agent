@@ -129,6 +129,15 @@ def modern_html_page() -> str:
     </body></html>"""
 
 
+def metadata_html_page() -> str:
+    return """<!doctype html><html><head>
+    <title>Acme Audio Echo 54 official</title>
+    <meta property="og:locale" content="en_US">
+    <meta name="description" content="Acme Audio Echo 54 Bluetooth 5.4; battery life 32 hours; weight 248 grams">
+    <script type="application/json; charset=utf-8">{"product":{"model":"Echo 54","bluetooth":"Bluetooth 5.4"}}</script>
+    </head><body><main id="app"></main></body></html>"""
+
+
 @pytest.mark.asyncio
 async def test_static_extractor_success_and_redirect_checks(tmp_path) -> None:
     requests: list[str] = []
@@ -386,6 +395,21 @@ def test_parser_covers_embedded_json_and_div_span_spec_text() -> None:
     assert any(item.kind == "embedded_json" and "USB4" in item.text for item in parsed.snippets)
     assert any("Battery | 72 Wh" in item.text for item in parsed.snippets)
     assert any("Graphics | NVIDIA GeForce RTX 5070" in item.text for item in parsed.snippets)
+
+
+def test_parser_covers_metadata_locale_and_json_type_parameters() -> None:
+    from smartbuy.open_research.html_parser import parse_html
+
+    parsed = parse_html(
+        metadata_html_page(),
+        base_url="https://audio.example/products/echo",
+        target_terms={"bluetooth", "battery", "weight"},
+        target_model="Echo 54",
+        max_snippets=100,
+    )
+    assert parsed.language == "en_US"
+    assert any(item.locator.startswith("meta[") and "32 hours" in item.text for item in parsed.snippets)
+    assert any(item.kind == "embedded_json" and "Bluetooth 5.4" in item.text for item in parsed.snippets)
 
 
 @pytest.mark.asyncio

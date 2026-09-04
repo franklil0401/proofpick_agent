@@ -119,6 +119,31 @@ class OpenResearchService:
                 field_terms=terms,
                 allowed_domains=allowed_domains,
             )
+            if (
+                allow_region_discovery
+                and extraction.status == ExtractionStatus.EXTRACTION_INCOMPLETE
+                and extraction.error == "final_page_region_not_matched"
+            ):
+                recovery_attempted = True
+                inspection, discovered = await self.extractor.discover_target_candidate(
+                    candidate,
+                    target_fields=target_fields,
+                    field_terms=terms,
+                    allowed_domains=allowed_domains,
+                )
+                trace.extend(["final_region_rechecked", "canonical_hreflang_checked"])
+                if discovered is not None:
+                    selected = discovered
+                    recovery_succeeded = True
+                    trace.append("target_region_candidate_discovered")
+                    extraction = await self.extractor.extract(
+                        selected,
+                        target_fields=target_fields,
+                        field_terms=terms,
+                        allowed_domains=allowed_domains,
+                    )
+                else:
+                    extraction = inspection
         trace.append("web_extractor_completed")
         if extraction.status != ExtractionStatus.SUCCESS:
             report = OpenResearchReport(

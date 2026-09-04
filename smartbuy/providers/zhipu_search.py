@@ -155,17 +155,22 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         engine: str,
         budget: _SearchBudget,
         local_request_id: str,
+        use_provider_domain_filter: bool,
     ) -> tuple[dict[str, Any], int, int, float]:
         payload = {
             "search_query": request.query,
             "search_engine": engine,
             "search_intent": False,
             "count": min(request.max_results, self.settings.requested_count),
-            "search_domain_filter": request.allowed_domains[0],
             "search_recency_filter": request.freshness,
             "content_size": "small",
             "request_id": local_request_id,
         }
+        # Provider-side domain filtering is only a recall hint.  The fallback
+        # deliberately searches broadly, then applies the same deterministic
+        # hostname/model/region validator before a URL can become usable.
+        if use_provider_domain_filter:
+            payload["search_domain_filter"] = request.allowed_domains[0]
         started = time.perf_counter()
         total_attempts = self.settings.max_retries + 1
         last_status: int | None = None
@@ -276,6 +281,7 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         budget: _SearchBudget,
         *,
         query_strategy: str,
+        use_provider_domain_filter: bool,
     ) -> SourceEngineOutcome:
         cache_key = self.cache.key(
             request,
@@ -303,6 +309,7 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
                 engine=engine,
                 budget=budget,
                 local_request_id=local_request_id,
+                use_provider_domain_filter=use_provider_domain_filter,
             )
             provider_request_id = body.get("request_id")
             if not isinstance(provider_request_id, str):
@@ -448,6 +455,7 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
             self.settings.primary_engine,
             budget,
             query_strategy="official_fields_region",
+            use_provider_domain_filter=True,
         )
         outcomes.append(primary)
         auth_failed = primary.error == "ZhipuSourceSearchAuthError"
@@ -463,7 +471,8 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
                 fallback_request,
                 self.settings.fallback_engine,
                 budget,
-                query_strategy="technical_specs_site_fallback",
+                query_strategy="official_identity_broad_fallback",
+                use_provider_domain_filter=False,
             )
             outcomes.append(fallback)
 
@@ -558,10 +567,11 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         fields = " ".join(field.replace("_", " ") for field in request.target_fields)
         domain = request.allowed_domains[0]
         if fallback:
-            value = (
-                f'{request.target_model} {request.region} official site:{domain} '
-                f'technical specifications {fields}'
-            )
+            # Keep the recovery query identity-focused.  Long field lists and
+            # provider domain filters both reduce recall on product pages whose
+            # snippets omit a requested specification.  Trust is unaffected:
+            # every result still crosses the local allowlist/model/region gate.
+            value = f'{request.target_model} {request.region} official specifications'
         else:
             value = (
                 f'{request.target_model} {request.region} official site:{domain} '

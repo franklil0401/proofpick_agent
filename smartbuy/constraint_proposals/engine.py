@@ -1147,16 +1147,18 @@ class DeterministicConstraintParser:
                 r"(?<!\d)(\d{3,5})\s*[x×]\s*(\d{3,5})(?!\d)", query, flags=re.I
             )
             if explicit_resolution:
-                resolution_context = query[
-                    max(0, explicit_resolution.start() - 24):explicit_resolution.end() + 10
-                ]
+                before = query[max(0, explicit_resolution.start() - 16):explicit_resolution.start()]
+                after = query[explicit_resolution.end():explicit_resolution.end() + 8]
+                minimum_resolution = bool(
+                    re.search(
+                        r"(?:分辨率\s*)?(?:至少|不低于|不少于|最低)\s*$",
+                        before,
+                    )
+                    or re.match(r"\s*(?:及?以上|起)", after)
+                )
                 add(
                     "resolution",
-                    (
-                        "gte"
-                        if re.search(r"(?:至少|不低于|不少于|以上|更高)", resolution_context)
-                        else "eq"
-                    ),
+                    "gte" if minimum_resolution else "eq",
                     f"{explicit_resolution.group(1)}x{explicit_resolution.group(2)}",
                     explicit_resolution,
                 )
@@ -1243,7 +1245,10 @@ class DeterministicConstraintParser:
 
         if "width_mm" not in cancelled:
             width = re.search(
-                rf"(?:机身宽度|机身宽|宽度)\s*(?:不超过|最多|小于等于)?\s*({_NUMBER})\s*(mm|毫米|cm|厘米)",
+                rf"(?:机身宽度|机身宽|宽度)\s*"
+                rf"(?:不能超过|不得超过|不超过|最多|小于等于|≤|<=|必须)?\s*"
+                rf"(?:还?要)?\s*(?:在|控制在)?\s*"
+                rf"({_NUMBER})\s*(mm|毫米|cm|厘米)(?:\s*(?:以内|以下))?",
                 query,
                 flags=re.I,
             )

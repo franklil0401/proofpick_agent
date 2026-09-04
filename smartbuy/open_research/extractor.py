@@ -426,11 +426,15 @@ class StaticHTMLExtractor:
             (item.url, _hreflang_region(item.hreflang) or infer_region(item.url))
             for item in inspection.alternate_links
         )
+        inspection_identity_confirmed = inspection.status == ExtractionStatus.SUCCESS
         for url, region in links:
             observed_region = region if region != "unknown" else infer_region(url)
             if observed_region != candidate.target_region:
                 continue
-            if not model_matches_url(candidate.target_model, url):
+            if not (
+                model_matches_url(candidate.target_model, url)
+                or inspection_identity_confirmed
+            ):
                 continue
             try:
                 safe = await self.safety_policy.validate(url, allowed_domains)

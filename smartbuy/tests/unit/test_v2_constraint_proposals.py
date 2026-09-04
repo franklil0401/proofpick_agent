@@ -159,6 +159,40 @@ def test_llm_hallucinated_span_and_non_domain_field_never_activate():
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("query", "expected"),
+    [
+        (
+            "在中国版 4K 设备中，机身宽度不能超过 613mm。",
+            {"region": ("eq", "CN"), "resolution": ("eq", "3840x2160"), "width_mm": ("lte", 613.0)},
+        ),
+        (
+            "中国版 2560×1440 设备，刷新率至少 120Hz。",
+            {"region": ("eq", "CN"), "resolution": ("eq", "2560x1440"), "refresh_rate_hz": ("gte", 120.0)},
+        ),
+        (
+            "中国版里不要 USB-C，机身宽度还要在 610mm 以内。",
+            {"region": ("eq", "CN"), "has_usb_c": ("eq", False), "width_mm": ("lte", 610.0)},
+        ),
+        (
+            "美国版设备机身宽度必须在 610mm 以内。",
+            {"region": ("eq", "US"), "width_mm": ("lte", 610.0)},
+        ),
+    ],
+)
+async def test_monitor_numeric_constraints_are_complete_without_product_rules(
+    query: str,
+    expected: dict[str, tuple[str, object]],
+) -> None:
+    resolution = await NaturalConstraintEngine(_pack()).resolve(query, source_turn=1)
+    active = {
+        item.field: (item.operator.value, item.normalized_value)
+        for item in resolution.constraint_set.active(hard_only=True, supported_only=True)
+    }
+    assert active == expected
+
+
+@pytest.mark.asyncio
 async def test_ambiguous_and_unsupported_never_enter_effective_checker_constraints():
     engine = NaturalConstraintEngine(_pack())
     ambiguous = await engine.resolve("屏幕不要太大", source_turn=1)
