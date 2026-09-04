@@ -1,0 +1,20 @@
+{
+  "schema_version": "proofpick-v2-9b-independent-harness-failure-v1",
+  "release_candidate": "proofpick-v2-9a-rc1",
+  "evaluation_rc_config_sha256": "d436cea3634d101787ee0698cc9a7378477d8b5fb3e8d35ebdc913d35ee0b707",
+  "attempted_at_utc": "2026-09-04T07:48:00Z",
+  "phase": "online_first_attempt_rc1",
+  "status": "aborted_by_evaluator_harness",
+  "completed_aggregate_result": false,
+  "case_reached": "web-mon-001",
+  "cause": "The frozen evaluator read UsageLedger.summary()['request_count'], but the actual public key is call_count.",
+  "exception_type": "KeyError",
+  "exception_message": "request_count",
+  "production_failure": false,
+  "repository_output_created": false,
+  "temporary_evidence_created": false,
+  "provider_call_count": "unknown_after_process_exit",
+  "cost_cny": "unknown_after_process_exit",
+  "remediation_rule": "Do not rerun web-mon-001 as a first-run case. Freeze evaluator RC2 and replace it with a newly authored case before continuing.",
+  "production_files_modified": false
+}
