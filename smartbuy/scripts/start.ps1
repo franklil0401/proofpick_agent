@@ -17,8 +17,8 @@ $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "../.."))
 $databasePath = Join-Path $SmartBuyRuntimeRoot "smartbuy_monitors_v1.sqlite"
 $indexPath = Join-Path $SmartBuyRuntimeRoot "vector_store_text_embedding_v4_1024/chroma.sqlite3"
 $v2DataPointers = @(
-    (Join-Path $V2RuntimeRoot "laptop/data/current_laptop_product_pack.json"),
-    (Join-Path $V2RuntimeRoot "headphone/data/current_headphone_product_pack.json")
+    (Join-Path $V2RuntimeRoot "laptop/data/current.json"),
+    (Join-Path $V2RuntimeRoot "headphone/data/current.json")
 )
 $v2IndexPointers = @(
     (Join-Path $V2RuntimeRoot "laptop/index/current_laptop_index.json"),
