@@ -1,0 +1,68 @@
+{
+  "config_sha256": "c56c5da765a53bb385e968598e060c2751b8c08f02620dcb4791e15a4df2dae0",
+  "definitions": {
+    "smartbuy/eval/results/v2_9b_independent_online_harness_failure.json": "b2a9121b3be08c43bebf97811b941436d0a1626555829d60dd207e6a88db83ed",
+    "smartbuy/eval/v2_9b_independent/online_case.schema.json": "37b08b71b3f8c7407d56e6c3f1d1d636d386e043ad90b3085f483349bc21d3f5",
+    "smartbuy/eval/v2_9b_independent/online_case_manifest_rc2.json": "894e0edc2f3914acef51c08eddf6816fe4a91f3a10c7ca70ddc93b5eb5e28546",
+    "smartbuy/eval/v2_9b_independent/online_cases_rc2.jsonl": "1032b085a5fe9ce85804f9e9c682be58dfa979a61133334f3feab4feaf533dd2",
+    "smartbuy/eval/v2_9b_independent/online_runner_rc2.py": "8a5b7c703d405815be31e9a5e0d62fa1fa866a97310648f1e1faf043cc8e8283",
+    "smartbuy/eval/v2_9b_independent/scorer.py": "929e32f708e8fa5fadb68777b1c41ba5415e80563d67fbbdf4b01e8321ee64d8",
+    "smartbuy/eval/v2_9b_independent/scoring_policy.json": "f959a97c72d92ef0a408b0a493a115c7f247edd0d33d1b613326928c5cbe2f9e"
+  },
+  "frozen_at": "2026-09-04T07:53:43.688599Z",
+  "limits": {
+    "cost_cny": 2.0,
+    "search_calls": 30
+  },
+  "production_commit": "dac24123b82683c6708f0d487d9ab9753b172aed",
+  "production_tree": "14c25152d30e96a01f7f9face88757f367153a08",
+  "rc_manifest_commit": "383df1783328ad6859729c6770fb1a8cea3f648b",
+  "release_candidate": "proofpick-v2-9a-rc1",
+  "replacement_online_case": "web-mon-006",
+  "replaces_online_case": "web-mon-001",
+  "run_id": "v2-9b-online-rc2-20260904T075343Z-a0a6bf48",
+  "runtime": {
+    "headphone": {
+      "chunk_count": 12,
+      "collection_name": "proofpick_headphone_v2_cae477364b46ccae",
+      "data_counts": {
+        "evidence_records": 336,
+        "price_observations": 0,
+        "product_attributes": 408,
+        "products": 12,
+        "source_records": 20
+      },
+      "data_manifest_hash": "36c0bf08ce945a67e7ecd0e485a9a269e7ad942788d428f2cb8af925208e8018",
+      "data_version": "headphone-governed-2026-09-03-v1",
+      "document_count": 12,
+      "domain_pack_fingerprint": "994e5dc4e3015dcfd2d4380bfbb227cac1a5b8ea9c38a5ea7b2bf188d6ee9aee",
+      "domain_pack_version": "1.0.0",
+      "index_manifest_hash": "8724929188ba193dd155870d78a63b51da203f009ad58c5f7c2be3350f7ab389",
+      "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1"
+    },
+    "laptop": {
+      "chunk_count": 12,
+      "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+      "data_counts": {
+        "evidence_records": 406,
+        "price_observations": 0,
+        "product_attributes": 540,
+        "products": 12,
+        "source_records": 12
+      },
+      "data_manifest_hash": "c9ae040dd8220febb417537418d45532f3afba35c2f35ab0d8b7c5c361692623",
+      "data_version": "laptop-governed-2026-09-02-v1",
+      "document_count": 12,
+      "domain_pack_fingerprint": "b54fb8288bce1861f146beb4b436b8f065c6be821b65815bccc8c2ae7dd76cec",
+      "domain_pack_version": "1.0.0",
+      "index_manifest_hash": "3e6456fe4a292bc281098109e4ed81475b620988d0306cfec42517227bdb668d",
+      "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1"
+    },
+    "monitor": {
+      "database_sha256": "d808873c176691c805e247b2ba444ace64899df65ff4015451b8e24c278fe2c4",
+      "index_manifest_sha256": "87fc600a2f8c770539110fdd5e8b4c4375459057a93a37d7531fad7817152beb"
+    }
+  },
+  "schema_version": "proofpick-v2-9b-independent-online-rc2-v1",
+  "v1_commit": "d51b6668a6a45c1b01ef4e64da3c4b9ac84ed10c"
+}
