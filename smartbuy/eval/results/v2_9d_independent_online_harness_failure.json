@@ -1,0 +1,30 @@
+{
+  "schema_version": "proofpick-v2-9d-online-harness-failure-v1",
+  "classification": "evaluator-only failure before aggregate result",
+  "release_candidate": "proofpick-v2-9c-rc2",
+  "run_id": "v2-9d-independent-20260904T121111Z-94672285",
+  "case_sha256": "1dd98a3040bff3e21cba385320e183246f771b8b40f06eb54a8dee4560c97fcb",
+  "completed_case_count": 8,
+  "completed_case_ids": [
+    "web2-mon-001",
+    "web2-mon-002",
+    "web2-mon-003",
+    "web2-mon-004",
+    "web2-mon-005",
+    "web2-lap-001",
+    "web2-lap-002",
+    "web2-lap-003"
+  ],
+  "failed_before_request_case_id": "web2-lap-004",
+  "error_type": "pydantic_core.ValidationError",
+  "root_cause": "the evaluator schema omitted the production SourceSearchRequest query maxLength=70 contract",
+  "provider_request_started_for_failed_case": false,
+  "aggregate_result_created": false,
+  "product_failure": false,
+  "discipline": {
+    "completed_cases_must_not_be_replayed": true,
+    "completed_case_definitions_must_not_change": true,
+    "only_unreached_overlength_queries_may_be_shortened": true,
+    "failure_must_remain_permanent": true
+  }
+}
