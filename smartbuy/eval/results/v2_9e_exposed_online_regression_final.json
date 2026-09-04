@@ -1,0 +1,1072 @@
+{
+  "api": {
+    "call_count": 28,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 1.1,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "successful_calls": 28
+  },
+  "cases": [
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-mon-001",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "monitor",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_mismatch",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_mismatch",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_mismatch",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 3,
+        "raw_result_count": 47,
+        "scanned_result_count": 47,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "refresh_rate_hz",
+        "is_oled"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 5457.7746000140905
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-mon-002",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "monitor",
+      "evidence_count": 10,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "US",
+            "extraction_status": "success",
+            "verified_fields": [
+              "usb_c_power_delivery_w"
+            ]
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "US",
+            "extraction_status": "success",
+            "verified_fields": [
+              "resolution",
+              "usb_c_power_delivery_w"
+            ]
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "US",
+            "extraction_status": "success",
+            "verified_fields": [
+              "resolution",
+              "usb_c_power_delivery_w"
+            ]
+          }
+        ],
+        "navigation_candidates": 9,
+        "raw_result_count": 61,
+        "scanned_result_count": 61,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": {
+        "discovered_from": "region_unknown",
+        "hostname": "www.asus.com",
+        "observed_region": "US",
+        "title": "ProArt Display 6K PA32QCV｜Monitors｜ASUS USA",
+        "url": "https://www.asus.com/us/displays-desktops/monitors/proart/proart-display-6k-pa32qcv/"
+      },
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "display_size_inch"
+      ],
+      "verified_fields": [
+        "resolution",
+        "usb_c_power_delivery_w"
+      ],
+      "wall_latency_ms": 15809.204600052908
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-mon-003",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "monitor",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_matched",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "FR",
+            "extraction_status": "success",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "NL",
+            "extraction_status": "success",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 10,
+        "raw_result_count": 62,
+        "scanned_result_count": 62,
+        "usable_candidates": 1
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "success",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "panel_type",
+        "usb_c_power_delivery_w"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 10419.160399818793
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-mon-004",
+      "checker_entry_count": 0,
+      "conflict_fields": [
+        "display_size_inch"
+      ],
+      "domain_id": "monitor",
+      "evidence_count": 9,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "US",
+            "extraction_status": "success",
+            "verified_fields": [
+              "resolution"
+            ]
+          }
+        ],
+        "navigation_candidates": 1,
+        "raw_result_count": 63,
+        "scanned_result_count": 63,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": {
+        "discovered_from": "region_unknown",
+        "hostname": "www.benq.com",
+        "observed_region": "US",
+        "title": "RD280U｜28” 4K+ BenQ Programming Monitor with Backlight | BenQ US",
+        "url": "https://www.benq.com/en-us/monitor/programming/rd280u/spec.html"
+      },
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "usb_c_power_delivery_w"
+      ],
+      "verified_fields": [
+        "resolution"
+      ],
+      "wall_latency_ms": 6901.396999834105
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-mon-005",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "monitor",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 8,
+        "raw_result_count": 64,
+        "scanned_result_count": 64,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "refresh_rate_hz",
+        "panel_type"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 19415.02959979698
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-lap-001",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 13,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_matched",
+            "detected_region": "US",
+            "extraction_status": "success",
+            "verified_fields": [
+              "memory_gb",
+              "storage_gb",
+              "usb4"
+            ]
+          }
+        ],
+        "navigation_candidates": 4,
+        "raw_result_count": 15,
+        "scanned_result_count": 15,
+        "usable_candidates": 2
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 1,
+      "search_executed": true,
+      "search_status": "success",
+      "source": {
+        "discovered_from": "region_matched",
+        "hostname": "www.asus.com",
+        "observed_region": "US",
+        "title": "ASUS Zenbook A14 (UX3407) | Ultra- Lightweight Copilot+ PC",
+        "url": "https://www.asus.com/us/laptops/for-home/zenbook/asus-zenbook-a14-ux3407/"
+      },
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [],
+      "verified_fields": [
+        "memory_gb",
+        "storage_gb",
+        "usb4"
+      ],
+      "wall_latency_ms": 13074.489600025117
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-002",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_matched",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 0,
+        "raw_result_count": 56,
+        "scanned_result_count": 56,
+        "usable_candidates": 1
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "success",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "memory_gb",
+        "gpu_model",
+        "battery_wh"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 2794.491000007838
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-003",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [],
+        "navigation_candidates": 0,
+        "raw_result_count": 65,
+        "scanned_result_count": 65,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_official_source",
+      "source": null,
+      "terminal_status": "no_official_source",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "memory_gb",
+        "battery_wh"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 3346.5267999563366
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-004",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "extraction_incomplete",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "extraction_incomplete",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "extraction_incomplete",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 4,
+        "raw_result_count": 63,
+        "scanned_result_count": 63,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "memory_gb",
+        "weight_kg"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 7325.983199989423
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-005",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_matched",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_mismatch",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 3,
+        "raw_result_count": 34,
+        "scanned_result_count": 34,
+        "usable_candidates": 1
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "success",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "memory_gb",
+        "weight_kg"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 9237.891800003126
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-hph-001",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "http_error",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 2,
+        "raw_result_count": 65,
+        "scanned_result_count": 65,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "battery_hours",
+        "bluetooth_version",
+        "weight_g"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 3938.68639995344
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-hph-002",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "extraction_incomplete",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "extraction_incomplete",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "extraction_incomplete",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 10,
+        "raw_result_count": 63,
+        "scanned_result_count": 63,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "battery_hours",
+        "bluetooth_version",
+        "active_noise_cancellation"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 14215.106300078332
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-hph-003",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 5,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_matched",
+            "detected_region": "US",
+            "extraction_status": "success",
+            "verified_fields": [
+              "wireless_dongle"
+            ]
+          }
+        ],
+        "navigation_candidates": 0,
+        "raw_result_count": 1,
+        "scanned_result_count": 1,
+        "usable_candidates": 1
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 1,
+      "search_executed": true,
+      "search_status": "success",
+      "source": {
+        "discovered_from": "region_matched",
+        "hostname": "www.logitechg.com",
+        "observed_region": "US",
+        "title": "G522 LIGHTSPEED Wireless Gaming Headset | Logitech G",
+        "url": "https://www.logitechg.com:443/en-us/shop/p/g522-lightspeed.981-001491"
+      },
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "battery_hours",
+        "weight_g"
+      ],
+      "verified_fields": [
+        "wireless_dongle"
+      ],
+      "wall_latency_ms": 7395.959400106221
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-hph-004",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 0,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "success",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "success",
+            "verified_fields": []
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "unknown",
+            "extraction_status": "success",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 10,
+        "raw_result_count": 64,
+        "scanned_result_count": 64,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "battery_hours",
+        "usb_audio",
+        "supported_platforms"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 10166.766199981794
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-hph-005",
+      "checker_entry_count": 0,
+      "conflict_fields": [
+        "battery_hours_anc"
+      ],
+      "domain_id": "headphone",
+      "evidence_count": 10,
+      "funnel": {
+        "extraction_attempts": [
+          {
+            "candidate_status": "region_mismatch",
+            "detected_region": "IE",
+            "extraction_status": "success",
+            "verified_fields": [
+              "active_noise_cancellation"
+            ]
+          },
+          {
+            "candidate_status": "region_mismatch",
+            "detected_region": "IE",
+            "extraction_status": "success",
+            "verified_fields": [
+              "active_noise_cancellation"
+            ]
+          },
+          {
+            "candidate_status": "region_unknown",
+            "detected_region": "AE",
+            "extraction_status": "success",
+            "verified_fields": []
+          }
+        ],
+        "navigation_candidates": 9,
+        "raw_result_count": 65,
+        "scanned_result_count": 65,
+        "usable_candidates": 0
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempt_count": 2,
+      "search_executed": true,
+      "search_status": "no_region_matched_source",
+      "source": {
+        "discovered_from": "region_mismatch",
+        "hostname": "support.apple.com",
+        "observed_region": "IE",
+        "title": "AirPods Pro 3 - Tech Specs - Apple Support (IE)",
+        "url": "https://support.apple.com/en-ie/125135"
+      },
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "water_resistance"
+      ],
+      "verified_fields": [
+        "active_noise_cancellation"
+      ],
+      "wall_latency_ms": 5670.357499970123
+    }
+  ],
+  "classification": "exposed_regression_after_v2_9e; not an independent holdout",
+  "created_at": "2026-09-04T13:59:49.147631Z",
+  "evaluator_commit": "126486861e08a33a94d4c6c5ffeafc121db2ee5e",
+  "exposed_metrics": {
+    "actual_evidence_completion": {
+      "denominator": 15,
+      "numerator": 5
+    },
+    "per_domain": {
+      "headphone": {
+        "denominator": 5,
+        "numerator": 2
+      },
+      "laptop": {
+        "denominator": 5,
+        "numerator": 1
+      },
+      "monitor": {
+        "denominator": 5,
+        "numerator": 2
+      }
+    },
+    "verified_requested_fields": {
+      "denominator": 15,
+      "numerator": 8,
+      "rate": 0.5333333333333333
+    }
+  },
+  "historical_first_result_preserved": "0/15 actual evidence completion",
+  "latency": {
+    "average_ms": 9011.254959972575,
+    "p95_ms": 19415.02959979698
+  },
+  "production_commit": "92373f50480a30733f82997b1125510a9b32c8e2",
+  "production_tree": "4a274d8ab2103eb6877c33db4bc7ac45a608cb38",
+  "rc_config_sha256": "d82810d325b9a47097ee292ad629db7d27b8357d33779bda31dfc7e8955d7841",
+  "run_id": "v2-9e-exposed-online-20260904T135732Z-9a1b0b3d",
+  "run_number": "one_exposed_regression_run",
+  "schema_version": "proofpick-v2-9e-exposed-online-regression-v1",
+  "scoring": {
+    "all_mandatory_gates_passed": false,
+    "cases": [
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-001",
+        "domain_id": "monitor",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-002",
+        "domain_id": "monitor",
+        "evidence_count": 10,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 2
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-003",
+        "domain_id": "monitor",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-004",
+        "domain_id": "monitor",
+        "evidence_count": 9,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 1
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-005",
+        "domain_id": "monitor",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": true,
+        "case_id": "web2-lap-001",
+        "domain_id": "laptop",
+        "evidence_count": 13,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 3
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-002",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-003",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "no_official_source",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-004",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-005",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-001",
+        "domain_id": "headphone",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-002",
+        "domain_id": "headphone",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-003",
+        "domain_id": "headphone",
+        "evidence_count": 5,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 1
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-004",
+        "domain_id": "headphone",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-005",
+        "domain_id": "headphone",
+        "evidence_count": 10,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 1
+      }
+    ],
+    "gate_checks": {
+      "accepted_source_precision": true,
+      "actual_completion_each_domain": false,
+      "actual_evidence_completion": false,
+      "evidence_lineage": true,
+      "requested_field_verification": false,
+      "safe_terminal_state": true,
+      "search_executed": true
+    },
+    "metrics": {
+      "accepted_source_precision": 1.0,
+      "actual_completion_per_domain": {
+        "headphone": {
+          "completed": 0,
+          "rate": 0.0,
+          "total": 5
+        },
+        "laptop": {
+          "completed": 1,
+          "rate": 0.2,
+          "total": 5
+        },
+        "monitor": {
+          "completed": 0,
+          "rate": 0.0,
+          "total": 5
+        }
+      },
+      "actual_evidence_completion": {
+        "completed": 1,
+        "rate": 0.06666666666666667,
+        "total": 15
+      },
+      "evidence_lineage_and_boundary_rate": 1.0,
+      "requested_field_verification_among_evidence_cases": {
+        "rate": 0.5333333333333333,
+        "requested": 15,
+        "verified": 8
+      },
+      "safe_terminal_state_rate": 1.0,
+      "search_executed_rate": 1.0,
+      "task_safety_pass_rate": 1.0
+    }
+  }
+}
