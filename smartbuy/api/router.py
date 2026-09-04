@@ -67,12 +67,15 @@ from smartbuy.tools import (
     WebExtractorTool,
     WebSearchTool,
 )
+from smartbuy.api.portfolio_runtime import PortfolioRuntimeManager
+from smartbuy.portfolio import load_demo_bundle
 
 
 router = APIRouter(prefix="/api/smartbuy", tags=["SmartBuy"])
 _agent: PurchaseDecisionAgent | None = None
 _orchestrator: Orchestrator | OrchestratorSelector | None = None
 _domain_memories: dict[str, DomainPreferenceMemoryStore] = {}
+_portfolio_runtimes = PortfolioRuntimeManager()
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -91,6 +94,15 @@ class SmartBuyChatRequest(BaseModel):
     ranking_weight_overrides: dict[str, float] | None = None
     ranking_use_memory: bool | None = None
     ranking_what_if: bool = False
+
+
+class PortfolioRunRequest(BaseModel):
+    domain_id: Literal["monitor", "laptop", "headphone"]
+    mode: ResearchMode = ResearchMode.TRUSTED
+    query: str = Field(min_length=1, max_length=2_000)
+    session_id: str | None = Field(default=None, max_length=128)
+    user_id: str | None = Field(default=None, max_length=128)
+    use_long_term_memory: bool = False
 
 
 class PreferenceUpdate(BaseModel):
@@ -423,6 +435,102 @@ async def chat(request: SmartBuyChatRequest):
 @router.get("/monitor")
 async def monitor() -> dict[str, Any]:
     return agent_monitor.snapshot()
+
+
+@router.get("/portfolio/capabilities")
+async def portfolio_capabilities() -> dict[str, Any]:
+    bundle = load_demo_bundle()
+    return {
+        "product": "ProofPick",
+        "release_status": "v2_release_candidate",
+        "online_domain_agent_enabled": _portfolio_runtimes.enabled(),
+        "replay_available": True,
+        "replay_disclosure": bundle.disclosure,
+        "domains": {
+            "monitor": {"configuration_count": 13, "online_route": "v1_compatible"},
+            "laptop": {"configuration_count": 12, "online_route": "explicit_v2"},
+            "headphone": {"configuration_count": 12, "online_route": "explicit_v2"},
+        },
+        "modes": {
+            "trusted": "governed_evidence_and_mandatory_checker",
+            "open": "dedicated_script_only_not_trusted_eligible",
+        },
+        "demo_count": len(bundle.demos),
+    }
+
+
+@router.post("/portfolio/run")
+async def portfolio_run(
+    request: PortfolioRunRequest,
+    memory_identity: str | None = Header(default=None, alias="X-ProofPick-Identity"),
+) -> dict[str, Any]:
+    """Run an explicitly selected online domain without changing V1 defaults."""
+
+    if request.use_long_term_memory:
+        if request.user_id is None:
+            raise HTTPException(status_code=422, detail={"code": "reliable_identity_required"})
+        _require_v2_memory_identity(request.user_id, memory_identity)
+    if request.mode == ResearchMode.OPEN:
+        raise HTTPException(
+            status_code=409,
+            detail={
+                "code": "online_open_requires_explicit_script",
+                "message": "Open Research 在线执行使用有界验收脚本；当前 UI 可安全回放已脱敏结果。",
+            },
+        )
+    events: list[dict[str, Any]] = []
+
+    async def callback(event: dict[str, Any]) -> None:
+        allowed = {
+            "type", "status", "domain_id", "domain_pack_version", "data_version",
+            "index_version", "scope_type", "resolution_status", "candidate_count",
+            "clarification_required", "query_intent", "requested_fields", "node",
+            "reason", "scenario", "eligible_count", "ranking_degraded",
+            "ranking_profile_version", "memory_enabled", "trace",
+        }
+        events.append({key: value for key, value in event.items() if key in allowed})
+
+    try:
+        if request.domain_id == "monitor":
+            orchestrator = get_smartbuy_orchestrator()
+            data_version = "monitor_v1_compatible_runtime"
+            index_version = "monitor_v1_compatible_runtime"
+        else:
+            runtime = _portfolio_runtimes.get(request.domain_id)
+            orchestrator = runtime.orchestrator
+            data_version = runtime.data_version
+            index_version = runtime.index_version
+        result = await orchestrator.run(
+            OrchestratorRequest(
+                query=request.query,
+                session_id=request.session_id,
+                user_id=request.user_id,
+                use_long_term_memory=request.use_long_term_memory,
+                mode=request.mode,
+            ),
+            event_callback=callback,
+        )
+    except Exception as exc:
+        raise HTTPException(
+            status_code=503,
+            detail={"code": "online_unavailable", "reason": type(exc).__name__},
+        ) from None
+    if result.status == OrchestrationStatus.INTERRUPTED:
+        return {
+            "status": "interrupted",
+            "thread_id": result.thread_id,
+            "interrupt": result.interrupt,
+            "events": events,
+        }
+    assert result.report is not None
+    return {
+        "status": "completed",
+        "domain_id": request.domain_id,
+        "data_version": data_version,
+        "index_version": index_version,
+        "report": result.report.model_dump(mode="json"),
+        "events": events,
+    }
 
 
 def _preferences() -> LongTermPreferenceStore:

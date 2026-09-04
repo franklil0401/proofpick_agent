@@ -1,218 +1,122 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Youtu-RAG - 智能知识库管理系统</title>
-
-  <!-- Stylesheets -->
-  <link rel="stylesheet" href="assets/css/reset.css">
-  <link rel="stylesheet" href="assets/css/variables.css">
-  <link rel="stylesheet" href="assets/css/layout.css">
-  <link rel="stylesheet" href="assets/css/components.css">
-
-  <!-- Icon Font (Simple Icons using Unicode) -->
-  <style>
-    .icon-folder::before { content: '📁'; }
-    .icon-database::before { content: '📚'; }
-    .icon-message::before { content: '💬'; }
-    .icon-search::before { content: '🔍'; }
-    .icon-upload::before { content: '⬆️'; }
-    .icon-download::before { content: '⬇️'; }
-    .icon-delete::before { content: '🗑️'; }
-    .icon-edit::before { content: '✏️'; }
-    .icon-settings::before { content: '⚙️'; }
-    .icon-plus::before { content: '➕'; }
-    .icon { display: inline-block; }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="ProofPick：基于 Agentic RAG 的多源消费决策 Agent">
+  <title>ProofPick · 可审计消费决策 Agent</title>
+  <link rel="stylesheet" href="assets/css/portfolio.css">
 </head>
 <body>
-  <!-- Main App Container -->
-  <div id="app">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <!-- Logo Container -->
-      <div class="logo-container" onclick="window.open('https://youtu-rag-docs.vercel.app', '_blank')">
-        <img src="assets/images/logo.svg" alt="Youtu Logo" class="logo">
-        <h1>Youtu-RAG</h1>
-      </div>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="ProofPick 首页">
+      <span class="brand-mark">P</span>
+      <span><strong>ProofPick</strong><small>Evidence before recommendation</small></span>
+    </a>
+    <nav aria-label="辅助入口">
+      <button class="ghost" id="memory-open" type="button">偏好 Memory</button>
+      <a class="ghost" href="/monitor">Monitor</a>
+      <a class="ghost" href="classic.html#/chat">Youtu-RAG 经典界面</a>
+      <a class="github" href="https://github.com/franklil0401/proofpick_agent" target="_blank" rel="noreferrer">GitHub ↗</a>
+    </nav>
+  </header>
 
-      <!-- Navigation Menu -->
-      <nav class="nav-menu">
-        <a href="#/files" class="nav-item" id="nav-files">
-          <img src="assets/images/files.svg" alt="Files" class="nav-icon">
-          <span data-i18n="nav_files">源文件</span>
-        </a>
-        <a href="#/knowledge" class="nav-item" id="nav-knowledge">
-          <img src="assets/images/kbset.svg" alt="Knowledge Base" class="nav-icon">
-          <span data-i18n="nav_knowledge">知识库</span>
-        </a>
-        <a href="#/chat" class="nav-item" id="nav-chat">
-          <img src="assets/images/chatai.svg" alt="Chat AI" class="nav-icon">
-          <span data-i18n="nav_chat">问AI</span>
-        </a>
-      </nav>
-
-      <!-- Sidebar Footer -->
-      <div style="padding: 16px; border-top: 1px solid rgba(255,255,255,0.1);">
-        <!-- Language Toggle Button -->
-        <div style="text-align: center; margin-bottom: 12px;">
-          <button id="lang-toggle" class="lang-toggle-btn">
-            <span>🌐</span>
-            <span id="lang-zh">中</span>
-            <span class="lang-divider">/</span>
-            <span id="lang-en">EN</span>
-          </button>
-        </div>
-        <p style="color: #666666; font-size: 12px; text-align: center;" data-i18n="version">Youtu-RAG v1.0.0</p>
-      </div>
-    </aside>
-
-    <!-- Main Content Area -->
-    <main class="main-content">
-      <!-- Content Container (Dynamic) -->
-      <div id="content-container" style="transition: opacity 0.3s ease;">
-        <!-- Page content will be loaded here -->
-        <div style="text-align: center; padding: 100px 20px;">
-          <div class="spinner spinner-large" style="margin: 0 auto;"></div>
-          <p style="margin-top: 20px; color: var(--gray-7);">加载中...</p>
+  <main>
+    <section class="hero">
+      <div class="hero-copy">
+        <div class="eyebrow"><span></span> 可复现作品集级 MVP · V2 Release Candidate</div>
+        <h1>先验证证据，<br><em>再做消费决策。</em></h1>
+        <p>Agent 自主编排数据库、知识库与网页研究工具；确定性 Checker 对完整候选池执行硬约束安全门，Ranker 只能排列合规候选。</p>
+        <div class="trust-strip">
+          <span>3 个 Domain Pack</span><span>Trusted / Open 隔离</span><span>LLM 无权覆盖 Checker</span>
         </div>
       </div>
-    </main>
-  </div>
+      <div class="hero-console" aria-label="ProofPick 执行摘要">
+        <div class="console-head"><span class="pulse"></span> AUDITABLE RUN <b id="hero-run-state">REPLAY READY</b></div>
+        <div class="console-row"><span>ROUTE</span><strong id="hero-route">HEADPHONE / TRUSTED</strong></div>
+        <div class="console-row"><span>CANDIDATE POOL</span><strong id="hero-pool">12 CONFIGS</strong></div>
+        <div class="console-row"><span>SAFETY GATE</span><strong class="safe">CHECKER REQUIRED</strong></div>
+        <div class="console-flow"><i>Query</i><b>→</b><i>Tools</i><b>→</b><i>Evidence</i><b>→</b><i>Checker</i><b>→</b><i>Rank</i></div>
+      </div>
+    </section>
 
-  <!-- Toast Container -->
-  <div id="toast-container" class="toast-container"></div>
+    <section class="workspace" aria-label="ProofPick 决策工作台">
+      <div class="control-panel">
+        <div class="control-title">
+          <div><span class="section-kicker">01 / CONFIGURE</span><h2>选择场景</h2></div>
+          <div class="run-switch" role="group" aria-label="运行方式">
+            <button type="button" data-run-mode="replay" class="active">离线回放</button>
+            <button type="button" data-run-mode="online">在线运行</button>
+          </div>
+        </div>
+        <div class="notice" id="run-notice"><b>固定脱敏回放</b> · 不是实时模型调用，不包含 Prompt、Key、私人路径或隐藏推理。</div>
 
-  <!-- Mobile Sidebar Toggle -->
-  <button class="sidebar-toggle" id="sidebar-toggle" onclick="toggleSidebar()">
-    ☰
-  </button>
+        <label class="field-label">商品品类</label>
+        <div class="domain-tabs" role="tablist">
+          <button type="button" data-domain="monitor"><span>▣</span>显示器<small>13 configurations</small></button>
+          <button type="button" data-domain="laptop"><span>▰</span>笔记本<small>12 configurations</small></button>
+          <button type="button" data-domain="headphone" class="active"><span>◉</span>耳机<small>12 configurations</small></button>
+        </div>
 
-  <!-- External Libraries -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@11.1.1/marked.min.js"></script>
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.1/package/dist/xlsx.full.min.js"></script>
-  <!-- PDF.js for PDF viewing -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-  <!-- Mammoth.js for DOCX viewing -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+        <div class="mode-row">
+          <label class="field-label">证据模式</label>
+          <div class="mode-toggle">
+            <button type="button" data-research-mode="trusted" class="active"><b>Trusted</b><small>治理证据 · 可进入 Checker</small></button>
+            <button type="button" data-research-mode="open"><b>Open</b><small>临时证据 · 不授予推荐资格</small></button>
+          </div>
+        </div>
 
-  <!-- Configuration (must load first) -->
-  <script src="assets/js/config.js"></script>
-  <script src="assets/js/i18n.js"></script>
+        <label class="field-label" for="demo-select">五分钟 Demo</label>
+        <select id="demo-select" aria-label="选择固定 Demo"></select>
+        <div class="version-card" id="version-card"></div>
 
-  <!-- Scripts -->
-  <script src="assets/js/utils.js"></script>
-  <script src="assets/js/utils/markdown-utils.js"></script>
-  <script src="assets/js/api.js"></script>
-  <script src="assets/js/router.js"></script>
+        <label class="field-label" for="proofpick-query">告诉 ProofPick 你的要求</label>
+        <div class="query-box">
+          <textarea id="proofpick-query" rows="4" maxlength="2000"></textarea>
+          <div class="query-actions">
+            <span id="query-count">0 / 2000</span>
+            <button id="run-button" class="primary" type="button">播放脱敏轨迹 <span>→</span></button>
+          </div>
+        </div>
+        <div class="example-row" id="example-row" aria-label="示例问题"></div>
+      </div>
 
-  <!-- Page-specific scripts (loaded dynamically) -->
-  <script src="assets/js/components/file-manager.js"></script>
-  <script src="assets/js/components/knowledge-base.js"></script>
-  <script src="assets/js/components/knowledge-base-detail.js"></script>
-  <script src="assets/js/components/qa-detail.js"></script>
-  <script src="assets/js/components/chat.js"></script>
+      <div class="result-panel" id="result-panel" aria-live="polite">
+        <div class="empty-result">
+          <span class="empty-orbit">P</span>
+          <h2>选择一个 Demo，查看 Agent 如何做决定</h2>
+          <p>你将看到约束来源、完整候选池、证据、Checker、排序贡献与公开工具轨迹。</p>
+        </div>
+      </div>
+    </section>
 
-  <!-- Mobile Sidebar Toggle Script -->
-  <script>
-    // Initialize language on page load
-    function initLanguage() {
-      // Update language toggle button text
-      updateLanguageToggleButton();
+    <section class="principles">
+      <article><b>01</b><h3>Agent，而非固定 RAG</h3><p>按任务选择 Product Query、KB Search、Evidence Check 与 Open Research，并在信息不足时继续补查或澄清。</p></article>
+      <article><b>02</b><h3>资格与排序分离</h3><p>Checker 决定能否推荐；Ranker 只对合规集合做软偏好排序，无法恢复已淘汰候选。</p></article>
+      <article><b>03</b><h3>每个结论可追溯</h3><p>商品、配置、地区、Evidence ID、来源时间与数据版本贯穿工具调用和最终报告。</p></article>
+    </section>
+  </main>
 
-      // Update all elements with data-i18n attribute
-      updatePageTranslations();
+  <aside class="memory-drawer" id="memory-drawer" aria-hidden="true" aria-label="偏好 Memory 管理">
+    <div class="drawer-head"><div><span class="section-kicker">PRIVACY BY DEFAULT</span><h2>偏好 Memory</h2></div><button id="memory-close" class="icon-button" type="button" aria-label="关闭">×</button></div>
+    <p>长期偏好默认关闭；身份只保存在当前浏览器。价格、库存、商品事实、Open Evidence 与未确认 Proposal 永不写入。</p>
+    <div class="memory-status"><span>浏览器身份</span><code id="memory-identity">未创建</code></div>
+    <label class="memory-enable"><input type="checkbox" id="memory-enabled"> 启用当前浏览器的长期偏好</label>
+    <div class="memory-scope">
+      <button type="button" data-memory-scope="category" class="active">当前品类</button>
+      <button type="button" data-memory-scope="global">Global</button>
+    </div>
+    <div class="memory-form">
+      <select id="memory-key"></select>
+      <input id="memory-value" placeholder="值，例如 64 或 [\"Brand\"]">
+      <button id="memory-save" class="primary" type="button">确认并保存</button>
+    </div>
+    <div id="memory-records" class="memory-records"><p class="muted">启用后可查看已确认偏好。</p></div>
+    <button id="memory-clear" class="danger" type="button">删除当前范围全部偏好</button>
+  </aside>
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
 
-      // Listen for language changes
-      i18n.onChange(() => {
-        updateLanguageToggleButton();
-        updatePageTranslations();
-      });
-    }
-
-    // Update language toggle button text
-    function updateLanguageToggleButton() {
-      const langZh = document.getElementById('lang-zh');
-      const langEn = document.getElementById('lang-en');
-      const currentLang = i18n.getLang();
-
-      if (langZh && langEn) {
-        if (currentLang === 'zh') {
-          langZh.style.color = '#666666'; // Active language
-          langEn.style.color = 'rgba(255,255,255,0.5)'; // Dim for inactive
-        } else {
-          langZh.style.color = 'rgba(255,255,255,0.5)'; // Dim for inactive
-          langEn.style.color = '#666666'; // Active language
-        }
-      }
-    }
-
-    // Update all translations on the page
-    function updatePageTranslations() {
-      // Update text content
-      document.querySelectorAll('[data-i18n]').forEach(element => {
-        const key = element.getAttribute('data-i18n');
-        const options = element.getAttribute('data-i18n-options');
-        const params = options ? JSON.parse(options) : {};
-        element.textContent = t(key, params);
-      });
-
-      // Update placeholder attributes
-      document.querySelectorAll('[data-i18n-placeholder]').forEach(element => {
-        const key = element.getAttribute('data-i18n-placeholder');
-        element.placeholder = t(key);
-      });
-    }
-
-    // Language toggle button click handler
-    document.addEventListener('DOMContentLoaded', () => {
-      initLanguage();
-
-      const langToggle = document.getElementById('lang-toggle');
-      if (langToggle) {
-        // Update initial state
-        updateLanguageToggle(i18n.currentLang);
-        
-        langToggle.addEventListener('click', () => {
-          i18n.toggleLang();
-          updateLanguageToggle(i18n.currentLang);
-        });
-      }
-    });
-
-    function updateLanguageToggle(lang) {
-      const zhSpan = document.getElementById('lang-zh');
-      const enSpan = document.getElementById('lang-en');
-      
-      if (zhSpan && enSpan) {
-        if (lang === 'zh') {
-          zhSpan.classList.add('active');
-          enSpan.classList.remove('active');
-        } else {
-          zhSpan.classList.remove('active');
-          enSpan.classList.add('active');
-        }
-      }
-    }
-
-    function toggleSidebar() {
-      const sidebar = document.getElementById('sidebar');
-      sidebar.classList.toggle('mobile-open');
-    }
-
-    // Close sidebar when clicking outside on mobile
-    document.addEventListener('click', (e) => {
-      const sidebar = document.getElementById('sidebar');
-      const toggle = document.getElementById('sidebar-toggle');
-
-      if (window.innerWidth <= 768 &&
-          sidebar.classList.contains('mobile-open') &&
-          !sidebar.contains(e.target) &&
-          !toggle.contains(e.target)) {
-        sidebar.classList.remove('mobile-open');
-      }
-    });
-  </script>
+  <footer><span>ProofPick V2 RC · MIT</span><span>消费决策原型，不构成购买建议或生产 SLA。</span></footer>
+  <script src="assets/js/components/portfolio.js"></script>
 </body>
 </html>

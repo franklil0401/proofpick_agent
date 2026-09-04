@@ -1,0 +1,377 @@
+{
+  "schema_version": "proofpick-v2-portfolio-replay-v1",
+  "disclosure": "这是固定的脱敏结果回放，不是实时模型调用。",
+  "generated_from": "已提交的 V2-4、V2-7、V2-8 验证结果与治理数据；不包含 Prompt、凭据、私人路径或隐藏推理。",
+  "demos": [
+    {
+      "demo_id": "trusted-headphone-filter",
+      "title": "Demo 1 · 本地可信筛选与可解释排序",
+      "domain_id": "headphone",
+      "mode": "trusted",
+      "query": "需要主动降噪、重量不超过 250 克的通勤耳机。",
+      "query_intent": "catalog_filter",
+      "hard_constraints": ["active_noise_cancellation = true", "weight_g <= 250"],
+      "soft_preferences": ["通勤场景：续航、多点连接、重量与舒适度参与排序"],
+      "clarification": [],
+      "constraint_sources": ["当前输入 · active_noise_cancellation", "当前输入 · weight_g", "Domain Pack · commute profile"],
+      "complete_candidate_pool_size": 12,
+      "candidates": [
+        {
+          "product_id": "sony-wh-1000xm5-black-us",
+          "label": "Sony WH-1000XM5 Black",
+          "region": "US",
+          "configuration": "WH1000XM5-B-US",
+          "checker_status": "eligible",
+          "reason": "ANC 与 250g 上限均由目标配置官方证据支持。",
+          "rank": 1,
+          "score": 0.83751759,
+          "dimensions": [
+            {"id": "ANC", "weight": 0.30, "contribution": 0.30, "evidence": "ev-sony-wh-1000xm5-black-us-active-noise-cancellation"},
+            {"id": "ANC 续航", "weight": 0.25, "contribution": 0.18055556, "evidence": "ev-sony-wh-1000xm5-black-us-battery-hours-anc"},
+            {"id": "重量", "weight": 0.15, "contribution": 0.05696203, "evidence": "ev-sony-wh-1000xm5-black-us-weight-g"}
+          ],
+          "unknown_fields": []
+        },
+        {
+          "product_id": "steelseries-arctis-nova-pro-wireless-ps-us",
+          "label": "SteelSeries Arctis Nova Pro Wireless (PS)",
+          "region": "US",
+          "configuration": "NOVA-PRO-WL-PS-B-US",
+          "checker_status": "eliminated",
+          "reason": "官方重量 339g，违反 weight_g <= 250g。",
+          "rank": null,
+          "score": null,
+          "dimensions": [],
+          "unknown_fields": []
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "ev-sony-wh-1000xm5-black-us-active-noise-cancellation",
+          "field": "active_noise_cancellation",
+          "value": true,
+          "source_url": "https://www.sony.com/electronics/support/wireless-headphones-bluetooth-headphones/wh-1000xm5/specifications",
+          "region": "US",
+          "configuration": "WH1000XM5-B-US",
+          "observed_at": "2026-09-03T00:00:00+08:00",
+          "status": "matched"
+        },
+        {
+          "evidence_id": "ev-sony-wh-1000xm5-black-us-weight-g",
+          "field": "weight_g",
+          "value": 250,
+          "source_url": "https://www.sony.com/electronics/support/wireless-headphones-bluetooth-headphones/wh-1000xm5/specifications",
+          "region": "US",
+          "configuration": "WH1000XM5-B-US",
+          "observed_at": "2026-09-03T00:00:00+08:00",
+          "status": "matched"
+        },
+        {
+          "evidence_id": "ev-steelseries-arctis-nova-pro-wireless-ps-us-weight-g",
+          "field": "weight_g",
+          "value": 339,
+          "source_url": "https://steelseries.com/gaming-headsets/arctis-nova-pro-wireless-playstation-pc?color=black&country=US&mpa=1",
+          "region": "US",
+          "configuration": "NOVA-PRO-WL-PS-B-US",
+          "observed_at": "2026-09-03T00:00:00+08:00",
+          "status": "not_matched"
+        }
+      ],
+      "trace": [
+        {"step": 1, "category": "Category Router", "status": "success", "duration_ms": 0.3, "degraded": false, "input_summary": "通勤耳机需求", "output_summary": "headphone", "version": "category-router-v1"},
+        {"step": 2, "category": "Constraint Resolution", "status": "success", "duration_ms": 1.1, "degraded": false, "input_summary": "ANC、250g", "output_summary": "2 个已支持硬约束", "version": "quote-span-v1"},
+        {"step": 3, "category": "Product Scope", "status": "success", "duration_ms": 0.8, "degraded": false, "input_summary": "全库筛选", "output_summary": "12 个治理配置", "version": "product-scope-v1"},
+        {"step": 4, "category": "Product Query/Text2SQL", "status": "success", "duration_ms": 8.2, "degraded": false, "input_summary": "只读结构化条件", "output_summary": "保留完整候选池", "version": "domain-query-v1"},
+        {"step": 5, "category": "KB Search", "status": "success", "duration_ms": 409.5, "degraded": false, "input_summary": "候选配置与字段", "output_summary": "命中治理事实文档", "version": "headphone-index-v1"},
+        {"step": 6, "category": "Reranker", "status": "success", "duration_ms": 141.7, "degraded": false, "input_summary": "向量候选", "output_summary": "二阶段证据排序", "version": "qwen3-rerank"},
+        {"step": 7, "category": "Evidence Check", "status": "success", "duration_ms": 3.8, "degraded": false, "input_summary": "ANC、重量", "output_summary": "matched/not_matched 四态结果", "version": "evidence-check-v2"},
+        {"step": 8, "category": "Constraint Checker", "status": "success", "duration_ms": 1.6, "degraded": false, "input_summary": "完整候选池", "output_summary": "合规 5，淘汰 7", "version": "domain-checker-v2-6b"},
+        {"step": 9, "category": "Decision Ranker", "status": "success", "duration_ms": 1.2, "degraded": false, "input_summary": "仅 Checker 合规集合", "output_summary": "通勤 Profile 排序；不能恢复淘汰项", "version": "headphone-ranking-v1"},
+        {"step": 10, "category": "Report", "status": "success", "duration_ms": 0.7, "degraded": false, "input_summary": "审计结果", "output_summary": "证据绑定报告", "version": "smartbuy-decision-v3"}
+      ],
+      "degraded_states": [],
+      "conflicts": [],
+      "stop_reason": "Checker 完成后，仅对合规候选执行确定性软排序。",
+      "data_version": "headphone-governed-2026-09-03-v1",
+      "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+      "run_evidence": "smartbuy/eval/results/v2_8_headphone_engineering_regression_after_fix.json#headphone-e2e-004",
+      "real_run_command": "python -m smartbuy.scripts.verify_v2_9a_demos --demo trusted-headphone-filter --mode online",
+      "dynamic_observation": null,
+      "memory_story": []
+    },
+    {
+      "demo_id": "open-airpods-max",
+      "title": "Demo 2 · 数据库外商品开放研究",
+      "domain_id": "headphone",
+      "mode": "open",
+      "query": "研究治理库外 AirPods Max 2 爱尔兰官方页面的形态、降噪、通透、空间音频和续航。",
+      "query_intent": "open_research",
+      "hard_constraints": [],
+      "soft_preferences": [],
+      "clarification": [],
+      "constraint_sources": ["当前输入 · 明确 Open Mode", "当前输入 · IE 地区"],
+      "complete_candidate_pool_size": 0,
+      "candidates": [
+        {
+          "product_id": "open:apple-airpods-max-2-ie",
+          "label": "Apple AirPods Max 2（开放研究对象）",
+          "region": "IE",
+          "configuration": "数据库外；页面级临时身份",
+          "checker_status": "open_only",
+          "reason": "5 个字段由官方页面临时证据核验；trusted_eligible=false，进入 Checker 数量为 0。",
+          "rank": null,
+          "score": null,
+          "dimensions": [],
+          "unknown_fields": []
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "open-ev-airpods-max-2-ie-form-factor",
+          "field": "form_factor",
+          "value": "over_ear",
+          "source_url": "https://www.apple.com/ie/shop/buy-airpods/airpods-max-2/midnight",
+          "region": "IE",
+          "configuration": "AirPods Max 2 / midnight",
+          "observed_at": "2026-09-03T13:45:17Z",
+          "status": "open"
+        },
+        {
+          "evidence_id": "open-ev-airpods-max-2-ie-battery",
+          "field": "battery_hours",
+          "value": 20,
+          "source_url": "https://www.apple.com/ie/shop/buy-airpods/airpods-max-2/midnight",
+          "region": "IE",
+          "configuration": "AirPods Max 2 / midnight",
+          "observed_at": "2026-09-03T13:45:17Z",
+          "status": "open"
+        }
+      ],
+      "trace": [
+        {"step": 1, "category": "Category Router", "status": "success", "duration_ms": 0.4, "degraded": false, "input_summary": "耳机 + 数据库外型号", "output_summary": "headphone/open", "version": "category-router-v1"},
+        {"step": 2, "category": "Product Scope", "status": "success", "duration_ms": 0.9, "degraded": false, "input_summary": "AirPods Max 2 / IE", "output_summary": "本地无匹配；允许 Open Research", "version": "product-scope-v1"},
+        {"step": 3, "category": "Source Search", "status": "success", "duration_ms": 1261.0, "degraded": false, "input_summary": "官方域名、型号、IE", "output_summary": "发现结构化官方 URL", "version": "zhipu-search-pro-v1"},
+        {"step": 4, "category": "Web Extractor", "status": "success", "duration_ms": 1843.0, "degraded": false, "input_summary": "官方 URL", "output_summary": "HTTP 200；有界正文抽取", "version": "web-extractor-v1"},
+        {"step": 5, "category": "Evidence Check", "status": "success", "duration_ms": 7.6, "degraded": false, "input_summary": "临时证据 17 条", "output_summary": "5/5 字段核验；仅 Open", "version": "open-evidence-check-v2-4c"},
+        {"step": 6, "category": "Constraint Checker", "status": "blocked", "duration_ms": 0.2, "degraded": false, "input_summary": "Open Evidence", "output_summary": "进入 Trusted Checker：0", "version": "trusted-open-isolation-v1"},
+        {"step": 7, "category": "Report", "status": "success", "duration_ms": 0.8, "degraded": false, "input_summary": "临时证据与来源链", "output_summary": "Open Report；不输出购买资格", "version": "open-report-v1"}
+      ],
+      "degraded_states": ["open_evidence_not_promoted"],
+      "conflicts": [],
+      "stop_reason": "开放研究完成；临时证据未晋升为治理证据。",
+      "data_version": "headphone-governed-2026-09-03-v1",
+      "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+      "run_evidence": "smartbuy/eval/results/v2_8_headphone_open_research.json",
+      "real_run_command": "python -m smartbuy.scripts.verify_v2_8_headphone_open_research",
+      "dynamic_observation": null,
+      "memory_story": []
+    },
+    {
+      "demo_id": "dynamic-price-expired",
+      "title": "Demo 3 · 动态价格观察的过期降级",
+      "domain_id": "monitor",
+      "mode": "trusted",
+      "query": "Dell U2724D 中国区现在多少钱、有货吗？",
+      "query_intent": "dynamic_fact",
+      "hard_constraints": [],
+      "soft_preferences": [],
+      "clarification": [],
+      "constraint_sources": ["当前输入 · CN 地区", "当前输入 · 价格与库存"],
+      "complete_candidate_pool_size": 1,
+      "candidates": [
+        {
+          "product_id": "dell-u2724d-cn",
+          "label": "Dell UltraSharp U2724D",
+          "region": "CN",
+          "configuration": "210-BKMY",
+          "checker_status": "unknown",
+          "reason": "仓库只有 2026-08-26 的单次观察，超过 24 小时 TTL；不能称为当前价格或库存。",
+          "rank": null,
+          "score": null,
+          "dimensions": [],
+          "unknown_fields": ["current_price", "current_availability"]
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "price-dell-u2724d-20260826",
+          "field": "historical_price_observation",
+          "value": "CNY 2799 / available at observation time",
+          "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+          "region": "CN",
+          "configuration": "210-BKMY",
+          "observed_at": "2026-08-26T12:00:00+08:00",
+          "status": "unknown"
+        }
+      ],
+      "trace": [
+        {"step": 1, "category": "Category Router", "status": "success", "duration_ms": 0.3, "degraded": false, "input_summary": "U2724D 当前价格", "output_summary": "monitor/dynamic", "version": "category-router-v1"},
+        {"step": 2, "category": "Product Scope", "status": "success", "duration_ms": 0.7, "degraded": false, "input_summary": "U2724D / CN", "output_summary": "dell-u2724d-cn", "version": "product-scope-v1"},
+        {"step": 3, "category": "Product Query/Text2SQL", "status": "success", "duration_ms": 4.9, "degraded": false, "input_summary": "追加式价格观察", "output_summary": "找到 1 条历史观察", "version": "price-observation-v1"},
+        {"step": 4, "category": "Evidence Check", "status": "degraded", "duration_ms": 0.6, "degraded": true, "input_summary": "observed_at + 24h TTL", "output_summary": "已过期；current_price/current_availability=unknown", "version": "dynamic-fact-v1"},
+        {"step": 5, "category": "Constraint Checker", "status": "blocked", "duration_ms": 0.2, "degraded": false, "input_summary": "过期动态观察", "output_summary": "不进入 Trusted Checker", "version": "trusted-dynamic-isolation-v1"},
+        {"step": 6, "category": "Memory", "status": "blocked", "duration_ms": 0.1, "degraded": false, "input_summary": "价格/库存观察", "output_summary": "不写入长期 Memory", "version": "layered-memory-v1"},
+        {"step": 7, "category": "Report", "status": "success", "duration_ms": 0.4, "degraded": true, "input_summary": "历史观察", "output_summary": "明确 unknown 与过期原因", "version": "portfolio-report-v1"}
+      ],
+      "degraded_states": ["dynamic_observation_expired", "live_price_unavailable"],
+      "conflicts": [],
+      "stop_reason": "缺少 TTL 内可验证正文观察，安全返回 unknown。",
+      "data_version": "monitor-multi-region-2026-08-31-v2",
+      "index_version": "monitor-multi-region-h2-v2-embedding1024-r1",
+      "run_evidence": "smartbuy/data/processed/price_observations.jsonl#price-dell-u2724d-20260826",
+      "real_run_command": "python -m smartbuy.scripts.verify_v2_9a_demos --demo dynamic-price-expired --mode local",
+      "dynamic_observation": {
+        "product_id": "dell-u2724d-cn",
+        "region": "CN",
+        "currency": "CNY",
+        "price": null,
+        "availability": null,
+        "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+        "observed_at": "2026-08-26T04:00:00Z",
+        "ttl_seconds": 86400,
+        "content_hash": "89cd637d8e5564ff509322e8e8b61753beb5bb3769d229483c4b40085c248dea",
+        "expired": true,
+        "status": "unknown",
+        "reason": "observation_expired",
+        "eligible_for_trusted_checker": false,
+        "saved_to_long_term_memory": false
+      },
+      "memory_story": []
+    },
+    {
+      "demo_id": "conflict-fail-closed",
+      "title": "Demo 4 · 双边来源冲突与 fail closed",
+      "domain_id": "monitor",
+      "mode": "trusted",
+      "query": "BenQ PD2705U 美国版的 USB-C 供电到底是 60W 还是 65W？",
+      "query_intent": "evidence_conflict",
+      "hard_constraints": ["usb_c_power_delivery_w >= 65"],
+      "soft_preferences": [],
+      "clarification": [],
+      "constraint_sources": ["当前输入 · 65W 下限", "当前输入 · US 地区"],
+      "complete_candidate_pool_size": 1,
+      "candidates": [
+        {
+          "product_id": "benq-pd2705u-us",
+          "label": "BenQ PD2705U",
+          "region": "US",
+          "configuration": "PD2705U-US",
+          "checker_status": "conflict",
+          "reason": "官方规格页为 65W，官方介绍素材为 60W；双方证据均保留，Checker 不授权推荐。",
+          "rank": null,
+          "score": null,
+          "dimensions": [],
+          "unknown_fields": []
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w",
+          "field": "usb_c_power_delivery_w",
+          "value": 65,
+          "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u/spec.html",
+          "region": "US",
+          "configuration": "PD2705U-US",
+          "observed_at": "2026-08-26T12:00:00+08:00",
+          "status": "conflict"
+        },
+        {
+          "evidence_id": "ev-benq-pd2705u-us-usb-c-power-delivery-w-overview",
+          "field": "usb_c_power_delivery_w",
+          "value": 60,
+          "source_url": "https://www.benq.com/en-us/monitor/creative-pro/pd2705u.html",
+          "region": "US",
+          "configuration": "PD2705U-US",
+          "observed_at": "2026-08-26T12:00:00+08:00",
+          "status": "conflict"
+        }
+      ],
+      "trace": [
+        {"step": 1, "category": "Category Router", "status": "success", "duration_ms": 0.3, "degraded": false, "input_summary": "PD2705U/US", "output_summary": "monitor", "version": "category-router-v1"},
+        {"step": 2, "category": "Constraint Resolution", "status": "success", "duration_ms": 0.8, "degraded": false, "input_summary": "至少 65W", "output_summary": "usb_c_power_delivery_w >= 65", "version": "constraint-proposal-v2-5c"},
+        {"step": 3, "category": "Product Query/Text2SQL", "status": "success", "duration_ms": 5.2, "degraded": false, "input_summary": "精确型号/地区", "output_summary": "完整候选池 1", "version": "text2sql-v1"},
+        {"step": 4, "category": "KB Search", "status": "success", "duration_ms": 388.0, "degraded": false, "input_summary": "60W 65W", "output_summary": "命中两份官方来源", "version": "monitor-index-v2"},
+        {"step": 5, "category": "Evidence Check", "status": "success", "duration_ms": 1.5, "degraded": false, "input_summary": "同地区同字段", "output_summary": "conflict；双方 Evidence ID 保留", "version": "evidence-check-v2-4c"},
+        {"step": 6, "category": "Constraint Checker", "status": "blocked", "duration_ms": 1.0, "degraded": false, "input_summary": "冲突字段", "output_summary": "eligible=false", "version": "constraint-checker-v2"},
+        {"step": 7, "category": "Decision Ranker", "status": "blocked", "duration_ms": 0.1, "degraded": false, "input_summary": "Checker 合规集合为空", "output_summary": "不能恢复冲突候选", "version": "monitor-ranking-v1"},
+        {"step": 8, "category": "Report", "status": "success", "duration_ms": 0.5, "degraded": false, "input_summary": "双边冲突", "output_summary": "拒答并列出两条来源", "version": "smartbuy-decision-v3"}
+      ],
+      "degraded_states": ["constraint_conflict_fail_closed"],
+      "conflicts": ["usb_c_power_delivery_w: 65W vs 60W（同一 US 型号、两个官方页面）"],
+      "stop_reason": "关键硬约束存在冲突，安全门拒绝推荐。",
+      "data_version": "monitor-multi-region-2026-08-31-v2",
+      "index_version": "monitor-multi-region-h2-v2-embedding1024-r1",
+      "run_evidence": "smartbuy/tests/unit/test_stage5_agent_gate.py::test_numeric_source_conflict_enforces_dependent_sql_kb_evidence_order",
+      "real_run_command": "python -m smartbuy.scripts.verify_v2_9a_demos --demo conflict-fail-closed --mode local",
+      "dynamic_observation": null,
+      "memory_story": []
+    },
+    {
+      "demo_id": "memory-follow-up",
+      "title": "Demo 5 · 连续追问、What-if 与分层 Memory",
+      "domain_id": "laptop",
+      "mode": "trusted",
+      "query": "第一轮要 32GB 内存；第二轮改成至少 64GB；然后按便携场景做 What-if，最后删除长期偏好。",
+      "query_intent": "multi_turn_preference",
+      "hard_constraints": ["memory_gb >= 64（当前输入覆盖上一轮 32GB）"],
+      "soft_preferences": ["portability（What-if，只改变排序）"],
+      "clarification": [],
+      "constraint_sources": ["会话 turn 1 · memory_gb >= 32", "当前输入 turn 2 · memory_gb >= 64", "用户确认的 category memory · portability"],
+      "complete_candidate_pool_size": 12,
+      "candidates": [
+        {
+          "product_id": "asus-proart-p16-h7606ww-cn",
+          "label": "ASUS ProArt P16 H7606WW",
+          "region": "CN",
+          "configuration": "H7606WW",
+          "checker_status": "eligible",
+          "reason": "当前 64GB 条件覆盖旧 32GB 条件；What-if 只重排 Checker 合规集合。",
+          "rank": 1,
+          "score": null,
+          "dimensions": [
+            {"id": "portability", "status": "what_if_changed_order", "evidence": "smartbuy/docs/v2/v2_7_explainable_ranking_report.md"}
+          ],
+          "unknown_fields": []
+        }
+      ],
+      "evidence": [
+        {
+          "evidence_id": "ev-asus-proart-p16-h7606ww-cn-memory-gb",
+          "field": "memory_gb",
+          "value": 64,
+          "source_url": "https://www.asus.com.cn/laptops/for-creators/proart/proart-p16-h7606/techspec/",
+          "region": "CN",
+          "configuration": "H7606WW",
+          "observed_at": "2026-09-02T00:00:00+08:00",
+          "status": "matched"
+        }
+      ],
+      "trace": [
+        {"step": 1, "category": "Memory", "status": "success", "duration_ms": 0.7, "degraded": false, "input_summary": "浏览器隔离匿名身份", "output_summary": "召回已确认 category 偏好", "version": "layered-memory-v1"},
+        {"step": 2, "category": "Constraint Resolution", "status": "success", "duration_ms": 1.3, "degraded": false, "input_summary": "32GB → 64GB", "output_summary": "生成覆盖 diff；当前输入优先", "version": "constraint-delta-v1"},
+        {"step": 3, "category": "Product Scope", "status": "success", "duration_ms": 0.8, "degraded": false, "input_summary": "Laptop 全库", "output_summary": "12 个配置", "version": "product-scope-v1"},
+        {"step": 4, "category": "Product Query/Text2SQL", "status": "success", "duration_ms": 7.1, "degraded": false, "input_summary": "memory_gb >= 64", "output_summary": "保留完整候选池", "version": "domain-query-v1"},
+        {"step": 5, "category": "Evidence Check", "status": "success", "duration_ms": 2.1, "degraded": false, "input_summary": "内存与身份", "output_summary": "治理证据四态", "version": "evidence-check-v2"},
+        {"step": 6, "category": "Constraint Checker", "status": "success", "duration_ms": 1.1, "degraded": false, "input_summary": "完整候选池", "output_summary": "固定合规集合", "version": "domain-checker-v2-6b"},
+        {"step": 7, "category": "Decision Ranker", "status": "success", "duration_ms": 0.9, "degraded": false, "input_summary": "portability What-if", "output_summary": "集合不变，只更新权重与贡献", "version": "laptop-ranking-v1"},
+        {"step": 8, "category": "Memory", "status": "success", "duration_ms": 0.8, "degraded": false, "input_summary": "删除 category 偏好", "output_summary": "后续请求不再召回 portability", "version": "layered-memory-v1"},
+        {"step": 9, "category": "Report", "status": "success", "duration_ms": 0.4, "degraded": false, "input_summary": "约束 diff 与排序", "output_summary": "展示来源、覆盖与删除结果", "version": "smartbuy-decision-v3"}
+      ],
+      "degraded_states": [],
+      "conflicts": [],
+      "stop_reason": "完成会话覆盖、What-if 和 Memory 删除验证。",
+      "data_version": "laptop-governed-2026-09-02-v1",
+      "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+      "run_evidence": "smartbuy/docs/v2/v2_7_explainable_ranking_report.md#6-what-if-结果",
+      "real_run_command": "python -m smartbuy.scripts.verify_v2_9a_demos --demo memory-follow-up --mode local",
+      "dynamic_observation": null,
+      "memory_story": [
+        "Turn 1：新增 memory_gb >= 32。",
+        "Turn 2：当前输入把 memory_gb 覆盖为 >= 64。",
+        "What-if：portability 权重只改变排序，不改变 Checker 集合。",
+        "用户确认后写入 Category Memory；价格、库存和商品事实拒绝写入。",
+        "删除 Category Memory 后再次查看，偏好不再生效。"
+      ]
+    }
+  ]
+}

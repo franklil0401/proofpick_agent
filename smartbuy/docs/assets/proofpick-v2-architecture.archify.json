@@ -1,0 +1,158 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "ProofPick V2：三品类可信决策架构",
+    "locale": "zh-CN",
+    "output": "proofpick-v2-architecture.html",
+    "quality_profile": "showcase",
+    "viewBox": [1320, 820]
+  },
+  "components": [
+    {
+      "id": "experience",
+      "type": "frontend",
+      "label": "三品类用户 / API / WebUI",
+      "pos": [30, 310],
+      "size": [170, 72]
+    },
+    {
+      "id": "router",
+      "type": "backend",
+      "label": "Category Router",
+      "sublabel": "选择 Domain Pack",
+      "pos": [230, 310],
+      "size": [160, 72]
+    },
+    {
+      "id": "constraints",
+      "type": "security",
+      "label": "Constraint & Scope",
+      "sublabel": "Quote-to-Span · 候选边界",
+      "pos": [420, 310],
+      "size": [180, 72]
+    },
+    {
+      "id": "orchestrator",
+      "type": "backend",
+      "label": "有界编排器",
+      "sublabel": "ReAct 默认 · LangGraph 显式",
+      "pos": [630, 310],
+      "size": [190, 72]
+    },
+    {
+      "id": "local_tools",
+      "type": "backend",
+      "label": "Local Tools",
+      "sublabel": "SQL · KB/Rerank · Evidence",
+      "pos": [850, 190],
+      "size": [210, 82]
+    },
+    {
+      "id": "web_tools",
+      "type": "external",
+      "label": "Web Tools",
+      "sublabel": "Source Search · Extractor",
+      "tag": "Open mode only",
+      "pos": [850, 500],
+      "size": [210, 82]
+    },
+    {
+      "id": "packs",
+      "type": "database",
+      "label": "Domain + Product Packs",
+      "sublabel": "字段规则 · 治理数据 · Ranking Profile",
+      "pos": [420, 90],
+      "size": [210, 78]
+    },
+    {
+      "id": "trusted_evidence",
+      "type": "database",
+      "label": "Trusted Evidence",
+      "sublabel": "Ledger · 身份/地区/版本绑定",
+      "pos": [1095, 190],
+      "size": [190, 82]
+    },
+    {
+      "id": "open_evidence",
+      "type": "database",
+      "label": "Open Evidence",
+      "sublabel": "请求级临时证据",
+      "tag": "不可进入 Checker",
+      "pos": [1095, 500],
+      "size": [190, 82]
+    },
+    {
+      "id": "checker",
+      "type": "security",
+      "label": "Constraint Checker",
+      "sublabel": "强制终态 · fail closed",
+      "pos": [850, 335],
+      "size": [210, 82],
+      "tag": "LLM 不可覆盖"
+    },
+    {
+      "id": "ranker",
+      "type": "backend",
+      "label": "Decision Ranker",
+      "sublabel": "只排序 eligible 候选",
+      "pos": [1095, 335],
+      "size": [190, 82],
+      "tag": "不能恢复淘汰项"
+    },
+    {
+      "id": "memory_report",
+      "type": "frontend",
+      "label": "Memory / 最终报告",
+      "sublabel": "确认偏好 · 证据 · 冲突 · 降级",
+      "pos": [610, 650],
+      "size": [220, 82]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "security-group",
+      "label": "Trusted 决策路径",
+      "wraps": ["local_tools", "trusted_evidence", "checker", "ranker"],
+      "pad": 22
+    },
+    {
+      "kind": "region",
+      "label": "Open 临时研究区",
+      "wraps": ["web_tools", "open_evidence"],
+      "pad": 22
+    }
+  ],
+  "connections": [
+    {"id": "request", "from": "experience", "to": "router", "label": "用户请求", "variant": "emphasis", "labelAt": [215, 396]},
+    {"id": "route", "from": "router", "to": "constraints", "label": "domain_id", "labelAt": [405, 396]},
+    {"id": "scope", "from": "constraints", "to": "orchestrator", "label": "有效约束 + Scope", "variant": "security", "labelAt": [615, 396]},
+    {"id": "pack_contract", "from": "packs", "to": "constraints", "label": "Schema / Policies", "fromSide": "bottom", "toSide": "top"},
+    {"id": "plan_local", "from": "orchestrator", "to": "local_tools", "label": "可信工具调用", "labelAt": [835, 286]},
+    {"id": "plan_web", "from": "orchestrator", "to": "web_tools", "label": "显式 Open 调用", "variant": "dashed"},
+    {"id": "local_evidence", "from": "local_tools", "to": "trusted_evidence", "label": "治理事实", "labelAt": [1030, 286]},
+    {"id": "trusted_check", "from": "trusted_evidence", "to": "checker", "label": "可审计 Evidence", "variant": "security"},
+    {"id": "eligible_only", "from": "checker", "to": "ranker", "label": "eligible only", "variant": "security", "labelAt": [1078, 431]},
+    {"id": "open_temp", "from": "web_tools", "to": "open_evidence", "label": "临时证据", "variant": "dashed", "labelAt": [1078, 596]},
+    {"id": "ranked_report", "from": "ranker", "to": "memory_report", "label": "排序 + 贡献", "fromSide": "bottom", "toSide": "right", "via": [[1190, 460], [1295, 460], [1295, 691], [850, 691]]},
+    {"id": "open_report", "from": "open_evidence", "to": "memory_report", "label": "Open Report only", "variant": "dashed", "fromSide": "bottom", "toSide": "right"},
+    {"id": "confirmed_memory", "from": "memory_report", "to": "constraints", "label": "已确认偏好", "variant": "dashed", "fromSide": "left", "toSide": "bottom"}
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "可信资格",
+      "items": ["完整候选池必须通过确定性 Checker", "LLM 与 Ranker 都不能恢复淘汰候选"]
+    },
+    {
+      "dot": "amber",
+      "title": "开放研究",
+      "items": ["网页结果进入请求级临时证据", "Open Evidence 不晋升为 Trusted 事实"]
+    },
+    {
+      "dot": "violet",
+      "title": "三品类复用",
+      "items": ["同一 Agent / Checker / Ranker / Memory 内核", "品类差异由 Domain Pack 与 Product Pack 拥有"]
+    }
+  ]
+}
