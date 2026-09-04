@@ -1,0 +1,123 @@
+{
+  "schema_version": "proofpick-v2-9b-independent-summary-v1",
+  "release_candidate": "proofpick-v2-9a-rc1",
+  "decision": "needs_revision",
+  "release_authorized": false,
+  "production_commit": "dac24123b82683c6708f0d487d9ab9753b172aed",
+  "rc_manifest_commit": "383df1783328ad6859729c6770fb1a8cea3f648b",
+  "rc_manifest_payload_sha256": "7db3b3a63011848b260c06ea98e6cf9b5e874267df298c042ac56760f8d2c5f5",
+  "v1_commit": "d51b6668a6a45c1b01ef4e64da3c4b9ac84ed10c",
+  "trusted_first_run": {
+    "run_id": "v2-9b-independent-20260904T073443Z-81d6b7f6",
+    "case_sha256": "22768b4cb9e771f2a378474a1b6ffeca6d60df246668139bfbeec3321b639a7a",
+    "result_sha256": "00299408748c3cd3b5cfba4c5a00db60678189af3f958e29d82d38a04ef72e81",
+    "mandatory_gates_passed": false,
+    "task_accuracy": {
+      "correct": 64,
+      "total": 90,
+      "rate": 0.7111111111111111
+    },
+    "per_domain": {
+      "monitor": {"correct": 18, "total": 30, "rate": 0.6},
+      "laptop": {"correct": 26, "total": 30, "rate": 0.8666666666666667},
+      "headphone": {"correct": 20, "total": 30, "rate": 0.6666666666666666}
+    },
+    "hard_constraint_field": {
+      "tp": 77,
+      "fp": 39,
+      "fn": 11,
+      "precision": 0.6637931034482759,
+      "recall": 0.875,
+      "f1": 0.7549019607843138
+    },
+    "constraint_operator_value_exact": {
+      "matches": 75,
+      "total": 88,
+      "rate": 0.8522727272727273
+    },
+    "evidence_coverage": {
+      "covered": 276,
+      "required": 297,
+      "rate": 0.9292929292929293
+    },
+    "hard_negative_rejection": {
+      "correct": 11,
+      "total": 18,
+      "rate": 0.6111111111111112
+    },
+    "safety": {
+      "unexpected_recommendations_vs_gold": 36,
+      "scope_leakage": 0,
+      "checker_leakage": 0,
+      "unknown_overclaim": 0,
+      "clarification_bypass": 7
+    },
+    "latency_ms": {
+      "average": 8295.605645566764,
+      "p95": 31368.172300048172
+    },
+    "api": {
+      "request_count": 369,
+      "qwen_plus": 177,
+      "text_embedding_v4": 96,
+      "qwen3_rerank": 96,
+      "input_tokens": 1627746,
+      "output_tokens": 24936,
+      "estimated_cost_cny": 1.2484845,
+      "retry_count": 0,
+      "failed_requests": 0
+    }
+  },
+  "online_first_completed_run_rc2": {
+    "run_id": "v2-9b-online-rc2-20260904T075343Z-a0a6bf48",
+    "case_sha256": "1032b085a5fe9ce85804f9e9c682be58dfa979a61133334f3feab4feaf533dd2",
+    "result_sha256": "e813bafa327d8b8d94049196b7c4deb099be5b7ead4eb3f108366081d38ce8fa",
+    "safety_gates_passed": true,
+    "safe_terminal": {"passed": 15, "total": 15, "rate": 1.0},
+    "actual_completed_research": {"completed": 2, "total": 15, "rate": 0.13333333333333333},
+    "terminal_statuses": {
+      "completed": 2,
+      "no_official_source": 9,
+      "no_region_matched_source": 4
+    },
+    "accepted_candidates": 2,
+    "accepted_source_precision": {"correct": 2, "accepted": 2, "rate": 1.0},
+    "cases_with_evidence": 2,
+    "open_evidence_records": 28,
+    "verified_fields": 6,
+    "open_evidence_entered_trusted_checker": 0,
+    "api": {
+      "search_calls": 28,
+      "successful_calls": 28,
+      "degraded_calls": 0,
+      "estimated_cost_cny": 1.1
+    }
+  },
+  "engineering": {
+    "ci_equivalent_tests": {"passed": 467, "total": 467},
+    "v1_original_tests": {"passed": 94, "total": 94},
+    "fault_or_degradation_regression": {"passed": 67, "total": 67},
+    "fixed_demo_contracts": {"passed": 5, "total": 5, "api_calls": 0},
+    "ruff": "passed",
+    "compileall": "passed",
+    "javascript_syntax": {"passed": 13, "total": 13},
+    "powershell_ast": {"passed": 6, "total": 6},
+    "windows_http_200": ["root", "health", "monitor", "portfolio_capabilities", "minio_health", "offline_replay"],
+    "released_ports": [8000, 8088, 9000, 9001]
+  },
+  "known_cost_cny": {
+    "trusted": 1.2484845,
+    "online_rc2": 1.1,
+    "index_bootstrap": 0.015586,
+    "known_total": 2.3640705,
+    "excluded": "The aborted online RC1 harness attempt has unknown provider usage after process exit."
+  },
+  "unmet_or_unexecuted_release_requirements": [
+    "Monitor and Headphone per-domain accuracy did not reach 80%.",
+    "Hard-constraint field F1 did not reach 90%.",
+    "Evidence coverage did not reach 95%.",
+    "Hard-negative rejection did not reach 90%.",
+    "Clarification bypass and unexpected recommendations were non-zero.",
+    "The four-arm Direct LLM / Fixed RAG / V1 / V2 comparison was not executed because no frozen same-version multi-domain V1 adapter exists and the RC had already failed mandatory release gates."
+  ]
+}

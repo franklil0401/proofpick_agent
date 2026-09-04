@@ -4,9 +4,17 @@
 
 - `trusted_cases.jsonl`：90 条新题，Monitor/Laptop/Headphone 各 30 条。
 - `online_cases.jsonl`：15 条真实 Source Search / Web Extractor 任务，各品类 5 条。
+- `online_cases_rc2.jsonl`：RC1 评测器事故后重新冻结的 15 条 Online 题；只替换已触达但未形成结果的 1 条题。
 - `case_manifest.json`：题集数量、哈希与未运行状态。
 - `scoring_policy.json`：首测前冻结的指标口径和联合门槛。
 - `trusted_case.schema.json`、`online_case.schema.json`：严格数据契约。
 - `generate_cases.py`：只读取冻结治理数据，不调用生产 Checker/Resolver 生成金标。
+
+不可变首次结果：
+
+- [`Trusted 首次运行`](../results/v2_9b_independent_trusted_first.json)：64/90，未通过联合发布门槛。
+- [`Online RC1 评测器事故`](../results/v2_9b_independent_online_harness_failure.json)：评测器字段名错误，未形成聚合结果。
+- [`Online RC2 首次完整运行`](../results/v2_9b_independent_online_first_rc2.json)：安全终止 15/15，实际完成取证 2/15。
+- [`机器可读摘要`](../results/v2_9b_independent_summary.json)与[`独立发布报告`](../../docs/v2/v2_9b_independent_release_evaluation.md)。
 
 纪律：定义、Schema、评分器和运行器必须在首次 E2E 前提交；首测结果只追加，不覆盖；若 RC 未通过，只能形成失败报告并交回开发分支，不得在本分支修业务逻辑后重跑冒充首次结果。
