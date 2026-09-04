@@ -37,7 +37,7 @@ class SourceSearchTool:
                 "parameters": {
                     "type": "object",
                     "properties": {
-                        "query": {"type": "string", "maxLength": 70},
+                        "query": {"type": "string", "maxLength": 200},
                         "product_category": {"type": "string", "maxLength": 64},
                         "target_model": {"type": "string", "maxLength": 100},
                         "target_fields": {

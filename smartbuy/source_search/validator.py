@@ -5,7 +5,7 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass
 from typing import Any
-from urllib.parse import unquote, urlsplit, urlunsplit
+from urllib.parse import parse_qs, unquote, urlsplit, urlunsplit
 
 from smartbuy.source_search.models import (
     SourceCandidate,
@@ -59,20 +59,21 @@ def infer_region(url: str) -> str:
     parts = urlsplit(url)
     hostname = normalize_hostname(parts.hostname) or ""
     segments = [item.casefold() for item in parts.path.split("/") if item]
-    first = segments[0] if segments else ""
+    query = {
+        key.casefold(): [item.casefold() for item in values]
+        for key, values in parse_qs(parts.query).items()
+    }
     if hostname == "asus.com.cn" or hostname.endswith(".asus.com.cn"):
         return "CN"
     if hostname == "benq.com.cn" or hostname.endswith(".benq.com.cn"):
         return "CN"
-    if first in {"cn", "zh-cn", "zh_cn"}:
-        return "CN"
-    if first in {"en-us", "en_us", "us"}:
-        return "US"
-    if first in {"en-ca", "en_ca", "ca"}:
-        return "CA"
-    known_other = {
+    locale_regions = {
+        "cn": "CN", "zh-cn": "CN", "zh_cn": "CN",
+        "us": "US", "en-us": "US", "en_us": "US",
+        "ca": "CA", "en-ca": "CA", "en_ca": "CA",
         "ie": "IE",
         "en-ie": "IE",
+        "en_ie": "IE",
         "tw": "TW",
         "zh-tw": "TW",
         "hk": "HK",
@@ -82,7 +83,14 @@ def infer_region(url: str) -> str:
         "cz": "CZ",
         "cs-cz": "CZ",
     }
-    return known_other.get(first, "unknown")
+    for key in ("country", "region", "market", "locale", "lang"):
+        for value in query.get(key, []):
+            if value in locale_regions:
+                return locale_regions[value]
+    for segment in segments[:4]:
+        if segment in locale_regions:
+            return locale_regions[segment]
+    return "unknown"
 
 
 def _compact(value: str) -> str:
@@ -97,6 +105,36 @@ def model_matches_url(target_model: str, url: str) -> bool:
     decoded = unquote(unquote(url)).casefold()
     flexible = r"[^a-z0-9]*".join(re.escape(character) for character in compact_model)
     return re.search(rf"(?<![a-z0-9]){flexible}(?![a-z0-9])", decoded) is not None
+
+
+def model_matches_title(target_model: str, title: str | None) -> bool:
+    """Accept an exact normalized model phrase in provider title metadata.
+
+    Search metadata remains discovery-only. The fetched page is independently
+    checked again before any field can become Open Evidence.
+    """
+    return bool(title and _compact(target_model) in _compact(title))
+
+
+def _url_has_conflicting_model_code(target_model: str, url: str) -> bool:
+    """Reject title fallback when a code-like target conflicts with a URL code."""
+    target_tokens = re.findall(r"[a-z0-9]+", target_model.casefold())
+    code_like_target = bool(target_tokens) and all(
+        any(character.isdigit() for character in token) or len(token) <= 2
+        for token in target_tokens
+    )
+    if not code_like_target:
+        return False
+    compact_target = _compact(target_model)
+    url_tokens = re.findall(r"[a-z0-9]+", unquote(unquote(url)).casefold())
+    codes = [
+        token
+        for token in url_tokens
+        if len(token) >= 5
+        and any(character.isdigit() for character in token)
+        and any(character.isalpha() for character in token)
+    ]
+    return any(token != compact_target for token in codes)
 
 
 @dataclass(frozen=True)
@@ -169,6 +207,7 @@ class DeterministicSourceValidator:
             hostname = normalize_hostname(urlsplit(normalized_url).hostname) if normalized_url else None
             status: SourceCandidateStatus
             observed_region = "unknown"
+            model_match_source: str | None = None
             if normalized_url is None:
                 status = SourceCandidateStatus.INVALID_URL
             elif not hostname_allowed(hostname, request.allowed_domains):
@@ -177,7 +216,15 @@ class DeterministicSourceValidator:
             else:
                 counters["valid_url_count"] += 1
                 counters["domain_matched_count"] += 1
-                if not model_matches_url(request.target_model, normalized_url):
+                if model_matches_url(request.target_model, normalized_url):
+                    model_match_source = "url"
+                elif model_matches_title(request.target_model, title) and not _url_has_conflicting_model_code(
+                    request.target_model, normalized_url
+                ):
+                    model_match_source = "title"
+                else:
+                    model_match_source = None
+                if model_match_source is None:
                     status = SourceCandidateStatus.MODEL_MISMATCH
                 else:
                     counters["model_matched_count"] += 1
@@ -204,6 +251,7 @@ class DeterministicSourceValidator:
                 target_region=request.region,
                 observed_region=observed_region,
                 status=status,
+                model_match_source=model_match_source if normalized_url else None,
             )
             if not site_name:
                 counters["site_name_missing_count"] += 1

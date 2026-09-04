@@ -46,7 +46,7 @@ class SourceIsolationError(RuntimeError):
 class SourceSearchRequest(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
-    query: str = Field(min_length=1, max_length=70)
+    query: str = Field(min_length=1, max_length=200)
     product_category: str = Field(min_length=1, max_length=64)
     target_model: str = Field(min_length=1, max_length=100)
     target_fields: list[str] = Field(min_length=1, max_length=20)
@@ -88,6 +88,7 @@ class SourceCandidate(BaseModel):
     target_region: str
     observed_region: str
     status: SourceCandidateStatus
+    model_match_source: Literal["url", "title"] | None = None
     usable_for_evidence: Literal[False] = False
     usable_for_checker: Literal[False] = False
 
@@ -125,6 +126,8 @@ class SourceEngineOutcome(BaseModel):
     provider: str
     provider_version: str
     engine: str
+    query_strategy: str = "original"
+    query_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     requested_count: int = Field(ge=1, le=10)
     requested_at: str
     local_request_id: str
@@ -155,6 +158,8 @@ class SourceSearchAttempt(BaseModel):
     model_config = ConfigDict(extra="forbid", frozen=True)
 
     engine: str
+    query_strategy: str = "original"
+    query_sha256: str | None = Field(default=None, pattern=r"^[a-f0-9]{64}$")
     requested_count: int
     raw_result_count: int
     scanned_result_count: int

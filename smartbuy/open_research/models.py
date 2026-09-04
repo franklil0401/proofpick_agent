@@ -49,7 +49,7 @@ class AlternateLink(FrozenModel):
 
 
 class ExtractedSnippet(FrozenModel):
-    kind: Literal["json_ld", "specification", "visible_text"]
+    kind: Literal["json_ld", "embedded_json", "specification", "visible_text"]
     text: str = Field(min_length=1, max_length=1_000)
     locator: str = Field(min_length=1, max_length=300)
 

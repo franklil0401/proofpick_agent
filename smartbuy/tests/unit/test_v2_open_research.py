@@ -119,6 +119,16 @@ def html_page() -> str:
     </body></html>"""
 
 
+def modern_html_page() -> str:
+    return """<!doctype html><html lang="en-US"><head>
+    <title>Acme Vision X900 official specifications</title>
+    <script type="application/json">{"product":{"model":"X900","usb4":"USB4"}}</script>
+    </head><body><div>Acme Vision X900</div>
+    <div class="spec"><span>Battery</span><span>72 Wh</span></div>
+    <div class="spec"><span>Graphics</span><span>NVIDIA GeForce RTX 5070</span></div>
+    </body></html>"""
+
+
 @pytest.mark.asyncio
 async def test_static_extractor_success_and_redirect_checks(tmp_path) -> None:
     requests: list[str] = []
@@ -361,6 +371,51 @@ async def test_full_open_pipeline_stores_minimal_evidence_outside_repo(tmp_path)
     assert all(item.evidence_scope == "open" for item in stored.records)
     assert all(item.usable_for_trusted_checker is False for item in stored.records)
     assert not list(tmp_path.rglob("*.html"))
+
+
+def test_parser_covers_embedded_json_and_div_span_spec_text() -> None:
+    from smartbuy.open_research.html_parser import parse_html
+
+    parsed = parse_html(
+        modern_html_page(),
+        base_url="https://example.com/en-us/products/x900",
+        target_terms={"usb4", "battery", "graphics"},
+        target_model="X900",
+        max_snippets=100,
+    )
+    assert any(item.kind == "embedded_json" and "USB4" in item.text for item in parsed.snippets)
+    assert any("Battery | 72 Wh" in item.text for item in parsed.snippets)
+    assert any("Graphics | NVIDIA GeForce RTX 5070" in item.text for item in parsed.snippets)
+
+
+@pytest.mark.asyncio
+async def test_extractor_rechecks_page_model_after_title_metadata_discovery() -> None:
+    wrong = html_page().replace("PD3226G", "OTHER-9000")
+    client = httpx.AsyncClient(
+        transport=httpx.MockTransport(
+            lambda request: httpx.Response(
+                200,
+                text=wrong,
+                headers={"content-type": "text/html"},
+                request=request,
+            )
+        )
+    )
+    settings = OpenResearchSettings(enabled=True)
+    extractor = StaticHTMLExtractor(
+        settings,
+        safety_policy=URLSafetyPolicy(public_resolver),
+        client=client,
+    )
+    result = await extractor.extract(
+        candidate(url="https://www.benq.com/en-us/product/generic.html"),
+        target_fields=["resolution"],
+        field_terms={"resolution"},
+        allowed_domains=["benq.com"],
+    )
+    await client.aclose()
+    assert result.status == ExtractionStatus.EXTRACTION_INCOMPLETE
+    assert result.error == "final_page_model_not_matched"
 
 
 def open_record(

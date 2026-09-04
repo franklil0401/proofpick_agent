@@ -34,11 +34,19 @@ _FIELD_TERMS: dict[str, set[str]] = {
     "battery_wh": {"battery", "watt hour", "wh", "电池"},
     "charger_w": {"adapter", "charger", "power supply", "适配器", "充电器"},
     "cpu_model": {"processor", "cpu", "处理器"},
-    "gpu_model": {"graphics", "gpu", "显卡"},
+    "gpu_model": {"graphics", "gpu", "geforce", "radeon", "显卡"},
     "usb_c": {"usb-c", "usb type-c", "type-c"},
     "thunderbolt": {"thunderbolt", "雷电", "雷雳"},
     "hdmi": {"hdmi"},
     "operating_system": {"operating system", "windows", "ubuntu", "操作系统"},
+    "usb4": {"usb4", "usb 4"},
+    "bluetooth_version": {"bluetooth", "蓝牙版本"},
+    "usb_audio": {"usb audio", "usb-c audio", "digital audio"},
+    "supported_platforms": {"platform", "compatibility", "playstation", "xbox", "pc"},
+    "battery_hours": {"battery life", "battery", "hours"},
+    "battery_hours_anc": {"battery life", "noise cancelling", "anc", "hours"},
+    "weight_g": {"weight", "grams", "重量"},
+    "water_resistance": {"water resistant", "sweat resistant", "ipx"},
     "warranty": {"warranty", "保修"},
     "release_date": {"release date", "发布日期"},
 }
@@ -195,6 +203,14 @@ def _propose(
             return value, "kg"
         pounds = _number(r"(?<!\d)(\d{1,3}(?:\.\d+)?)\s*(?:lb|lbs|pounds?)\b", text)
         return (round(pounds * 0.45359237, 6), "kg") if pounds is not None else None
+    if field_id == "weight_g":
+        if "weight" not in folded and "重量" not in text:
+            return None
+        value = _number(r"(?:weight|重量)\D{0,40}(\d{1,4}(?:\.\d+)?)\s*(?:g|grams?)\b", text)
+        if value is not None:
+            return value, "g"
+        ounces = _number(r"(?:weight|重量)\D{0,40}(\d{1,3}(?:\.\d+)?)\s*(?:oz|ounces?)\b", text)
+        return (round(ounces * 28.349523125, 6), "g") if ounces is not None else None
     if field_id in {"memory_gb", "storage_gb"}:
         terms = (
             ("memory", "ram", "内存")
@@ -213,18 +229,67 @@ def _propose(
             return None
         value = _number(r"(?<!\d)(\d{2,3}(?:\.\d+)?)\s*w(?:att)?[- ]?h(?:our)?s?\b", text)
         return (value, "Wh") if value is not None else None
+    if field_id in {"battery_hours", "battery_hours_anc"}:
+        if not any(token in folded for token in ("battery", "hours", "hrs", "续航")):
+            return None
+        if field_id == "battery_hours_anc" and not any(
+            token in folded
+            for token in ("anc", "noise cancel", "noise-cancel", "降噪")
+        ):
+            return None
+        values = [
+            float(item)
+            for item in re.findall(
+                r"(?<!\d)(\d{1,3}(?:\.\d+)?)\s*(?:hours?|hrs?|小时)\b",
+                text,
+                re.IGNORECASE,
+            )
+        ]
+        return (max(values), "h") if values else None
     if field_id == "charger_w":
         if not any(token in folded for token in ("adapter", "charger", "power supply")):
             return None
         value = _number(r"(?<!\d)(\d{2,3}(?:\.\d+)?)\s*w\b", text)
         return (value, "W") if value is not None else None
-    if field_id in {"usb_c", "thunderbolt", "hdmi"}:
+    if field_id in {"usb_c", "thunderbolt", "usb4", "hdmi"}:
         tokens = {
             "usb_c": ("usb-c", "usb type-c", "type-c"),
             "thunderbolt": ("thunderbolt",),
+            "usb4": ("usb4", "usb 4"),
             "hdmi": ("hdmi",),
         }[field_id]
         return (True, None) if any(token in folded for token in tokens) else None
+    if field_id == "gpu_model":
+        match = re.search(
+            r"\b((?:nvidia\s+)?geforce\s+(?:rtx|gtx)\s+[a-z0-9 -]{2,30}|"
+            r"(?:amd\s+)?radeon\s+[a-z0-9 -]{2,30}|intel\s+arc\s+[a-z0-9 -]{1,24})",
+            folded,
+        )
+        return (" ".join(match.group(1).split()).upper(), None) if match else None
+    if field_id == "bluetooth_version":
+        match = re.search(r"\bbluetooth(?:®)?\s*(?:version\s*)?(\d(?:\.\d)?)\b", folded)
+        return (float(match.group(1)), None) if match else None
+    if field_id == "usb_audio":
+        if any(token in folded for token in ("usb audio", "usb-c audio", "digital audio over usb")):
+            return True, None
+        return None
+    if field_id == "supported_platforms":
+        values = [
+            value
+            for token, value in (
+                ("playstation 5", "PS5"),
+                ("ps5", "PS5"),
+                ("xbox", "Xbox"),
+                ("nintendo switch", "Nintendo Switch"),
+                ("windows", "PC"),
+                (" pc", "PC"),
+            )
+            if token in folded
+        ]
+        return (list(dict.fromkeys(values)), None) if values else None
+    if field_id == "water_resistance":
+        match = re.search(r"\b(ipx[457])\b", folded)
+        return (match.group(1).upper(), None) if match else None
     if field_id == "operating_system":
         match = re.search(r"\b(windows\s+1[01](?:\s+(?:home|pro))?|ubuntu(?:\s+linux)?)\b", folded)
         return (match.group(1).title(), None) if match else None

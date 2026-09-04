@@ -53,6 +53,9 @@ class _Parser(HTMLParser):
         self.json_ld_depth = 0
         self.json_ld_parts: list[str] = []
         self.json_ld_documents: list[str] = []
+        self.embedded_json_depth = 0
+        self.embedded_json_parts: list[str] = []
+        self.embedded_json_documents: list[str] = []
         self.block_tag: str | None = None
         self.block_parts: list[str] = []
         self.blocks: list[tuple[str, str]] = []
@@ -63,6 +66,7 @@ class _Parser(HTMLParser):
         self.dd_parts: list[str] | None = None
         self.definition_pairs: list[tuple[str, str]] = []
         self.last_dt: str | None = None
+        self.text_nodes: list[tuple[str, str]] = []
 
     def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
         tag = tag.casefold()
@@ -79,9 +83,13 @@ class _Parser(HTMLParser):
                 self.alternates.append((href, attributes.get("hreflang")))
         if tag == "script":
             self.script_count += 1
-            if (attributes.get("type") or "").casefold() == "application/ld+json":
+            script_type = (attributes.get("type") or "").casefold()
+            if script_type == "application/ld+json":
                 self.json_ld_depth += 1
                 self.json_ld_parts = []
+            elif script_type in {"application/json", "application/product+json"}:
+                self.embedded_json_depth += 1
+                self.embedded_json_parts = []
             else:
                 self.skip_depth += 1
             return
@@ -110,6 +118,12 @@ class _Parser(HTMLParser):
             if document:
                 self.json_ld_documents.append(document[:200_000])
             self.json_ld_parts = []
+        elif tag == "script" and self.embedded_json_depth:
+            self.embedded_json_depth -= 1
+            document = "".join(self.embedded_json_parts).strip()
+            if document:
+                self.embedded_json_documents.append(document[:500_000])
+            self.embedded_json_parts = []
         elif tag in _SKIP_TAGS and self.skip_depth:
             self.skip_depth -= 1
         elif not self.skip_depth:
@@ -143,11 +157,16 @@ class _Parser(HTMLParser):
         if self.json_ld_depth:
             self.json_ld_parts.append(data)
             return
+        if self.embedded_json_depth:
+            self.embedded_json_parts.append(data)
+            return
         if self.skip_depth:
             return
         text = _clean(data)
         if not text:
             return
+        if len(self.text_nodes) < 10_000:
+            self.text_nodes.append((self.stack[-1] if self.stack else "text", text[:1_000]))
         if self.stack and self.stack[-1] == "title":
             self.title_parts.append(text)
         if self.block_tag is not None:
@@ -172,6 +191,8 @@ def _walk_json(value: Any, path: str = "jsonld") -> list[tuple[str, str]]:
                 output.append((f"{path}.{key}", f"{key}: {item}"))
             if isinstance(item, (dict, list)):
                 output.extend(_walk_json(item, f"{path}.{key}"))
+            elif isinstance(item, (str, int, float, bool)):
+                output.append((f"{path}.{key}", f"{key}: {item}"))
     elif isinstance(value, list):
         for index, item in enumerate(value[:100]):
             output.extend(_walk_json(item, f"{path}[{index}]"))
@@ -208,6 +229,14 @@ def parse_html(
         for locator, text in _walk_json(payload, f"jsonld[{document_index}]"):
             add("json_ld", text, locator)
 
+    for document_index, document in enumerate(parser.embedded_json_documents[:20]):
+        try:
+            payload = json.loads(document)
+        except (json.JSONDecodeError, TypeError):
+            continue
+        for locator, text in _walk_json(payload, f"embedded[{document_index}]")[:5_000]:
+            add("embedded_json", text, locator)
+
     for index, row in enumerate(parser.rows[:1_000]):
         add("specification", " | ".join(row), f"table-row[{index}]")
     for index, (name, value) in enumerate(parser.definition_pairs[:1_000]):
@@ -228,6 +257,11 @@ def parse_html(
         add("visible_text", combined, f"{tag}[{index}]")
         previous = text
 
+    for index, (tag, text) in enumerate(parser.text_nodes[:10_000]):
+        before = parser.text_nodes[index - 1][1] if index else ""
+        after = parser.text_nodes[index + 1][1] if index + 1 < len(parser.text_nodes) else ""
+        add("visible_text", " | ".join(item for item in (before, text, after) if item), f"text-node:{tag}[{index}]")
+
     alternates: list[AlternateLink] = []
     for href, hreflang in parser.alternates[:50]:
         absolute = urljoin(base_url, href)
@@ -237,7 +271,7 @@ def parse_html(
         if len(alternates) >= 30:
             break
     title = _clean(" ".join(parser.title_parts))[:500] or None
-    visible_length = sum(len(text) for _, text in parser.blocks)
+    visible_length = sum(len(text) for _, text in parser.text_nodes)
     return ParsedHTML(
         title=title,
         language=(parser.language[:32] if parser.language else None),

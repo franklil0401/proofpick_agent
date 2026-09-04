@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import asyncio
+import hashlib
 import json
 import time
 import uuid
@@ -55,7 +56,7 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
     """Search official pages; never extract or promote their contents to evidence."""
 
     name = "zhipu"
-    version = "v2-3.1"
+    version = "v2-9e.1"
     _RETRYABLE_STATUS = frozenset({429, 500, 502, 503, 504})
 
     def __init__(
@@ -273,6 +274,8 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         request: SourceSearchRequest,
         engine: str,
         budget: _SearchBudget,
+        *,
+        query_strategy: str,
     ) -> SourceEngineOutcome:
         cache_key = self.cache.key(
             request,
@@ -317,6 +320,8 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
                 provider=self.name,
                 provider_version=self.version,
                 engine=engine,
+                query_strategy=query_strategy,
+                query_sha256=hashlib.sha256(request.query.encode("utf-8")).hexdigest(),
                 requested_count=min(request.max_results, self.settings.requested_count),
                 requested_at=requested_at,
                 local_request_id=local_request_id,
@@ -341,6 +346,8 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
                 provider=self.name,
                 provider_version=self.version,
                 engine=engine,
+                query_strategy=query_strategy,
+                query_sha256=hashlib.sha256(request.query.encode("utf-8")).hexdigest(),
                 requested_count=min(request.max_results, self.settings.requested_count),
                 requested_at=requested_at,
                 local_request_id=local_request_id,
@@ -433,7 +440,15 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         budget = _SearchBudget()
         outcomes = []
 
-        primary = await self._search_engine(request, self.settings.primary_engine, budget)
+        primary_request = request.model_copy(
+            update={"query": self._query_variant(request, fallback=False)}
+        )
+        primary = await self._search_engine(
+            primary_request,
+            self.settings.primary_engine,
+            budget,
+            query_strategy="official_fields_region",
+        )
         outcomes.append(primary)
         auth_failed = primary.error == "ZhipuSourceSearchAuthError"
         if (
@@ -441,7 +456,15 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
             and not auth_failed
             and budget.calls < self.settings.max_search_calls
         ):
-            fallback = await self._search_engine(request, self.settings.fallback_engine, budget)
+            fallback_request = request.model_copy(
+                update={"query": self._query_variant(request, fallback=True)}
+            )
+            fallback = await self._search_engine(
+                fallback_request,
+                self.settings.fallback_engine,
+                budget,
+                query_strategy="technical_specs_site_fallback",
+            )
             outcomes.append(fallback)
 
         usable = []
@@ -474,6 +497,8 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
         attempts = [
             SourceSearchAttempt(
                 engine=item.engine,
+                query_strategy=item.query_strategy,
+                query_sha256=item.query_sha256,
                 requested_count=item.requested_count,
                 raw_result_count=item.stats.raw_result_count,
                 scanned_result_count=item.stats.scanned_result_count,
@@ -526,3 +551,20 @@ class ZhipuSourceSearchProvider(SourceSearchProvider):
             estimated_cost_cny=round(sum(item.estimated_cost_cny for item in outcomes), 8),
             trigger_reason=request.trigger_reason,
         )
+
+    @staticmethod
+    def _query_variant(request: SourceSearchRequest, *, fallback: bool) -> str:
+        """Build two bounded, auditable queries without product-specific rules."""
+        fields = " ".join(field.replace("_", " ") for field in request.target_fields)
+        domain = request.allowed_domains[0]
+        if fallback:
+            value = (
+                f'{request.target_model} {request.region} official site:{domain} '
+                f'technical specifications {fields}'
+            )
+        else:
+            value = (
+                f'{request.target_model} {request.region} official site:{domain} '
+                f'{fields} {request.query}'
+            )
+        return " ".join(value.split())[:200]

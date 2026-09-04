@@ -93,3 +93,44 @@ def test_headphone_pack_drives_open_research_normalization() -> None:
     assert values["supported_codecs"] == ["LDAC", "AAC"]
     assert all(record.evidence_scope == "open" for record in records)
     assert all(record.usable_for_trusted_checker is False for record in records)
+
+
+def test_domain_fields_drive_generic_online_normalization_for_unseen_identifiers() -> None:
+    pack = DomainPackLoader().load(Path("smartbuy/domain_packs/headphone"))
+    extraction = WebExtractionResult(
+        requested_url="https://audio.example/en-us/x900",
+        final_url="https://audio.example/en-us/x900",
+        title="Acme Audio X900 official specifications",
+        detected_region="US",
+        fetched_at="2026-09-04T00:00:00Z",
+        content_hash="b" * 64,
+        status=ExtractionStatus.SUCCESS,
+        snippets=[ExtractedSnippet(
+            kind="specification",
+            locator="spec[0]",
+            text=(
+                "Acme Audio X900 Bluetooth 5.4; battery life with ANC 30 hours; "
+                "weight 240 grams; USB audio; compatible with PC, PS5 and Xbox; IPX4."
+            ),
+        )],
+    )
+    fields = [
+        "bluetooth_version", "battery_hours_anc", "weight_g", "usb_audio",
+        "supported_platforms", "water_resistance",
+    ]
+    records, unsupported = EvidenceNormalizer(pack).normalize(
+        extraction,
+        user_scope="u", session_scope="s", thread_scope="t", request_scope="r",
+        provisional_product_id="acme-x900-us-open", target_model="X900",
+        product_region="US", target_fields=fields, configuration="X900-US",
+    )
+    values = {item.field_name: item.normalized_value for item in records}
+    assert unsupported == []
+    assert values == {
+        "bluetooth_version": 5.4,
+        "battery_hours_anc": 30.0,
+        "weight_g": 240.0,
+        "usb_audio": True,
+        "supported_platforms": ["PS5", "Xbox", "PC"],
+        "water_resistance": "IPX4",
+    }

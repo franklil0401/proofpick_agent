@@ -17,6 +17,7 @@ from smartbuy.source_search import (
     SourceSearchTriggerReason,
     assert_source_candidates_isolated,
 )
+from smartbuy.source_search.validator import infer_region
 from smartbuy.tools import SourceSearchTool
 
 
@@ -180,10 +181,12 @@ def test_validator_caps_raw_scan_and_usable_results() -> None:
 @pytest.mark.asyncio
 async def test_search_pro_falls_back_to_sogou_and_preserves_safe_lists() -> None:
     engines: list[str] = []
+    queries: list[str] = []
 
     def handler(request: httpx.Request) -> httpx.Response:
         body = json.loads(request.content)
         engines.append(body["search_engine"])
+        queries.append(body["search_query"])
         if body["search_engine"] == "search_pro":
             results = [raw_item("https://www.dell.com/en-us/shop/u2723qe/apd/1")]
         else:
@@ -196,6 +199,8 @@ async def test_search_pro_falls_back_to_sogou_and_preserves_safe_lists() -> None
 
     assert result.status == SourceSearchStatus.SUCCESS
     assert engines == ["search_pro", "search_pro_sogou"]
+    assert queries[0] != queries[1]
+    assert all("U2723QE" in item and "site:dell.com" in item for item in queries)
     assert result.usable_result_count == 1
     assert result.usable_candidates[0].observed_region == "CN"
     assert result.navigation_candidates[0].observed_region == "US"
@@ -415,3 +420,25 @@ def test_source_candidates_cannot_enter_evidence_or_checker() -> None:
         candidate.to_checker_input()
     with pytest.raises(SourceIsolationError):
         assert_source_candidates_isolated(outcome.usable_candidates)
+
+
+def test_region_inference_uses_bounded_path_segments_and_locale_query() -> None:
+    assert infer_region("https://example.com/products/en-us/model") == "US"
+    assert infer_region("https://example.com/product?locale=en-CA") == "CA"
+    assert infer_region("https://example.com/about-us/product") == "unknown"
+
+
+def test_exact_title_can_discover_generic_official_url_but_remains_isolated() -> None:
+    validator = DeterministicSourceValidator(source_settings().configured_domains)
+    outcome = validator.validate(
+        [raw_item("https://www.dell.com/en-us/shop/product/apd/123", title="Dell U2723QE")],
+        source_request(region="US"),
+        provider="zhipu",
+        engine="search_pro",
+        queried_at="2026-09-04T00:00:00Z",
+        local_request_id="local-title",
+        provider_request_id=None,
+    )
+    assert len(outcome.usable_candidates) == 1
+    assert outcome.usable_candidates[0].model_match_source == "title"
+    assert outcome.usable_candidates[0].usable_for_evidence is False

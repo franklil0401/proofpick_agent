@@ -19,7 +19,7 @@ from smartbuy.open_research.models import (
 from smartbuy.open_research.settings import OpenResearchSettings
 from smartbuy.open_research.url_safety import URLSafetyError, URLSafetyPolicy
 from smartbuy.source_search import SourceCandidate, SourceCandidateStatus
-from smartbuy.source_search.validator import infer_region, model_matches_url
+from smartbuy.source_search.validator import infer_region, model_matches_title, model_matches_url
 
 
 class WebExtractor(Protocol):
@@ -41,8 +41,10 @@ def _language_region(language: str | None) -> str:
     if not language:
         return "unknown"
     normalized = language.replace("_", "-").casefold()
-    mapping = {"zh-cn": "CN", "en-us": "US", "en-ca": "CA"}
-    return mapping.get(normalized, "unknown")
+    parts = normalized.split("-")
+    if len(parts) >= 2 and len(parts[-1]) == 2 and parts[-1].isalpha():
+        return parts[-1].upper()
+    return "unknown"
 
 
 def _detected_region(url: str, language: str | None) -> str:
@@ -52,6 +54,19 @@ def _detected_region(url: str, language: str | None) -> str:
 
 def _hreflang_region(value: str | None) -> str:
     return _language_region(value)
+
+
+def _page_matches_model(parsed: ParsedHTML, target_model: str, final_url: str) -> bool:
+    if model_matches_url(target_model, final_url) or model_matches_title(target_model, parsed.title):
+        return True
+    compact = "".join(character for character in target_model.casefold() if character.isalnum())
+    return bool(
+        compact
+        and any(
+            compact in "".join(character for character in item.text.casefold() if character.isalnum())
+            for item in parsed.snippets
+        )
+    )
 
 
 class StaticHTMLExtractor:
@@ -115,9 +130,12 @@ class StaticHTMLExtractor:
         *,
         allowed_domains: list[str],
         target_model: str,
+        page_model_confirmed: bool,
     ) -> tuple[str | None, list[AlternateLink]]:
         canonical: str | None = None
-        if parsed.canonical_url and model_matches_url(target_model, parsed.canonical_url):
+        if parsed.canonical_url and (
+            page_model_confirmed or model_matches_url(target_model, parsed.canonical_url)
+        ):
             try:
                 canonical = (await self.safety_policy.validate(
                     parsed.canonical_url, allowed_domains
@@ -126,7 +144,7 @@ class StaticHTMLExtractor:
                 canonical = None
         alternates: list[AlternateLink] = []
         for item in parsed.alternate_links:
-            if not model_matches_url(target_model, item.url):
+            if not page_model_confirmed and not model_matches_url(target_model, item.url):
                 continue
             try:
                 safe = await self.safety_policy.validate(item.url, allowed_domains)
@@ -276,13 +294,20 @@ class StaticHTMLExtractor:
                             target_model=candidate.target_model,
                             max_snippets=self.settings.max_snippets,
                         )
+                        page_model_confirmed = _page_matches_model(
+                            parsed, candidate.target_model, current_url
+                        )
                         canonical, alternates = await self._safe_links(
                             parsed,
                             allowed_domains=allowed_domains,
                             target_model=candidate.target_model,
+                            page_model_confirmed=page_model_confirmed,
                         )
                         detected_region = _detected_region(current_url, parsed.language)
-                        if not allow_navigation and detected_region != candidate.target_region:
+                        if not page_model_confirmed:
+                            status = ExtractionStatus.EXTRACTION_INCOMPLETE
+                            error = "final_page_model_not_matched"
+                        elif not allow_navigation and detected_region != candidate.target_region:
                             status = ExtractionStatus.EXTRACTION_INCOMPLETE
                             error = "final_page_region_not_matched"
                         elif not parsed.snippets:
@@ -365,6 +390,35 @@ class StaticHTMLExtractor:
             allowed_domains=allowed_domains,
             allow_navigation=True,
         )
+        if (
+            inspection.status == ExtractionStatus.SUCCESS
+            and inspection.detected_region == candidate.target_region
+            and inspection.final_url
+        ):
+            try:
+                safe = await self.safety_policy.validate(
+                    inspection.final_url, allowed_domains
+                )
+            except URLSafetyError:
+                safe = None
+            if safe is not None:
+                return inspection, SourceCandidate(
+                    title=inspection.title or candidate.title,
+                    url=safe.url,
+                    hostname=safe.hostname,
+                    site_name=candidate.site_name,
+                    date_published=candidate.date_published,
+                    queried_at=candidate.queried_at,
+                    local_request_id=candidate.local_request_id,
+                    provider_request_id=candidate.provider_request_id,
+                    provider=candidate.provider,
+                    engine="final_page_region_discovery",
+                    target_model=candidate.target_model,
+                    target_region=candidate.target_region,
+                    observed_region=candidate.target_region,
+                    status=SourceCandidateStatus.REGION_MATCHED,
+                    model_match_source=candidate.model_match_source,
+                )
         links: list[tuple[str, str]] = []
         if inspection.canonical_url:
             links.append((inspection.canonical_url, infer_region(inspection.canonical_url)))
@@ -397,5 +451,8 @@ class StaticHTMLExtractor:
                 target_region=candidate.target_region,
                 observed_region=observed_region,
                 status=SourceCandidateStatus.REGION_MATCHED,
+                model_match_source=(
+                    "url" if model_matches_url(candidate.target_model, safe.url) else "title"
+                ),
             )
         return inspection, None
