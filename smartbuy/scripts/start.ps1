@@ -5,7 +5,9 @@ param(
     [string]$SmartBuyRuntimeRoot = "C:/ai/smartbuy-stage3",
     [string]$YoutuRuntimeRoot = "C:/ai/youtu-rag-runtime",
     [string]$ServiceRuntimeRoot = "C:/ai/smartbuy-stage7",
-    [int]$Port = 8000
+    [string]$V2RuntimeRoot = "C:/ai/proofpick-v2-rc",
+    [int]$Port = 8000,
+    [switch]$OfflineReplay
 )
 
 $ErrorActionPreference = "Stop"
@@ -14,8 +16,21 @@ Set-StrictMode -Version Latest
 $projectRoot = [IO.Path]::GetFullPath((Join-Path $PSScriptRoot "../.."))
 $databasePath = Join-Path $SmartBuyRuntimeRoot "smartbuy_monitors_v1.sqlite"
 $indexPath = Join-Path $SmartBuyRuntimeRoot "vector_store_text_embedding_v4_1024/chroma.sqlite3"
+$v2DataPointers = @(
+    (Join-Path $V2RuntimeRoot "laptop/data/current_laptop_product_pack.json"),
+    (Join-Path $V2RuntimeRoot "headphone/data/current_headphone_product_pack.json")
+)
+$v2IndexPointers = @(
+    (Join-Path $V2RuntimeRoot "laptop/index/current_laptop_index.json"),
+    (Join-Path $V2RuntimeRoot "headphone/index/current_headphone_index.json")
+)
 $statePath = Join-Path $ServiceRuntimeRoot "service_state.json"
 $started = [ordered]@{ minio_pid = $null; api_pid = $null }
+
+if ($OfflineReplay) {
+    & (Join-Path $PSScriptRoot "replay.ps1") -Port 8088 -ServiceRuntimeRoot $ServiceRuntimeRoot
+    exit $LASTEXITCODE
+}
 
 function Test-Listening {
     param([int]$PortNumber)
@@ -46,13 +61,18 @@ function Stop-ProcessTree {
     Stop-Process -Id $ProcessId -Force -ErrorAction SilentlyContinue
 }
 
-& (Join-Path $PSScriptRoot "preflight.ps1") -MinioPath $MinioPath -RuntimeRoot $SmartBuyRuntimeRoot
+& (Join-Path $PSScriptRoot "preflight.ps1") -MinioPath $MinioPath -RuntimeRoot $V2RuntimeRoot
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 if (-not (Test-Path -LiteralPath $databasePath -PathType Leaf)) {
     throw "SQLite is missing. Run smartbuy/scripts/bootstrap.ps1 first."
 }
 if (-not (Test-Path -LiteralPath $indexPath -PathType Leaf)) {
     throw "Chroma index is missing. Run bootstrap.ps1 without -SkipIndexBuild."
+}
+foreach ($pointer in @($v2DataPointers + $v2IndexPointers)) {
+    if (-not (Test-Path -LiteralPath $pointer -PathType Leaf)) {
+        throw "V2 Product Pack or index pointer is missing. Run bootstrap.ps1 without -SkipIndexBuild."
+    }
 }
 
 New-Item -ItemType Directory -Force -Path $MinioData, $YoutuRuntimeRoot, $ServiceRuntimeRoot | Out-Null
@@ -61,6 +81,9 @@ if ([string]::IsNullOrWhiteSpace($env:MINIO_SECRET_KEY)) { $env:MINIO_SECRET_KEY
 $env:SMARTBUY_DB_PATH = [IO.Path]::GetFullPath($databasePath)
 $env:SMARTBUY_INDEX_PATH = [IO.Path]::GetFullPath((Split-Path -Parent $indexPath))
 $env:SMARTBUY_MEMORY_PATH = [IO.Path]::GetFullPath((Join-Path $SmartBuyRuntimeRoot "preferences.json"))
+$env:PROOFPICK_V2_RUNTIME_ROOT = [IO.Path]::GetFullPath($V2RuntimeRoot)
+$env:PROOFPICK_V2_MEMORY_PATH = [IO.Path]::GetFullPath((Join-Path $V2RuntimeRoot "memory"))
+$env:PROOFPICK_DOMAIN_AGENT_ENABLED = "true"
 
 try {
     if (-not (Test-Listening 9000)) {
@@ -83,7 +106,7 @@ try {
         $started.api_pid = $api.Id
     }
 
-    foreach ($path in @("/health", "/", "/monitor")) {
+    foreach ($path in @("/health", "/", "/monitor", "/api/smartbuy/portfolio/capabilities")) {
         if (-not (Wait-Http ("http://127.0.0.1:{0}{1}" -f $Port, $path) 90)) {
             throw "Service check failed for $path."
         }
@@ -96,7 +119,7 @@ try {
     }
     $state | ConvertTo-Json | Set-Content -LiteralPath $statePath -Encoding UTF8
     Write-Host "MinIO API/Console: http://127.0.0.1:9000 / http://127.0.0.1:9001"
-    Write-Host ("WebUI/health/monitor: http://127.0.0.1:{0}/" -f $Port)
+    Write-Host ("ProofPick UI/health/monitor: http://127.0.0.1:{0}/" -f $Port)
     Write-Host "Service state contains process IDs only; no credential was persisted."
 }
 catch {

@@ -24,7 +24,13 @@ if (-not $statePath.StartsWith($expectedPrefix, [StringComparison]::OrdinalIgnor
     throw "Refusing to read service state outside the explicit runtime directory."
 }
 if (-not (Test-Path -LiteralPath $statePath -PathType Leaf)) {
-    Write-Host "No SmartBuy-owned service state exists; nothing was stopped."
+    $replayState = Join-Path $runtimeFull "replay_state.json"
+    if (Test-Path -LiteralPath $replayState -PathType Leaf) {
+        & (Join-Path $PSScriptRoot "replay.ps1") -ServiceRuntimeRoot $runtimeFull -Stop
+    }
+    else {
+        Write-Host "No ProofPick-owned service state exists; nothing was stopped."
+    }
     exit 0
 }
 

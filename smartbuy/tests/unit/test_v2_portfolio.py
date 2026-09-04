@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import asyncio
 import json
 from datetime import UTC, datetime, timedelta
 from pathlib import Path
@@ -10,6 +11,7 @@ from smartbuy.api.portfolio_runtime import PortfolioRuntimeManager
 from smartbuy.portfolio import load_demo_bundle
 from smartbuy.portfolio.dynamic_facts import assess_dynamic_observation
 from smartbuy.scripts.verify_v2_9a_demos import run
+from smartbuy.scripts.build_v2_release_runtime import build
 
 
 ROOT = Path(__file__).resolve().parents[3]
@@ -99,6 +101,14 @@ def test_portfolio_runtime_is_default_off(monkeypatch) -> None:
     assert PortfolioRuntimeManager.enabled() is False
     with pytest.raises(RuntimeError, match="domain_agent_disabled"):
         PortfolioRuntimeManager().get("laptop")
+
+
+def test_v2_release_runtime_product_pack_build_is_offline_and_idempotent(tmp_path) -> None:
+    first = asyncio.run(build(tmp_path, build_indices=False))
+    second = asyncio.run(build(tmp_path, build_indices=False))
+    assert first == second
+    assert set(first) == {"laptop", "headphone"}
+    assert all(row["index"] == "not_built" for row in first.values())
 
 
 def test_replay_json_is_valid_json_and_contains_no_absolute_private_path() -> None:

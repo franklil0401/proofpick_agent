@@ -1,7 +1,8 @@
 [CmdletBinding()]
 param(
     [string]$MinioPath = "C:/ai/minio/minio.exe",
-    [string]$RuntimeRoot = "C:/ai/smartbuy-stage3"
+    [string]$RuntimeRoot = "C:/ai/proofpick-v2-rc",
+    [switch]$OfflineReplay
 )
 
 $ErrorActionPreference = "Stop"
@@ -41,15 +42,15 @@ $gitVersion = if ($git) { (& git --version 2>&1 | Out-String).Trim() } else { "m
 Add-Check "Git" ([bool]$git) $gitVersion
 
 Add-Check "vendor subtree" (Test-Path (Join-Path $projectRoot "vendor/youtu-rag/uv.lock")) "vendor/youtu-rag/uv.lock"
-Add-Check "MinIO binary" (Test-Path -LiteralPath $MinioPath -PathType Leaf) "external binary only"
+Add-Check "MinIO binary" ($OfflineReplay -or (Test-Path -LiteralPath $MinioPath -PathType Leaf)) $(if ($OfflineReplay) { "not required for offline replay" } else { "external binary only" })
 $apiConfigured = Test-Configured "Qianwen_api_key"
 $workspaceConfigured = Test-Configured "Qianwen_workspace_id"
 $minioUserConfigured = Test-Configured "MINIO_ROOT_USER"
 $minioPasswordConfigured = Test-Configured "MINIO_ROOT_PASSWORD"
-Add-Check "Qianwen_api_key" $apiConfigured $(if ($apiConfigured) { "configured" } else { "missing" })
-Add-Check "Qianwen_workspace_id" $workspaceConfigured $(if ($workspaceConfigured) { "configured" } else { "missing" })
-Add-Check "MINIO_ROOT_USER" $minioUserConfigured $(if ($minioUserConfigured) { "configured" } else { "missing" })
-Add-Check "MINIO_ROOT_PASSWORD" $minioPasswordConfigured $(if ($minioPasswordConfigured) { "configured" } else { "missing" })
+Add-Check "Qianwen_api_key" ($OfflineReplay -or $apiConfigured) $(if ($OfflineReplay) { "not required for offline replay" } elseif ($apiConfigured) { "configured" } else { "missing" })
+Add-Check "Qianwen_workspace_id" ($OfflineReplay -or $workspaceConfigured) $(if ($OfflineReplay) { "not required for offline replay" } elseif ($workspaceConfigured) { "configured" } else { "missing" })
+Add-Check "MINIO_ROOT_USER" ($OfflineReplay -or $minioUserConfigured) $(if ($OfflineReplay) { "not required for offline replay" } elseif ($minioUserConfigured) { "configured" } else { "missing" })
+Add-Check "MINIO_ROOT_PASSWORD" ($OfflineReplay -or $minioPasswordConfigured) $(if ($OfflineReplay) { "not required for offline replay" } elseif ($minioPasswordConfigured) { "configured" } else { "missing" })
 
 $projectPrefix = $projectRoot.TrimEnd('\', '/') + [IO.Path]::DirectorySeparatorChar
 $outsideProject = -not $runtimeFull.StartsWith($projectPrefix, [StringComparison]::OrdinalIgnoreCase)
