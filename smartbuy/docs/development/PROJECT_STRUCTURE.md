@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-04 |
-| 当前阶段 | V1 已冻结；V2-9B 独立结论为 Needs revision；V2-9C 修复后代码已冻结为 RC2，等待新的独立评测 |
+| 当前阶段 | V1 已冻结；V2-9D 第二次独立评测结论为 Needs revision；V2-9E 已完成通用修复与已暴露回归，仍等待新的独立 Holdout |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -299,7 +299,8 @@ proofpick_agent/
 │  │  └─ results/
 │  │     ├─ v2_6b_laptop_retrieval_first.json
 │  │     ├─ v2_6c_*            # 历史失败、暴露回归及 R2/R3 冻结 RC、Journal、首次结果；不可覆盖
-│  │     └─ v2_8_headphone_*   # Headphone 检索、工程首次/暴露回归与 Open Research 脱敏结果
+│  │     ├─ v2_8_headphone_*   # Headphone 检索、工程首次/暴露回归与 Open Research 脱敏结果
+│  │     └─ v2_9e_*            # 第二次独立评测后的 Trusted/Online 暴露回归与语义 Manifest
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -356,6 +357,10 @@ proofpick_agent/
 │  │  ├─ loader.py
 │  │  ├─ models.py
 │  │  └─ runtime.py
+│  ├─ reproducibility/
+│  │  ├─ __init__.py
+│  │  ├─ semantic_manifest.py   # 排除时间/路径/费用等运行噪声的稳定语义合同
+│  │  └─ v2_9e_manifest.py      # 从不可变生产 Commit 枚举成员并生成 V2-9E Manifest
 │  ├─ portfolio/
 │  │  ├─ demos.py              # 严格加载五个脱敏回放
 │  │  ├─ dynamic_facts.py      # URL/币种/时间/TTL/hash 动态观察安全判断
@@ -523,9 +528,13 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_release_candidate_rc2_manifest.md` | RC2 的生产 Commit/Tree、完整冻结成员列表、聚合哈希、三品类运行版本与质量基线 |
 | `smartbuy/docs/v2/v2_9c_rc2_handoff.md` | RC2 历史结果边界、Windows 复现证据及下一轮独立评测纪律 |
 | `smartbuy/eval/results/v2_9c_exposed_regression_summary.json` | 同一独立题集的脱敏已暴露回归评分；不是新 Holdout 或发布结论 |
+| `smartbuy/docs/v2/v2_9e_generalization_repair_report.md` | V2-9D 失败归因、通用修复、90+15 条暴露回归、Online 漏斗、费用与继续阻断发布的结论 |
+| `smartbuy/eval/results/v2_9e_exposed_*` | V2-9D 已暴露题集的 Trusted 首次修复回归和三轮 Online 漏斗结果；不覆盖独立首次证据 |
+| `smartbuy/eval/results/v2_9e_semantic_runtime_manifest.json` | 生产 Commit/Tree、三品类 Data/Index 合同和七组完整成员列表的可移植语义 Manifest |
 | `smartbuy/docs/release/v2_portfolio_release_notes_draft.md` | 仅供后续审核的 V2 Portfolio Release Notes 草案，本轮不发布 |
 | `smartbuy/docs/adr/0019-headphone-source-authority-and-pack-reuse.md` | Headphone 三层来源权限、主观证据边界及通用 Checker/Ranker 复用决策 |
 | `smartbuy/docs/adr/0020-separate-query-intent-scope-and-purchase-constraints.md` | 事实/比较字段、商品 Scope、购买约束、澄清和证据闭包的通用边界决策 |
+| `smartbuy/docs/adr/0021-generalized-intent-online-evidence-and-semantic-manifest.md` | V2-9E 通用语义修复、官方来源漏斗、Open/Trusted 隔离和稳定 Manifest 决策 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -598,6 +607,7 @@ proofpick_agent/
 | `smartbuy/observability/usage.py` | 不记录正文或凭据的内存 Token、延迟和成本账本 |
 | `smartbuy/observability/agent_events.py` | 有界、脱敏的 Agent 运行摘要和 Monitor 聚合 |
 | `smartbuy/observability/eval_ledger.py` | 阶段 6 统一运行/步骤账本 Schema、脱敏校验与 JSONL 输出 |
+| `smartbuy/reproducibility/semantic_manifest.py` / `v2_9e_manifest.py` | 明确成员集、稳定聚合哈希、三品类版本合同和独立运行审计 envelope |
 | `smartbuy/data/catalog/monitors_v1.json` | 12 个型号、来源、追加式价格和冲突证据的唯一 canonical 源数据 |
 | `smartbuy/data/laptop/laptop_configurations_v1.json` | Laptop Product Pack 的紧凑治理源：型号、地区、精确配置、官方来源与可核验字段；未知保留 null |
 | `smartbuy/data/headphone/headphone_configurations_v1.json` | Headphone Product Pack 的紧凑治理源：12 个精确配置、官方/专业实测/主观来源及字段级证据引用 |
@@ -694,7 +704,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9B 独立评测已完成并给出 `Needs revision`；V2-9C 完成通用修复与已暴露回归后，已将生产 Commit/Tree 文档化冻结为 RC2，但新的独立发布验证仍未执行。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9D 第二次独立评测仍给出 `Needs revision`；V2-9E 完成通用语义、比较闭包、澄清、Online 取证漏斗和可移植 Manifest 修复，但 90+15 条结果只能作为 exposed regression，且 Online 实际完成最高仍为 5/15。下一次发布判断必须使用独立评测方新建并单次运行的 Holdout。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 

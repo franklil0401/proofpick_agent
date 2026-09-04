@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-9B 独立结论为 Needs revision；V2-9C 已完成通用语义修复和 exposed regression，等待新 RC 的独立评测** |
+| 当前状态 | **V2-9D 第二次独立评测仍为 Needs revision；V2-9E 已完成通用修复与 exposed regression，但 Online 实际完成仍阻断发布** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-04 |
 
@@ -963,6 +963,8 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-9B 独立首次评测保留 Trusted `64/90` 与 Online Evidence 完成 `2/15`，发布结论为 `Needs revision`。V2-9C 已按七类根因修复通用理解、身份 Scope、约束、澄清、比较证据闭包和结果分类；同一 90 条任务的 exposed regression 为 `86/90`、Evidence `297/297`、安全越界 0。完整边界见 [V2-9C 报告](v2_9c_independent_evaluation_repair_report.md)与 [ADR-0020](../adr/0020-separate-query-intent-scope-and-purchase-constraints.md)。
+V2-9B 独立首次评测保留 Trusted `64/90` 与 Online Evidence 完成 `2/15`。RC2 的 V2-9D 第二次独立首次评测保留 Trusted `72/90`、硬约束 F1 `93.20%`、Evidence `343/357`、困难负例 `8/15`，以及 Online 安全终态 `15/15` 但实际 Evidence 完成 `0/15`；发布结论仍为 `Needs revision`。
 
-`86/90` 不能替代新的未见发布集。下一步只能在用户授权后生成新的 RC Commit/Manifest，并交给独立评测方创建和单次运行新任务；开发方不得自行制作下一套发布 Holdout。未经确认不得创建 PR、合并 `main`、Tag 或 Release。
+V2-9E 只在独立修复分支上做通用修复。相同 90 条 Trusted 的 exposed regression 为 `86/90`、Evidence `351/357`，随后四条通用语法定向回归为 `4/4`，没有在费用上限内再次运行完整 90 条。相同 15 条 Online 的三轮 exposed regression 实际完成依次为 `2/15`、`5/15`、`5/15`，最高仍低于内部 `8/15` 目标；安全隔离均保持为 0 越界。完整证据见 [V2-9E 报告](v2_9e_generalization_repair_report.md)与 [ADR-0021](../adr/0021-generalized-intent-online-evidence-and-semantic-manifest.md)。
+
+这些 90+15 条都已暴露，不能替代新的未见发布集。下一步只能在用户授权后冻结新的候选 Commit/Manifest，再交给独立评测方创建并单次运行新任务；开发方不得制作下一套发布 Holdout。Online 必须同时达到实际 Evidence 完成、字段覆盖和安全隔离门槛。未经确认不得创建 PR、合并 `main`、Tag 或 Release。
