@@ -12,6 +12,7 @@ from smartbuy.constraint_proposals.engine import NaturalConstraintEngine
 from smartbuy.constraints import CandidateConstraintVerifier, ConstraintNormalizer
 from smartbuy.db.build_database import build_database
 from smartbuy.decision_core.intent import QueryUnderstandingEngine
+from smartbuy.domain import UserRequirements
 from smartbuy.domain_packs import DomainPackLoader
 from smartbuy.identity import ProductIdentityResolver, ProductScopeType, QueryIntent
 from smartbuy.memory import DomainPreferenceMemoryStore
@@ -212,3 +213,95 @@ def test_monitor_pack_independent_filters_and_clarification(tmp_path: Path) -> N
     assert PurchaseDecisionAgent._infer_task_type(
         "只查 G2724D 中国版：刷新率和是否带 USB-C。", "filter"
     ) == "fact"
+
+
+@pytest.mark.asyncio
+async def test_pack_driven_compound_negation_and_numeric_version(tmp_path: Path) -> None:
+    agent = _domain_agent(tmp_path, "headphone")
+    report = await agent.run(
+        "美国版头戴式耳机，不带主动降噪，但需要无线接收器，蓝牙版本至少 5.4。"
+    )
+    active = {
+        item.field: (item.operator.value, item.normalized_value)
+        for item in report.constraint_set.active(hard_only=True, supported_only=True)
+    }
+    assert active["active_noise_cancellation"] == ("eq", False)
+    assert active["wireless_dongle"] == ("eq", True)
+    assert active["bluetooth_version"] == ("gte", 5.4)
+    assert "bluetooth" not in active
+    assert "wearing_style" not in active
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("domain_id", "query"),
+    [
+        ("laptop", "给我一台性能强一点的笔记本。"),
+        ("headphone", "我想要通话好一点的耳机。"),
+    ],
+)
+async def test_qualitative_request_without_threshold_pauses_before_tools(
+    tmp_path: Path, domain_id: str, query: str
+) -> None:
+    report = await _domain_agent(tmp_path, domain_id).run(query)
+    assert report.clarification_state == "pending"
+    assert report.tool_call_count == 0
+    assert report.recommended_model_ids == []
+
+
+@pytest.mark.asyncio
+@pytest.mark.parametrize(
+    ("domain_id", "query", "expected", "required_pairs"),
+    [
+        (
+            "laptop",
+            "美国版 XPS 13 OLED 与 FHD+ 配置的系统、分辨率和内存对比。",
+            {
+                "dell-xps13-9350-usexchcto9350lnl06-us",
+                "dell-xps13-9350-usexcpcto9350lnl04-us",
+            },
+            {"operating_system", "resolution", "memory_gb"},
+        ),
+        (
+            "headphone",
+            "Bose Ultra 二代头戴和耳塞的形态、续航对比。",
+            {
+                "bose-qc-ultra-headphones-2g-black-us",
+                "bose-qc-ultra-earbuds-2g-black-us",
+            },
+            {"form_factor", "battery_hours"},
+        ),
+        (
+            "headphone",
+            "Nova 7P 与 Nova Pro Wireless PS 版的降噪和续航有何不同？",
+            {
+                "steelseries-arctis-nova-7p-black-us",
+                "steelseries-arctis-nova-pro-wireless-ps-us",
+            },
+            {"active_noise_cancellation", "battery_hours"},
+        ),
+    ],
+)
+async def test_comparison_scope_and_requested_field_evidence_are_closed(
+    tmp_path: Path,
+    domain_id: str,
+    query: str,
+    expected: set[str],
+    required_pairs: set[str],
+) -> None:
+    report = await _domain_agent(tmp_path, domain_id).run(query)
+    assert report.query_intent == QueryIntent.EXPLICIT_COMPARISON
+    assert set(report.product_scope.product_ids) == expected
+    evidence = {(item.model_id, item.field) for item in report.evidence}
+    assert all((product_id, field) in evidence for product_id in expected for field in required_pairs)
+    assert report.recommended_model_ids == []
+
+
+def test_monitor_legacy_adapter_keeps_width_and_explicit_resolution() -> None:
+    requirements = PurchaseDecisionAgent._augment_requirements(
+        "中国版 2560×1440 显示器，机身宽度必须在 610mm 以内。",
+        UserRequirements(summary="monitor", task_type="filter"),
+    )
+    active = {item.field: item.value for item in requirements.hard_constraints}
+    assert active["resolution"] == "2560x1440"
+    assert active["width_mm"] == 610.0

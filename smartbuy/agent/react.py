@@ -811,11 +811,19 @@ class PurchaseDecisionAgent:
             put("is_oled", ConstraintOperator.EQ, False)
         elif "oled" in normalized:
             put("is_oled", ConstraintOperator.EQ, True)
-        resolution_map = {"8k": "7680x4320", "5k": "5120x2880", "4k": "3840x2160", "qhd": "2560x1440"}
-        for token, value in resolution_map.items():
-            if token in normalized:
-                put("resolution", ConstraintOperator.EQ, value)
-                break
+        explicit_resolution = re.search(r"(?<!\d)(\d{3,5})[x×](\d{3,5})(?!\d)", normalized)
+        if explicit_resolution:
+            put(
+                "resolution",
+                ConstraintOperator.EQ,
+                f"{explicit_resolution.group(1)}x{explicit_resolution.group(2)}",
+            )
+        else:
+            resolution_map = {"8k": "7680x4320", "5k": "5120x2880", "4k": "3840x2160", "qhd": "2560x1440"}
+            for token, value in resolution_map.items():
+                if token in normalized:
+                    put("resolution", ConstraintOperator.EQ, value)
+                    break
         refresh = re.search(r"(?:至少|不低于)(\d+(?:\.\d+)?)hz", normalized)
         if refresh:
             put("refresh_rate_hz", ConstraintOperator.GTE, float(refresh.group(1)))
@@ -839,7 +847,11 @@ class PurchaseDecisionAgent:
         budget = re.search(r"预算(\d+(?:\.\d+)?)元", normalized)
         if budget:
             put("price_cny", ConstraintOperator.LTE, float(budget.group(1)))
-        width = re.search(r"宽度(?:不超过|最多)?(\d+(?:\.\d+)?)mm(?:以内|以下)?", normalized)
+        width = re.search(
+            r"(?:机身)?宽度(?:不能超过|不得超过|不超过|最多|必须)?(?:要|还要)?(?:在)?"
+            r"(\d+(?:\.\d+)?)mm(?:以内|以下)?",
+            normalized,
+        )
         if width:
             put("width_mm", ConstraintOperator.LTE, float(width.group(1)))
         weight = re.search(r"重量(?:不超过|最多|不重于)?(\d+(?:\.\d+)?)kg", normalized)
@@ -871,7 +883,9 @@ class PurchaseDecisionAgent:
             marker in compact
             for marker in (
                 "别太大", "别太小", "大一点", "小一点", "高一点", "低一点",
-                "久一点", "轻一点", "便宜一点", "不能太高", "不要太重",
+                "久一点", "轻一点", "便宜一点", "窄一点", "窄一些",
+                "强一点", "强一些", "好一点", "好一些", "性能强一点",
+                "性能强一些", "通话好一点", "通话好一些", "不能太高", "不要太重",
             )
         ) and not re.search(r"\d", compact):
             return "qualitative_threshold_missing"
@@ -879,10 +893,12 @@ class PurchaseDecisionAgent:
         database_path = getattr(self.tools.get("text2sql"), "database_path", None)
         if not database_path:
             return None
+        if re.search(r"(?:只推荐|只要|必须|要求).{0,12}(?:kvm|切换器)", compact, flags=re.I):
+            return "unsupported_constraint"
+
         query_tokens = {
             token.casefold()
-            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{2,}", query)
-            if re.search(r"\d", token)
+            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{3,}", query)
         }
         if not query_tokens:
             return None
@@ -894,18 +910,29 @@ class PurchaseDecisionAgent:
             )
             try:
                 names = [str(row[0]) for row in connection.execute("SELECT model_name FROM products")]
+                brands = {
+                    str(row[0]).casefold()
+                    for row in connection.execute("SELECT DISTINCT brand FROM products")
+                }
             finally:
                 connection.close()
         except (OSError, sqlite3.Error):
             return None
-        model_tokens = [
-            token.casefold()
-            for name in names
-            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{2,}", name)
-        ]
+        model_tokens: dict[str, set[str]] = {}
+        for name in names:
+            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{3,}", name):
+                model_tokens.setdefault(token.casefold(), set()).add(name)
         for token in query_tokens:
-            matching = {item for item in model_tokens if item.startswith(token)}
-            if len(matching) > 1 and token not in matching:
+            if token in brands:
+                continue
+            matching_names = {
+                name
+                for model_token, token_names in model_tokens.items()
+                if model_token.startswith(token)
+                for name in token_names
+            }
+            exact_names = model_tokens.get(token, set())
+            if len(matching_names) > 1 and (not exact_names or len(exact_names) > 1):
                 return "ambiguous_catalog_identity"
         return None
 

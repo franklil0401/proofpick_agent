@@ -339,6 +339,43 @@ def test_scope_serialization_preserves_identity_contract(
     assert payload["index_version"] == "computer-index-v1"
 
 
+def test_shared_natural_alias_and_variant_tokens_preserve_comparison_arms() -> None:
+    rows = [
+        _product(
+            "acme-echo-pro-over-us", "ECHO-PRO-PS-US", "SKU-ECHO-PS", "US",
+            family_id="acme-echo-pro-over", aliases=["Echo Pro"],
+        ),
+        _product(
+            "acme-echo-pro-buds-us", "ECHO-PRO-BUD-US", "SKU-ECHO-BUD", "US",
+            family_id="acme-echo-pro-buds", aliases=["Echo Pro"],
+        ),
+        _product(
+            "acme-wave-pro-xbox-us", "WAVE-PRO-XBOX-US", "SKU-WAVE-XBOX", "US",
+            family_id="acme-wave-pro", aliases=["Wave Pro"],
+        ),
+        _product(
+            "acme-wave-pro-ps-us", "WAVE-PRO-PS-US", "SKU-WAVE-PS", "US",
+            family_id="acme-wave-pro", aliases=["Wave Pro"],
+        ),
+    ]
+    catalog = {row["product_id"]: row for row in rows}
+    catalog["acme-echo-pro-over-us"]["attributes"]["shape"] = "over"
+    catalog["acme-echo-pro-buds-us"]["attributes"]["shape"] = "buds"
+    resolver = ProductIdentityResolver(
+        domain_id="computer",
+        data_version="fictional-v1",
+        qualifier_aliases={"shape": {"头戴": "over", "耳塞": "buds"}},
+    )
+    shared = resolver.resolve("比较 Echo Pro 头戴和耳塞", catalog)
+    assert set(shared.product_ids) == {
+        "acme-echo-pro-over-us", "acme-echo-pro-buds-us"
+    }
+    variant = resolver.resolve("比较 Wave Pro PS 版与 SKU-WAVE-XBOX", catalog)
+    assert set(variant.product_ids) == {
+        "acme-wave-pro-ps-us", "acme-wave-pro-xbox-us"
+    }
+
+
 def _laptop_repository(tmp_path):
     domain_path = ROOT / "smartbuy" / "domain_packs" / "laptop"
     pack_path = ROOT / "smartbuy" / "product_packs" / "examples" / "laptop-v1" / "pack.json"

@@ -11,7 +11,10 @@ from smartbuy.domain_packs import LoadedDomainPack
 from smartbuy.identity import ProductScopeType, QueryIntent, ResolvedProductScope
 
 
-_COMPARISON = ("比较", "对比", "对照", "区分", "差异", "是否等同", "是不是同", "混成")
+_COMPARISON = (
+    "比较", "对比", "对照", "区分", "差异", "不同", "有何不同",
+    "是否等同", "是不是同", "混成",
+)
 _FACT = (
     "多少", "是什么", "哪个", "哪套", "属于", "核验", "核对", "核实", "确认",
     "是否", "能否", "请查", "查询", "查一下", "只查", "事实", "给证据",
@@ -26,8 +29,9 @@ _CLARIFY = (
 
 _QUALITATIVE_WITHOUT_THRESHOLD = (
     "别太大", "别太小", "大一点", "小一点", "高一点", "低一点", "久一点",
-    "轻一点", "便宜一点", "快一点", "强一点", "好一点", "别太贵",
-    "不能太高", "不要太重",
+    "轻一点", "便宜一点", "快一点", "强一点", "好一点", "窄一点",
+    "窄一些", "强一些", "好一些", "性能强一点", "性能强一些",
+    "通话好一点", "通话好一些", "别太贵", "不能太高", "不要太重",
 )
 
 
@@ -118,8 +122,7 @@ class QueryUnderstandingEngine:
         elif any(marker in folded for marker in _CLARIFY):
             intent = QueryIntent.CLARIFICATION_REQUIRED
         elif (
-            requested
-            and any(marker in folded for marker in _QUALITATIVE_WITHOUT_THRESHOLD)
+            any(marker in folded for marker in _QUALITATIVE_WITHOUT_THRESHOLD)
             and not re.search(r"\d", folded)
         ):
             intent = QueryIntent.CLARIFICATION_REQUIRED

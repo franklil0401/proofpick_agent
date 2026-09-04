@@ -43,9 +43,9 @@
     "allowed_keys":{"preferred_form_factor":"form_factor","preferred_connection":"wired_connection","preferred_codec":"supported_codecs","preferred_platform":"supported_platforms","preferred_scenario":"primary_use","max_weight_g":"weight_g","anc_preference":"active_noise_cancellation","excluded_brands":"brand"}
   },
   "understanding": {
-    "default_comparison_fields":["configuration_id","form_factor","supported_codecs","supported_platforms"],"default_identity_fact_fields":["configuration_id","region"],"numeric_selector_fields":["weight_g","battery_hours","battery_hours_anc","measured_latency_ms"],"implicit_minimum_fields":["battery_hours","battery_hours_anc"],
+    "default_comparison_fields":["configuration_id","form_factor","supported_codecs","supported_platforms"],"default_identity_fact_fields":["configuration_id","region"],"numeric_selector_fields":["weight_g","battery_hours","battery_hours_anc","measured_latency_ms"],"implicit_minimum_fields":["battery_hours","battery_hours_anc"],"unitless_numeric_fields":["bluetooth_version"],"constraint_shadow_fields":{"bluetooth_version":["bluetooth"],"form_factor":["wearing_style"]},
     "unit_context_terms":{"weight_g":["重量","不超过","轻于"],"measured_latency_ms":["延迟","毫秒"]},
-    "requested_field_terms":{"supported_codecs":["编码","codec","ldac"],"supported_platforms":["平台","ps5","xbox"],"multipoint":["多点连接","同时连"]},
+    "requested_field_terms":{"supported_codecs":["编码","编解码器","codec","ldac"],"supported_platforms":["平台","ps5","xbox"],"multipoint":["多点连接","同时连"]},
     "requested_field_bundles":{"active_noise_cancellation":["battery_hours_anc"],"wireless_dongle":["measured_latency_ms"]},
     "string_list_triggers":{"supported_codecs":["支持","必须"],"supported_platforms":["支持","兼容"]},
     "qualitative_terms":{"comfort_observation":{"terms":["舒服一点","佩戴舒服","长时间戴"],"operator":"eq","strength":"soft"},"measured_latency_ms":{"terms":["延迟不能太高","低延迟"],"operator":"lte","strength":"soft"},"sound_signature":{"terms":["不要低频太轰","声音自然"],"operator":"eq","strength":"soft"},"call_quality_observation":{"terms":["麦克风要清楚","通话清楚一点"],"operator":"eq","strength":"soft"}}

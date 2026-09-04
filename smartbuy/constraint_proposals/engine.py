@@ -606,6 +606,11 @@ class DeterministicConstraintParser:
                 "implicit_minimum_fields", []
             )
         )
+        unitless_numeric_fields = set(
+            self.pack.pack.policies.get("understanding", {}).get(
+                "unitless_numeric_fields", []
+            )
+        )
         unit_context_terms = self.pack.pack.policies.get("understanding", {}).get(
             "unit_context_terms", {}
         )
@@ -613,7 +618,7 @@ class DeterministicConstraintParser:
         clauses = [
             match
             for match in re.finditer(
-                r"(?:(?!(?:[，,；;。、]|并且|同时|以及|且)).)+",
+                r"(?:(?!(?:[，,；;。、]|并且|同时|以及|但是|不过|但|却|且)).)+",
                 normalized_query,
             )
             if match.group(0).strip()
@@ -696,7 +701,7 @@ class DeterministicConstraintParser:
                     reverse=True,
                 )
                 unit_pattern = "|".join(re.escape(item) for item in units if item)
-                if not unit_pattern:
+                if not unit_pattern and field_id not in unitless_numeric_fields:
                     continue
                 for clause in clauses:
                     local_mentions = [
@@ -704,12 +709,18 @@ class DeterministicConstraintParser:
                         if clause.start() <= item.start() < clause.end()
                     ]
                     local = clause.group(0)
-                    numbers = list(re.finditer(
-                        rf"({_NUMBER})\s*({unit_pattern})(?![a-z])",
-                        local,
-                        flags=re.I,
-                    ))
+                    number_pattern = (
+                        rf"({_NUMBER})\s*({unit_pattern})(?![a-z])"
+                        if field_id not in unitless_numeric_fields
+                        else rf"({_NUMBER})(?!\s*[A-Za-z一-鿿])"
+                    )
+                    numbers = list(re.finditer(number_pattern, local, flags=re.I))
                     if not local_mentions:
+                        if field_id in unitless_numeric_fields:
+                            # Unitless values are safe only when the declared
+                            # field name is present ("Bluetooth 5.4").  A bare
+                            # catalog token such as "PS5" must never bind to it.
+                            continue
                         # A unit owned by exactly one Pack field is itself an
                         # unambiguous field discriminator (for example kg/g).
                         # Shared units such as GB remain unresolved unless a
@@ -718,7 +729,10 @@ class DeterministicConstraintParser:
                             context = local[
                                 max(0, number.start() - 16):min(len(local), number.end() + 10)
                             ]
-                            owners = unit_owners.get(self._fold(number.group(2)), set())
+                            number_unit = number.group(2) if number.lastindex and number.lastindex >= 2 else None
+                            owners = unit_owners.get(self._fold(number_unit or ""), set())
+                            if field_id in unitless_numeric_fields and not number_unit:
+                                owners = {field_id}
                             contextual_owners = {
                                 owner for owner in owners
                                 if any(
@@ -748,7 +762,7 @@ class DeterministicConstraintParser:
                                 _chinese_number(number.group(1)),
                                 clause.start() + number.start(),
                                 clause.start() + number.end(),
-                                unit=number.group(2),
+                                unit=number_unit,
                             )
                         continue
                     if not numbers:
@@ -823,11 +837,15 @@ class DeterministicConstraintParser:
                             _chinese_number(number.group(1)),
                             start,
                             end,
-                            unit=number.group(2),
+                            unit=(number.group(2) if number.lastindex and number.lastindex >= 2 else None),
                             action=action,
                         )
             elif definition.data_type.value == "boolean":
                 for mention in field_mentions:
+                    if re.match(r"\s*(?:版本|version)", normalized_query[mention.end():], flags=re.I):
+                        # A more specific numeric field such as bluetooth_version
+                        # owns "蓝牙版本 5.4".  The base boolean must not shadow it.
+                        continue
                     clause = next(
                         (
                             item
@@ -977,6 +995,17 @@ class DeterministicConstraintParser:
                     reason="qualitative_threshold_missing",
                 )
                 break
+        shadow_fields = self.pack.pack.policies.get("understanding", {}).get(
+            "constraint_shadow_fields", {}
+        )
+        present = {item["field"] for item in raws if item.get("status") == "supported"}
+        shadowed = {
+            str(generic)
+            for specific in present
+            for generic in shadow_fields.get(specific, [])
+        }
+        if shadowed:
+            raws = [item for item in raws if item["field"] not in shadowed]
         return raws
 
     def parse(
@@ -1268,6 +1297,17 @@ class DeterministicConstraintParser:
                 add(field, "eq", value, match, status="unsupported", reason="field_not_declared_by_domain_pack")
 
         raws.extend(self._pack_rules(query, previous=previous))
+        shadow_fields = self.pack.pack.policies.get("understanding", {}).get(
+            "constraint_shadow_fields", {}
+        )
+        present = {item["field"] for item in raws if item.get("status") == "supported"}
+        shadowed = {
+            str(generic)
+            for specific in present
+            for generic in shadow_fields.get(specific, [])
+        }
+        if shadowed:
+            raws = [item for item in raws if item["field"] not in shadowed]
         scope_or_evidence_language = bool(
             re.search(
                 r"(?:不要|别)(?:混进|扩展到|加入候选)|"

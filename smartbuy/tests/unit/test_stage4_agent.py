@@ -104,8 +104,11 @@ def test_task_type_and_explicit_constraints_are_normalized():
     "query",
     [
         "U272 系列的屏幕参数怎么样？",
+        "ProArt 27 英寸那款屏幕具体怎么样？",
         "我想要尺寸别太大的显示器。",
+        "显示器机身窄一点就可以。",
         "刷新率高一点就行，其他没有要求。",
+        "只推荐自带 KVM 切换器的显示器。",
     ],
 )
 async def test_preflight_ambiguity_stops_before_provider_and_tools(

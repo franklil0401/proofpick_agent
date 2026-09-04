@@ -223,7 +223,29 @@ class ProductIdentityResolver:
                 _family_aliases(family_id, brand, family_products),
                 {str(item["product_id"]) for item in family_products},
             )
-        selected = self._select_non_overlapping(matches)
+        # Two catalog families may intentionally expose the same natural
+        # alias (for example a product line with two form factors).  Preserve
+        # that ambiguity as one registry-backed literal instead of letting
+        # lexical ordering silently choose one family.
+        grouped: dict[tuple[int, int, int], list[_Match]] = {}
+        for item in matches:
+            grouped.setdefault((item.start, item.end, item.priority), []).append(item)
+        merged: list[_Match] = []
+        for items in grouped.values():
+            values = {item.value for item in items}
+            if items[0].kind in {"family_id", "model_or_alias"} and len(values) > 1:
+                merged.append(_Match(
+                    6,
+                    "catalog_literal",
+                    _fold(items[0].quote),
+                    items[0].quote,
+                    items[0].start,
+                    items[0].end,
+                    tuple(sorted({product_id for item in items for product_id in item.product_ids})),
+                ))
+            else:
+                merged.extend(items)
+        selected = self._select_non_overlapping(merged)
         exact = [item for item in selected if item.priority <= 4]
         if exact:
             best_by_products: dict[tuple[str, ...], int] = {}
@@ -443,7 +465,9 @@ class ProductIdentityResolver:
         candidate_ids: Iterable[str],
         products: dict[str, dict[str, Any]],
     ) -> set[str]:
-        narrowed = set(candidate_ids)
+        candidates = set(candidate_ids)
+        narrowed = set(candidates)
+        independent_matches: list[set[str]] = []
         for field, aliases in self.qualifier_aliases.items():
             requested = {
                 value
@@ -454,7 +478,7 @@ class ProductIdentityResolver:
                 continue
             matching = {
                 product_id
-                for product_id in narrowed
+                for product_id in candidates
                 if not isinstance(
                     products[product_id].get("attributes", {}).get(field),
                     (list, dict, set),
@@ -462,8 +486,57 @@ class ProductIdentityResolver:
                 and products[product_id].get("attributes", {}).get(field) in requested
             }
             if matching:
-                narrowed = matching
+                independent_matches.append(matching)
+        # If two Pack fields share a natural alias, prefer the field whose
+        # matched set explains more explicitly named alternatives.  This is
+        # data-driven (set inclusion), not a field-name exception.
+        informative = [
+            item for item in independent_matches
+            if not any(item < other for other in independent_matches)
+        ]
+        if informative:
+            narrowed = set.intersection(*informative)
+        if len(informative) > 1 and not narrowed:
+            # In an explicit comparison, qualifiers that select disjoint
+            # variants describe comparison arms rather than conjunctive
+            # purchase filters.  Keep their union so every named arm remains.
+            narrowed = set.union(*informative)
         return narrowed
+
+    def _is_qualifier_literal(self, quote: str) -> bool:
+        return any(
+            _fold(str(alias)) == _fold(quote)
+            for aliases in self.qualifier_aliases.values()
+            for alias in aliases
+        )
+
+    @staticmethod
+    def _configuration_token_ids(
+        query: str,
+        candidate_ids: Iterable[str],
+        products: dict[str, dict[str, Any]],
+    ) -> set[str]:
+        """Resolve a configuration discriminator from registry values only."""
+        candidates = set(candidate_ids)
+        token_ids: dict[str, set[str]] = {}
+        for product_id in candidates:
+            configuration = _identity_value(products[product_id], "configuration_id") or ""
+            part_number = _identity_value(products[product_id], "part_number") or ""
+            for token in re.findall(r"[A-Za-z0-9]+", f"{configuration} {part_number}"):
+                folded = token.casefold()
+                if folded in {"us", "ca", "cn", "de", "ph", "il", "wl", "black"}:
+                    continue
+                if len(folded) < 2:
+                    continue
+                token_ids.setdefault(folded, set()).add(product_id)
+        selected: set[str] = set()
+        for token, ids in token_ids.items():
+            if not ids or ids == candidates:
+                continue
+            occurrences = _exact_occurrences(query, token)
+            if occurrences:
+                selected |= ids
+        return selected or candidates
 
     @staticmethod
     def _literal_qualifier_ids(
@@ -528,7 +601,8 @@ class ProductIdentityResolver:
         if matches:
             catalog_matches = [
                 item for item in catalog_matches
-                if not any(set(item.product_ids) >= set(prior.product_ids) for prior in matches)
+                if not self._is_qualifier_literal(item.quote)
+                and not any(set(item.product_ids) >= set(prior.product_ids) for prior in matches)
             ]
         if not matches:
             matches = catalog_matches
@@ -541,14 +615,22 @@ class ProductIdentityResolver:
         if explicit_comparison and self.qualifier_aliases:
             narrowed_matches = []
             for item in matches:
-                if item.kind != "catalog_literal":
+                if item.kind not in {"catalog_literal", "family_id"}:
                     narrowed_matches.append(item)
                     continue
                 narrowed_ids = self._catalog_qualifier_ids(query, item.product_ids, products)
+                narrowed_ids &= self._configuration_token_ids(
+                    query, item.product_ids, products
+                )
+                narrowed_kind = (
+                    "catalog_literal"
+                    if set(narrowed_ids) != set(item.product_ids)
+                    else item.kind
+                )
                 narrowed_matches.append(
                     _Match(
                         item.priority,
-                        item.kind,
+                        narrowed_kind,
                         item.value,
                         item.quote,
                         item.start,
@@ -591,6 +673,11 @@ class ProductIdentityResolver:
         exclude_configurations = {item.configuration_id for item in excluded if item.configuration_id}
         if include_products:
             candidates = set(include_products)
+            if explicit_comparison and include_families:
+                candidates |= {
+                    product_id for product_id, product in products.items()
+                    if _identity_value(product, "family_id") in include_families
+                }
         elif include_families:
             candidates = {
                 product_id for product_id, product in products.items()
