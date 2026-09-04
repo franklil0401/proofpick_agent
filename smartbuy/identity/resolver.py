@@ -19,8 +19,14 @@ from .models import (
 )
 
 
-_COMPARISON_MARKERS = ("比较", "对比", "对照", "区分", "是否等同", "是不是同", "混成")
-_FILTER_MARKERS = ("筛选", "筛出", "找", "只要", "只接受", "仅限", "需要", "选择", "选 ", "返回对应")
+_COMPARISON_MARKERS = (
+    "比较", "对比", "对照", "区分", "差别", "差异", "不同",
+    "是否等同", "是不是同", "混成",
+)
+_FILTER_MARKERS = (
+    "筛选", "筛出", "找", "只要", "只接受", "仅限", "需要", "要求", "必须",
+    "选择", "选 ", "返回对应",
+)
 _CLARIFICATION_MARKERS = (
     "先确认", "先问", "先澄清", "没指定", "没有指定", "没决定",
     "未决定", "尚未决定", "还没决定", "没有选", "请先问", "先别替",
@@ -39,7 +45,7 @@ _REGION_ALIASES = {
     "美国版": "US", "美国区": "US", "美版": "US", "美国": "US",
     "加拿大版": "CA", "加拿大区": "CA", "加版": "CA", "加拿大": "CA",
     "德国版": "DE", "德国区": "DE", "菲律宾版": "PH", "菲律宾区": "PH",
-    "全球版": "GLOBAL", "以色列版": "IL",
+    "全球版": "GLOBAL", "以色列版": "IL", "以色列地区": "IL", "以色列": "IL",
 }
 
 
@@ -115,8 +121,40 @@ def _family_aliases(
             ).strip()
         if name:
             output.add(name)
-            output.add(re.sub(rf"^{re.escape(brand)}\s+", "", name, flags=re.IGNORECASE))
+            short_name = re.sub(rf"^{re.escape(brand)}\s+", "", name, flags=re.IGNORECASE)
+            output.add(short_name)
+            # Registry-backed progressive names cover natural family wording
+            # without making a brand/model-specific exception.
+            spaced = re.sub(r"(?<=[A-Za-z])(?=\d)|(?<=\d)(?=[A-Za-z])", " ", short_name)
+            name_tokens = [item for item in re.split(r"[-_\s()]+", spaced) if item]
+            for end in range(2, len(name_tokens)):
+                prefix = " ".join(name_tokens[:end])
+                if re.search(r"[A-Za-z]", prefix) and re.search(r"\d", prefix):
+                    output.add(prefix)
+        for source in product.get("aliases", []):
+            spaced = re.sub(
+                r"(?<=[A-Za-z])(?=\d)|(?<=\d)(?=[A-Za-z])",
+                " ",
+                re.sub(r"[-_]", " ", str(source)),
+            )
+            alias_tokens = [item for item in spaced.split() if item]
+            if alias_tokens and alias_tokens[0].casefold() == brand.casefold():
+                alias_tokens = alias_tokens[1:]
+            for start in range(len(alias_tokens)):
+                for end in range(start + 2, len(alias_tokens) + 1):
+                    phrase = " ".join(alias_tokens[start:end])
+                    if len(_fold(phrase)) >= 4:
+                        output.add(phrase)
     return {item for item in output if len(_fold(item)) >= 4}
+
+
+def _has_filter_marker(query: str) -> bool:
+    folded = query.casefold()
+    return bool(
+        any(marker.casefold() in folded for marker in _FILTER_MARKERS)
+        or re.search(r"(?:^|[，,；;：:\s])要(?=\s*\d)", query)
+        or re.search(r"(?:至少|最低|不低于|不少于|不超过|至多|最多|以内|以下)", query)
+    )
 
 
 @dataclass(frozen=True)
@@ -133,10 +171,18 @@ class _Match:
 class ProductIdentityResolver:
     """Resolve exact Pack identities; LLM output never grants registry authority."""
 
-    def __init__(self, *, domain_id: str, data_version: str, index_version: str | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        domain_id: str,
+        data_version: str,
+        index_version: str | None = None,
+        qualifier_aliases: dict[str, dict[str, Any]] | None = None,
+    ) -> None:
         self.domain_id = domain_id
         self.data_version = data_version
         self.index_version = index_version
+        self.qualifier_aliases = qualifier_aliases or {}
 
     def _matches(self, query: str, products: dict[str, dict[str, Any]]) -> list[_Match]:
         matches: list[_Match] = []
@@ -185,9 +231,18 @@ class ProductIdentityResolver:
                 best_by_products[item.product_ids] = min(
                     item.priority, best_by_products.get(item.product_ids, item.priority)
                 )
-            selected = [
+            best_exact = [
                 item for item in exact
                 if item.priority == best_by_products[item.product_ids]
+            ]
+            selected = [
+                *best_exact,
+                *(
+                    item for item in selected if item.priority > 4 and not any(
+                        item.start < exact_item.end and exact_item.start < item.end
+                        for exact_item in best_exact
+                    )
+                ),
             ]
         return selected
 
@@ -325,6 +380,15 @@ class ProductIdentityResolver:
         return found.group(1), found.start(1), found.end(1)
 
     @staticmethod
+    def _comparison_between(query: str, matches: Iterable[_Match]) -> bool:
+        ordered = sorted(matches, key=lambda item: (item.start, item.end))
+        for left, right in zip(ordered, ordered[1:], strict=False):
+            between = query[left.end:right.start].casefold()
+            if re.search(r"(?:与|和|vs\.?|versus)", between):
+                return True
+        return False
+
+    @staticmethod
     def _catalog_literal_matches(
         query: str,
         products: dict[str, dict[str, Any]],
@@ -333,12 +397,35 @@ class ProductIdentityResolver:
         spelling: dict[str, str] = {}
         for product_id, product in products.items():
             brand = _fold(str(product.get("brand", "")))
-            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{3,}", str(product.get("model_name", ""))):
+            sources = [
+                str(product.get("model_name", "")),
+                *map(str, product.get("aliases", [])),
+                str(product.get("attributes", {}).get("family_id", "")),
+                str(product.get("attributes", {}).get("configuration_id", "")),
+            ]
+            for token in re.findall(r"[A-Za-z0-9]+", " ".join(sources)):
                 folded = _fold(token)
                 if folded == brand:
                     continue
-                token_products.setdefault(folded, set()).add(product_id)
-                spelling.setdefault(folded, token)
+                variants = {folded}
+                if re.search(r"[a-z]", folded) and re.search(r"\d", folded):
+                    variants |= {
+                        folded[:end] for end in range(3, len(folded) + 1)
+                        if re.search(r"[a-z]", folded[:end]) and re.search(r"\d", folded[:end])
+                    }
+                    variants |= {
+                        folded[start:] for start in range(0, len(folded) - 2)
+                        if re.search(r"[a-z]", folded[start:]) and re.search(r"\d", folded[start:])
+                    }
+                for variant in variants:
+                    if len(variant) < 2 or variant in {"us", "cn", "ca", "de", "il", "ph", "pc", "wl"}:
+                        continue
+                    if len(variant) < 4 and not (
+                        re.search(r"\d", variant) or len(variant) == 2
+                    ):
+                        continue
+                    token_products.setdefault(variant, set()).add(product_id)
+                    spelling.setdefault(variant, variant)
         output = []
         for token, product_ids in token_products.items():
             if len(product_ids) < 2:
@@ -349,6 +436,34 @@ class ProductIdentityResolver:
                     start, end, tuple(sorted(product_ids)),
                 ))
         return output
+
+    def _catalog_qualifier_ids(
+        self,
+        query: str,
+        candidate_ids: Iterable[str],
+        products: dict[str, dict[str, Any]],
+    ) -> set[str]:
+        narrowed = set(candidate_ids)
+        for field, aliases in self.qualifier_aliases.items():
+            requested = {
+                value
+                for alias, value in aliases.items()
+                if _exact_occurrences(query, str(alias))
+            }
+            if not requested:
+                continue
+            matching = {
+                product_id
+                for product_id in narrowed
+                if not isinstance(
+                    products[product_id].get("attributes", {}).get(field),
+                    (list, dict, set),
+                )
+                and products[product_id].get("attributes", {}).get(field) in requested
+            }
+            if matching:
+                narrowed = matching
+        return narrowed
 
     @staticmethod
     def _literal_qualifier_ids(
@@ -408,8 +523,40 @@ class ProductIdentityResolver:
                 query[max(0, item.start - 16):item.start],
             )
         ]
+        explicit_comparison = any(marker in query.casefold() for marker in _COMPARISON_MARKERS)
+        catalog_matches = self._catalog_literal_matches(query, products)
+        if matches:
+            catalog_matches = [
+                item for item in catalog_matches
+                if not any(set(item.product_ids) >= set(prior.product_ids) for prior in matches)
+            ]
         if not matches:
-            matches = self._catalog_literal_matches(query, products)
+            matches = catalog_matches
+        elif catalog_matches and (
+            explicit_comparison
+            or self._comparison_between(query, [*matches, *catalog_matches])
+        ):
+            matches = self._select_non_overlapping([*matches, *catalog_matches])
+        explicit_comparison = explicit_comparison or self._comparison_between(query, matches)
+        if explicit_comparison and self.qualifier_aliases:
+            narrowed_matches = []
+            for item in matches:
+                if item.kind != "catalog_literal":
+                    narrowed_matches.append(item)
+                    continue
+                narrowed_ids = self._catalog_qualifier_ids(query, item.product_ids, products)
+                narrowed_matches.append(
+                    _Match(
+                        item.priority,
+                        item.kind,
+                        item.value,
+                        item.quote,
+                        item.start,
+                        item.end,
+                        tuple(sorted(narrowed_ids or item.product_ids)),
+                    )
+                )
+            matches = narrowed_matches
         references = [self._to_reference(item, self._polarity(query, item), products) for item in matches]
         region_references = [
             item for item in self._region_references(query, products)
@@ -463,14 +610,12 @@ class ProductIdentityResolver:
             and _identity_value(products[product_id], "configuration_id") not in exclude_configurations
             and str(products[product_id]["region"]) not in excluded_regions
         }
-        if include_families and any(
-            marker.casefold() in query.casefold()
-            for marker in (*_FILTER_MARKERS, "哪一个", "哪个", "哪套")
-        ):
+        if include_families and (_has_filter_marker(query) or any(
+            marker in query for marker in ("哪一个", "哪个", "哪套")
+        )):
             qualified = self._literal_qualifier_ids(query, candidates, products)
             if qualified:
                 candidates = qualified
-        explicit_comparison = any(marker in query.casefold() for marker in _COMPARISON_MARKERS)
         known_tokens = {
             _fold(str(value))
             for product in products.values()
@@ -514,6 +659,24 @@ class ProductIdentityResolver:
             clarification = False
             reason = "exact_registry_identity"
             query_intent = QueryIntent.EXACT_FACT_VERIFICATION
+        elif include_products and len(candidates) > 1:
+            clarification = not _has_filter_marker(query)
+            scope_type = (
+                ProductScopeType.AMBIGUOUS_PRODUCT_SCOPE
+                if clarification else ProductScopeType.CATALOG_FILTER
+            )
+            status = (
+                ProductScopeResolutionStatus.NEEDS_CLARIFICATION
+                if clarification else ProductScopeResolutionStatus.RESOLVED
+            )
+            reason = (
+                "catalog_literal_matches_multiple_configurations"
+                if clarification else "catalog_literal_filter_scope"
+            )
+            query_intent = (
+                QueryIntent.CLARIFICATION_REQUIRED
+                if clarification else QueryIntent.RECOMMENDATION_FILTER
+            )
         elif include_families:
             if len(candidates) == 1:
                 scope_type = ProductScopeType.EXACT_CONFIGURATION
@@ -523,9 +686,7 @@ class ProductIdentityResolver:
                 query_intent = QueryIntent.EXACT_FACT_VERIFICATION
                 include_families = set(include_families)
             else:
-                clarification = any(marker in query for marker in _CLARIFICATION_MARKERS) or (
-                    not any(marker.casefold() in query.casefold() for marker in _FILTER_MARKERS)
-                )
+                clarification = any(marker in query for marker in _CLARIFICATION_MARKERS) or not _has_filter_marker(query)
                 explicit_deferred_choice = any(
                     marker in query
                     for marker in (

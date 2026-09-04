@@ -977,6 +977,14 @@ class DomainDecisionAgent:
             domain_id=self.pack.domain_id,
             data_version=self.repository.snapshot.data_version,
             index_version=index_version,
+            qualifier_aliases={
+                field_id: {
+                    **definition.value_aliases,
+                    **{value: value for value in definition.enum_values},
+                }
+                for field_id, definition in self.pack.fields.items()
+                if definition.value_aliases or definition.enum_values
+            },
         ).resolve(query, products)
         understanding = QueryUnderstandingEngine(self.pack).analyze(query, scope)
         intent = understanding.intent
@@ -1037,6 +1045,31 @@ class DomainDecisionAgent:
                 },
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
+        if (
+            scope.resolution_status == ProductScopeResolutionStatus.NEEDS_CLARIFICATION
+            and understanding.intent != QueryIntent.RECOMMENDATION_FILTER
+        ):
+            return DecisionReport(
+                request_summary=query,
+                product_scope=scope,
+                query_intent=QueryIntent.CLARIFICATION_REQUIRED,
+                requested_fields=understanding.requested_fields,
+                task_type="fact",
+                clarification_state=ClarificationState.PENDING,
+                constraint_verification=self._empty_batch([], ConstraintSet(), scope),
+                pending_questions=["请明确具体商品配置、地区或可执行阈值。"],
+                abstained=True,
+                stop_reason="商品身份或条件存在歧义；未调用模型、检索工具或 Checker。",
+                usage={
+                    "domain_id": self.pack.domain_id,
+                    "data_version": self.repository.snapshot.data_version,
+                    "index_version": index_version,
+                    "scope_fingerprint": scope.fingerprint,
+                    "provider_calls": 0,
+                    "result_status": "needs_clarification",
+                },
+                latency_ms=(time.perf_counter() - started) * 1000,
+            )
         session_key = self._session_key(session_id, user_id)
         previous = self._session_constraints.get(session_key or "")
         memory_requested = (
@@ -1077,8 +1110,7 @@ class DomainDecisionAgent:
         )
         constraints = self._tool_constraints(constraint_resolution)
         require_unique = bool(
-            scope.clarification_required
-            or intent == QueryIntent.CLARIFICATION_REQUIRED
+            intent == QueryIntent.CLARIFICATION_REQUIRED
             or re.search(r"(?:哪一套|哪套|哪个配置|对应配置|返回配置|先确认|先问)", query)
         )
         scope, _transition = CandidateScopeReducer(self.pack).reduce(
@@ -1132,6 +1164,12 @@ class DomainDecisionAgent:
             - active_constraint_fields
         )
         fields = (requested_fields | active_constraint_fields) & set(self.pack.fields)
+        if intent == QueryIntent.EXPLICIT_COMPARISON:
+            compared = [products[item] for item in scope.product_ids]
+            if len({item["attributes"].get("configuration_id") for item in compared}) > 1:
+                fields.add("configuration_id")
+            if len({item["region"] for item in compared}) > 1:
+                fields.add("region")
         if session_key and not pending:
             self._session_constraints[session_key] = constraint_resolution.constraint_set
         cross_region_inference = (
@@ -1218,7 +1256,11 @@ class DomainDecisionAgent:
                               kb_result.summary, arguments={"domain_id": self.pack.domain_id},
                               duration_ms=(time.perf_counter() - tool_started) * 1000)
 
-        evidence_targets = evidence_candidate_ids
+        evidence_targets = (
+            list(scope.product_ids)
+            if intent == QueryIntent.EXPLICIT_COMPARISON
+            else evidence_candidate_ids
+        )
         for product_id in evidence_targets[: max(0, self.max_tool_calls - len(trace) - 1)]:
             requested = constraints
             if not requested:

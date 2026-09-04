@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-04 |
-| 当前阶段 | V1 已冻结；V2-9A 已完成统一产品 UI、五 Demo、Windows RC 复现与 Manifest，等待独立 V2-9B 评测 |
+| 当前阶段 | V1 已冻结；V2-9B 独立结论为 Needs revision，V2-9C 已完成通用修复与 exposed regression，等待新 RC 独立评测 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -519,8 +519,11 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_demo_guide.md` | 五个固定输入的在线/本地真实路径、脱敏回放、预期结果与失败备用步骤 |
 | `smartbuy/docs/v2/v2_release_candidate_manifest.md` | V2-9B 使用的 Commit、锁、Pack/Data/Index、模型、Schema、数据和评测哈希快照 |
 | `smartbuy/docs/v2/v2_9a_handoff.md` | 未发布的 PR 草案、V1/V2 边界、回滚与独立评测纪律 |
+| `smartbuy/docs/v2/v2_9c_independent_evaluation_repair_report.md` | V2-9B 首次 26 条失败的七类归因、通用修复、90 条 exposed regression、Online 边界与发布判断 |
+| `smartbuy/eval/results/v2_9c_exposed_regression_summary.json` | 同一独立题集的脱敏已暴露回归评分；不是新 Holdout 或发布结论 |
 | `smartbuy/docs/release/v2_portfolio_release_notes_draft.md` | 仅供后续审核的 V2 Portfolio Release Notes 草案，本轮不发布 |
 | `smartbuy/docs/adr/0019-headphone-source-authority-and-pack-reuse.md` | Headphone 三层来源权限、主观证据边界及通用 Checker/Ranker 复用决策 |
+| `smartbuy/docs/adr/0020-separate-query-intent-scope-and-purchase-constraints.md` | 事实/比较字段、商品 Scope、购买约束、澄清和证据闭包的通用边界决策 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -689,7 +692,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9A 已完成 Windows 三品类发布复现与 RC 冻结；V2-9B 独立发布评测、自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9B 独立评测已完成并给出 `Needs revision`；V2-9C 仅完成通用修复与已暴露回归，新的独立发布验证仍未执行。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 

@@ -9,7 +9,7 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-9A 产品 UI、五 Demo 与 Windows RC 复现已完成；等待 V2-9B 独立发布评测** |
+| 当前状态 | **V2-9B 独立结论为 Needs revision；V2-9C 已完成通用语义修复和 exposed regression，等待新 RC 的独立评测** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
 | 最后更新 | 2026-09-04 |
 
@@ -963,6 +963,6 @@ API 与成本：
 
 ## 22. 下一步只允许执行的工作
 
-V2-9A 已完成统一三品类产品 UI、五个真实证据支持的脱敏 Demo、Windows 仓库外数据/索引/服务复现和 RC 冻结。历史首测、已暴露回归、V1 数据与默认 ReAct 路由均保持原样。
+V2-9B 独立首次评测保留 Trusted `64/90` 与 Online Evidence 完成 `2/15`，发布结论为 `Needs revision`。V2-9C 已按七类根因修复通用理解、身份 Scope、约束、澄清、比较证据闭包和结果分类；同一 90 条任务的 exposed regression 为 `86/90`、Evidence `297/297`、安全越界 0。完整边界见 [V2-9C 报告](v2_9c_independent_evaluation_repair_report.md)与 [ADR-0020](../adr/0020-separate-query-intent-scope-and-purchase-constraints.md)。
 
-下一步只能等待用户授权新的独立 Agent 执行 V2-9B。评测 Agent 必须读取 RC Manifest，在首次运行前冻结新任务和评分器，不得使用 V2-9A 开发 Agent继续调参；任何生产修复都必须生成新的 RC 编号与 Manifest Hash。未经确认不得创建 PR、合并 `main`、Tag 或 Release。
+`86/90` 不能替代新的未见发布集。下一步只能在用户授权后生成新的 RC Commit/Manifest，并交给独立评测方创建和单次运行新任务；开发方不得自行制作下一套发布 Holdout。未经确认不得创建 PR、合并 `main`、Tag 或 Release。

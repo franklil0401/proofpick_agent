@@ -119,7 +119,10 @@ def build_report(
             usage=usage,
             open_research=state.open_research,
         )
-    recommendation_task = state.requirements.task_type in {"filter", "comparison", "dynamic"}
+    # A comparison is an evidence-bearing analysis, not a purchase decision.
+    # It may populate candidate/evidence sections, but only an explicit filter
+    # or dynamic purchase request may publish recommended model ids.
+    recommendation_task = state.requirements.task_type in {"filter", "dynamic"}
     rows = {
         **state.candidate_pool_rows,
         **{str(row.get("model_id")): row for row in state.candidate_rows if row.get("model_id")},

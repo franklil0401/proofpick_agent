@@ -849,7 +849,10 @@ class DeterministicConstraintParser:
                         # boolean purchase condition from a question form.
                         continue
                     double_negative = re.search(r"(?:不能没有|不要不带|不能不支持)", context)
-                    negative = re.search(r"(?:不要|不需要|排除|无|不带|不支持)", context)
+                    # ``无线`` contains the character ``无`` but is not a
+                    # negation.  A bare ``无`` is accepted only when it is not
+                    # the lexical prefix of ``无线``.
+                    negative = re.search(r"(?:不要|不需要|排除|无(?!线)|不带|不支持)", context)
                     append(
                         field_id,
                         "eq",

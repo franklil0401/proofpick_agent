@@ -441,6 +441,16 @@ class DomainConstraintCheckerTool:
                 if not requested <= set(scope.product_ids):
                     raise ProductIdentityMismatch("Checker candidate pool expands scope")
             hard_fields = set(self.repository.domain_pack.pack.policies["checker"].get("hard_fields", []))
+            # A field explicitly marked constraint_enabled in the versioned
+            # Pack is also part of the deterministic gate.  This prevents a
+            # stale duplicated policy list from silently turning a validated
+            # constraint (for example panel type or operating system) into an
+            # unsupported no-result path.
+            hard_fields |= {
+                field_id
+                for field_id, definition in self.repository.domain_pack.fields.items()
+                if definition.constraint_enabled
+            }
             normalized = []
             unsupported = []
             for item in constraints:

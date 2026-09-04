@@ -8,7 +8,7 @@
 
 [![ProofPick V2 可信决策界面](smartbuy/docs/assets/proofpick-v2-trusted.png)](smartbuy/docs/v2/v2_demo_guide.md)
 
-> 可复现的作品集级 Release Candidate；截图与离线 Demo 是固定脱敏结果回放，不是实时模型调用。V2 最终独立发布评测尚未执行。
+> 可复现的作品集级 Release Candidate；截图与离线 Demo 是固定脱敏结果回放，不是实时模型调用。V2 独立评测结论为 `Needs revision`，尚未发布。
 
 | 可复核结果 | 当前证据 |
 |---|---:|
@@ -83,12 +83,13 @@ Set-Location C:\ppv2rc
 - Open Research 受搜索索引、地区和静态页面可见性限制；临时网页证据不授予 Trusted 推荐资格。
 - 价格仅演示带 `observed_at`、TTL 和哈希的一次观察；过期或正文不可核验时返回 unknown，不保证实时价格/库存。
 - 默认编排仍是 ReAct；LangGraph 尚未完成图原生生产迁移，本地 SQLite Checkpoint 也不是生产级多租户方案。
-- V2 独立发布集留给 V2-9B 新 Agent；已暴露回归只能证明已知路径稳定，不能冒充泛化结果。
+- V2-9B 独立首次 Trusted 为 64/90；通用修复后的同题 exposed regression 为 86/90。后者只能证明已知路径改善，不能冒充新的泛化或发布结果。
 
 ## 文档与 License
 
 - [五个 Demo 与真实/回放步骤](smartbuy/docs/v2/v2_demo_guide.md)
 - [V2-9A RC 报告](smartbuy/docs/v2/v2_9a_release_candidate_report.md) / [Windows 干净克隆](smartbuy/docs/v2/v2_9a_windows_reproduction.md)
+- [V2-9C 独立评测修复报告](smartbuy/docs/v2/v2_9c_independent_evaluation_repair_report.md)
 - [V2 文档索引](smartbuy/docs/v2/README.md) / [V2 开发流程](smartbuy/docs/v2/V2_DEVELOPMENT_PROCESS.md)
 - [V1 作品集指标](smartbuy/docs/portfolio_metrics.md) / [数据卡](smartbuy/docs/data_card.md) / [项目结构](smartbuy/docs/development/PROJECT_STRUCTURE.md)
 

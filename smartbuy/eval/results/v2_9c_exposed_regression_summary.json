@@ -1,0 +1,2720 @@
+{
+  "api": {
+    "by_model": {
+      "qwen-plus": 147,
+      "qwen3-rerank": 90,
+      "text-embedding-v4": 90
+    },
+    "estimated_cost_cny": 0.9615002,
+    "failed_requests": 0,
+    "input_tokens": 1259922,
+    "output_tokens": 19645,
+    "request_count": 327,
+    "retry_count": 0
+  },
+  "case_sha256": "f53757ef371e2a15665d8c95f85adcb4877124520578baba998d16037bb8826d",
+  "classification": "exposed regression; not an independent holdout or release conclusion",
+  "created_at": "2026-09-04T09:18:38.725420Z",
+  "latency": {
+    "average_ms": 6590.454714427081,
+    "p95_ms": 27467.65729994513
+  },
+  "run_id": "v2-9c-exposed-20260904T090844Z-485c3875",
+  "schema_version": "proofpick-v2-9c-exposed-regression-v1",
+  "scoring": {
+    "all_mandatory_gates_passed": true,
+    "cases": [
+      {
+        "case_id": "v2-9b-mon-001",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-u2723qe-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-002",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-s2722qc-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-003",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-g2724d-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-004",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-u2724d-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-005",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-pa279crv-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-006",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-pg27aqdm-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-007",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-pa27jcv-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-008",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "lg-27up850k-w-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-009",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "lg-27gs95qe-b-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-010",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "benq-pd2705u-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-011",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "benq-pd2725u-ca"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-012",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "benq-ex2710u-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-013",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 5,
+        "constraint_value_matches": 5,
+        "constraint_value_total": 5,
+        "domain_id": "monitor",
+        "evidence_covered": 15,
+        "evidence_required": 15,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-pa279crv-cn",
+          "dell-u2723qe-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pa279crv-cn",
+          "dell-u2723qe-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-014",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "monitor",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-015",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "monitor",
+        "evidence_covered": 12,
+        "evidence_required": 12,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-pg27aqdm-cn",
+          "benq-ex2710u-cn",
+          "dell-g2724d-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pg27aqdm-cn",
+          "benq-ex2710u-cn",
+          "dell-g2724d-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-016",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 2,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 2,
+        "domain_id": "monitor",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-pg27aqdm-cn",
+          "benq-ex2710u-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pg27aqdm-cn",
+          "benq-ex2710u-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-017",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "monitor",
+        "evidence_covered": 9,
+        "evidence_required": 9,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-pa279crv-cn",
+          "asus-pa27jcv-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pa279crv-cn",
+          "asus-pa27jcv-cn",
+          "lg-27up850k-w-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-018",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 2,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 2,
+        "domain_id": "monitor",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-pa27jcv-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pa27jcv-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-019",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 2,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 2,
+        "domain_id": "monitor",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "dell-u2723qe-cn",
+          "dell-u2724d-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "dell-u2723qe-cn",
+          "dell-u2724d-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-020",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 4,
+        "constraint_value_matches": 4,
+        "constraint_value_total": 4,
+        "domain_id": "monitor",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "benq-pd2705u-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": false
+      },
+      {
+        "case_id": "v2-9b-mon-021",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-u2723qe-cn",
+          "dell-u2724d-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "dell-u2723qe-cn",
+          "dell-u2724d-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": false
+      },
+      {
+        "case_id": "v2-9b-mon-022",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-pa279crv-cn",
+          "asus-pa27jcv-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pa279crv-cn",
+          "asus-pa27jcv-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": false
+      },
+      {
+        "case_id": "v2-9b-mon-023",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-pg27aqdm-cn",
+          "lg-27gs95qe-b-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": false
+      },
+      {
+        "case_id": "v2-9b-mon-024",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "benq-pd2705u-us",
+          "benq-pd2725u-ca"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-025",
+        "category": "no_match",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 2,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 2,
+        "domain_id": "monitor",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-026",
+        "category": "known_violation",
+        "constraint_field_fn": 1,
+        "constraint_field_fp": 2,
+        "constraint_field_tp": 1,
+        "constraint_value_matches": 1,
+        "constraint_value_total": 2,
+        "domain_id": "monitor",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-027",
+        "category": "unsupported_field",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-028",
+        "category": "ambiguous_identity",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-029",
+        "category": "ambiguous_constraint",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-mon-030",
+        "category": "ambiguous_constraint",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "monitor",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-001",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-xps13-9350-usexchcto9350lnl06-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-002",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-xps13-9350-caexchcto9350lnl02-ca"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-003",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-xps13-9350-usexcpcto9350lnl04-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-004",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-005",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-proart-p16-h7606ww-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-006",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-proart-p16-h7606wi-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-007",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "hp-elitebook-840-g11-9g0c0et-il"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-008",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "hp-zbook-firefly14-g11-98n14et-il"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-009",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "hp-zbook-power-g9-6b8c1ea-global"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-010",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "lenovo-thinkpad-t14-g5-21ml000fgr-de"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-011",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-012",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-013",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "laptop",
+        "evidence_covered": 3,
+        "evidence_required": 3,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-014",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 3,
+        "domain_id": "laptop",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-015",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "laptop",
+        "evidence_covered": 3,
+        "evidence_required": 3,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "dell-xps13-9350-usexchcto9350lnl06-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "dell-xps13-9350-usexchcto9350lnl06-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-016",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "laptop",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "hp-elitebook-840-g11-9g0c0et-il",
+          "hp-zbook-firefly14-g11-98n14et-il"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "hp-elitebook-840-g11-9g0c0et-il",
+          "hp-zbook-firefly14-g11-98n14et-il"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-017",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 2,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 2,
+        "domain_id": "laptop",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "dell-xps13-9350-caexchcto9350lnl02-ca",
+          "dell-xps13-9350-usexchcto9350lnl06-us",
+          "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+        ],
+        "forbidden_evidence_product_ids": [
+          "asus-proart-p16-h7606wi-cn",
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn",
+          "dell-xps13-9350-usexcpcto9350lnl04-us",
+          "hp-elitebook-840-g11-9g0c0et-il",
+          "hp-zbook-firefly14-g11-98n14et-il",
+          "hp-zbook-power-g9-6b8c1ea-global",
+          "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+          "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "dell-xps13-9350-caexchcto9350lnl02-ca",
+          "dell-xps13-9350-usexchcto9350lnl06-us",
+          "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-018",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 2,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 2,
+        "domain_id": "laptop",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "hp-zbook-power-g9-6b8c1ea-global"
+        ],
+        "forbidden_evidence_product_ids": [
+          "asus-proart-p16-h7606wi-cn",
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn",
+          "hp-elitebook-840-g11-9g0c0et-il",
+          "hp-zbook-firefly14-g11-98n14et-il",
+          "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+          "lenovo-thinkpad-t14s-g7-21yw0042us-us",
+          "lenovo-x1-carbon-g13-21nx00k4ph-ph"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "hp-zbook-power-g9-6b8c1ea-global"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-019",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "laptop",
+        "evidence_covered": 9,
+        "evidence_required": 9,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "asus-proart-p16-h7606wi-cn",
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "asus-proart-p16-h7606wi-cn",
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-020",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "laptop",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "dell-xps13-9350-usexchcto9350lnl06-us",
+          "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "dell-xps13-9350-usexcpcto9350lnl04-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "dell-xps13-9350-usexchcto9350lnl06-us",
+          "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-021",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "dell-xps13-9350-usexchcto9350lnl06-us",
+          "dell-xps13-9350-usexcpcto9350lnl04-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-022",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "asus-proart-p16-h7606ww-cn",
+          "asus-proart-p16-h7606wx-cn"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-023",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "hp-zbook-firefly14-g11-98n14et-il",
+          "hp-zbook-power-g9-6b8c1ea-global"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-024",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "lenovo-thinkpad-t14-g5-21ml000fgr-de",
+          "lenovo-thinkpad-t14s-g7-21yw0042us-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-025",
+        "category": "unknown_price",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 1,
+        "constraint_value_matches": 1,
+        "constraint_value_total": 1,
+        "domain_id": "laptop",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-026",
+        "category": "unknown_field",
+        "constraint_field_fn": 1,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 1,
+        "constraint_value_matches": 1,
+        "constraint_value_total": 2,
+        "domain_id": "laptop",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-027",
+        "category": "no_match",
+        "constraint_field_fn": 1,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 1,
+        "domain_id": "laptop",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-028",
+        "category": "ambiguous_identity",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-029",
+        "category": "ambiguous_constraint",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-lap-030",
+        "category": "ambiguous_constraint",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "laptop",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-001",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "sony-wh-1000xm5-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-002",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "sony-wh-1000xm5-black-ca"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-003",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "sony-wf-1000xm5-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-004",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "sony-inzone-h9-white-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-005",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "bose-qc-ultra-headphones-2g-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-006",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "bose-qc-headphones-2g-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-007",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "bose-qc-ultra-earbuds-2g-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-008",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "steelseries-arctis-nova-pro-wireless-ps-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-009",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-010",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "steelseries-arctis-nova-7p-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-011",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "logitech-g735-white-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-012",
+        "category": "exact_fact",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 2,
+        "evidence_required": 2,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "logitech-astro-a50x-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-013",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 2,
+        "constraint_value_matches": 2,
+        "constraint_value_total": 2,
+        "domain_id": "headphone",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "sony-wf-1000xm5-black-us",
+          "sony-wh-1000xm5-black-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "logitech-astro-a50x-black-us",
+          "logitech-g735-white-us",
+          "sony-inzone-h9-white-us",
+          "steelseries-arctis-nova-7p-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "sony-wf-1000xm5-black-us",
+          "sony-wh-1000xm5-black-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-014",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "headphone",
+        "evidence_covered": 15,
+        "evidence_required": 15,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "logitech-astro-a50x-black-us",
+          "sony-inzone-h9-white-us",
+          "steelseries-arctis-nova-7p-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "logitech-g735-white-us",
+          "sony-wf-1000xm5-black-us",
+          "sony-wh-1000xm5-black-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "logitech-astro-a50x-black-us",
+          "sony-inzone-h9-white-us",
+          "steelseries-arctis-nova-7p-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-015",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "headphone",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "logitech-astro-a50x-black-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "logitech-g735-white-us",
+          "sony-inzone-h9-white-us",
+          "sony-wf-1000xm5-black-us",
+          "sony-wh-1000xm5-black-us",
+          "steelseries-arctis-nova-7p-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "logitech-astro-a50x-black-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-016",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 1,
+        "constraint_field_tp": 4,
+        "constraint_value_matches": 4,
+        "constraint_value_total": 4,
+        "domain_id": "headphone",
+        "evidence_covered": 12,
+        "evidence_required": 12,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "sony-wh-1000xm5-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "logitech-astro-a50x-black-us",
+          "logitech-g735-white-us",
+          "sony-inzone-h9-white-us",
+          "sony-wf-1000xm5-black-us",
+          "steelseries-arctis-nova-7p-black-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "sony-wh-1000xm5-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-017",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 1,
+        "constraint_field_tp": 4,
+        "constraint_value_matches": 4,
+        "constraint_value_total": 4,
+        "domain_id": "headphone",
+        "evidence_covered": 8,
+        "evidence_required": 8,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "sony-wf-1000xm5-black-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "logitech-astro-a50x-black-us",
+          "logitech-g735-white-us",
+          "sony-inzone-h9-white-us",
+          "sony-wh-1000xm5-black-us",
+          "steelseries-arctis-nova-7p-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "sony-wf-1000xm5-black-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-018",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 1,
+        "constraint_field_tp": 4,
+        "constraint_value_matches": 4,
+        "constraint_value_total": 4,
+        "domain_id": "headphone",
+        "evidence_covered": 16,
+        "evidence_required": 16,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "logitech-astro-a50x-black-us",
+          "logitech-g735-white-us",
+          "sony-inzone-h9-white-us",
+          "sony-wf-1000xm5-black-us",
+          "sony-wh-1000xm5-black-us",
+          "steelseries-arctis-nova-7p-black-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-019",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 1,
+        "constraint_field_tp": 4,
+        "constraint_value_matches": 4,
+        "constraint_value_total": 4,
+        "domain_id": "headphone",
+        "evidence_covered": 8,
+        "evidence_required": 8,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "sony-wh-1000xm5-black-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "logitech-astro-a50x-black-us",
+          "logitech-g735-white-us",
+          "sony-inzone-h9-white-us",
+          "sony-wf-1000xm5-black-us",
+          "steelseries-arctis-nova-7p-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "sony-wh-1000xm5-black-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-020",
+        "category": "catalog_filter",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "headphone",
+        "evidence_covered": 3,
+        "evidence_required": 3,
+        "expected_kind": "eligible",
+        "expected_product_ids": [
+          "logitech-g735-white-us"
+        ],
+        "forbidden_evidence_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us",
+          "logitech-astro-a50x-black-us",
+          "sony-inzone-h9-white-us",
+          "sony-wf-1000xm5-black-us",
+          "sony-wh-1000xm5-black-us",
+          "steelseries-arctis-nova-7p-black-us",
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "hard_negative": false,
+        "recommended_product_ids": [
+          "logitech-g735-white-us"
+        ],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-021",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 6,
+        "evidence_required": 6,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "sony-wh-1000xm5-black-ca",
+          "sony-wh-1000xm5-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-022",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "bose-qc-headphones-2g-black-us",
+          "bose-qc-ultra-headphones-2g-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-023",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "steelseries-arctis-nova-pro-wireless-ps-us",
+          "steelseries-arctis-nova-pro-wireless-xbox-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-024",
+        "category": "explicit_comparison",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 4,
+        "evidence_required": 4,
+        "expected_kind": "referenced",
+        "expected_product_ids": [
+          "bose-qc-ultra-earbuds-2g-black-us",
+          "sony-wf-1000xm5-black-us"
+        ],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": false,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-025",
+        "category": "no_match",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 1,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "headphone",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-026",
+        "category": "no_match",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 3,
+        "constraint_value_matches": 3,
+        "constraint_value_total": 3,
+        "domain_id": "headphone",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-027",
+        "category": "unknown_price",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 1,
+        "constraint_value_matches": 1,
+        "constraint_value_total": 1,
+        "domain_id": "headphone",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "abstain",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-028",
+        "category": "ambiguous_identity",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-029",
+        "category": "ambiguous_constraint",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      },
+      {
+        "case_id": "v2-9b-hph-030",
+        "category": "ambiguous_identity",
+        "constraint_field_fn": 0,
+        "constraint_field_fp": 0,
+        "constraint_field_tp": 0,
+        "constraint_value_matches": 0,
+        "constraint_value_total": 0,
+        "domain_id": "headphone",
+        "evidence_covered": 0,
+        "evidence_required": 0,
+        "expected_kind": "clarify",
+        "expected_product_ids": [],
+        "forbidden_evidence_product_ids": [],
+        "hard_negative": true,
+        "recommended_product_ids": [],
+        "safety": {
+          "checker_leakage": 0,
+          "clarification_bypass": 0,
+          "scope_leakage": 0,
+          "unknown_overclaim": 0,
+          "wrong_configuration_or_region": 0
+        },
+        "task_correct": true
+      }
+    ],
+    "gate_checks": {
+      "checker_leakage": true,
+      "clarification_bypass": true,
+      "evidence_coverage": true,
+      "hard_constraint_field_f1": true,
+      "hard_negative_rejection": true,
+      "headphone_accuracy": true,
+      "laptop_accuracy": true,
+      "monitor_accuracy": true,
+      "scope_leakage": true,
+      "unknown_overclaim": true,
+      "v2_scope_envelope_present": true,
+      "wrong_configuration_or_region": true
+    },
+    "metrics": {
+      "constraint_operator_value_exact": {
+        "matches": 84,
+        "rate": 0.9545454545454546,
+        "total": 88
+      },
+      "hard_constraint_field": {
+        "f1": 0.9444444444444444,
+        "fn": 3,
+        "fp": 7,
+        "precision": 0.9239130434782609,
+        "recall": 0.9659090909090909,
+        "tp": 85
+      },
+      "hard_negative_rejection": {
+        "correct": 18,
+        "rate": 1.0,
+        "total": 18
+      },
+      "per_domain": {
+        "headphone": {
+          "accuracy": 1.0,
+          "correct": 30,
+          "total": 30
+        },
+        "laptop": {
+          "accuracy": 1.0,
+          "correct": 30,
+          "total": 30
+        },
+        "monitor": {
+          "accuracy": 0.8666666666666667,
+          "correct": 26,
+          "total": 30
+        }
+      },
+      "recommendation_and_fact_evidence_coverage": {
+        "covered": 297,
+        "rate": 1.0,
+        "required": 297
+      },
+      "safety": {
+        "checker_leakage": 0,
+        "clarification_bypass": 0,
+        "scope_leakage": 0,
+        "unknown_overclaim": 0,
+        "wrong_configuration_or_region": 0
+      },
+      "scope_envelope": {
+        "legacy_monitor_missing": 30,
+        "v2_domain_missing": 0
+      },
+      "task_accuracy": {
+        "correct": 86,
+        "rate": 0.9555555555555556,
+        "total": 90
+      }
+    }
+  }
+}

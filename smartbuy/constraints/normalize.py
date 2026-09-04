@@ -26,6 +26,8 @@ SUPPORTED_FIELDS = frozenset(
         "usb_c_video",
         "usb_c_power_delivery_w",
         "width_mm",
+        "weight_kg",
+        "panel_type",
         "brand",
         "stand_adjustment",
         "region",
@@ -42,6 +44,8 @@ _RESOLUTION_ALIASES = {
     "3840x2160": "3840x2160",
     "3840×2160": "3840x2160",
     "5k": "5120x2880",
+    "5120x2880": "5120x2880",
+    "5120×2880": "5120x2880",
     "8k": "7680x4320",
 }
 
@@ -253,6 +257,10 @@ class ConstraintNormalizer:
 
         if "中国版" in compact or "中国大陆" in compact or "国行" in compact:
             add("region", ConstraintOperator.EQ, "CN", source_text="中国大陆/国行版本")
+        elif any(token in compact for token in ("美国版", "美国区", "美版")):
+            add("region", ConstraintOperator.EQ, "US", source_text="美国版本")
+        elif any(token in compact for token in ("加拿大版", "加拿大区", "加版")):
+            add("region", ConstraintOperator.EQ, "CA", source_text="加拿大版本")
 
         price_range = re.search(r"(\d+(?:\.\d+)?)\s*(?:-|到|至|~|～)\s*(\d+(?:\.\d+)?)元", query)
         if price_range:
@@ -314,12 +322,14 @@ class ConstraintNormalizer:
             elif any(token in compact for token in ("需要usb-c", "有usb-c", "支持usb-c")):
                 add("has_usb_c", ConstraintOperator.EQ, True, source_text="需要 USB-C")
 
-        if "usb_c_video" not in cancelled and any(
-            token in compact for token in ("usb-c视频", "usb-c输入视频", "usb-c视频输入", "usb-c传视频")
+        if "usb_c_video" not in cancelled and (
+            any(
+                token in compact
+                for token in ("usb-c视频", "usb-c输入视频", "usb-c视频输入", "usb-c传视频")
+            )
+            or re.search(r"usb-c.{0,6}(?:传视频|视频输入|能传视频)", compact)
         ):
             add("usb_c_video", ConstraintOperator.EQ, True, source_text="USB-C 视频输入")
-            if not any(item.field == "has_usb_c" for item in output):
-                add("has_usb_c", ConstraintOperator.EQ, True, source_text="USB-C 视频输入隐含需要物理 USB-C")
 
         power = re.search(r"(?:至少|不少于|不低于)(\d+(?:\.\d+)?)w", compact)
         if power:
@@ -329,12 +339,43 @@ class ConstraintNormalizer:
         if any(token in compact for token in ("不支持任何usb-c供电", "完全不支持usb-c供电")):
             add("usb_c_power_delivery_w", ConstraintOperator.EQ, None, unit="W", source_text="不支持 USB-C 供电")
 
-        width_mm = re.search(r"(?:宽度|机身宽)(?:不超过|最多|小于等于)(\d+(?:\.\d+)?)mm", compact)
-        width_cm = re.search(r"(?:宽度|机身宽)(?:不超过|最多|小于等于)(\d+(?:\.\d+)?)cm", compact)
+        width_mm = re.search(
+            r"(?:宽度|机身宽)(?:(?:不超过|最多|小于等于))?(\d+(?:\.\d+)?)mm(?:以内|以下)?",
+            compact,
+        )
+        width_cm = re.search(
+            r"(?:宽度|机身宽)(?:(?:不超过|最多|小于等于))?(\d+(?:\.\d+)?)cm(?:以内|以下)?",
+            compact,
+        )
         if width_mm:
             add("width_mm", ConstraintOperator.LTE, float(width_mm.group(1)), unit="mm", source_text=width_mm.group(0))
         elif width_cm:
             add("width_mm", ConstraintOperator.LTE, float(width_cm.group(1)) * 10.0, unit="mm", source_text=width_cm.group(0))
+
+        weight_kg = re.search(
+            r"(?:重量|机身重量)(?:不超过|最多|小于等于|不重于)?(\d+(?:\.\d+)?)kg",
+            compact,
+        )
+        weight_g = re.search(
+            r"(?:重量|机身重量)(?:不超过|最多|小于等于|不重于)?(\d+(?:\.\d+)?)g",
+            compact,
+        )
+        if weight_kg:
+            add("weight_kg", ConstraintOperator.LTE, float(weight_kg.group(1)), unit="kg", source_text=weight_kg.group(0))
+        elif weight_g:
+            add("weight_kg", ConstraintOperator.LTE, float(weight_g.group(1)) / 1000.0, unit="kg", source_text=weight_g.group(0))
+
+        panel_values = {
+            "ipsblack": "IPS Black",
+            "fastips": "Fast IPS",
+            "woled": "WOLED",
+            "ips": "IPS",
+            "va": "VA",
+        }
+        for token, value in panel_values.items():
+            if token in compact:
+                add("panel_type", ConstraintOperator.EQ, value, source_text=value)
+                break
 
         brand_exclusions: list[str] = []
         brand_inclusions: list[str] = []

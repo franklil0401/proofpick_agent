@@ -100,6 +100,26 @@ def test_task_type_and_explicit_constraints_are_normalized():
 
 
 @pytest.mark.asyncio
+@pytest.mark.parametrize(
+    "query",
+    [
+        "U272 系列的屏幕参数怎么样？",
+        "我想要尺寸别太大的显示器。",
+        "刷新率高一点就行，其他没有要求。",
+    ],
+)
+async def test_preflight_ambiguity_stops_before_provider_and_tools(
+    database, query: str
+) -> None:
+    provider = FakeProvider([])
+    report = await PurchaseDecisionAgent(provider, tools(database)).run(query)
+    assert report.clarification_state.value == "pending"
+    assert report.tool_call_count == 0
+    assert report.usage["call_count"] == 0
+    assert report.recommended_model_ids == []
+
+
+@pytest.mark.asyncio
 async def test_agent_executes_dependent_sql_kb_evidence_chain(database, tmp_path):
     responses = [
         call(

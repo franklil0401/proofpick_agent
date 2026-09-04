@@ -84,6 +84,41 @@ def test_evidence_conflict_cannot_be_overridden_by_passed_checker():
     assert "source-pd-60" in markdown and "source-pd-65" in markdown
 
 
+def test_comparison_keeps_evidence_but_does_not_publish_purchase_recommendation():
+    model_id = "benq-pd2705u-us"
+    evidence = _evidence("comparison-video", "usb_c_video", True)
+    state = AgentState(
+        session_id="comparison-reference",
+        query="比较两个型号的 USB-C 视频能力。",
+        requirements=UserRequirements(
+            summary="对照 USB-C 视频事实",
+            task_type="comparison",
+            required_fields=["usb_c_video"],
+        ),
+        candidate_pool_rows={model_id: {"model_id": model_id, "region": "US"}},
+        assessments={
+            model_id: [
+                FieldAssessment(
+                    field="usb_c_video",
+                    status=ConstraintStatus.MATCHED,
+                    actual_value=True,
+                    reason="官方证据支持。",
+                    evidence=[evidence],
+                )
+            ]
+        },
+        constraint_verification=_passed_batch(model_id),
+        ranked_eligible_model_ids=[model_id],
+    )
+
+    report = build_report(state, latency_ms=1, usage={})
+
+    assert report.recommended_model_ids == []
+    assert {(item.model_id, item.field) for item in report.evidence} == {
+        (model_id, "usb_c_video")
+    }
+
+
 def test_missing_required_fields_are_explicit_unknowns():
     state = AgentState(
         session_id="release-missing",

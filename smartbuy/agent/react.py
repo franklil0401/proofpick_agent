@@ -6,6 +6,7 @@ import asyncio
 import inspect
 import json
 import re
+import sqlite3
 import time
 import uuid
 from collections.abc import Awaitable, Callable
@@ -378,7 +379,10 @@ class PurchaseDecisionAgent:
                     summary="需求结构未通过 Schema 校验。",
                 )
             current.task_type = self._infer_task_type(state.query, current.task_type)
-            model_proposals = [item.model_dump(mode="json") for item in current.hard_constraints]
+            model_proposals = [
+                item.model_dump(mode="json") for item in current.hard_constraints
+            ]
+            current = self._augment_requirements(state.query, current)
             if state.constraint_resolution is not None:
                 state.constraint_set = state.constraint_resolution.constraint_set.model_copy(
                     deep=True
@@ -402,6 +406,10 @@ class PurchaseDecisionAgent:
                     preferences=preferences,
                     model_proposals=model_proposals,
                 )
+            state.constraint_set = self._gate_non_purchase_constraints(
+                state.constraint_set,
+                current.task_type,
+            )
             current_locators = self._gated_locators(state.query, current.hard_constraints)
             previous_locators = (
                 [
@@ -739,7 +747,16 @@ class PurchaseDecisionAgent:
             and any(token in normalized for token in (" 和 ", "与", "和", "中"))
         ):
             return "comparison"
-        if any(token in normalized for token in ("找", "哪些", "哪款", "预算", "至少", "不超过", "满足", "是否", "能否")):
+        if any(token in normalized for token in ("比较", "对比", "差别", "不同")):
+            return "comparison"
+        if any(token in normalized for token in ("只查", "请查", "查询", "核验", "给证据", "怎么样", "有什么", "支持哪些")):
+            return "fact"
+        if any(token in normalized for token in ("是否", "能否", "有没有")):
+            if re.search(r"\d+(?:\.\d+)?\s*(?:w|hz|mm|kg|英寸|寸|元)", normalized):
+                return "filter"
+            if not any(token in normalized for token in ("推荐", "筛选", "找", "哪款", "满足")):
+                return "fact"
+        if any(token in normalized for token in ("找", "哪款", "预算", "至少", "不低于", "不超过", "满足", "以内")):
             return "filter"
         return declared
 
@@ -748,9 +765,16 @@ class PurchaseDecisionAgent:
         """Normalize explicit user wording into fields; this parses requirements, not final eligibility."""
         normalized = query.lower().replace(" ", "")
         explicit_existing = {"model_id", "model_name"}
+        requested_fields: set[str] = set()
         field_markers = {
             "brand": ("品牌",),
             "panel_type": ("面板", "ips", "va"),
+            "display_size_inch": ("尺寸", "英寸", "寸"),
+            "resolution": ("分辨率", "4k", "5k", "8k", "uhd", "qhd"),
+            "refresh_rate_hz": ("刷新率", "hz"),
+            "has_usb_c": ("usb-c", "usb c", "type-c", "type c"),
+            "usb_c_video": ("usb-c视频", "usb-c传视频", "视频输入", "能传视频"),
+            "usb_c_power_delivery_w": ("供电", "pd"),
             "stand_adjustment": ("支架", "升降", "旋转"),
             "width_mm": ("宽度",),
             "weight_kg": ("重量", "kg"),
@@ -761,17 +785,25 @@ class PurchaseDecisionAgent:
         for field, markers in field_markers.items():
             if any(marker in normalized for marker in markers):
                 explicit_existing.add(field)
+                requested_fields.add(field)
         constraints = {
             item.field: item
             for item in requirements.hard_constraints
             if item.field in explicit_existing
         }
 
+        allow_purchase_constraints = requirements.task_type in {"filter", "dynamic"}
+
         def put(field: str, operator: ConstraintOperator, value: Any) -> None:
-            constraints[field] = ConstraintSpec(field=field, operator=operator, value=value, hard=True)
+            if allow_purchase_constraints:
+                constraints[field] = ConstraintSpec(field=field, operator=operator, value=value, hard=True)
 
         if "中国版" in normalized or "中国大陆" in normalized:
             put("region", ConstraintOperator.EQ, "CN")
+        elif "美国版" in normalized or "美国区" in normalized:
+            put("region", ConstraintOperator.EQ, "US")
+        elif "加拿大版" in normalized or "加拿大区" in normalized:
+            put("region", ConstraintOperator.EQ, "CA")
         size = re.search(r"(\d+(?:\.\d+)?)英寸", normalized)
         if size:
             put("display_size_inch", ConstraintOperator.EQ, float(size.group(1)))
@@ -791,7 +823,11 @@ class PurchaseDecisionAgent:
             put("refresh_rate_hz", ConstraintOperator.EQ, float(match.group(1)))
         if any(token in normalized for token in ("没有usb-c", "无usb-c", "不要usb-c")):
             put("has_usb_c", ConstraintOperator.EQ, False)
-        if "usb-c视频" in normalized or "usb-c输入视频" in normalized:
+        if (
+            "usb-c视频" in normalized
+            or "usb-c输入视频" in normalized
+            or re.search(r"usb-c.{0,6}(?:传视频|视频输入|能传视频)", normalized)
+        ):
             put("usb_c_video", ConstraintOperator.EQ, True)
         power = re.search(r"(?:至少|不少于|不低于)(\d+(?:\.\d+)?)w", normalized)
         if power:
@@ -803,14 +839,75 @@ class PurchaseDecisionAgent:
         budget = re.search(r"预算(\d+(?:\.\d+)?)元", normalized)
         if budget:
             put("price_cny", ConstraintOperator.LTE, float(budget.group(1)))
-        width = re.search(r"宽度不超过(\d+(?:\.\d+)?)mm", normalized)
+        width = re.search(r"宽度(?:不超过|最多)?(\d+(?:\.\d+)?)mm(?:以内|以下)?", normalized)
         if width:
             put("width_mm", ConstraintOperator.LTE, float(width.group(1)))
+        weight = re.search(r"重量(?:不超过|最多|不重于)?(\d+(?:\.\d+)?)kg", normalized)
+        if weight:
+            put("weight_kg", ConstraintOperator.LTE, float(weight.group(1)))
         requirements.hard_constraints = list(constraints.values())
         requirements.required_fields = list(
-            dict.fromkeys([*requirements.required_fields, *constraints.keys()])
+            dict.fromkeys([*requirements.required_fields, *sorted(requested_fields), *constraints.keys()])
         )
         return requirements
+
+    @staticmethod
+    def _gate_non_purchase_constraints(
+        constraint_set: ConstraintSet,
+        task_type: str,
+    ) -> ConstraintSet:
+        if task_type not in {"fact", "comparison", "unrelated"}:
+            return constraint_set
+        gated = constraint_set.model_copy(deep=True)
+        for item in gated.constraints:
+            if item.provenance.value == "current_input" and item.hard_or_soft.value == "hard":
+                item.active = False
+                item.note = "query_field_not_purchase_constraint"
+        return gated
+
+    def _preflight_clarification_reason(self, query: str) -> str | None:
+        compact = re.sub(r"\s+", "", query.casefold())
+        if any(
+            marker in compact
+            for marker in (
+                "别太大", "别太小", "大一点", "小一点", "高一点", "低一点",
+                "久一点", "轻一点", "便宜一点", "不能太高", "不要太重",
+            )
+        ) and not re.search(r"\d", compact):
+            return "qualitative_threshold_missing"
+
+        database_path = getattr(self.tools.get("text2sql"), "database_path", None)
+        if not database_path:
+            return None
+        query_tokens = {
+            token.casefold()
+            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{2,}", query)
+            if re.search(r"\d", token)
+        }
+        if not query_tokens:
+            return None
+        try:
+            connection = sqlite3.connect(
+                f"file:{getattr(database_path, 'as_posix', lambda: str(database_path))()}?mode=ro",
+                uri=True,
+                timeout=1.0,
+            )
+            try:
+                names = [str(row[0]) for row in connection.execute("SELECT model_name FROM products")]
+            finally:
+                connection.close()
+        except (OSError, sqlite3.Error):
+            return None
+        model_tokens = [
+            token.casefold()
+            for name in names
+            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{2,}", name)
+        ]
+        for token in query_tokens:
+            matching = {item for item in model_tokens if item.startswith(token)}
+            if len(matching) > 1 and token not in matching:
+                return "ambiguous_catalog_identity"
+        return None
 
     @staticmethod
     def _next_action(name: str, result: ToolResult, state: AgentState) -> str:
@@ -852,6 +949,31 @@ class PurchaseDecisionAgent:
             query, session_id, user_id, mode, thread_id
         )
         state.constraint_resolution = constraint_resolution
+        preflight_reason = (
+            self._preflight_clarification_reason(query)
+            if constraint_resolution is None else None
+        )
+        if preflight_reason is not None:
+            return DecisionReport(
+                request_summary=query[:200],
+                task_type="filter",
+                clarification_state="pending",
+                pending_questions=[
+                    "请明确具体商品配置、地区或可执行的数值阈值。"
+                ],
+                abstained=True,
+                stop_reason="输入存在未消解歧义；未调用模型、检索工具或 Checker。",
+                tool_call_count=0,
+                usage={
+                    "call_count": 0,
+                    "input_tokens": 0,
+                    "output_tokens": 0,
+                    "estimated_cost_cny": 0.0,
+                    "result_status": "needs_clarification",
+                    "clarification_reason": preflight_reason,
+                },
+                latency_ms=(time.perf_counter() - started) * 1000,
+            )
         preferences = (
             self.preference_memory.recall(user_id, requested=use_long_term_memory) if user_id else {}
         )

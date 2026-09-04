@@ -39,6 +39,8 @@ PRODUCT_FIELDS = frozenset(
         "usb_c_power_delivery_w",
         "stand_adjustment",
         "width_mm",
+        "weight_kg",
+        "panel_type",
     }
 )
 PRICE_FIELDS = frozenset({"price_cny"})

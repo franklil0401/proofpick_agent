@@ -14,7 +14,8 @@ from smartbuy.identity import ProductScopeType, QueryIntent, ResolvedProductScop
 _COMPARISON = ("比较", "对比", "对照", "区分", "差异", "是否等同", "是不是同", "混成")
 _FACT = (
     "多少", "是什么", "哪个", "哪套", "属于", "核验", "核对", "核实", "确认",
-    "是否", "能否", "请查", "查询", "查一下", "只查", "事实",
+    "是否", "能否", "请查", "查询", "查一下", "只查", "事实", "给证据",
+    "怎么样", "有什么", "支持哪些", "能力",
 )
 _FILTER = ("筛选", "筛出", "推荐", "想要", "需要", "只要", "找", "选择", "选 ", "返回对应")
 _EXPLICIT_FILTER = ("筛选", "筛出", "推荐", "想要", "只要", "只接受", "仅限", "找", "选择", "选 ", "返回对应")
@@ -22,6 +23,21 @@ _CLARIFY = (
     "先确认", "先问", "先澄清", "没指定", "没有指定", "没决定",
     "未决定", "尚未决定", "还没决定", "没有选", "请先问", "不明确",
 )
+
+_QUALITATIVE_WITHOUT_THRESHOLD = (
+    "别太大", "别太小", "大一点", "小一点", "高一点", "低一点", "久一点",
+    "轻一点", "便宜一点", "快一点", "强一点", "好一点", "别太贵",
+    "不能太高", "不要太重",
+)
+
+
+def _has_explicit_filter_signal(text: str) -> bool:
+    if any(marker in text for marker in _EXPLICIT_FILTER):
+        return True
+    return bool(
+        re.search(r"(?:^|[，,；;：:\s])(?:要|要求|必须)(?!求证|确认|核验)", text)
+        or re.search(r"(?:至少|最低|不低于|不少于|不超过|至多|最多|以内|以下)", text)
+    )
 
 
 def _fold(value: str) -> str:
@@ -93,11 +109,21 @@ class QueryUnderstandingEngine:
         }
         if scope.scope_type == ProductScopeType.OPEN_UNKNOWN_PRODUCT:
             intent = QueryIntent.OPEN_PRODUCT_RESEARCH
-        elif any(marker in folded for marker in _COMPARISON):
+        elif scope.resolution_status.value == "needs_clarification":
+            intent = QueryIntent.CLARIFICATION_REQUIRED
+        elif scope.scope_type == ProductScopeType.EXPLICIT_COMPARISON or any(
+            marker in folded for marker in _COMPARISON
+        ):
             intent = QueryIntent.EXPLICIT_COMPARISON
         elif any(marker in folded for marker in _CLARIFY):
             intent = QueryIntent.CLARIFICATION_REQUIRED
-        elif any(marker in folded for marker in _EXPLICIT_FILTER):
+        elif (
+            requested
+            and any(marker in folded for marker in _QUALITATIVE_WITHOUT_THRESHOLD)
+            and not re.search(r"\d", folded)
+        ):
+            intent = QueryIntent.CLARIFICATION_REQUIRED
+        elif _has_explicit_filter_signal(folded):
             intent = QueryIntent.RECOMMENDATION_FILTER
         elif included_exact and any(marker in folded for marker in _FACT):
             intent = QueryIntent.EXACT_FACT_VERIFICATION
@@ -130,5 +156,13 @@ class QueryUnderstandingEngine:
         } and any(item.identity_kind == "region" for item in scope.references):
             if "region" in self.pack.fields and "region" not in requested:
                 requested.append("region")
-        reason = "explicit_clarification_language" if intent == QueryIntent.CLARIFICATION_REQUIRED else None
+        reason = None
+        if intent == QueryIntent.CLARIFICATION_REQUIRED:
+            reason = (
+                scope.resolution_reason
+                if scope.resolution_status.value == "needs_clarification"
+                else "qualitative_threshold_missing"
+                if any(marker in folded for marker in _QUALITATIVE_WITHOUT_THRESHOLD)
+                else "explicit_clarification_language"
+            )
         return QueryUnderstanding(intent=intent, requested_fields=requested, clarification_reason=reason)
