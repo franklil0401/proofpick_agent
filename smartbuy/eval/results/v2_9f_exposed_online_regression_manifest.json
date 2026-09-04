@@ -1,0 +1,59 @@
+{
+  "schema_version": "proofpick-v2-9f-exposed-online-run-manifest-v1",
+  "classification": "exposed online regression; not an independent holdout or release result",
+  "run_id": "v2-9f-exposed-online-20260904T151258Z-ece02e9b",
+  "completed_run_count": 1,
+  "production_commit": "52d4d20d0858c8f8954786b756ea7a90ef4fdd8b",
+  "production_tree": "1721f501b90fb727023797a0cafeb8df804ea372",
+  "evaluator_commit": "126486861e08a33a94d4c6c5ffeafc121db2ee5e",
+  "rc_config_sha256": "ab118593015eed1bd308c45934dd796c1c43e85a8a9a7a948025d1451347a472",
+  "result_file": "smartbuy/eval/results/v2_9f_exposed_online_regression_final.json",
+  "result_sha256": "500093ed072eefaa43ab684a29e4b7bf50fcfd6eb7fef5be0c532404bdeab26b",
+  "pre_repair_funnel_sha256": "340fc9e2fe23077d48e7828d759befaa1f3e73f71705fe95f552f1eb04c523a1",
+  "provider": {
+    "name": "zhipu",
+    "version": "v2-9f.1",
+    "cache": "cold_disabled",
+    "bailian_calls": 0,
+    "bocha_calls": 0
+  },
+  "extractor": "proofpick-bounded-official-extractor-v2",
+  "normalizer": "proofpick-open-normalizer-v3",
+  "runtime_contract": {
+    "monitor": {
+      "database_sha256": "d808873c176691c805e247b2ba444ace64899df65ff4015451b8e24c278fe2c4",
+      "index_manifest_sha256": "247448c6cb11b96adbfbcac0e4333f81aa8169c5bc324f55b5f6cb83a342da00"
+    },
+    "laptop": {
+      "domain_pack_version": "1.0.0",
+      "domain_pack_fingerprint": "4e10afbd17927d00a4c3f8a134d591e03d570a073334b862fc7a252a7e6b6d67",
+      "data_version": "laptop-governed-2026-09-02-v1",
+      "data_manifest_hash": "c9ae040dd8220febb417537418d45532f3afba35c2f35ab0d8b7c5c361692623",
+      "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+      "index_manifest_hash": "8aeec201ded4dcd44ecb1c5df092e6dc4d6382465e958cd7f68f6a8a0dd41642",
+      "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+      "document_count": 12,
+      "chunk_count": 12,
+      "embedding_dimensions": 1024
+    },
+    "headphone": {
+      "domain_pack_version": "1.0.0",
+      "domain_pack_fingerprint": "af129555dd4d71026f3fc15c4a0335e1f4dcd0bde23031b1a6defe611323b487",
+      "data_version": "headphone-governed-2026-09-03-v1",
+      "data_manifest_hash": "36c0bf08ce945a67e7ecd0e485a9a269e7ad942788d428f2cb8af925208e8018",
+      "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+      "index_manifest_hash": "8dd3e03921ff838ea7323caf15c97c169633583843241f5321d21dabaeb16e86",
+      "collection_name": "proofpick_headphone_v2_cae477364b46ccae",
+      "document_count": 12,
+      "chunk_count": 12,
+      "embedding_dimensions": 1024
+    }
+  },
+  "historical_results_preserved": [
+    "v2-9d-independent:0/15",
+    "v2-9e-exposed:2/15",
+    "v2-9e-exposed:5/15",
+    "v2-9e-exposed:5/15"
+  ],
+  "harness_failure_preserved_separately": "smartbuy/eval/results/v2_9f_online_harness_failure.json"
+}

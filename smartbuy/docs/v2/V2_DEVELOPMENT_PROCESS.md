@@ -965,6 +965,6 @@ API 与成本：
 
 V2-9B 独立首次评测保留 Trusted `64/90` 与 Online Evidence 完成 `2/15`。RC2 的 V2-9D 第二次独立首次评测保留 Trusted `72/90`、硬约束 F1 `93.20%`、Evidence `343/357`、困难负例 `8/15`，以及 Online 安全终态 `15/15` 但实际 Evidence 完成 `0/15`；发布结论仍为 `Needs revision`。
 
-V2-9E 只在独立修复分支上做通用修复。相同 90 条 Trusted 的 exposed regression 为 `86/90`、Evidence `351/357`，随后四条通用语法定向回归为 `4/4`，没有在费用上限内再次运行完整 90 条。相同 15 条 Online 的三轮 exposed regression 实际完成依次为 `2/15`、`5/15`、`5/15`，最高仍低于内部 `8/15` 目标；安全隔离均保持为 0 越界。完整证据见 [V2-9E 报告](v2_9e_generalization_repair_report.md)与 [ADR-0021](../adr/0021-generalized-intent-online-evidence-and-semantic-manifest.md)。
+V2-9E 只在独立修复分支上做通用修复。相同 90 条 Trusted 的 exposed regression 为 `86/90`、Evidence `351/357`，随后四条通用语法定向回归为 `4/4`，没有在费用上限内再次运行完整 90 条。相同 15 条 Online 的三轮 exposed regression 实际完成依次为 `2/15`、`5/15`、`5/15`。V2-9F 专项修复后唯一有效完整 exposed regression 为 `6/15`，Monitor/Laptop/Headphone 分别 `2/5`、`1/5`、`3/5`，字段核验 `11/18`；安全终态 `15/15` 且错误来源或 Open→Trusted 越界为 0，但仍低于 `8/15`、每品类 `2/5` 和字段核验 `80%` 的联合门槛。完整证据见 [V2-9F 报告](v2_9f_online_research_repair_report.md)与 [ADR-0022](../adr/0022-bounded-official-source-discovery-and-extraction.md)。
 
-这些 90+15 条都已暴露，不能替代新的未见发布集。下一步只能在用户授权后冻结新的候选 Commit/Manifest，再交给独立评测方创建并单次运行新任务；开发方不得制作下一套发布 Holdout。Online 必须同时达到实际 Evidence 完成、字段覆盖和安全隔离门槛。未经确认不得创建 PR、合并 `main`、Tag 或 Release。
+这些 90+15 条都已暴露，不能替代新的未见发布集。V2-9F 尚不具备冻结 RC3 的条件；下一步只能在用户重新授权的修复范围内处理静态访问受限、目标地区发现和字段闭包，不能自行创建或运行新 Holdout。只有 exposed 内部门槛与全部安全门同时达到后，才可冻结候选并交给独立评测方创建、单次运行新任务。未经确认不得创建 PR、合并 `main`、Tag 或 Release。

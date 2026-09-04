@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-04 |
-| 当前阶段 | V1 已冻结；V2-9D 第二次独立评测结论为 Needs revision；V2-9E 已完成通用修复与已暴露回归，仍等待新的独立 Holdout |
+| 当前阶段 | V1 已冻结；V2-9F 完成 Online Research 专项修复与 exposed regression，但 6/15 未达 8/15 门槛，RC3 继续阻断 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -140,7 +140,10 @@ proofpick_agent/
 │  │  │  ├─ 0016-deterministic-product-identity-and-candidate-scope.md
 │  │  │  ├─ 0017-deterministic-safety-gates-and-release-evaluation.md
 │  │  │  ├─ 0018-deterministic-ranking-and-layered-memory.md
-│  │  │  └─ 0019-headphone-source-authority-and-pack-reuse.md
+│  │  │  ├─ 0019-headphone-source-authority-and-pack-reuse.md
+│  │  │  ├─ 0020-separate-query-intent-scope-and-purchase-constraints.md
+│  │  │  ├─ 0021-generalized-intent-online-evidence-and-semantic-manifest.md
+│  │  │  └─ 0022-bounded-official-source-discovery-and-extraction.md
 │  │  ├─ archive/
 │  │  │  └─ FINAL_多源消费决策研究Agent开发交接总文档.md
 │  │  ├─ development/
@@ -193,7 +196,9 @@ proofpick_agent/
 │  │  │  ├─ v2_8_headphone_domain_report.md
 │  │  │  ├─ v2_8_headphone_data_card.md
 │  │  │  ├─ v2_8_three_domain_evaluation.md
-│  │  │  └─ v2_8_headphone_runtime.md
+│  │  │  ├─ v2_8_headphone_runtime.md
+│  │  │  ├─ v2_9f_online_research_repair_report.md
+│  │  │  └─ v2_9f_online_research_runtime.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -270,6 +275,7 @@ proofpick_agent/
 │  │  ├─ v2_stage5c_live_holdout_v2.jsonl
 │  │  ├─ v2_stage5c_live_holdout_v2_manifest.json
 │  │  ├─ run_v2_quote_span_live_eval.py
+│  │  ├─ run_v2_9f_online_regression.py
 │  │  ├─ v2_6a_laptop_cases.jsonl
 │  │  ├─ v2_6b_laptop_retrieval_cases.jsonl
 │  │  ├─ v2_6b_laptop_retrieval_runner.py
@@ -300,7 +306,8 @@ proofpick_agent/
 │  │     ├─ v2_6b_laptop_retrieval_first.json
 │  │     ├─ v2_6c_*            # 历史失败、暴露回归及 R2/R3 冻结 RC、Journal、首次结果；不可覆盖
 │  │     ├─ v2_8_headphone_*   # Headphone 检索、工程首次/暴露回归与 Open Research 脱敏结果
-│  │     └─ v2_9e_*            # 第二次独立评测后的 Trusted/Online 暴露回归与语义 Manifest
+│  │     ├─ v2_9e_*            # 第二次独立评测后的 Trusted/Online 暴露回归与语义 Manifest
+│  │     └─ v2_9f_*            # Online 修复前漏斗、评测器事故和唯一有效 exposed regression
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -321,6 +328,7 @@ proofpick_agent/
 │  │  ├─ html_parser.py
 │  │  ├─ models.py
 │  │  ├─ normalizer.py
+│  │  ├─ pdf_parser.py
 │  │  ├─ service.py
 │  │  ├─ settings.py
 │  │  ├─ store.py
@@ -535,6 +543,9 @@ proofpick_agent/
 | `smartbuy/docs/adr/0019-headphone-source-authority-and-pack-reuse.md` | Headphone 三层来源权限、主观证据边界及通用 Checker/Ranker 复用决策 |
 | `smartbuy/docs/adr/0020-separate-query-intent-scope-and-purchase-constraints.md` | 事实/比较字段、商品 Scope、购买约束、澄清和证据闭包的通用边界决策 |
 | `smartbuy/docs/adr/0021-generalized-intent-online-evidence-and-semantic-manifest.md` | V2-9E 通用语义修复、官方来源漏斗、Open/Trusted 隔离和稳定 Manifest 决策 |
+| `smartbuy/docs/v2/v2_9f_online_research_repair_report.md` / `v2_9f_online_research_runtime.md` | V2-9F 修复前后漏斗、逐条 exposed 结果、静态 HTML/PDF 边界、费用、运行方式与 RC3 阻断结论 |
+| `smartbuy/eval/results/v2_9f_*` | 修改前失败漏斗、不可覆盖的评测器事故、唯一有效 15 条 exposed Online 结果及其独立运行 Manifest |
+| `smartbuy/docs/adr/0022-bounded-official-source-discovery-and-extraction.md` | 多查询官方来源发现、型号绑定相关页、静态多格式提取与 Open/Trusted 安全边界 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -595,7 +606,7 @@ proofpick_agent/
 | `smartbuy/providers/zhipu_search.py` | `search_pro` 与搜狗有界回退、重试/费用/延迟门、TTL 缓存和脱敏调用账本 |
 | `smartbuy/source_search/` | 可插拔 Provider 契约、候选状态、默认关闭配置、缓存和 URL/域名/型号/地区确定性验证 |
 | `smartbuy/tools/source_search.py` | Agent 显式来源发现工具、本地证据充分性门，以及 Source Candidate 与 Evidence/Checker 隔离 |
-| `smartbuy/open_research/` | URL/SSRF 安全、静态 HTML 抽取、Domain Pack 字段规范化、Open 四态核验、请求级仓库外临时存储和研究报告服务 |
+| `smartbuy/open_research/` | URL/SSRF 安全、静态 HTML/PDF/内嵌状态抽取、Domain Pack 字段规范化、Open 四态核验、请求级仓库外临时存储和研究报告服务 |
 | `smartbuy/tools/web_extractor.py` | 仅在显式 Open Mode 中接受本轮 Source Candidate 的 Agent 工具门，拒绝任意 URL 和 Trusted 晋升 |
 | `smartbuy/product_packs/models.py` / `schema/` | Product Pack、来源、字段证据、观察和临时证据的严格版本化 JSON/Pydantic 契约 |
 | `smartbuy/product_packs/loader.py` / `ledger.py` | 型号/品牌/别名/地区/配置版/单位/许可归一化门和统一字段级 Evidence Ledger |
@@ -704,7 +715,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9D 第二次独立评测仍给出 `Needs revision`；V2-9E 完成通用语义、比较闭包、澄清、Online 取证漏斗和可移植 Manifest 修复，但 90+15 条结果只能作为 exposed regression，且 Online 实际完成最高仍为 5/15。下一次发布判断必须使用独立评测方新建并单次运行的 Holdout。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9D 第二次独立评测仍给出 `Needs revision`；V2-9F 增加多查询官方来源发现、型号绑定的相关页发现、静态 HTML/PDF/内嵌状态提取与字段规则，但 15 条已暴露 Online 回归仅完成 6/15，低于 8/15，RC3 继续阻断。下一次发布判断必须使用独立评测方新建并单次运行的 Holdout。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 

@@ -1,0 +1,3834 @@
+{
+  "api": {
+    "call_count": 53,
+    "degraded_calls": 0,
+    "estimated_cost_cny": 1.77,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "successful_calls": 53
+  },
+  "cases": [
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-mon-001",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "monitor",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "is_oled"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "CN",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 3,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "is_oled"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "CN",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "is_oled"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "CN",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 1,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "is_oled"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "region_mismatch",
+        "normalization_failed",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": true,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": false,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 0,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 939.7779998835176,
+          "local_request_id": "5602da3352404923bad114e4ea5579fd",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "5602da3352404923bad114e4ea5579fd",
+          "query_sha256": "41abd216501acf042cc19f735cedd961323c40ad222eec8487a3742777093bea",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 0,
+          "region_matched_count": 0,
+          "rejected_result_count": 0,
+          "requested_at": "2026-09-04T15:13:00.156501+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 0,
+          "usable_result_count": 0,
+          "valid_url_count": 0
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 2,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 543.4965000022203,
+          "local_request_id": "ae03262d01004cbe82ca8ef94c3e9efd",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "ae03262d01004cbe82ca8ef94c3e9efd",
+          "query_sha256": "62433f2bd217b34e7647a12b76bc595c581fc7d691ec48945257c8d41ea7164d",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 2,
+          "region_matched_count": 0,
+          "rejected_result_count": 2,
+          "requested_at": "2026-09-04T15:13:01.096626+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 2,
+          "usable_result_count": 0,
+          "valid_url_count": 2
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 5,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 870.395899983123,
+          "local_request_id": "f1ec2af98cb34f3fa45006f38c901d22",
+          "model_matched_count": 2,
+          "navigation_result_count": 2,
+          "network_executed": true,
+          "provider_request_id": "f1ec2af98cb34f3fa45006f38c901d22",
+          "query_sha256": "005c21557e38473eeaccd1ff825e6b790029221a486f031d76a29b7c54ee1b67",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:13:01.640586+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 925.1909998711199,
+          "local_request_id": "3474379938e949589ebc2d18969402b7",
+          "model_matched_count": 3,
+          "navigation_result_count": 3,
+          "network_executed": true,
+          "provider_request_id": "3474379938e949589ebc2d18969402b7",
+          "query_sha256": "bf91f8f25373a8f1402c478b25e135804b48ee888213aabaf615674c6e4288f4",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:13:02.512283+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "stop_reason": "canonical/hreflang 未发现可安全核验的目标地区页面；继续返回 no_region_matched_source。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "refresh_rate_hz",
+        "is_oled"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 12788.802600000054
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_configuration_valid": true,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-mon-002",
+      "checker_entry_count": 0,
+      "conflict_fields": [
+        "display_size_inch"
+      ],
+      "domain_id": "monitor",
+      "evidence_count": 15,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_matched",
+          "conflict_fields": [
+            "display_size_inch"
+          ],
+          "evidence_count": 9,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 1,
+              "snippet_count": 92,
+              "snippet_kinds": [
+                "embedded_state",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [],
+          "verified_fields": [
+            "resolution",
+            "usb_c_power_delivery_w"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": null,
+              "detected_region": "unknown",
+              "error": "request_timeout",
+              "http_status": null,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "timeout"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "display_size_inch",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "IE",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_json",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "display_size_inch",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [
+            "display_size_inch"
+          ],
+          "evidence_count": 15,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_json",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [],
+          "verified_fields": [
+            "resolution",
+            "usb_c_power_delivery_w"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "display_size_inch",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "requested_field_missing",
+        "evidence_conflict"
+      ],
+      "funnel": {
+        "actual_evidence_completion": true,
+        "content_extraction": true,
+        "evidence_check": true,
+        "field_normalization": true,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 2423.4916002023965,
+          "local_request_id": "4ac07aba026e457c8c10c5fc551d249f",
+          "model_matched_count": 1,
+          "navigation_result_count": 1,
+          "network_executed": true,
+          "provider_request_id": "4ac07aba026e457c8c10c5fc551d249f",
+          "query_sha256": "8f863db637abbda1fc3d94fe2a47334d60b573e52169446a63aafe1dc5c3eb5f",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:13:12.945183+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 4,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 991.1199999041855,
+          "local_request_id": "0b94984183724262b5416f20d2c2c1e5",
+          "model_matched_count": 1,
+          "navigation_result_count": 1,
+          "network_executed": true,
+          "provider_request_id": "0b94984183724262b5416f20d2c2c1e5",
+          "query_sha256": "9b7e438f886e2f8ac5ddcb4be950475c28c41512190db7d510e8fbc7d60dcadd",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 4,
+          "region_matched_count": 0,
+          "rejected_result_count": 3,
+          "requested_at": "2026-09-04T15:13:15.369670+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 4,
+          "usable_result_count": 0,
+          "valid_url_count": 4
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 14,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1353.3428001683205,
+          "local_request_id": "90903c13de994a3ebf311daae60d094a",
+          "model_matched_count": 11,
+          "navigation_result_count": 10,
+          "network_executed": true,
+          "provider_request_id": "90903c13de994a3ebf311daae60d094a",
+          "query_sha256": "337d7fec72a8459d45b4da95e3a7e05c65dd463602e076444c3b9c3c424f3b4c",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 1,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:13:16.360854+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 1,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "success",
+      "source": {
+        "discovered_from": "region_unknown",
+        "hostname": "www.asus.com",
+        "observed_region": "US",
+        "title": "ProArt Display 6K PA32QCV｜Monitors｜ASUS USA",
+        "url": "https://www.asus.com/us/displays-desktops/monitors/proart/proart-display-6k-pa32qcv/"
+      },
+      "stop_reason": "以下字段存在来源冲突，未静默选择：display_size_inch",
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [],
+      "verified_fields": [
+        "resolution",
+        "usb_c_power_delivery_w"
+      ],
+      "wall_latency_ms": 22791.579599957913
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-mon-003",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "monitor",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_matched",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "panel_type",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "CN",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 9,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "panel_type",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "NL",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 6,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "panel_type",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "IT",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 6,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "panel_type",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "FR",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 10,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_json",
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "panel_type",
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "normalization_failed",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": true,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1342.2283998224884,
+          "local_request_id": "8e8ee91df23147389f1f70a79e165fe1",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "8e8ee91df23147389f1f70a79e165fe1",
+          "query_sha256": "e403ffbce2050d3ff17f22155f8ea6b38da6a43bd8237488dee814ca70d38e66",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:13:35.736187+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1139.180100057274,
+          "local_request_id": "6e775a54654840bcb98432463ee763c0",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "6e775a54654840bcb98432463ee763c0",
+          "query_sha256": "e98b38043707efa20c947543d3f1589a5bf8a4a7e5c14fa35a9e92c702d00cb4",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:13:37.079392+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 14,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1388.6923999525607,
+          "local_request_id": "507a117b8ab448058cf142cf0016507c",
+          "model_matched_count": 14,
+          "navigation_result_count": 10,
+          "network_executed": true,
+          "provider_request_id": "507a117b8ab448058cf142cf0016507c",
+          "query_sha256": "6c740f63c4bf03e48966813242e4777976dc7f9ceecc0a3ebc8b843d9c41c9d7",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 1,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:13:38.219383+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 1,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "success",
+      "source": null,
+      "stop_reason": "网页抽取未完成：http_403；关键字段保持 unknown。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "panel_type",
+        "usb_c_power_delivery_w"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 33933.13050013967
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_configuration_valid": true,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-mon-004",
+      "checker_entry_count": 0,
+      "conflict_fields": [
+        "display_size_inch"
+      ],
+      "domain_id": "monitor",
+      "evidence_count": 9,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [
+            "display_size_inch"
+          ],
+          "evidence_count": 9,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 8,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "usb_c_power_delivery_w"
+          ],
+          "verified_fields": [
+            "resolution"
+          ]
+        }
+      ],
+      "failure_reasons": [
+        "requested_field_missing",
+        "evidence_conflict"
+      ],
+      "funnel": {
+        "actual_evidence_completion": true,
+        "content_extraction": true,
+        "evidence_check": true,
+        "field_normalization": true,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1156.9354999810457,
+          "local_request_id": "8748a572429d4437a62d86a73b6322fc",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "8748a572429d4437a62d86a73b6322fc",
+          "query_sha256": "f2b447ad2e834b5f105d7bb7557bb3655552a7ba773f28aea6102fe1d6b5e5b4",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:14:09.669981+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 1,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 957.4378000106663,
+          "local_request_id": "2449b6639acd4f6ca5de5b7917ba4b9d",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "2449b6639acd4f6ca5de5b7917ba4b9d",
+          "query_sha256": "d506ce0fcc193b4ac425fef4df20da70823d2e74bdeced4374fa245e5b69cbca",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 1,
+          "region_matched_count": 0,
+          "rejected_result_count": 1,
+          "requested_at": "2026-09-04T15:14:10.827751+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 1,
+          "usable_result_count": 0,
+          "valid_url_count": 1
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 0,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1430.5337998084724,
+          "local_request_id": "0d295cccfd574d428c1dcd41e6109c12",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "0d295cccfd574d428c1dcd41e6109c12",
+          "query_sha256": "d9fbb248f4fa7a376b120d57cf37e386cf010210ba80279671a7c6296a304ae0",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:14:11.784877+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 1,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 1278.825999936089,
+          "local_request_id": "d2b1da6d33aa453c8b73ae68afaa2edc",
+          "model_matched_count": 1,
+          "navigation_result_count": 1,
+          "network_executed": true,
+          "provider_request_id": "d2b1da6d33aa453c8b73ae68afaa2edc",
+          "query_sha256": "3b60e3ee0f80a613359ff9066cb4eb08083b0e5e1d4de827f471cb58610b57af",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:14:13.217401+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": {
+        "discovered_from": "region_unknown",
+        "hostname": "www.benq.com",
+        "observed_region": "US",
+        "title": "RD280U｜28” 4K+ BenQ Programming Monitor with Backlight | BenQ US",
+        "url": "https://www.benq.com/en-us/monitor/programming/rd280u/spec.html"
+      },
+      "stop_reason": "以下字段没有足够正文证据，保持 unknown：usb_c_power_delivery_w",
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "usb_c_power_delivery_w"
+      ],
+      "verified_fields": [
+        "resolution"
+      ],
+      "wall_latency_ms": 11528.806899907067
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-mon-005",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "monitor",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "panel_type"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "panel_type"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "panel_type"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "panel_type"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "refresh_rate_hz",
+            "panel_type"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "region_mismatch",
+        "fetch_failed",
+        "extraction_empty",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": false,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": false,
+        "region_match": false,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 608.1862999126315,
+          "local_request_id": "541630b994204e0e91ae73fae383acd8",
+          "model_matched_count": 4,
+          "navigation_result_count": 4,
+          "network_executed": true,
+          "provider_request_id": "541630b994204e0e91ae73fae383acd8",
+          "query_sha256": "8f5c4acacd902ded11b136c986c27bb36aaf9d14cb964cc81d69fdcd9dab4f62",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:14:21.198038+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 10,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 595.6985999364406,
+          "local_request_id": "d64cc193a06b44aa8ea39eb952510c1e",
+          "model_matched_count": 4,
+          "navigation_result_count": 4,
+          "network_executed": true,
+          "provider_request_id": "d64cc193a06b44aa8ea39eb952510c1e",
+          "query_sha256": "e6c6d5c647471a1ae68c7b0ef4c56ab9260fc28c38d893d28a0d6dc5d1bdfc85",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 10,
+          "region_matched_count": 0,
+          "rejected_result_count": 6,
+          "requested_at": "2026-09-04T15:14:21.808131+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 10,
+          "usable_result_count": 0,
+          "valid_url_count": 10
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 12,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 795.6957998685539,
+          "local_request_id": "30419a3c28d14d55a598d6a5ad260ee0",
+          "model_matched_count": 7,
+          "navigation_result_count": 7,
+          "network_executed": true,
+          "provider_request_id": "30419a3c28d14d55a598d6a5ad260ee0",
+          "query_sha256": "a5882c4e2d5044d6106d9c894c7e28552710feff9ba279c3330f1ed5e20b6f45",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 41,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:14:22.404014+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 41,
+          "usable_result_count": 0,
+          "valid_url_count": 41
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 6,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 677.3073000367731,
+          "local_request_id": "74ac7d038ff34a1b93e5204c710345e5",
+          "model_matched_count": 2,
+          "navigation_result_count": 2,
+          "network_executed": true,
+          "provider_request_id": "74ac7d038ff34a1b93e5204c710345e5",
+          "query_sha256": "9dbb3bdb8a65a3bceee805cc6a2562546540701e916ca34d123c1b631380629f",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:14:23.201090+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "stop_reason": "canonical/hreflang 未发现可安全核验的目标地区页面；继续返回 no_region_matched_source。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "refresh_rate_hz",
+        "panel_type"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 20539.489299990237
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_configuration_valid": true,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-lap-001",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 10,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_matched",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": null,
+              "detected_region": "unknown",
+              "error": "request_timeout",
+              "http_status": null,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "timeout"
+            }
+          ],
+          "unknown_fields": [
+            "memory_gb",
+            "storage_gb",
+            "usb4"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_matched",
+          "conflict_fields": [],
+          "evidence_count": 10,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_json",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "usb4"
+          ],
+          "verified_fields": [
+            "memory_gb",
+            "storage_gb"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 3,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 83,
+              "snippet_kinds": [
+                "embedded_json",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "storage_gb",
+            "usb4"
+          ],
+          "verified_fields": [
+            "memory_gb"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": null,
+              "detected_region": "unknown",
+              "error": "request_timeout",
+              "http_status": null,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "timeout"
+            }
+          ],
+          "unknown_fields": [
+            "memory_gb",
+            "storage_gb",
+            "usb4"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 10,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_json",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "usb4"
+          ],
+          "verified_fields": [
+            "memory_gb",
+            "storage_gb"
+          ]
+        }
+      ],
+      "failure_reasons": [
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": true,
+        "content_extraction": true,
+        "evidence_check": true,
+        "field_normalization": true,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1252.1855998784304,
+          "local_request_id": "58012e0c3a9749588ccae3e3ac4dc264",
+          "model_matched_count": 7,
+          "navigation_result_count": 5,
+          "network_executed": true,
+          "provider_request_id": "58012e0c3a9749588ccae3e3ac4dc264",
+          "query_sha256": "f55bdf5b6fd24c7981f8099572089d3652a50c769b955db643d9c2d1980b8394",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 2,
+          "rejected_result_count": 8,
+          "requested_at": "2026-09-04T15:14:41.738197+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 2,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1160.171400057152,
+          "local_request_id": "5de11e32eed24bdb8e8423bfc00aed8d",
+          "model_matched_count": 7,
+          "navigation_result_count": 5,
+          "network_executed": true,
+          "provider_request_id": "5de11e32eed24bdb8e8423bfc00aed8d",
+          "query_sha256": "0a042a8acbb842612694c5042d6a8c88ad56716c5e086f7c183b3462ce686732",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 15,
+          "region_matched_count": 2,
+          "rejected_result_count": 8,
+          "requested_at": "2026-09-04T15:14:42.990872+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 2,
+          "valid_url_count": 15
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "success",
+      "source": {
+        "discovered_from": "region_matched",
+        "hostname": "www.asus.com",
+        "observed_region": "US",
+        "title": "ASUS Zenbook A14 (UX3407) | Ultra- Lightweight Copilot+ PC",
+        "url": "https://www.asus.com/us/laptops/for-home/zenbook/asus-zenbook-a14-ux3407/"
+      },
+      "stop_reason": "以下字段没有足够正文证据，保持 unknown：usb4",
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "usb4"
+      ],
+      "verified_fields": [
+        "memory_gb",
+        "storage_gb"
+      ],
+      "wall_latency_ms": 31840.341500006616
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-002",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_matched",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "memory_gb",
+            "gpu_model",
+            "battery_wh"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "fetch_failed",
+        "extraction_empty",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": false,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": false,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 772.3547001369298,
+          "local_request_id": "beff2e7ea0514ffdad5d8d3c10db54fa",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "beff2e7ea0514ffdad5d8d3c10db54fa",
+          "query_sha256": "970f7757e60a24360e2681f77a6f285160492247d01194cea7be3983485d047d",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:13.578901+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 3,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 469.39309989102185,
+          "local_request_id": "5a025498cbd84673bdf328b43cfd2d3c",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "5a025498cbd84673bdf328b43cfd2d3c",
+          "query_sha256": "be1aee1a0a92bc5594ac8987d142b2003e64935ed42f0b446eeae9ca32521e6c",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 3,
+          "region_matched_count": 0,
+          "rejected_result_count": 3,
+          "requested_at": "2026-09-04T15:15:14.351909+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 3,
+          "usable_result_count": 0,
+          "valid_url_count": 3
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 1,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 537.6812999602407,
+          "local_request_id": "7cb9aad3e12645a1ad1c811486a49de0",
+          "model_matched_count": 1,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "7cb9aad3e12645a1ad1c811486a49de0",
+          "query_sha256": "435332c0575fcbabb6f59c8afe2c56f6d60a395e27ef2072b996732452d1ce23",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 36,
+          "region_matched_count": 1,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:14.821165+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 36,
+          "usable_result_count": 1,
+          "valid_url_count": 36
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "success",
+      "source": null,
+      "stop_reason": "网页抽取未完成：http_403；关键字段保持 unknown。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "memory_gb",
+        "gpu_model",
+        "battery_wh"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 2988.4846000932157
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-003",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": null,
+              "detected_region": "unknown",
+              "error": "request_timeout",
+              "http_status": null,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "timeout"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "memory_gb",
+            "battery_wh"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": null,
+              "detected_region": "unknown",
+              "error": "request_timeout",
+              "http_status": null,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "timeout"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "memory_gb",
+            "battery_wh"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "region_mismatch",
+        "fetch_failed",
+        "extraction_empty",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": false,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": false,
+        "region_match": false,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 14,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 558.6854999419302,
+          "local_request_id": "bb764b3b7c7444beb3940645eb9387e8",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "bb764b3b7c7444beb3940645eb9387e8",
+          "query_sha256": "4402d7cf2ee7c921b478d58452782ddf9e27f9575330aeea3808e722693bc409",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 14,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:16.566836+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 14,
+          "usable_result_count": 0,
+          "valid_url_count": 14
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 6,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 471.2094001006335,
+          "local_request_id": "a4364f3177c5468abcdd3624b5ecf57c",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "a4364f3177c5468abcdd3624b5ecf57c",
+          "query_sha256": "b04de041c922842d650dcb02a8f7e82fa89738906a659160cd615a32f4db995f",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 6,
+          "region_matched_count": 0,
+          "rejected_result_count": 6,
+          "requested_at": "2026-09-04T15:15:17.126104+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 6,
+          "usable_result_count": 0,
+          "valid_url_count": 6
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 1,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 963.6691000778228,
+          "local_request_id": "929dce82c11e4f078c16808ca011240c",
+          "model_matched_count": 1,
+          "navigation_result_count": 1,
+          "network_executed": true,
+          "provider_request_id": "929dce82c11e4f078c16808ca011240c",
+          "query_sha256": "0242b1854a1e3b998c29718cf2a2a304a7e10199d57141cf8f2bc572d5bbe2ac",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 48,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:17.598088+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 48,
+          "usable_result_count": 0,
+          "valid_url_count": 48
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 3,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 703.1303001567721,
+          "local_request_id": "cf6e356bb6164990aa119953de64dce2",
+          "model_matched_count": 2,
+          "navigation_result_count": 2,
+          "network_executed": true,
+          "provider_request_id": "cf6e356bb6164990aa119953de64dce2",
+          "query_sha256": "a7807f976b3bd8b1cd8f13c219d8973a0e0ce3f1d3473b404321a8fa45e5f8a7",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 44,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:18.563392+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 44,
+          "usable_result_count": 0,
+          "valid_url_count": 44
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "stop_reason": "canonical/hreflang 未发现可安全核验的目标地区页面；继续返回 no_region_matched_source。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "memory_gb",
+        "battery_wh"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 22983.24520001188
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-004",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "extraction_incomplete",
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "extraction_incomplete"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "memory_gb",
+            "weight_kg"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 15,
+              "snippet_count": 67,
+              "snippet_kinds": [
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "memory_gb",
+            "weight_kg"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "region_mismatch",
+        "normalization_failed",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": true,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": false,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1109.5734001137316,
+          "local_request_id": "b3276929286e4f8f9c3975ebd759cc6a",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "b3276929286e4f8f9c3975ebd759cc6a",
+          "query_sha256": "49b48f7d7ed18953ce411bc08794dd6bfc7c91ae810312be8bc56efe2e354b13",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:39.550844+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1225.4737000912428,
+          "local_request_id": "8ac7b808d9f84b948e6e2d52e21298ac",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "8ac7b808d9f84b948e6e2d52e21298ac",
+          "query_sha256": "8cbbe3229a124a38075a1cd824d92faafe59d229aeb5f1c45a046024518c3b29",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:40.660917+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 2,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1437.9368999507278,
+          "local_request_id": "66529359e9d24353961f830134451cc2",
+          "model_matched_count": 2,
+          "navigation_result_count": 2,
+          "network_executed": true,
+          "provider_request_id": "66529359e9d24353961f830134451cc2",
+          "query_sha256": "12d9aad42af01350adeba7facae98942e624adaa72c797438a6444618917632f",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:41.887347+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 0,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 1543.4351000003517,
+          "local_request_id": "bb002edb6bf84ce0887f49a5cffee178",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "bb002edb6bf84ce0887f49a5cffee178",
+          "query_sha256": "63121b6aa7416f69eeccb8f59467124ca5e800dce6c84226b7870239b9f6cd81",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:43.326275+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "stop_reason": "canonical/hreflang 未发现可安全核验的目标地区页面；继续返回 no_region_matched_source。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "memory_gb",
+        "weight_kg"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 8290.267099859193
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-lap-005",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "laptop",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "memory_gb",
+            "weight_kg"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "memory_gb",
+            "weight_kg"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "resolution",
+            "memory_gb",
+            "weight_kg"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "region_mismatch",
+        "fetch_failed",
+        "extraction_empty",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": false,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": false,
+        "region_match": false,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1173.5505000688136,
+          "local_request_id": "7ad13a4872d0429eb35f1675de349636",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "7ad13a4872d0429eb35f1675de349636",
+          "query_sha256": "94beb0e2505a74bfa0b21c2aed0a8047b36d286823db758f41d0c70737f56162",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:47.840356+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 975.0199997797608,
+          "local_request_id": "79eb5fa15c044775ab9d669fb1d1b48d",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "79eb5fa15c044775ab9d669fb1d1b48d",
+          "query_sha256": "7355b6afa4cb488ed404782d05ca9416dcce9c3a9a72c0fe244e1102794977de",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:49.015582+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 18,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1422.1551001537591,
+          "local_request_id": "30973163c36347e4abb447f3885c57fa",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "30973163c36347e4abb447f3885c57fa",
+          "query_sha256": "9929fafb5260c3645aca061854e68827f635be9dac0b6f6f77cf758d69e7b69f",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 20,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:49.991610+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 20,
+          "usable_result_count": 0,
+          "valid_url_count": 20
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 18,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 1281.0404000338167,
+          "local_request_id": "0bc874b07b8f4d13af0a649ccc7ed12d",
+          "model_matched_count": 3,
+          "navigation_result_count": 3,
+          "network_executed": true,
+          "provider_request_id": "0bc874b07b8f4d13af0a649ccc7ed12d",
+          "query_sha256": "a60215be39baabbf93d12eb77df3fea290a9c7b547ae5cf3e6121db6fac9df5d",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 20,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:51.414595+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 20,
+          "usable_result_count": 0,
+          "valid_url_count": 20
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "stop_reason": "canonical/hreflang 未发现可安全核验的目标地区页面；继续返回 no_region_matched_source。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "resolution",
+        "memory_gb",
+        "weight_kg"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 11960.02890006639
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-hph-001",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours",
+            "bluetooth_version",
+            "weight_g"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": "http_403",
+              "http_status": 403,
+              "related_link_count": 0,
+              "snippet_count": 0,
+              "snippet_kinds": [],
+              "status": "http_error"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours",
+            "bluetooth_version",
+            "weight_g"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "region_mismatch",
+        "fetch_failed",
+        "extraction_empty",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": false,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": false,
+        "region_match": false,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1144.9409001506865,
+          "local_request_id": "a20b2f0efb8b4f9995edf4d48e43e412",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "a20b2f0efb8b4f9995edf4d48e43e412",
+          "query_sha256": "c53f4a2467638dad91f4e7d86e334d6888add419df1983686697733e14af9d90",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:15:59.800587+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 4,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 999.0250000264496,
+          "local_request_id": "3e59bcedd9184bf6a1f0c35aa3616352",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "3e59bcedd9184bf6a1f0c35aa3616352",
+          "query_sha256": "a8383b4cf72944102226a1f95a808f10e7532357094cecd8b339de910399aadc",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 4,
+          "region_matched_count": 0,
+          "rejected_result_count": 4,
+          "requested_at": "2026-09-04T15:16:00.946488+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 4,
+          "usable_result_count": 0,
+          "valid_url_count": 4
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 0,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1550.9683000855148,
+          "local_request_id": "3d263df8fb8b4a209e4e80cf16bd3d2a",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "3d263df8fb8b4a209e4e80cf16bd3d2a",
+          "query_sha256": "22e797a48479ed0eb67ae19f8367c8cb67bbff01db8f101c33ae68d24d89638a",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:01.945419+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 3,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 1522.4808000493795,
+          "local_request_id": "f85e8f2d29c94bf1988117b9624e7585",
+          "model_matched_count": 2,
+          "navigation_result_count": 2,
+          "network_executed": true,
+          "provider_request_id": "f85e8f2d29c94bf1988117b9624e7585",
+          "query_sha256": "4dceb2f2b9372139c18e0d081ea86a41e3e474f6231f97c15f524f0b65b1cd5b",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:03.498082+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "stop_reason": "canonical/hreflang 未发现可安全核验的目标地区页面；继续返回 no_region_matched_source。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "battery_hours",
+        "bluetooth_version",
+        "weight_g"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 11278.830300085247
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_configuration_valid": true,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-hph-002",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 7,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 6,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 2,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "bluetooth_version"
+          ],
+          "verified_fields": [
+            "battery_hours",
+            "active_noise_cancellation"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 7,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "bluetooth_version"
+          ],
+          "verified_fields": [
+            "battery_hours",
+            "active_noise_cancellation"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 6,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 2,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "bluetooth_version"
+          ],
+          "verified_fields": [
+            "battery_hours",
+            "active_noise_cancellation"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 7,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "bluetooth_version"
+          ],
+          "verified_fields": [
+            "battery_hours",
+            "active_noise_cancellation"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 6,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 2,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "specification",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "bluetooth_version"
+          ],
+          "verified_fields": [
+            "battery_hours",
+            "active_noise_cancellation"
+          ]
+        }
+      ],
+      "failure_reasons": [
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": true,
+        "content_extraction": true,
+        "evidence_check": true,
+        "field_normalization": true,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1056.8585000000894,
+          "local_request_id": "421506e08087452fa4ecacf2efe89b7d",
+          "model_matched_count": 4,
+          "navigation_result_count": 4,
+          "network_executed": true,
+          "provider_request_id": "421506e08087452fa4ecacf2efe89b7d",
+          "query_sha256": "70495f7d17c05083e120a7287461fa9e596993deb0e731c23ef75c9c7ef710ed",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:11.079651+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 965.8220999408513,
+          "local_request_id": "8ee5b1d4bbd84ee28e623fcd9ea0b822",
+          "model_matched_count": 3,
+          "navigation_result_count": 3,
+          "network_executed": true,
+          "provider_request_id": "8ee5b1d4bbd84ee28e623fcd9ea0b822",
+          "query_sha256": "ceb2014a947b0582dbe3190d8c9a68fe68ddbb51f3f51215767ba82cde38c009",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:12.137773+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 4,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1366.917199920863,
+          "local_request_id": "2c2c50e5a63f430097c5a1fd69878e1d",
+          "model_matched_count": 2,
+          "navigation_result_count": 2,
+          "network_executed": true,
+          "provider_request_id": "2c2c50e5a63f430097c5a1fd69878e1d",
+          "query_sha256": "e3d33db6f9883e1fd26a03a068827fee1461625b4787582dd54aa0d8edf8ed7c",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:13.104985+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 1267.1914000529796,
+          "local_request_id": "37703b13ffed4e379cafa783195d36fa",
+          "model_matched_count": 6,
+          "navigation_result_count": 6,
+          "network_executed": true,
+          "provider_request_id": "37703b13ffed4e379cafa783195d36fa",
+          "query_sha256": "56529ef6c118acad5fa6cb3f10bf31d4eb1ebb244ee83d1daf01634da5e6ddf8",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:14.473801+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": {
+        "discovered_from": "region_unknown",
+        "hostname": "www.bose.com",
+        "observed_region": "US",
+        "title": "Bose × KidSuper QuietComfort Ultra Headphones (2nd Gen) | Bose",
+        "url": "https://www.bose.com/p/QCUH2-HEADPHONEARN-KID.html"
+      },
+      "stop_reason": "以下字段没有足够正文证据，保持 unknown：bluetooth_version",
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "bluetooth_version"
+      ],
+      "verified_fields": [
+        "battery_hours",
+        "active_noise_cancellation"
+      ],
+      "wall_latency_ms": 26810.158299980685
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_configuration_valid": true,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-hph-003",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 7,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_matched",
+          "conflict_fields": [],
+          "evidence_count": 7,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours"
+          ],
+          "verified_fields": [
+            "wireless_dongle",
+            "weight_g"
+          ]
+        },
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [],
+          "evidence_count": 7,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "US",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours"
+          ],
+          "verified_fields": [
+            "wireless_dongle",
+            "weight_g"
+          ]
+        }
+      ],
+      "failure_reasons": [
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": true,
+        "content_extraction": true,
+        "evidence_check": true,
+        "field_normalization": true,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1119.8331001214683,
+          "local_request_id": "e51dc212689c471fb7c0b8790753e167",
+          "model_matched_count": 2,
+          "navigation_result_count": 1,
+          "network_executed": true,
+          "provider_request_id": "e51dc212689c471fb7c0b8790753e167",
+          "query_sha256": "880770648a7066f8d4d7d135e0828f03c162125bd8aba155bcc371715dd25855",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 1,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:37.889716+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 1,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 10,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1029.2051997967064,
+          "local_request_id": "2dd8728b438f4b4eb5da4792322ccbd0",
+          "model_matched_count": 2,
+          "navigation_result_count": 1,
+          "network_executed": true,
+          "provider_request_id": "2dd8728b438f4b4eb5da4792322ccbd0",
+          "query_sha256": "a3fbe7d235ab83cced910598b8baf63b5f592371c2ce87f9ca7a020d1d237e40",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 10,
+          "region_matched_count": 1,
+          "rejected_result_count": 8,
+          "requested_at": "2026-09-04T15:16:39.010572+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 10,
+          "usable_result_count": 1,
+          "valid_url_count": 10
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 0,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1683.1460997927934,
+          "local_request_id": "db0ca61365c446c9adbfd320899098b4",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "db0ca61365c446c9adbfd320899098b4",
+          "query_sha256": "6f80eb0802c48659e0dfcae9aa2b293aa0e67219964dfd8b84f65c585eb7ce8c",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:40.041049+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "success",
+      "source": {
+        "discovered_from": "region_matched",
+        "hostname": "www.logitechg.com",
+        "observed_region": "US",
+        "title": "G522 LIGHTSPEED Wireless Gaming Headset | Logitech G",
+        "url": "https://www.logitechg.com:443/en-us/shop/p/g522-lightspeed.981-001491"
+      },
+      "stop_reason": "以下字段没有足够正文证据，保持 unknown：battery_hours",
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "battery_hours"
+      ],
+      "verified_fields": [
+        "wireless_dongle",
+        "weight_g"
+      ],
+      "wall_latency_ms": 14003.397800028324
+    },
+    {
+      "accepted_candidate_count": 0,
+      "accepted_configuration_valid": false,
+      "accepted_domain_valid": false,
+      "accepted_model_valid": false,
+      "accepted_region_valid": false,
+      "case_id": "web2-hph-004",
+      "checker_entry_count": 0,
+      "conflict_fields": [],
+      "domain_id": "headphone",
+      "evidence_count": 0,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours",
+            "usb_audio",
+            "supported_platforms"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 81,
+              "snippet_kinds": [
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours",
+            "usb_audio",
+            "supported_platforms"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 95,
+              "snippet_kinds": [
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours",
+            "usb_audio",
+            "supported_platforms"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 16,
+              "snippet_kinds": [
+                "embedded_state",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours",
+            "usb_audio",
+            "supported_platforms"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "unknown",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 90,
+              "snippet_kinds": [
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours",
+            "usb_audio",
+            "supported_platforms"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "region_mismatch",
+        "normalization_failed",
+        "requested_field_missing"
+      ],
+      "funnel": {
+        "actual_evidence_completion": false,
+        "content_extraction": true,
+        "evidence_check": false,
+        "field_normalization": false,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": false,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1083.4103000815958,
+          "local_request_id": "6432a8c56a7a4d998ccc7cca1f9eced1",
+          "model_matched_count": 5,
+          "navigation_result_count": 5,
+          "network_executed": true,
+          "provider_request_id": "6432a8c56a7a4d998ccc7cca1f9eced1",
+          "query_sha256": "b6b3e7b808d757b7ee29ed07d216e1e321437078d3a70b125b97d3dd464b0adf",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:51.893133+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1251.5338000375777,
+          "local_request_id": "ee8979c3c0bb4956aa6c963dd8738103",
+          "model_matched_count": 13,
+          "navigation_result_count": 10,
+          "network_executed": true,
+          "provider_request_id": "ee8979c3c0bb4956aa6c963dd8738103",
+          "query_sha256": "c799699a12ebab7941812c1a18f429b05d561201d187fca971ec5d319e742378",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 2,
+          "requested_at": "2026-09-04T15:16:52.977614+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 18,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1531.5747000277042,
+          "local_request_id": "16ebf9ecc32e4f17a34412e6ec227f86",
+          "model_matched_count": 18,
+          "navigation_result_count": 10,
+          "network_executed": true,
+          "provider_request_id": "16ebf9ecc32e4f17a34412e6ec227f86",
+          "query_sha256": "03b5af5e74de2eb9322c81cae84385e833db94218de5aaedce8b41a89d4d6f2d",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:54.230896+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 3,
+          "engine": "search_pro_sogou",
+          "error": null,
+          "estimated_cost_cny": 0.05,
+          "http_status": 200,
+          "latency_ms": 1547.834899974987,
+          "local_request_id": "c703e9c68f394bf69459fb755c0bcd63",
+          "model_matched_count": 3,
+          "navigation_result_count": 3,
+          "network_executed": true,
+          "provider_request_id": "c703e9c68f394bf69459fb755c0bcd63",
+          "query_sha256": "9c6eea4a4d1786afbd93262cfe7fc04b16326de15a6ebcefc1eb60654b20f86a",
+          "query_strategy": "official_fields_broad_fallback",
+          "raw_result_count": 50,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:16:55.764026+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 0,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "no_region_matched_source",
+      "source": null,
+      "stop_reason": "canonical/hreflang 未发现可安全核验的目标地区页面；继续返回 no_region_matched_source。",
+      "terminal_status": "degraded",
+      "trusted_eligible": false,
+      "unknown_fields": [
+        "battery_hours",
+        "usb_audio",
+        "supported_platforms"
+      ],
+      "verified_fields": [],
+      "wall_latency_ms": 28338.5214000009
+    },
+    {
+      "accepted_candidate_count": 1,
+      "accepted_configuration_valid": true,
+      "accepted_domain_valid": true,
+      "accepted_model_valid": true,
+      "accepted_region_valid": true,
+      "case_id": "web2-hph-005",
+      "checker_entry_count": 0,
+      "conflict_fields": [
+        "battery_hours_anc"
+      ],
+      "domain_id": "headphone",
+      "evidence_count": 15,
+      "extraction_attempts": [
+        {
+          "candidate_status": "region_matched",
+          "conflict_fields": [
+            "battery_hours_anc"
+          ],
+          "evidence_count": 15,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "IE",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 1,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [],
+          "verified_fields": [
+            "active_noise_cancellation",
+            "water_resistance"
+          ]
+        },
+        {
+          "candidate_status": "region_mismatch",
+          "conflict_fields": [
+            "battery_hours_anc"
+          ],
+          "evidence_count": 15,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "IE",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 1,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_state",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [],
+          "verified_fields": [
+            "active_noise_cancellation",
+            "water_resistance"
+          ]
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "NZ",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 1,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours_anc",
+            "active_noise_cancellation",
+            "water_resistance"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "NL",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 1,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours_anc",
+            "active_noise_cancellation",
+            "water_resistance"
+          ],
+          "verified_fields": []
+        },
+        {
+          "candidate_status": "region_unknown",
+          "conflict_fields": [],
+          "evidence_count": 0,
+          "extractions": [
+            {
+              "content_type": "text/html",
+              "detected_region": "DE",
+              "error": null,
+              "http_status": 200,
+              "related_link_count": 0,
+              "snippet_count": 100,
+              "snippet_kinds": [
+                "embedded_json",
+                "embedded_state",
+                "json_ld",
+                "visible_text"
+              ],
+              "status": "success"
+            }
+          ],
+          "unknown_fields": [
+            "battery_hours_anc",
+            "active_noise_cancellation",
+            "water_resistance"
+          ],
+          "verified_fields": []
+        }
+      ],
+      "failure_reasons": [
+        "requested_field_missing",
+        "evidence_conflict"
+      ],
+      "funnel": {
+        "actual_evidence_completion": true,
+        "content_extraction": true,
+        "evidence_check": true,
+        "field_normalization": true,
+        "model_match": true,
+        "official_domain_filter": true,
+        "page_fetch": true,
+        "region_match": true,
+        "source_search": true
+      },
+      "lineage_complete": true,
+      "network_executed": true,
+      "open_boundary_intact": true,
+      "search_attempts": [
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1075.9852998889983,
+          "local_request_id": "d6375fa529b84b22be8e3ea9f9be2e1e",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "d6375fa529b84b22be8e3ea9f9be2e1e",
+          "query_sha256": "9f51f73d9b5092841eee1445eeb539aed873680717e50c809b3bcd8d8e796994",
+          "query_strategy": "official_fields_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:17:20.231598+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 15,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1091.7688000481576,
+          "local_request_id": "ee1647af87174079be47d4a565664e57",
+          "model_matched_count": 0,
+          "navigation_result_count": 0,
+          "network_executed": true,
+          "provider_request_id": "ee1647af87174079be47d4a565664e57",
+          "query_sha256": "8ef7f217f5b24d1c46a13cddc8adca6154c05b13be7badfe4a856de2180a9749",
+          "query_strategy": "official_support_region",
+          "raw_result_count": 15,
+          "region_matched_count": 0,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:17:21.309042+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 15,
+          "usable_result_count": 0,
+          "valid_url_count": 15
+        },
+        {
+          "attempts": 1,
+          "cache_status": "miss",
+          "domain_matched_count": 16,
+          "engine": "search_pro",
+          "error": null,
+          "estimated_cost_cny": 0.03,
+          "http_status": 200,
+          "latency_ms": 1785.2290000300854,
+          "local_request_id": "b42c3dc730754623a39bfb3c70f67608",
+          "model_matched_count": 15,
+          "navigation_result_count": 10,
+          "network_executed": true,
+          "provider_request_id": "b42c3dc730754623a39bfb3c70f67608",
+          "query_sha256": "3d33b8d0358c4bc6b870c440f5cd12a8893e86fd2dc7cffc0660a5946827cf84",
+          "query_strategy": "official_identity_broad",
+          "raw_result_count": 50,
+          "region_matched_count": 1,
+          "rejected_result_count": 10,
+          "requested_at": "2026-09-04T15:17:22.400981+00:00",
+          "requested_count": 5,
+          "retries": 0,
+          "scanned_result_count": 50,
+          "usable_result_count": 1,
+          "valid_url_count": 50
+        }
+      ],
+      "search_executed": true,
+      "search_snippet_evidence_count": 0,
+      "search_status": "success",
+      "source": {
+        "discovered_from": "region_matched",
+        "hostname": "www.apple.com",
+        "observed_region": "IE",
+        "title": "AirPods Pro 3 - Technical Specifications - Apple (IE)",
+        "url": "https://www.apple.com/ie/airpods-pro/specs/"
+      },
+      "stop_reason": "以下字段存在来源冲突，未静默选择：battery_hours_anc",
+      "terminal_status": "completed",
+      "trusted_eligible": false,
+      "unknown_fields": [],
+      "verified_fields": [
+        "active_noise_cancellation",
+        "water_resistance"
+      ],
+      "wall_latency_ms": 10462.91060000658
+    }
+  ],
+  "classification": "exposed_online_regression_after_v2_9f; not an independent holdout",
+  "created_at": "2026-09-04T15:17:30.702128Z",
+  "exposed_metrics": {
+    "actual_evidence_completion": {
+      "denominator": 15,
+      "numerator": 6
+    },
+    "per_domain": {
+      "headphone": {
+        "denominator": 5,
+        "numerator": 3
+      },
+      "laptop": {
+        "denominator": 5,
+        "numerator": 1
+      },
+      "monitor": {
+        "denominator": 5,
+        "numerator": 2
+      }
+    },
+    "safety": {
+      "open_evidence_to_trusted_checker": 0,
+      "safe_terminal": 15,
+      "search_snippet_to_evidence": 0,
+      "unknown_overclaim": 0,
+      "wrong_configuration_usable": 0,
+      "wrong_domain_usable": 0,
+      "wrong_model_usable": 0,
+      "wrong_region_usable": 0
+    },
+    "verified_requested_fields": {
+      "denominator": 18,
+      "numerator": 11,
+      "rate": 0.6111111111111112
+    }
+  },
+  "extraction_method_success_counts": {
+    "embedded_json": 7,
+    "embedded_state": 19,
+    "json_ld": 25,
+    "specification": 12,
+    "visible_text": 30
+  },
+  "failure_reason_counts": {
+    "evidence_conflict": 3,
+    "extraction_empty": 5,
+    "fetch_failed": 5,
+    "normalization_failed": 4,
+    "region_mismatch": 7,
+    "requested_field_missing": 15
+  },
+  "funnel_counts": {
+    "actual_evidence_completion": 6,
+    "content_extraction": 10,
+    "evidence_check": 6,
+    "field_normalization": 6,
+    "model_match": 15,
+    "official_domain_filter": 15,
+    "page_fetch": 10,
+    "region_match": 8,
+    "source_search": 15
+  },
+  "historical_classification": "exposed_regression_after_v2_9e; not an independent holdout",
+  "historical_results_preserved": [
+    "0/15",
+    "2/15",
+    "5/15",
+    "5/15"
+  ],
+  "latency": {
+    "average_ms": 18035.866306675598,
+    "p95_ms": 33933.13050013967
+  },
+  "provider_contributions": {
+    "bailian": {
+      "calls": 0,
+      "evidence_tasks": 0
+    },
+    "bocha": {
+      "calls": 0,
+      "evidence_tasks": 0
+    },
+    "zhipu": {
+      "calls": 53,
+      "evidence_tasks": 6
+    }
+  },
+  "rc_config_sha256": "ab118593015eed1bd308c45934dd796c1c43e85a8a9a7a948025d1451347a472",
+  "run_id": "v2-9f-exposed-online-20260904T151258Z-ece02e9b",
+  "run_number": "one_final_v2_9f_exposed_regression_run",
+  "schema_version": "proofpick-v2-9f-exposed-online-regression-v1",
+  "scoring": {
+    "all_mandatory_gates_passed": false,
+    "cases": [
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-001",
+        "domain_id": "monitor",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-002",
+        "domain_id": "monitor",
+        "evidence_count": 15,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 2
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-003",
+        "domain_id": "monitor",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-004",
+        "domain_id": "monitor",
+        "evidence_count": 9,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 1
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-mon-005",
+        "domain_id": "monitor",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-001",
+        "domain_id": "laptop",
+        "evidence_count": 10,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 2
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-002",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-003",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-004",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-lap-005",
+        "domain_id": "laptop",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-001",
+        "domain_id": "headphone",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-002",
+        "domain_id": "headphone",
+        "evidence_count": 7,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 2
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-003",
+        "domain_id": "headphone",
+        "evidence_count": 7,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 2
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-004",
+        "domain_id": "headphone",
+        "evidence_count": 0,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "degraded",
+        "verified_requested_fields": 0
+      },
+      {
+        "accepted_precision": true,
+        "actual_evidence_completed": false,
+        "case_id": "web2-hph-005",
+        "domain_id": "headphone",
+        "evidence_count": 15,
+        "lineage_and_boundary": true,
+        "requested_fields": 3,
+        "safety_passed": true,
+        "search_executed": true,
+        "terminal_status": "completed",
+        "verified_requested_fields": 2
+      }
+    ],
+    "gate_checks": {
+      "accepted_source_precision": true,
+      "actual_completion_each_domain": false,
+      "actual_evidence_completion": false,
+      "evidence_lineage": true,
+      "requested_field_verification": false,
+      "safe_terminal_state": true,
+      "search_executed": true
+    },
+    "metrics": {
+      "accepted_source_precision": 1.0,
+      "actual_completion_per_domain": {
+        "headphone": {
+          "completed": 0,
+          "rate": 0.0,
+          "total": 5
+        },
+        "laptop": {
+          "completed": 0,
+          "rate": 0.0,
+          "total": 5
+        },
+        "monitor": {
+          "completed": 0,
+          "rate": 0.0,
+          "total": 5
+        }
+      },
+      "actual_evidence_completion": {
+        "completed": 0,
+        "rate": 0.0,
+        "total": 15
+      },
+      "evidence_lineage_and_boundary_rate": 1.0,
+      "requested_field_verification_among_evidence_cases": {
+        "rate": 0.6111111111111112,
+        "requested": 18,
+        "verified": 11
+      },
+      "safe_terminal_state_rate": 1.0,
+      "search_executed_rate": 1.0,
+      "task_safety_pass_rate": 1.0
+    }
+  }
+}
