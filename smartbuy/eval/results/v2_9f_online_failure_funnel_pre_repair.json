@@ -1,0 +1,73 @@
+{
+  "schema_version": "proofpick-v2-9f-online-failure-funnel-v1",
+  "classification": "pre-repair audit of exposed regression; not a holdout or release result",
+  "source_result": "smartbuy/eval/results/v2_9e_exposed_online_regression_final.json",
+  "historical_results_preserved": [
+    "independent_first: 0/15",
+    "v2_9e_exposed: 2/15 -> 5/15 -> 5/15"
+  ],
+  "counting_rule": {
+    "official_domain_filter": "at least one candidate passed the deterministic official-domain allowlist",
+    "model_match": "at least one official candidate also passed deterministic target-model validation",
+    "region_match": "at least one search candidate was directly classified region_matched before page retrieval",
+    "page_fetch": "at least one bounded extraction attempt obtained a response that was not an HTTP error",
+    "content_extraction": "at least one bounded extraction attempt returned status=success",
+    "field_normalization": "at least one requested field was normalized from fetched page content",
+    "evidence_check": "at least one normalized Open Evidence field reached Open Evidence Check",
+    "actual_evidence_completion": "the historical V2-9E exposed metric: at least one requested field had page-derived Open Evidence"
+  },
+  "funnel": [
+    {"stage": "source_search", "passed": 15, "total": 15},
+    {"stage": "official_domain_filter", "passed": 14, "total": 15},
+    {"stage": "model_match", "passed": 14, "total": 15},
+    {"stage": "region_match", "passed": 5, "total": 15},
+    {"stage": "page_fetch", "passed": 9, "total": 15},
+    {"stage": "content_extraction", "passed": 7, "total": 15},
+    {"stage": "field_normalization", "passed": 5, "total": 15},
+    {"stage": "evidence_check", "passed": 5, "total": 15},
+    {"stage": "actual_evidence_completion", "passed": 5, "total": 15}
+  ],
+  "requested_field_verification": {"verified": 8, "requested_on_evidence_cases": 15, "rate": 0.5333333333333333},
+  "per_domain_completion": {
+    "monitor": {"completed": 2, "total": 5},
+    "laptop": {"completed": 1, "total": 5},
+    "headphone": {"completed": 2, "total": 5}
+  },
+  "failure_category_counts": {
+    "no_search_result": 0,
+    "no_official_source": 1,
+    "model_mismatch": 0,
+    "region_mismatch": 6,
+    "fetch_failed": 5,
+    "dynamic_page": 2,
+    "pdf_or_attachment": 0,
+    "extraction_empty": 2,
+    "normalization_failed": 1,
+    "requested_field_missing": 4,
+    "evidence_conflict": 2
+  },
+  "cases": [
+    {"case_id":"web2-mon-001","domain":"monitor","raw_results":47,"official_model_candidate":true,"direct_region_match":false,"page_fetch":false,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["region_mismatch","fetch_failed"]},
+    {"case_id":"web2-mon-002","domain":"monitor","raw_results":61,"official_model_candidate":true,"direct_region_match":false,"page_fetch":true,"content_extraction":true,"verified_fields":["resolution","usb_c_power_delivery_w"],"actual_evidence_completed":true,"failure_categories":["requested_field_missing"]},
+    {"case_id":"web2-mon-003","domain":"monitor","raw_results":62,"official_model_candidate":true,"direct_region_match":true,"page_fetch":true,"content_extraction":true,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["fetch_failed","normalization_failed"]},
+    {"case_id":"web2-mon-004","domain":"monitor","raw_results":63,"official_model_candidate":true,"direct_region_match":false,"page_fetch":true,"content_extraction":true,"verified_fields":["resolution"],"actual_evidence_completed":true,"failure_categories":["requested_field_missing","evidence_conflict"]},
+    {"case_id":"web2-mon-005","domain":"monitor","raw_results":64,"official_model_candidate":true,"direct_region_match":false,"page_fetch":false,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["region_mismatch","fetch_failed"]},
+    {"case_id":"web2-lap-001","domain":"laptop","raw_results":15,"official_model_candidate":true,"direct_region_match":true,"page_fetch":true,"content_extraction":true,"verified_fields":["memory_gb","storage_gb","usb4"],"actual_evidence_completed":true,"failure_categories":[]},
+    {"case_id":"web2-lap-002","domain":"laptop","raw_results":56,"official_model_candidate":true,"direct_region_match":true,"page_fetch":false,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["fetch_failed"]},
+    {"case_id":"web2-lap-003","domain":"laptop","raw_results":65,"official_model_candidate":false,"direct_region_match":false,"page_fetch":false,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["no_official_source"]},
+    {"case_id":"web2-lap-004","domain":"laptop","raw_results":63,"official_model_candidate":true,"direct_region_match":false,"page_fetch":true,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["region_mismatch","dynamic_page","extraction_empty"]},
+    {"case_id":"web2-lap-005","domain":"laptop","raw_results":34,"official_model_candidate":true,"direct_region_match":true,"page_fetch":false,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["fetch_failed"]},
+    {"case_id":"web2-hph-001","domain":"headphone","raw_results":65,"official_model_candidate":true,"direct_region_match":false,"page_fetch":false,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["region_mismatch","fetch_failed"]},
+    {"case_id":"web2-hph-002","domain":"headphone","raw_results":63,"official_model_candidate":true,"direct_region_match":false,"page_fetch":true,"content_extraction":false,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["region_mismatch","dynamic_page","extraction_empty"]},
+    {"case_id":"web2-hph-003","domain":"headphone","raw_results":1,"official_model_candidate":true,"direct_region_match":true,"page_fetch":true,"content_extraction":true,"verified_fields":["wireless_dongle"],"actual_evidence_completed":true,"failure_categories":["requested_field_missing"]},
+    {"case_id":"web2-hph-004","domain":"headphone","raw_results":64,"official_model_candidate":true,"direct_region_match":false,"page_fetch":true,"content_extraction":true,"verified_fields":[],"actual_evidence_completed":false,"failure_categories":["region_mismatch","normalization_failed"]},
+    {"case_id":"web2-hph-005","domain":"headphone","raw_results":65,"official_model_candidate":true,"direct_region_match":false,"page_fetch":true,"content_extraction":true,"verified_fields":["active_noise_cancellation"],"actual_evidence_completed":true,"failure_categories":["requested_field_missing","evidence_conflict"]}
+  ],
+  "safety": {
+    "safe_terminal": "15/15",
+    "wrong_domain_model_region_accepted": 0,
+    "open_evidence_entered_trusted_checker": 0,
+    "search_snippet_promoted_to_evidence": 0,
+    "unknown_overclaim": 0
+  }
+}
