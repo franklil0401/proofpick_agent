@@ -1,0 +1,58 @@
+{
+  "record_type": "offline_development_regression",
+  "branch": "fix/v2-fact-completion",
+  "baseline_commit": "99c7bccc523addc7e8904571dbe8e20a24615c66",
+  "baseline_test_count": 597,
+  "current_full_ci_equivalent": {"passed": 681, "failed": 0, "skipped": 0, "duration_seconds": 158.41, "warnings": 3},
+  "v1_original_file_regression": {"files": 18, "passed": 101, "failed": 0, "skipped": 0, "duration_seconds": 15.12},
+  "new_tests": {
+    "default_portfolio_api": {"passed": 24, "total": 24},
+    "shared_completion_contract": {"passed": 51, "total": 51},
+    "domain_completion": {"passed": 9, "total": 9},
+    "total": 84
+  },
+  "contract": {
+    "version": "proofpick-fact-completion-v1",
+    "completion_status": "all_required_cells_checked_not_all_facts_known",
+    "known_unknown_and_conflict_remain_abstained": true,
+    "unverified_is_not_confirmed_missing": true,
+    "candidate_and_requested_field_scope": "deterministic",
+    "kb_metadata_is_not_fact_evidence": true,
+    "fact_and_comparison_purchase_recommendations": 0,
+    "runtime_identity_self_attestation_allowed": false,
+    "old_pure_report_identity_compatibility": "None_only_not_empty_runtime_map",
+    "completed_field_reexecution_in_new_regressions": 0
+  },
+  "quality": {
+    "ruff": "passed",
+    "compileall": "passed",
+    "javascript_syntax": {"passed": 13, "total": 13},
+    "powershell_ast": {"passed": 6, "total": 6},
+    "markdown_links": {"passed": 515, "failed": 0, "documents": 107},
+    "sensitive_scan": {"files": 1193, "raw_pattern_matching_files": 1, "real_credential_findings": 0,
+      "reviewed_false_positive": "Unchanged stage6 synthetic workspace placeholder in run_stage6_resilience.py"},
+    "artifact_scan": {"new_forbidden_artifacts": 0, "pre_existing_vendor_test_databases": 1,
+      "unchanged_upstream_fixture": "vendor/youtu-rag/tests/rag/text2sql_mem_test/bnss_ai_incoming.db",
+      "baseline_and_current_blob": "8172438a35ee49d58e5dbe07f3af724e904e1747"},
+    "protected_implementation_or_data_changes": 0,
+    "existing_test_modifications": 0,
+    "historical_eval_modifications": 0,
+    "git_diff_check": "passed",
+    "managed_listening_ports": 0
+  },
+  "unchanged": {
+    "existing_test_files_and_assertions": true,
+    "checker_and_evidence_rule_files": true,
+    "packs_data_indices_and_historical_evaluations": true,
+    "default_orchestrator_and_feature_flags": true,
+    "dependency_declarations_and_lock": true,
+    "api_request_schema": true
+  },
+  "api_calls": 0,
+  "estimated_cost_cny": 0,
+  "new_holdout_created": false,
+  "independent_evaluator_run": false,
+  "historical_exposed_real_regression": {"passed": 3, "total": 4, "preserved": true, "rerun_here": false},
+  "access_boundary": "Only the two authorized report/audit files at evaluation commit 014a50f433211ba1578b228429cfba9709c78dae were read. No remaining tasks, gold or evaluator were read.",
+  "next_step": "Independent evaluator may rerun the same four exposed cases on the new pinned production commit. This report is not release acceptance."
+}

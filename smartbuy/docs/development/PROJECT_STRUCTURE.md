@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-05 |
-| 当前阶段 | V1/RC3 冻结身份保留；V2-9J 在独立修复分支修复默认 Portfolio 硬要求完整性与商品身份；仅离线开发回归，不是重新发布或独立评测；未创建 Holdout/Tag/Release/PR |
+| 当前阶段 | V1/RC3/RC4 及历史结果保持不变；fix/v2-fact-completion 从固定99c7bccc基线修复默认Portfolio事实/比较的字段核验与完成语义；仅离线开发回归，历史真实回归仍3/4，未创建Holdout/Tag/Release/PR |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -47,6 +47,7 @@ proofpick_agent/
 │  ├─ agent/
 │  │  ├─ domain_agent.py
 │  │  ├─ domain_gateway.py
+│  │  ├─ fact_completion.py   # 目标商品×请求字段的确定性完成矩阵；区分核验终态与答案充分性
 │  │  ├─ ranking.py
 │  │  ├─ react.py
 │  │  └─ reporting.py
@@ -208,7 +209,8 @@ proofpick_agent/
 │  │  │  ├─ v2_release_candidate_rc3_manifest_r1.md
 │  │  │  ├─ v2_9h_r1_manifest_freeze_repair_report.md
 │  │  │  ├─ v2_9h_r1_rc3_handoff.md
-│  │  │  └─ v2_9j_trusted_contracts_repair_report.md
+│  │  │  ├─ v2_9j_trusted_contracts_repair_report.md
+│  │  │  └─ fact_completion_repair_report.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -322,7 +324,9 @@ proofpick_agent/
 │  │     ├─ v2_9f_*            # Online 修复前漏斗、评测器事故和唯一有效 exposed regression
 │  │     ├─ v2_9g_*            # 单调漏斗审计、Playwright/Bocha 有限 PoC 原始记录与语义复核
 │  │     ├─ v2_9h_*            # RC3 旧失败、新 Git-blob R1 Manifest 与 Windows 复现摘要
-│  │     └─ v2_9j_*            # 离线开发首败、身份/API/约束修复与质量门审计；非独立评测
+│  │     ├─ v2_9j_*            # 离线开发首败、身份/API/约束修复与质量门审计；非独立评测
+│  │     ├─ fact_completion_development_first.json
+│  │     └─ fact_completion_development_regression.json
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -438,6 +442,7 @@ proofpick_agent/
 │     │  ├─ stage1_baseline.md
 │     │  └─ v2_checkpoint_worker.py
 │     ├─ integration/
+│     │  ├─ test_fact_completion_portfolio.py
 │     │  ├─ test_stage4_api.py
 │     │  ├─ test_v2_headphone_domain_pack.py
 │     │  ├─ test_v2_headphone_toolchain.py
@@ -453,6 +458,8 @@ proofpick_agent/
 │     │  ├─ test_v2_sqlite_checkpoint.py
 │     │  └─ test_youtu_bailian_adapters.py
 │     └─ unit/
+│        ├─ test_fact_completion_contract.py
+│        ├─ test_domain_fact_completion.py
 │        ├─ test_bailian_config.py
 │        ├─ test_bailian_provider.py
 │        ├─ test_stage3_data.py
@@ -594,6 +601,7 @@ proofpick_agent/
 | `smartbuy/agent/react.py` | qwen-plus 有界 Tool Calling、结构化状态、依赖门禁、预算与停止循环 |
 | `smartbuy/agent/ranking.py` | 仅对 Checker 合规候选执行软偏好排序，并由代码阻止增删资格 |
 | `smartbuy/agent/reporting.py` | 从工具观察确定性组装并渲染 Schema 校验报告 |
+| `smartbuy/agent/fact_completion.py` | 共享逐商品×字段完成合同、身份绑定与待核验格子；不替代Evidence/Checker规则 |
 | `smartbuy/cache/` | 仅缓存公开稳定中间结果的校验和、TTL、容量、版本失效和损坏绕过实现 |
 | `smartbuy/constraints/models.py` | 带来源约束、字段四态、候选复核和批次结果的 Pydantic 契约 |
 | `smartbuy/constraints/normalize.py` | 首批字段的别名、单位、否定、比较符、来源优先级和取消规则 |
@@ -750,6 +758,8 @@ V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适�
 V2-9J 新增测试：`unit/test_v2_9j_units.py`、`unit/test_v2_9j_identity.py`、`unit/test_v2_9j_requirement_coverage.py`、`integration/test_v2_9j_domain_coverage.py`、`integration/test_v2_9j_portfolio_contracts.py`。前者检查共享单位/身份/未解决要求，后者通过真实 Portfolio 路由及三品类离线工具验证完整传递和范围隔离；仅替换模型与 KB 为 Fake/治理证据回放。
 
 当前修复状态见 [V2-9J 报告](../v2/v2_9j_trusted_contracts_repair_report.md)。上面的 RC3 历史记录保留不变，不代表本修复分支已通过新的独立发布评测。
+
+后续字段完成修复见 [修复报告](../v2/fact_completion_repair_report.md)：`test_fact_completion_portfolio.py` 验证默认API有界补核与事件；`test_fact_completion_contract.py` 验证共享闭包及可信身份；`test_domain_fact_completion.py` 验证Domain实际工具四态及未完成终态。`fact_completion_development_first.json` 保存开发首败，`fact_completion_development_regression.json` 单独记录修复后结果，不覆盖独立真实3/4。
 
 - [x] 树状结构来自当前工作区，不从计划或旧文档复制。
 - [x] 计划项单独列出且明确标记“计划/不存在”。

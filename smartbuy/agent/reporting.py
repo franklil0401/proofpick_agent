@@ -14,6 +14,7 @@ from smartbuy.domain import (
     UnresolvedFact,
 )
 from smartbuy.constraints import VerificationStatus
+from smartbuy.agent.fact_completion import from_agent_state
 
 
 _FIELD_QUERY_MARKERS: dict[str, tuple[str, ...]] = {
@@ -123,6 +124,9 @@ def build_report(
     # It may populate candidate/evidence sections, but only an explicit filter
     # or dynamic purchase request may publish recommended model ids.
     recommendation_task = state.requirements.task_type in {"filter", "dynamic"}
+    fact_task = state.requirements.task_type in {"fact", "comparison"}
+    completion = from_agent_state(state) if fact_task else None
+    cells = {(row["product_id"], row["field"]): row for row in completion["matrix"]} if completion else {}
     rows = {
         **state.candidate_pool_rows,
         **{str(row.get("model_id")): row for row in state.candidate_rows if row.get("model_id")},
@@ -138,12 +142,16 @@ def build_report(
         # Public output stays scoped to explicit query concepts and provenance-gated constraints.
         relevant_fields &= _query_relevant_fields(state.query)
     relevant_fields.update(active_fields)
+    if completion is not None:
+        relevant_fields = {row["field"] for row in completion["matrix"]}
     model_ids = (
         list(verification_by_model)
         if verification_by_model
         else list(dict.fromkeys([*rows, *state.assessments]))
     )
-    if state.ranked_eligible_model_ids:
+    if completion is not None:
+        model_ids = list(dict.fromkeys(row["product_id"] for row in completion["matrix"]))
+    if state.ranked_eligible_model_ids and not fact_task:
         model_ids = list(
             dict.fromkeys(
                 [
@@ -153,7 +161,9 @@ def build_report(
             )
         )
     candidates: list[CandidateDecision] = []
-    all_evidence: list[EvidenceReference] = list(state.kb_hits)
+    # Retrieval references locate sources; without a checked value they are not
+    # fact citations and must not shadow a later, properly valued Evidence ref.
+    all_evidence: list[EvidenceReference] = [] if fact_task else list(state.kb_hits)
     for model_id in model_ids:
         if model_id in state.requirements.excluded_model_ids:
             continue
@@ -163,6 +173,30 @@ def build_report(
             for item in state.assessments.get(model_id, [])
             if not relevant_fields or item.field in relevant_fields
         ]
+        if completion is not None:
+            original = fields
+            fields = []
+            for field in sorted(relevant_fields):
+                cell = cells[(model_id, field)]
+                if cell["status"].startswith("verified_"):
+                    status = {
+                        "verified_unknown": ConstraintStatus.UNKNOWN,
+                        "verified_conflict": ConstraintStatus.CONFLICT,
+                        "verified_value": ConstraintStatus.MATCHED,
+                    }[cell["status"]]
+                    if status == ConstraintStatus.MATCHED and any(
+                        item.field == field and item.status == ConstraintStatus.NOT_MATCHED for item in original
+                    ):
+                        status = ConstraintStatus.NOT_MATCHED
+                    fields.append(FieldAssessment(
+                        field=field, status=status, actual_value=cell["actual_value"], reason=cell["reason"],
+                        evidence=[EvidenceReference.model_validate(item) for item in cell["evidence"]],
+                    ))
+                else:
+                    fields.append(FieldAssessment(
+                        field=field, status=ConstraintStatus.UNKNOWN,
+                        reason=f"{cell['status']}: {cell['reason']}；尚未完成核验，不能断言资料缺失。",
+                    ))
         verification = verification_by_model.get(model_id)
         status_mapping = {
             VerificationStatus.PASSED: ConstraintStatus.MATCHED,
@@ -204,7 +238,7 @@ def build_report(
             overall_status=overall,
             fields=fields,
             eligible=(
-                bool(verification.eligible and overall == ConstraintStatus.MATCHED)
+                bool(recommendation_task and verification.eligible and overall == ConstraintStatus.MATCHED)
                 if verification
                 else recommendation_task and overall == ConstraintStatus.MATCHED
             ),
@@ -218,7 +252,7 @@ def build_report(
             recommendation_reason=(
                 state.candidate_explanations.get(model_id)
                 or "Constraint Checker 已确认全部受支持硬约束通过；软偏好只能影响排序，不能改变资格。"
-                if verification and verification.eligible else None
+                if recommendation_task and verification and verification.eligible else None
             ),
             elimination_reason=(
                 "；".join(
@@ -234,9 +268,11 @@ def build_report(
         )
         candidates.append(candidate)
     recommended = [item.model_id for item in candidates if item.eligible] if recommendation_task else []
-    eliminated = [item.model_id for item in candidates if not item.eligible] if verification_by_model else [
+    eliminated = [item.model_id for item in candidates if not item.eligible] if recommendation_task and verification_by_model else [
         item.model_id for item in candidates if item.overall_status == ConstraintStatus.NOT_MATCHED
     ]
+    if fact_task:
+        eliminated = []
     candidate_ids = {item.model_id for item in candidates}
     unique_evidence: list[EvidenceReference] = []
     seen: set[tuple[str, str | None, str]] = set()
@@ -319,10 +355,24 @@ def build_report(
         evidence_sufficient = False
     elif recommendation_task:
         evidence_sufficient = bool(recommended)
+    elif completion is not None:
+        evidence_sufficient = completion["answer_sufficient"]
     else:
         evidence_sufficient = bool(state.kb_hits) and not (
             {ConstraintStatus.UNKNOWN, ConstraintStatus.CONFLICT} & evidence_statuses
         )
+    stop_reason = state.stop_reason or "达到有界执行停止条件。"
+    if completion is not None:
+        usage = {**usage, "fact_completion": {**completion, "checks": state.fact_completion_checks},
+                 "verification_tools_used": list(dict.fromkeys(check["tool"] for check in state.fact_completion_checks))}
+        if completion["completion_status"] == "complete":
+            stop_reason = ("全部目标商品—请求字段已完成核验。" if evidence_sufficient else
+                           "全部目标商品—请求字段已核验；存在 unknown/conflict，不作确定事实或购买满足声明。")
+        else:
+            stop_reason = (f"字段核验{completion['completion_status']}："
+                           f"{completion['checked_count']}/{completion['required_count']}；"
+                           "未核验、工具失败或预算耗尽的字段明确保留，不宣称证据充分，安全停止。")
+        usage["result_status"] = "answer_available" if evidence_sufficient else "partial_answer" if completion["checked_count"] else "unable_to_verify"
     return DecisionReport(
         request_summary=state.requirements.summary or state.query[:200],
         task_type=state.requirements.task_type,
@@ -348,7 +398,7 @@ def build_report(
         degraded_states=list(dict.fromkeys(state.degraded_states)),
         pending_questions=state.requirements.pending_questions,
         abstained=not evidence_sufficient,
-        stop_reason=state.stop_reason or "达到有界执行停止条件。",
+        stop_reason=stop_reason,
         trace=state.traces,
         latency_ms=round(latency_ms, 3),
         tool_call_count=state.tool_call_count,

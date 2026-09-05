@@ -1,0 +1,43 @@
+{
+  "record_type": "offline_development_failure_audit",
+  "baseline_commit": "99c7bccc523addc7e8904571dbe8e20a24615c66",
+  "independent_evaluation_commit": "014a50f433211ba1578b228429cfba9709c78dae",
+  "historical_exposed_real_regression": {"passed": 3, "total": 4, "rerun_here": false},
+  "api_calls": 0,
+  "estimated_cost_cny": 0,
+  "observations": [
+    {"suite": "initial_default_portfolio_api", "passed": 0, "failed": 14, "duration_seconds": 3.66,
+     "test_file": "smartbuy/tests/integration/test_fact_completion_portfolio.py",
+     "causes": ["kb_hit_without_field_check", "missing_product_field_closure", "incorrect_abstained_false", "unverified_region_reference", "missing_completion_audit"]},
+    {"suite": "initial_domain_completion", "passed": 0, "failed": 7,
+     "test_file": "smartbuy/tests/unit/test_domain_fact_completion.py",
+     "causes": ["evidence_result_not_consumed", "catalog_value_promoted_without_check", "unknown_conflict_overwritten", "budget_omission_looks_complete", "identity_mismatch", "missing_completion_audit"]},
+    {"suite": "initial_completion_module_collection", "collection_error": "ModuleNotFoundError", "tests_executed": 0},
+    {"suite": "monitor_and_legacy_first_integration", "passed": 33, "failed": 1, "duration_seconds": 5.61,
+     "failed_node_id": "smartbuy/tests/unit/test_stage4_agent.py::test_max_step_limit_stops_without_looping",
+     "cause": "incomplete_stop_reason_lost_safe_stop_wording", "old_assertion_changed": false},
+    {"suite": "intermediate_full_ci_equivalent", "passed": 657, "failed": 0, "duration_seconds": 166.51},
+    {"suite": "additional_portfolio_identity_checks", "passed": 21, "failed": 1, "duration_seconds": 4.94,
+     "failed_node_id": "smartbuy/tests/integration/test_fact_completion_portfolio.py::test_executed_evidence_identity_mismatch_is_not_a_verified_fact[configuration_id]",
+     "cause": "unattested_configuration_metadata_accepted"},
+    {"suite": "read_only_duplicate_observation_audit",
+     "cause": "field_dictionary_last_write_erased_conflict_before_completion_and_reporting",
+     "reproduction": "fictional ToolResult: conflict followed by matched for the same product and field",
+     "subsequent_duplicate_api_test_first_run": "passed_after_concurrent_fix_not_a_red_test"},
+    {"suite": "read_only_identity_self_attestation_audit",
+     "cause": "candidate_row_and_reference_could_supply_same_unattested_configuration",
+     "reproduction": "fictional catalog lacks configuration_id while tool row and reference agree on fabricated configuration"},
+    {"suite": "strict_identity_legacy_compatibility_full", "passed": 675, "failed": 1, "duration_seconds": 159.03,
+     "failed_node_id": "smartbuy/tests/unit/test_stage7_reporting.py::test_report_evidence_is_limited_to_requested_fields_and_models",
+     "cause": "legacy_pure_report_typed_assessments_have_no_catalog_identity_envelope", "old_assertion_changed": false},
+    {"suite": "strict_identity_legacy_compatibility_v1", "passed": 100, "failed": 1, "duration_seconds": 15.53,
+     "failed_node_id": "smartbuy/tests/unit/test_stage7_reporting.py::test_report_evidence_is_limited_to_requested_fields_and_models"}
+  ],
+  "new_test_authoring_notes": [
+    "New unknown/conflict assertions were aligned with the requested contract: checked complete but answer_sufficient false; the original red tests failed earlier because assessments were absent.",
+    "Two newly authored partial-check assertions were corrected to account for an additional requested region field; no existing assertion, production gold or historical result was changed.",
+    "Later tests were added as review found further generic cases; suite denominators differ and are not merged into one experiment."
+  ],
+  "not_an_independent_holdout": true,
+  "paid_model_verification": false
+}
