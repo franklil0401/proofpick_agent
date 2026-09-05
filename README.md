@@ -2,7 +2,7 @@
 
 面向显示器、笔记本和耳机的 Agentic RAG 决策系统：自主编排结构化查询、知识库与证据核验，再由不可被 LLM 覆盖的确定性安全门和 Ranker 形成可追溯报告。
 
-[![CI](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml) [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE) [![Status](https://img.shields.io/badge/Status-V2%20RC3-7257fa)](smartbuy/docs/v2/v2_9h_rc3_release_candidate_report.md)
+[![CI](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml) [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE) [![Status](https://img.shields.io/badge/Status-V2%20RC3%20R1-7257fa)](smartbuy/docs/v2/v2_9h_r1_manifest_freeze_repair_report.md)
 
 [V2 五分钟 Demo](smartbuy/docs/v2/v2_demo_guide.md) · [Windows 启动](#windows-快速开始) · [核心代码](#核心代码入口) · [V1 在线脱敏回放](https://franklil0401.github.io/proofpick_agent/)
 
@@ -94,8 +94,8 @@ Set-Location C:\ppv2rc3
 ## 文档与 License
 
 - [五个 Demo 与真实/回放步骤](smartbuy/docs/v2/v2_demo_guide.md)
-- [RC3 范围与验证](smartbuy/docs/v2/v2_9h_rc3_release_candidate_report.md) / [RC3 Semantic Manifest](smartbuy/docs/v2/v2_release_candidate_rc3_manifest.md)
-- [RC3 Windows 干净克隆](smartbuy/docs/v2/v2_9h_windows_reproduction.md) / [独立评测交接](smartbuy/docs/v2/v2_9h_rc3_handoff.md)
+- [RC3 范围与验证](smartbuy/docs/v2/v2_9h_rc3_release_candidate_report.md) / [RC3 Manifest R1](smartbuy/docs/v2/v2_release_candidate_rc3_manifest_r1.md)
+- [RC3 Windows 干净克隆](smartbuy/docs/v2/v2_9h_windows_reproduction.md) / [R1 独立评测交接](smartbuy/docs/v2/v2_9h_r1_rc3_handoff.md)
 - [V2-9G Online 范围与可行性](smartbuy/docs/v2/v2_9g_online_scope_and_feasibility_report.md)
 - [V2 文档索引](smartbuy/docs/v2/README.md) / [V2 开发流程](smartbuy/docs/v2/V2_DEVELOPMENT_PROCESS.md)
 - [V1 作品集指标](smartbuy/docs/portfolio_metrics.md) / [数据卡](smartbuy/docs/data_card.md) / [项目结构](smartbuy/docs/development/PROJECT_STRUCTURE.md)

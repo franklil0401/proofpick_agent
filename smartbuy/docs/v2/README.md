@@ -78,6 +78,9 @@
 - [V2-9H RC3 范围收敛与冻结报告](v2_9h_rc3_release_candidate_report.md)
 - [V2-9H RC3 Windows 干净复现](v2_9h_windows_reproduction.md)
 - [V2-9H RC3 独立评测交接](v2_9h_rc3_handoff.md)
+- [V2-9H-R1 Git-blob Manifest](v2_release_candidate_rc3_manifest_r1.md)
+- [V2-9H-R1 冻结修复报告](v2_9h_r1_manifest_freeze_repair_report.md)
+- [V2-9H-R1 独立评测交接修订](v2_9h_r1_rc3_handoff.md)
 
 ## 当前状态
 
@@ -110,5 +113,6 @@
 - V2-9E 新增稳定语义 Manifest：完整列举七组成员，并把三品类 Data/Index/Collection/文档数/1024 维纳入合同；运行时间、Token、费用和机器路径不参与 payload 哈希。
 - V2-9H 已按 ADR-0023 冻结 `proofpick-v2-rc3`：Trusted Multi-domain Decision Core 为 Stable/default，Online Research 为 Experimental/Beta。生产 Commit、Tree、19 组完整成员和三品类 Data/Index 合同绑定在 Semantic Manifest；Windows 干净克隆、五 Demo 与安全门通过，API 调用为 0。
 - RC3 尚未运行新的独立评测，仍不具备合并、Tag 或 Release 条件。下一步只能由独立评测方在冻结后创建新的未见任务；Trusted 发布门与 Online Beta 安全/完成指标必须分开报告。
+- V2-9I 独立方在出题前发现旧 RC3 Manifest 受 checkout 换行影响并正确阻断；旧 Payload `4883f425…`永久保留为失败历史。V2-9H-R1 改为直接散列生产 Git blob，三种 EOL 环境均复现新 Payload `abf65501…`；独立方仍须先复审冻结合同，尚未授权创建题集。
 - 当前没有创建 PR、合并 `main`、Tag 或 Release，也没有创建或运行新的 Holdout。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

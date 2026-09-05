@@ -1,8 +1,9 @@
-"""Build the RC3 semantic freeze from an immutable production commit.
+"""Build the RC3 manifest R1 from immutable Git tree and blob objects.
 
 The manifest deliberately separates stable release-contract bytes from runtime
 telemetry.  Every aggregate includes its complete sorted member list so an
-independent evaluator can reproduce the payload without knowing this machine.
+independent evaluator can reproduce the payload without knowing this machine or
+depending on checkout line-ending conversion.
 """
 
 from __future__ import annotations
@@ -13,14 +14,13 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from smartbuy.reproducibility.semantic_manifest import (
-    build_file_group,
+    build_git_file_group,
     build_semantic_manifest,
     stable_sha256,
 )
 from smartbuy.reproducibility.v2_9e_manifest import (
     DATA_PREFIXES,
     PRODUCTION_PREFIXES,
-    _assert_worktree_matches,
     _git,
     _members_at,
     _select,
@@ -108,8 +108,12 @@ def _group(
     suffixes: tuple[str, ...] = (),
 ) -> dict[str, object]:
     members = _select(files, prefixes=prefixes, exact=exact, suffixes=suffixes)
-    _assert_worktree_matches(root, commit, members)
-    return build_file_group(root, members)
+    return build_git_file_group(
+        root,
+        commit,
+        members,
+        tree_members=files,
+    )
 
 
 def build_rc3_manifest(root: Path, production_commit: str) -> dict[str, object]:
@@ -219,7 +223,7 @@ def build_rc3_manifest(root: Path, production_commit: str) -> dict[str, object]:
         "test_baseline_sha256": groups["test_baseline"]["aggregate_sha256"],
         "runtime_audit": {
             "created_at": datetime.now(UTC).isoformat().replace("+00:00", "Z"),
-            "release_candidate": "proofpick-v2-rc3",
+            "release_candidate": "proofpick-v2-rc3-manifest-r1",
             "release_scope": "Trusted Multi-domain Decision Core + Experimental/Beta Online Research",
             "default_mode": "trusted",
             "machine_path": "excluded_from_semantic_contract",
@@ -229,6 +233,9 @@ def build_rc3_manifest(root: Path, production_commit: str) -> dict[str, object]:
     manifest = build_semantic_manifest(runtime, file_groups=groups)
     manifest["semantic_contract"]["release_contract"] = {
         "release_candidate": "proofpick-v2-rc3",
+        "manifest_revision": "r1",
+        "member_set_source": "git_ls_tree_at_production_commit",
+        "member_hash_source": "git_blob_raw_bytes_at_production_commit",
         "positioning": "Trusted Multi-domain Decision Core + Experimental/Beta Online Research",
         "default_mode": "trusted",
         "trusted_capabilities": [

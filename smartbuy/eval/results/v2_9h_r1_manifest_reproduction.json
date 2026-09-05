@@ -1,0 +1,84 @@
+{
+  "schema_version": "proofpick-v2-9h-r1-manifest-reproduction-v1",
+  "release_candidate": "proofpick-v2-rc3",
+  "manifest_revision": "r1",
+  "production_commit": "ba6606ae249bafc89c18b320935c767a3f756c34",
+  "production_tree": "84766c5d8840b50a27c612e24379b6dd63736741",
+  "old_failed_payload_sha256": "4883f4251c8cb1f4dc6b86b6777b3d19ace74bee92943129c1146fc4e266b367",
+  "corrected_payload_sha256": "abf655017bdb0b27dfe3dd220d1e173e8a0e3e0ff2244590efc0d42d79fd6791",
+  "member_set_source": "git ls-tree -r -z --name-only production_commit",
+  "member_hash_source": "git cat-file blob production_commit:path raw bytes",
+  "file_groups": 19,
+  "member_occurrences": 370,
+  "unique_members": 267,
+  "environments": [
+    {
+      "name": "core.autocrlf=true",
+      "checkout_probe": "crlf",
+      "member_hashes_equal": true,
+      "group_aggregates_equal": true,
+      "payload_sha256": "abf655017bdb0b27dfe3dd220d1e173e8a0e3e0ff2244590efc0d42d79fd6791"
+    },
+    {
+      "name": "core.autocrlf=false",
+      "checkout_probe": "native_without_conversion",
+      "member_hashes_equal": true,
+      "group_aggregates_equal": true,
+      "payload_sha256": "abf655017bdb0b27dfe3dd220d1e173e8a0e3e0ff2244590efc0d42d79fd6791"
+    },
+    {
+      "name": "LF-worktree",
+      "checkout_probe": "lf",
+      "member_hashes_equal": true,
+      "group_aggregates_equal": true,
+      "payload_sha256": "abf655017bdb0b27dfe3dd220d1e173e8a0e3e0ff2244590efc0d42d79fd6791"
+    }
+  ],
+  "old_mismatched_members": [
+    {
+      "path": "vendor/youtu-rag/pyproject.toml",
+      "old_worktree_sha256": "7f3278442e3cccd4c1d7ffeed9ae729cdd0af4f90263e6af17e2ef1a250d7523",
+      "production_blob_sha256": "a34be624b2a6de232b5826e8a1ac15552003ff7564612eff641a2ed7368ba4a8",
+      "cause": "mixed_crlf_lf_checkout"
+    },
+    {
+      "path": "smartbuy/data/processed/stage6_metrics_summary.csv",
+      "old_worktree_sha256": "c52ede8e0581f62ed468bc3729ef341c50a1c52f54f56cf90fb8aa888676262c",
+      "production_blob_sha256": "d30744f18be8f6ee21f6d040736094cd884096f48b8795ee658d647756b49fba",
+      "cause": "pure_crlf_checkout"
+    },
+    {
+      "path": "smartbuy/data/processed/stage7_demo_presentation_regression.json",
+      "old_worktree_sha256": "ff74739f0cdc19e4098569a4c72c1f8d7e652e7d2e4a8a47279fe1375d2c6b68",
+      "production_blob_sha256": "ed336e186429e24938b9ff9b0bc9c51c138b5f4c4b739d34e83783dbec59736f",
+      "cause": "pure_crlf_checkout"
+    },
+    {
+      "path": "smartbuy/eval/v2_8_headphone_engineering.schema.json",
+      "old_worktree_sha256": "a0a1deb1991a4d66d83461738f31e9f4ac1c0ac35d2d924206cacd81be736108",
+      "production_blob_sha256": "7514d1d8eb7057edf63a53d06a030d8d9cf4d8bf574b17d78836e237fe470fa3",
+      "cause": "pure_crlf_checkout"
+    },
+    {
+      "path": "smartbuy/eval/v2_8_headphone_engineering_policy.json",
+      "old_worktree_sha256": "c0c0b9ca1485073f7f03d5af88f3333211ce0076692ace60c901a97f0a6165eb",
+      "production_blob_sha256": "73d35ef80525b090927d6369e3b07d265a57fa96f3c359a571811107fd6f9987",
+      "cause": "pure_crlf_checkout"
+    },
+    {
+      "path": ".github/workflows/ci.yml",
+      "old_worktree_sha256": "55990cdf100058ba566c483901d6b7033bc617a6fc8570bbbff3b4fd4d600803",
+      "production_blob_sha256": "9eaa9e4e66948eb293627b1ed25dfe0582d5264f1583ed1676036d2e1492cc88",
+      "cause": "mixed_crlf_lf_checkout"
+    }
+  ],
+  "targeted_test_first_attempt": {
+    "passed": 3,
+    "failed": 2,
+    "reason": "cross_volume_local_clone_hardlink_not_supported",
+    "algorithm_assertion_reached": false
+  },
+  "targeted_test_final": {"passed": 5, "failed": 0},
+  "api_calls": 0,
+  "estimated_cost_cny": 0
+}
