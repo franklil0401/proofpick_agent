@@ -1,0 +1,245 @@
+{
+  "schema_version": "proofpick-v2-9g-online-feasibility-poc-v1",
+  "classification": "limited_poc_on_exposed_failures; not_a_holdout_or_full_regression",
+  "created_at": "2026-09-05T08:01:53.586763Z",
+  "inputs": {
+    "v2_9f_result_sha256": "500093ed072eefaa43ab684a29e4b7bf50fcfd6eb7fef5be0c532404bdeab26b",
+    "monotonic_audit_sha256": "f04b9c5025f6a91ef09a825494ee9321792423aa55a9a1400f2db7330f1e1e87",
+    "case_file_sha256": "5ee822a53321442291c1411afee5c8c89b585c113674442c9c0f0b849e48b337"
+  },
+  "browser": {
+    "enabled_explicitly": true,
+    "default_enabled": false,
+    "dependency_version": "playwright==1.55.0 (existing uv.lock search group)",
+    "rows": [
+      {
+        "case_id": "web2-mon-002",
+        "domain_id": "monitor",
+        "selection_reason": "partial_evidence",
+        "previous_verified_fields": [
+          "resolution",
+          "usb_c_power_delivery_w"
+        ],
+        "status": "success",
+        "network_executed": true,
+        "http_status": 200,
+        "final_hostname": "www.asus.com",
+        "redirect_count": 0,
+        "blocked_request_count": 96,
+        "content_length": 454156,
+        "snippet_count": 100,
+        "verified_fields": [
+          "display_size_inch",
+          "resolution",
+          "usb_c_power_delivery_w"
+        ],
+        "requested_field_count": 3,
+        "latency_ms": 6848.481
+      },
+      {
+        "case_id": "web2-lap-001",
+        "domain_id": "laptop",
+        "selection_reason": "partial_evidence",
+        "previous_verified_fields": [
+          "memory_gb",
+          "storage_gb"
+        ],
+        "status": "success",
+        "network_executed": true,
+        "http_status": 200,
+        "final_hostname": "www.asus.com",
+        "redirect_count": 0,
+        "blocked_request_count": 136,
+        "content_length": 712584,
+        "snippet_count": 100,
+        "verified_fields": [
+          "memory_gb",
+          "storage_gb"
+        ],
+        "requested_field_count": 3,
+        "latency_ms": 5538.996
+      },
+      {
+        "case_id": "web2-hph-002",
+        "domain_id": "headphone",
+        "selection_reason": "partial_evidence",
+        "previous_verified_fields": [
+          "battery_hours",
+          "active_noise_cancellation"
+        ],
+        "status": "rejected",
+        "reason": "rendered_page_region_not_matched",
+        "network_executed": true,
+        "blocked_request_count": 73,
+        "latency_ms": 4946.829
+      },
+      {
+        "case_id": "web2-mon-003",
+        "domain_id": "monitor",
+        "selection_reason": "prior_page_fetch_failure",
+        "previous_verified_fields": [],
+        "status": "success",
+        "network_executed": true,
+        "http_status": 200,
+        "final_hostname": "www.lg.com",
+        "redirect_count": 0,
+        "blocked_request_count": 47,
+        "content_length": 846341,
+        "snippet_count": 100,
+        "verified_fields": [
+          "panel_type",
+          "resolution",
+          "usb_c_power_delivery_w"
+        ],
+        "requested_field_count": 3,
+        "latency_ms": 6838.127
+      },
+      {
+        "case_id": "web2-lap-002",
+        "domain_id": "laptop",
+        "selection_reason": "prior_page_fetch_failure",
+        "previous_verified_fields": [],
+        "status": "success",
+        "network_executed": true,
+        "http_status": 403,
+        "final_hostname": "www.dell.com",
+        "redirect_count": 0,
+        "blocked_request_count": 0,
+        "content_length": 385,
+        "snippet_count": 3,
+        "verified_fields": [],
+        "requested_field_count": 3,
+        "latency_ms": 1947.558
+      }
+    ],
+    "recovered_zero_evidence_tasks": 1
+  },
+  "primary_rediscovery": {
+    "provider": "zhipu",
+    "rows": [
+      {
+        "case_id": "web2-mon-003",
+        "status": "success",
+        "call_count": 3,
+        "usable_candidate_count": 1,
+        "navigation_candidate_count": 10,
+        "estimated_cost_cny": 0.09
+      },
+      {
+        "case_id": "web2-lap-002",
+        "status": "success",
+        "call_count": 3,
+        "usable_candidate_count": 1,
+        "navigation_candidate_count": 0,
+        "estimated_cost_cny": 0.09
+      }
+    ],
+    "usage": {
+      "call_count": 6,
+      "successful_calls": 6,
+      "degraded_calls": 0,
+      "input_tokens": 0,
+      "output_tokens": 0,
+      "estimated_cost_cny": 0.18
+    }
+  },
+  "bounded_fallback": {
+    "provider": "bocha",
+    "rows": [
+      {
+        "case_id": "web2-mon-001",
+        "domain_id": "monitor",
+        "status": "success",
+        "http_status": 200,
+        "provider_code": 200,
+        "attempts": 1,
+        "latency_ms": 903.978,
+        "raw_result_count": 10,
+        "scanned_result_count": 10,
+        "usable_candidate_count": 0,
+        "navigation_candidate_count": 2,
+        "rejected_candidate_count": 8,
+        "provider_request_id_present": true,
+        "estimated_cost_cny": 0.0,
+        "cost_basis": "provider_response_has_no_usage_field; public individual pricing listed as free"
+      },
+      {
+        "case_id": "web2-lap-003",
+        "domain_id": "laptop",
+        "status": "success",
+        "http_status": 200,
+        "provider_code": 200,
+        "attempts": 1,
+        "latency_ms": 896.567,
+        "raw_result_count": 10,
+        "scanned_result_count": 10,
+        "usable_candidate_count": 0,
+        "navigation_candidate_count": 0,
+        "rejected_candidate_count": 10,
+        "provider_request_id_present": true,
+        "estimated_cost_cny": 0.0,
+        "cost_basis": "provider_response_has_no_usage_field; public individual pricing listed as free"
+      },
+      {
+        "case_id": "web2-hph-001",
+        "domain_id": "headphone",
+        "status": "success",
+        "http_status": 200,
+        "provider_code": 200,
+        "attempts": 1,
+        "latency_ms": 903.903,
+        "raw_result_count": 10,
+        "scanned_result_count": 10,
+        "usable_candidate_count": 0,
+        "navigation_candidate_count": 0,
+        "rejected_candidate_count": 10,
+        "provider_request_id_present": true,
+        "estimated_cost_cny": 0.0,
+        "cost_basis": "provider_response_has_no_usage_field; public individual pricing listed as free"
+      }
+    ],
+    "browser_rows": [],
+    "calls": 3,
+    "known_estimated_cost_cny": 0.0,
+    "new_target_region_candidate_tasks": 0,
+    "new_evidence_tasks": 0
+  },
+  "security": {
+    "browser_non_region_matched_input_accepted": 0,
+    "fallback_wrong_domain_model_region_usable": 0,
+    "search_snippet_to_evidence": 0,
+    "open_evidence_to_trusted_checker": 0
+  },
+  "projection": {
+    "actual_evidence_completion": {
+      "numerator": 7,
+      "denominator": 15
+    },
+    "per_domain": {
+      "monitor": {
+        "numerator": 3,
+        "denominator": 5
+      },
+      "laptop": {
+        "numerator": 1,
+        "denominator": 5
+      },
+      "headphone": {
+        "numerator": 3,
+        "denominator": 5
+      }
+    },
+    "verified_requested_fields": {
+      "numerator": 15,
+      "denominator": 21,
+      "rate": 0.7142857142857143
+    },
+    "all_release_thresholds_met": false
+  },
+  "api_budget": {
+    "known_estimated_cost_cny": 0.18,
+    "limit_cny": 2.0,
+    "within_known_limit": true,
+    "bocha_usage_note": "API response does not expose billing; three bounded calls were used."
+  }
+}

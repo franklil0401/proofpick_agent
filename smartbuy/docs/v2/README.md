@@ -71,6 +71,9 @@
 - [V2-9E 通用修复与暴露回归报告](v2_9e_generalization_repair_report.md)
 - [V2-9E 可移植语义 Manifest](../../eval/results/v2_9e_semantic_runtime_manifest.json)
 - [ADR-0021：通用意图、开放证据漏斗与语义 Manifest](../adr/0021-generalized-intent-online-evidence-and-semantic-manifest.md)
+- [V2-9F Online Research 专项修复报告](v2_9f_online_research_repair_report.md)
+- [V2-9G Online 发布范围与有限可行性报告](v2_9g_online_scope_and_feasibility_report.md)
+- [ADR-0023：Trusted Core 与 Experimental Online](../adr/0023-trusted-core-and-experimental-online-research.md)
 
 ## 当前状态
 
@@ -98,8 +101,9 @@
 - V2-9A 已形成三品类统一产品首页、Trusted/Open 展示、五个脱敏 Demo、仓库外 Windows bootstrap 与无 Key Offline Replay；新短 ASCII 路径完成三 SQLite、三索引、HTTP 与端口释放验证。
 - V2-9B 独立首次评测结论为 `Needs revision`：Trusted 64/90，Online 安全终态 15/15 但真实网页 Evidence 仅 2/15。V2-9C 通用修复后的同题 exposed regression 为 86/90、Evidence 297/297、安全越界 0；该结果不能替代新的独立发布集。
 - V2-9C 修复后生产代码已冻结为 `proofpick-v2-9c-rc2`，冻结对象是 Commit `2d41773981c69b815efa21c0bf21675d095b920d` 及其 Tree；RC2 只是文档化候选，不是 Tag 或 Release，新的发布判断仍须由独立评测方完成。
+- V2-9G 将 V2-9F 非单调的候选混合指标重算为严格任务 lineage 漏斗 `15→15→15→8→6→6→6→6→6`；Playwright + Bocha 有限 PoC 仅投影 `7/15`、Laptop `1/5`、字段 `15/21`，因此没有正式接入或运行完整回归。后续 RC3 范围建议收敛为 Trusted Multi-domain Decision Core，Online Research 保持 Experimental/Beta。
 - V2-9D 第二次独立首次评测仍为 `Needs revision`：Trusted 72/90、Online 实际完成网页取证 0/15；V2-9E 同题 exposed regression 为 86/90，Online 三轮最高 5/15，所有错误地区/型号/域名接受、Scope/Checker 越界和 unknown 过度声明保持为 0。修复成绩不替代独立首次结果。
 - V2-9E 新增稳定语义 Manifest：完整列举七组成员，并把三品类 Data/Index/Collection/文档数/1024 维纳入合同；运行时间、Token、费用和机器路径不参与 payload 哈希。
-- V2 当前仍不具备合并、Tag 或 Release 条件；下一轮必须由独立评测方创建新的未见任务，并同时验证 Trusted 泛化与 Online 实际 Evidence 完成。
+- V2 当前仍不具备合并、Tag 或 Release 条件；下一步由用户决定是否按“Trusted Core + Experimental/Beta Online”冻结候选。冻结后的发布判断仍须由独立评测方创建新的未见任务，且 Online 的安全终态与实际 Evidence 完成必须分开报告。
 - 当前没有创建 PR、合并 `main`、Tag 或 Release，也没有创建或运行新的 Holdout。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

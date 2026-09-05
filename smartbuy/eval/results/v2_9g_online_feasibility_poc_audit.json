@@ -1,0 +1,53 @@
+{
+  "schema_version": "proofpick-v2-9g-online-feasibility-poc-audit-v1",
+  "classification": "post_run_semantic_audit_of_limited_poc; not_a_holdout_or_full_regression",
+  "raw_result_sha256": "016f90ac70a11d94bcd125bea6c0f40e23a8c9e6343877e5971a449070753631",
+  "raw_result_preserved": true,
+  "harness_observation": {
+    "issue": "The first PoC harness classified one HTTP 403 browser response as success before checking the response status.",
+    "affected_case_count": 1,
+    "affected_verified_field_count": 0,
+    "affected_recovery_count": 0,
+    "fix": "The isolated browser helper now rejects missing or HTTP >= 400 navigation responses before parsing.",
+    "rerun_performed": false,
+    "reason_not_rerun": "The classification correction cannot improve evidence metrics and another paid discovery run was unnecessary."
+  },
+  "playwright": {
+    "attempted_tasks": 5,
+    "safe_rendered_pages_with_fields": 3,
+    "recovered_previously_zero_evidence_tasks": 1,
+    "tasks_with_additional_requested_fields": 1,
+    "new_requested_fields_on_existing_tasks": 1,
+    "region_rejected_tasks": 1,
+    "http_error_tasks": 1,
+    "default_enabled": false
+  },
+  "bounded_fallback": {
+    "provider": "bocha",
+    "attempted_tasks": 3,
+    "new_target_region_candidate_tasks": 0,
+    "new_evidence_tasks": 0
+  },
+  "conservative_projection": {
+    "actual_evidence_completion": {
+      "numerator": 7,
+      "denominator": 15
+    },
+    "per_domain": {
+      "monitor": {"numerator": 3, "denominator": 5},
+      "laptop": {"numerator": 1, "denominator": 5},
+      "headphone": {"numerator": 3, "denominator": 5}
+    },
+    "verified_requested_fields": {
+      "numerator": 15,
+      "denominator": 21,
+      "rate": 0.7142857142857143
+    },
+    "all_release_thresholds_met": false
+  },
+  "security": {
+    "wrong_domain_model_or_region_accepted": 0,
+    "search_snippet_to_evidence": 0,
+    "open_evidence_to_trusted_checker": 0
+  }
+}

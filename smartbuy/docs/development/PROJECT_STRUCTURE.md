@@ -4,8 +4,8 @@
 
 | 项目 | 内容 |
 |---|---|
-| 最后更新时间 | 2026-09-04 |
-| 当前阶段 | V1 已冻结；V2-9F 完成 Online Research 专项修复与 exposed regression，但 6/15 未达 8/15 门槛，RC3 继续阻断 |
+| 最后更新时间 | 2026-09-05 |
+| 当前阶段 | V1 已冻结；V2-9G 有限 PoC 未达到 Online 联合门槛，RC3 尚未冻结，发布范围建议收敛为 Trusted Core + Experimental Online |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -307,7 +307,8 @@ proofpick_agent/
 │  │     ├─ v2_6c_*            # 历史失败、暴露回归及 R2/R3 冻结 RC、Journal、首次结果；不可覆盖
 │  │     ├─ v2_8_headphone_*   # Headphone 检索、工程首次/暴露回归与 Open Research 脱敏结果
 │  │     ├─ v2_9e_*            # 第二次独立评测后的 Trusted/Online 暴露回归与语义 Manifest
-│  │     └─ v2_9f_*            # Online 修复前漏斗、评测器事故和唯一有效 exposed regression
+│  │     ├─ v2_9f_*            # Online 修复前漏斗、评测器事故和唯一有效 exposed regression
+│  │     └─ v2_9g_*            # 单调漏斗审计、Playwright/Bocha 有限 PoC 原始记录与语义复核
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -546,6 +547,11 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_9f_online_research_repair_report.md` / `v2_9f_online_research_runtime.md` | V2-9F 修复前后漏斗、逐条 exposed 结果、静态 HTML/PDF 边界、费用、运行方式与 RC3 阻断结论 |
 | `smartbuy/eval/results/v2_9f_*` | 修改前失败漏斗、不可覆盖的评测器事故、唯一有效 15 条 exposed Online 结果及其独立运行 Manifest |
 | `smartbuy/docs/adr/0022-bounded-official-source-discovery-and-extraction.md` | 多查询官方来源发现、型号绑定相关页、静态多格式提取与 Open/Trusted 安全边界 |
+| `smartbuy/docs/v2/v2_9g_online_scope_and_feasibility_report.md` | 严格任务 lineage 漏斗、默认关闭 Playwright/Bocha PoC、门槛判断与 Online 发布范围收敛 |
+| `smartbuy/docs/adr/0023-trusted-core-and-experimental-online-research.md` | RC3 以 Trusted Multi-domain Decision Core 为候选范围、Online 保持 Experimental/Beta 的决策 |
+| `smartbuy/eval/audit_v2_9g_online_funnel.py` / `results/v2_9g_monotonic_funnel_audit.json` | 将候选级并行分支与任务级单调漏斗分开计算的只读审计器和结果 |
+| `smartbuy/eval/v2_9g_feasibility.py` / `run_v2_9g_feasibility_poc.py` | 不接生产主链、默认关闭的受控 Playwright 与 Bocha 失败类型 PoC |
+| `smartbuy/tests/fixtures/v2_9g/` / `unit/test_v2_9g_online_feasibility.py` | 虚构商品渲染页、默认关闭/地区门与单调漏斗测试，不含评测商品答案 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -715,7 +721,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9D 第二次独立评测仍给出 `Needs revision`；V2-9F 增加多查询官方来源发现、型号绑定的相关页发现、静态 HTML/PDF/内嵌状态提取与字段规则，但 15 条已暴露 Online 回归仅完成 6/15，低于 8/15，RC3 继续阻断。下一次发布判断必须使用独立评测方新建并单次运行的 Holdout。自动 Evidence Promotion、浏览器渲染、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9D 第二次独立评测仍给出 `Needs revision`；V2-9F 已暴露 Online 回归完成 6/15，V2-9G 默认关闭的浏览器/备用 Provider 有限 PoC 只投影 7/15、Laptop 1/5、字段 15/21，没有达到正式接入门槛。RC3 尚未冻结，候选发布范围应收敛为 Trusted Multi-domain Decision Core，Online Research 保持 Experimental/Beta。下一次发布判断必须由独立评测方执行；正式浏览器、Composite Provider、自动 Evidence Promotion、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 

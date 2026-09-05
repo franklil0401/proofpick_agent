@@ -1,0 +1,448 @@
+{
+  "schema_version": "proofpick-v2-9g-monotonic-funnel-audit-v1",
+  "source_result_run_id": "v2-9f-exposed-online-20260904T151258Z-ece02e9b",
+  "classification": "read_only_recalculation_of_exposed_v2_9f_result",
+  "definitions": {
+    "task_level": "A task advances only when one candidate lineage satisfies every preceding stage; target-region validation may be established by validated search metadata or the fetched official page.",
+    "candidate_level": "All attempted candidate branches and page operations, including navigation candidates that cannot become target-region evidence."
+  },
+  "task_level_funnel": [
+    {
+      "stage": "source_search",
+      "passed_tasks": 15,
+      "entered_tasks": 15,
+      "stage_rate": 1.0,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 1.0
+    },
+    {
+      "stage": "official_domain_filter",
+      "passed_tasks": 15,
+      "entered_tasks": 15,
+      "stage_rate": 1.0,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 1.0
+    },
+    {
+      "stage": "model_match",
+      "passed_tasks": 15,
+      "entered_tasks": 15,
+      "stage_rate": 1.0,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 1.0
+    },
+    {
+      "stage": "target_region_validation",
+      "passed_tasks": 8,
+      "entered_tasks": 15,
+      "stage_rate": 0.5333333333333333,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 0.5333333333333333
+    },
+    {
+      "stage": "page_fetch",
+      "passed_tasks": 6,
+      "entered_tasks": 8,
+      "stage_rate": 0.75,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 0.4
+    },
+    {
+      "stage": "content_extraction",
+      "passed_tasks": 6,
+      "entered_tasks": 6,
+      "stage_rate": 1.0,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 0.4
+    },
+    {
+      "stage": "field_normalization",
+      "passed_tasks": 6,
+      "entered_tasks": 6,
+      "stage_rate": 1.0,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 0.4
+    },
+    {
+      "stage": "evidence_check",
+      "passed_tasks": 6,
+      "entered_tasks": 6,
+      "stage_rate": 1.0,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 0.4
+    },
+    {
+      "stage": "actual_evidence_completion",
+      "passed_tasks": 6,
+      "entered_tasks": 6,
+      "stage_rate": 1.0,
+      "cumulative_denominator": 15,
+      "cumulative_rate": 0.4
+    }
+  ],
+  "first_failure_counts": {
+    "source_search": 0,
+    "official_domain_filter": 0,
+    "model_match": 0,
+    "target_region_validation": 7,
+    "page_fetch": 2,
+    "content_extraction": 0,
+    "field_normalization": 0,
+    "evidence_check": 0,
+    "actual_evidence_completion": 0,
+    "null": 6
+  },
+  "candidate_level": {
+    "candidate_branches": 52,
+    "extraction_operations": 52,
+    "page_fetch_2xx_all_branches": 33,
+    "content_extraction_all_branches": 32,
+    "target_region_valid_branches": 18,
+    "page_fetch_on_target_region_branch": 15,
+    "content_extraction_on_target_region_branch": 15,
+    "page_fetch_outside_target_region_branch": 18
+  },
+  "multiple_candidate_branch_tasks": 13,
+  "page_fetch_included_region_failed_tasks": [
+    "web2-mon-001",
+    "web2-mon-003",
+    "web2-lap-004",
+    "web2-hph-004"
+  ],
+  "cases": [
+    {
+      "case_id": "web2-mon-001",
+      "domain_id": "monitor",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": false,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "target_region_validation",
+      "candidate_branch_count": 4,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": true
+    },
+    {
+      "case_id": "web2-mon-002",
+      "domain_id": "monitor",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": true,
+        "content_extraction": true,
+        "field_normalization": true,
+        "evidence_check": true,
+        "actual_evidence_completion": true
+      },
+      "first_failure_stage": null,
+      "candidate_branch_count": 5,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": true,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-mon-003",
+      "domain_id": "monitor",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "page_fetch",
+      "candidate_branch_count": 5,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": true
+    },
+    {
+      "case_id": "web2-mon-004",
+      "domain_id": "monitor",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": true,
+        "content_extraction": true,
+        "field_normalization": true,
+        "evidence_check": true,
+        "actual_evidence_completion": true
+      },
+      "first_failure_stage": null,
+      "candidate_branch_count": 1,
+      "has_multiple_candidate_branches": false,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": true,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-mon-005",
+      "domain_id": "monitor",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": false,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "target_region_validation",
+      "candidate_branch_count": 5,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": false,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-lap-001",
+      "domain_id": "laptop",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": true,
+        "content_extraction": true,
+        "field_normalization": true,
+        "evidence_check": true,
+        "actual_evidence_completion": true
+      },
+      "first_failure_stage": null,
+      "candidate_branch_count": 5,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": true,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-lap-002",
+      "domain_id": "laptop",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "page_fetch",
+      "candidate_branch_count": 1,
+      "has_multiple_candidate_branches": false,
+      "page_fetch_any_branch": false,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-lap-003",
+      "domain_id": "laptop",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": false,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "target_region_validation",
+      "candidate_branch_count": 2,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": false,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-lap-004",
+      "domain_id": "laptop",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": false,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "target_region_validation",
+      "candidate_branch_count": 2,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": true
+    },
+    {
+      "case_id": "web2-lap-005",
+      "domain_id": "laptop",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": false,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "target_region_validation",
+      "candidate_branch_count": 3,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": false,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-hph-001",
+      "domain_id": "headphone",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": false,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "target_region_validation",
+      "candidate_branch_count": 2,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": false,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-hph-002",
+      "domain_id": "headphone",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": true,
+        "content_extraction": true,
+        "field_normalization": true,
+        "evidence_check": true,
+        "actual_evidence_completion": true
+      },
+      "first_failure_stage": null,
+      "candidate_branch_count": 5,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": true,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-hph-003",
+      "domain_id": "headphone",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": true,
+        "content_extraction": true,
+        "field_normalization": true,
+        "evidence_check": true,
+        "actual_evidence_completion": true
+      },
+      "first_failure_stage": null,
+      "candidate_branch_count": 2,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": true,
+      "page_fetch_only_outside_target_region_lineage": false
+    },
+    {
+      "case_id": "web2-hph-004",
+      "domain_id": "headphone",
+      "target_region": "US",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": false,
+        "page_fetch": false,
+        "content_extraction": false,
+        "field_normalization": false,
+        "evidence_check": false,
+        "actual_evidence_completion": false
+      },
+      "first_failure_stage": "target_region_validation",
+      "candidate_branch_count": 5,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": false,
+      "page_fetch_only_outside_target_region_lineage": true
+    },
+    {
+      "case_id": "web2-hph-005",
+      "domain_id": "headphone",
+      "target_region": "IE",
+      "stage_pass": {
+        "source_search": true,
+        "official_domain_filter": true,
+        "model_match": true,
+        "target_region_validation": true,
+        "page_fetch": true,
+        "content_extraction": true,
+        "field_normalization": true,
+        "evidence_check": true,
+        "actual_evidence_completion": true
+      },
+      "first_failure_stage": null,
+      "candidate_branch_count": 5,
+      "has_multiple_candidate_branches": true,
+      "page_fetch_any_branch": true,
+      "page_fetch_on_target_region_lineage": true,
+      "page_fetch_only_outside_target_region_lineage": false
+    }
+  ],
+  "inputs": {
+    "result_sha256": "500093ed072eefaa43ab684a29e4b7bf50fcfd6eb7fef5be0c532404bdeab26b",
+    "cases_sha256": "5ee822a53321442291c1411afee5c8c89b585c113674442c9c0f0b849e48b337"
+  }
+}

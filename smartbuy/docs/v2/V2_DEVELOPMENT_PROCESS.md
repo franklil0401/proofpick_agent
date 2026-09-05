@@ -9,9 +9,9 @@
 | V1 代码仓库 | `franklil0401/proofpick_agent` |
 | V1 稳定分支 | `main` |
 | V2 推荐分支 | `feature/proofpick-v2` |
-| 当前状态 | **V2-9D 第二次独立评测仍为 Needs revision；V2-9E 已完成通用修复与 exposed regression，但 Online 实际完成仍阻断发布** |
+| 当前状态 | **V2-9G 有限 PoC 未达到 Online 联合门槛；RC3 尚未冻结，发布范围建议收敛为 Trusted Core，Online 保持 Experimental/Beta** |
 | 目标环境 | Windows 11、Python 3.12、`uv`、Git、阿里云百炼 |
-| 最后更新 | 2026-09-04 |
+| 最后更新 | 2026-09-05 |
 
 关联文档：
 
@@ -967,4 +967,6 @@ V2-9B 独立首次评测保留 Trusted `64/90` 与 Online Evidence 完成 `2/15`
 
 V2-9E 只在独立修复分支上做通用修复。相同 90 条 Trusted 的 exposed regression 为 `86/90`、Evidence `351/357`，随后四条通用语法定向回归为 `4/4`，没有在费用上限内再次运行完整 90 条。相同 15 条 Online 的三轮 exposed regression 实际完成依次为 `2/15`、`5/15`、`5/15`。V2-9F 专项修复后唯一有效完整 exposed regression 为 `6/15`，Monitor/Laptop/Headphone 分别 `2/5`、`1/5`、`3/5`，字段核验 `11/18`；安全终态 `15/15` 且错误来源或 Open→Trusted 越界为 0，但仍低于 `8/15`、每品类 `2/5` 和字段核验 `80%` 的联合门槛。完整证据见 [V2-9F 报告](v2_9f_online_research_repair_report.md)与 [ADR-0022](../adr/0022-bounded-official-source-discovery-and-extraction.md)。
 
-这些 90+15 条都已暴露，不能替代新的未见发布集。V2-9F 尚不具备冻结 RC3 的条件；下一步只能在用户重新授权的修复范围内处理静态访问受限、目标地区发现和字段闭包，不能自行创建或运行新 Holdout。只有 exposed 内部门槛与全部安全门同时达到后，才可冻结候选并交给独立评测方创建、单次运行新任务。未经确认不得创建 PR、合并 `main`、Tag 或 Release。
+V2-9G 没有再运行完整 15 条。按同一候选 lineage 重算后的单调任务漏斗为 `15→15→15→8→6→6→6→6→6`；默认关闭的 Playwright 和三条 Bocha 回退 PoC 只投影实际取证 `7/15`、Laptop `1/5`、字段 `15/21`，仍未达到联合门槛。根据 [ADR-0023](../adr/0023-trusted-core-and-experimental-online-research.md)，后续发布范围应以 Trusted Multi-domain Decision Core 为核心，Online Research 保持 Experimental/Beta，安全 unknown 不得计为研究完成。
+
+这些 90+15 条都已暴露，不能替代新的未见发布集，RC3 也尚未冻结。V2-9G 已确认当前 Online 联合门槛在本轮有限 PoC 下不可行；下一步只能由用户决定冻结“Trusted Multi-domain Decision Core + Experimental/Beta Online Research”的收敛范围，或另行授权后续 Online 专项研究。任何发布判断仍须交给独立评测方创建并单次运行新的未见任务；未经确认不得创建新 Holdout、PR、合并 `main`、Tag 或 Release。

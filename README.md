@@ -1,8 +1,8 @@
 # ProofPick — 先验证证据，再做消费决策
 
-一个基于 Agentic RAG 的多源消费决策 Agent：自主组合结构化查询、知识库、开放网页研究与证据核验，并用不可被 LLM 覆盖的确定性安全门阻止违反硬条件的推荐。
+一个基于 Agentic RAG 的多源消费决策 Agent：自主组合结构化查询、知识库与证据核验，并用不可被 LLM 覆盖的确定性安全门阻止违反硬条件的推荐。
 
-[![CI](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml) [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE) [![Status](https://img.shields.io/badge/Status-V2%20Release%20Candidate-7257fa)](smartbuy/docs/v2/v2_9a_release_candidate_report.md)
+[![CI](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml/badge.svg)](https://github.com/franklil0401/proofpick_agent/actions/workflows/ci.yml) [![Python 3.12](https://img.shields.io/badge/Python-3.12-3776AB?logo=python&logoColor=white)](https://www.python.org/) [![License: MIT](https://img.shields.io/badge/License-MIT-2ea44f.svg)](LICENSE) [![Status](https://img.shields.io/badge/Status-V2%20Repair-7257fa)](smartbuy/docs/v2/v2_9g_online_scope_and_feasibility_report.md)
 
 [V2 五分钟 Demo](smartbuy/docs/v2/v2_demo_guide.md) · [Windows 启动](#windows-快速开始) · [核心代码](#核心代码入口) · [V1 在线脱敏回放](https://franklil0401.github.io/proofpick_agent/)
 
@@ -36,7 +36,7 @@
 | Router + Constraint / Scope | 识别品类、服务端 Quote-to-Span、约束状态与不可扩大的商品/配置/地区范围 |
 | 有界编排 | ReAct 为默认路径；LangGraph 可显式启用但仍是兼容外壳，两者共享工具和安全门 |
 | Trusted 路径 | 只读商品查询、1024 维向量召回、qwen3-rerank、治理 Evidence、Checker、Ranker |
-| Open 路径 | 智谱 Source Search 与静态 Extractor 形成请求级临时证据；不能进入治理 Ledger 或 Trusted Checker |
+| Open 路径（Experimental） | 受控 Source Search 与静态 Extractor 可形成请求级临时证据；失败时明确降级，且不能进入治理 Ledger 或 Trusted Checker |
 | Report / Memory | 输出候选、淘汰原因、Evidence、冲突、unknown、降级和公开工具轨迹；不展示隐藏思维链 |
 
 当前产品首页可切换三个品类与 Trusted/Open 模式，展示完整候选池、Checker 资格、排序维度贡献、来源地区/配置/时间、Memory 管理和脱敏工具轨迹。原 Youtu-RAG 页面保留在 `/classic.html#/chat`。
@@ -80,16 +80,18 @@ Set-Location C:\ppv2rc
 固定版本和 MIT 归属见 [THIRD_PARTY_NOTICES](THIRD_PARTY_NOTICES.md)。`main` 与 `v1.0.0-portfolio` 继续保存 V1 稳定版；V2 仅在 `feature/proofpick-v2`，不会改写 V1 数据、索引或历史指标。
 
 - 每个品类当前只有 12 个治理配置，不能外推到全市场或任意新品。
-- Open Research 受搜索索引、地区和静态页面可见性限制；临时网页证据不授予 Trusted 推荐资格。
+- Online Research 为 Experimental/Beta：只展示受控搜索、临时证据、失败降级与安全隔离，不承诺稳定网页取证；临时网页证据不授予 Trusted 推荐资格。
 - 价格仅演示带 `observed_at`、TTL 和哈希的一次观察；过期或正文不可核验时返回 unknown，不保证实时价格/库存。
 - 默认编排仍是 ReAct；LangGraph 尚未完成图原生生产迁移，本地 SQLite Checkpoint 也不是生产级多租户方案。
 - V2-9B 独立首次 Trusted 为 64/90；通用修复后的同题 exposed regression 为 86/90。后者只能证明已知路径改善，不能冒充新的泛化或发布结果。
+- V2-9F 已暴露 Online 回归仅完成字段取证 6/15；V2-9G 有限 PoC 投影 7/15，未运行完整回归。安全返回 unknown 不计为研究完成，详见 [发布范围决策](smartbuy/docs/v2/v2_9g_online_scope_and_feasibility_report.md)。
 
 ## 文档与 License
 
 - [五个 Demo 与真实/回放步骤](smartbuy/docs/v2/v2_demo_guide.md)
 - [V2-9A RC 报告](smartbuy/docs/v2/v2_9a_release_candidate_report.md) / [Windows 干净克隆](smartbuy/docs/v2/v2_9a_windows_reproduction.md)
 - [V2-9C 独立评测修复报告](smartbuy/docs/v2/v2_9c_independent_evaluation_repair_report.md)
+- [V2-9G Online 范围与可行性](smartbuy/docs/v2/v2_9g_online_scope_and_feasibility_report.md)
 - [V2 文档索引](smartbuy/docs/v2/README.md) / [V2 开发流程](smartbuy/docs/v2/V2_DEVELOPMENT_PROCESS.md)
 - [V1 作品集指标](smartbuy/docs/portfolio_metrics.md) / [数据卡](smartbuy/docs/data_card.md) / [项目结构](smartbuy/docs/development/PROJECT_STRUCTURE.md)
 
