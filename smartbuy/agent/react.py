@@ -25,6 +25,9 @@ from smartbuy.constraints import (
     VERIFIER_VERSION,
 )
 from smartbuy.constraint_proposals.models import ConstraintResolution
+from smartbuy.decision_core.requirements import audit_requirement_coverage
+from smartbuy.domain_packs import DomainPackLoader, DEFAULT_MONITOR_PACK
+from smartbuy.identity import resolve_catalog_identity
 from smartbuy.domain import (
     AgentLimits,
     AgentState,
@@ -142,6 +145,7 @@ class PurchaseDecisionAgent:
         self.session_memory = session_memory or SessionMemoryStore()
         self.preference_memory = preference_memory or LongTermPreferenceStore()
         self.constraint_normalizer = constraint_normalizer or ConstraintNormalizer()
+        self.requirement_pack = DomainPackLoader().load(DEFAULT_MONITOR_PACK)
         expected = {"text2sql", "kb_search", "evidence_check", "web_search"}
         missing = expected - set(tools)
         if missing:
@@ -171,7 +175,11 @@ class PurchaseDecisionAgent:
     def _safe_arguments(name: str, arguments: dict[str, Any]) -> dict[str, Any]:
         safe: dict[str, Any] = {}
         if name == "text2sql":
-            safe["sql"] = " ".join(str(arguments.get("sql", "")).split())[:500]
+            safe["sql"] = " ".join(str(arguments.get("_executed_sql", "")).split())[:3000]
+            safe["executed_sql"] = safe["sql"]
+            safe["suggested_sql"] = " ".join(str(arguments.get("sql", "")).split())[:500]
+            safe["effective_filters"] = list(arguments.get("filters", []))[:30]
+            safe["execution_mode"] = "deterministic_template"
             safe["filter_count"] = len(arguments.get("filters", []))
         elif name in {"kb_search", "web_search"}:
             safe["query_summary"] = str(arguments.get("query", ""))[:160]
@@ -224,6 +232,36 @@ class PurchaseDecisionAgent:
         result = callback(event)
         if inspect.isawaitable(result):
             await result
+
+    async def _incomplete_requirements_report(
+        self, state: AgentState, coverage: Any, started: float,
+        callback: EventCallback | None, usage: dict[str, Any] | None = None,
+    ) -> DecisionReport:
+        unresolved = [row for row in coverage.obligations if not row["resolved"]]
+        questions = [
+            f"请确认可执行的要求：{row['source_text']}（{row['reason']}）。"
+            for row in unresolved
+        ]
+        report = DecisionReport(
+            request_summary=state.query[:300], task_type="filter",
+            constraint_set=state.constraint_set,
+            hard_constraints=self._legacy_constraints(state.constraint_set),
+            clarification_state="pending", pending_questions=questions,
+            abstained=True, recommended_model_ids=[],
+            stop_reason="明确硬要求尚未完整绑定，已暂停；不能按部分条件宣称完全满足。",
+            trace=state.traces, tool_call_count=state.tool_call_count,
+            usage={
+                **(usage or {"call_count": 0, "input_tokens": 0, "output_tokens": 0,
+                             "estimated_cost_cny": 0.0}),
+                "result_status": "needs_clarification",
+                "requirement_coverage": coverage.public(),
+            },
+            latency_ms=(time.perf_counter() - started) * 1000,
+        )
+        await self._emit(callback, {"type": "requirement_coverage", "status": "pending",
+                                   "reason": "incomplete_user_requirements"})
+        await self._emit(callback, {"type": "report", "report": report.model_dump(mode="json")})
+        return report
 
     @staticmethod
     def _legacy_constraints(constraint_set: ConstraintSet) -> list[ConstraintSpec]:
@@ -313,7 +351,9 @@ class PurchaseDecisionAgent:
     def _remember_candidate(
         state: AgentState, model_id: str, row: dict[str, Any], source: str
     ) -> None:
-        if not model_id:
+        if not model_id or (
+            state.product_scope is not None and not state.product_scope.permits(model_id)
+        ):
             return
         existing = state.candidate_pool_rows.get(model_id, {})
         state.candidate_pool_rows[model_id] = {
@@ -419,7 +459,16 @@ class PurchaseDecisionAgent:
                 ]
                 if previous_requirements else []
             )
-            locators = current_locators or previous_locators
+            if state.product_scope is not None:
+                # Catalog-owned identities, never a model's shared-token match.
+                locators = [ConstraintSpec(
+                    field="model_id", operator=ConstraintOperator.IN,
+                    value=list(state.product_scope.product_ids),
+                )] if (
+                    state.product_scope.include_product_ids or state.product_scope.include_family_ids
+                ) else []
+            else:
+                locators = current_locators or previous_locators
             current.hard_constraints = [*locators, *self._legacy_constraints(state.constraint_set)]
             current.required_fields = list(
                 dict.fromkeys(
@@ -443,6 +492,17 @@ class PurchaseDecisionAgent:
                 dict.fromkeys([*merged.required_fields, *(item.field for item in state.constraint_set.active())])
             )
             state.requirements = merged
+            coverage = audit_requirement_coverage(
+                state.query, state.constraint_set, self.requirement_pack,
+                purchase=current.task_type in {"filter", "dynamic"},
+            )
+            if not coverage.complete:
+                state.finished = True
+                state.stop_reason = "明确硬要求尚未完整绑定，暂停以等待澄清。"
+                return ToolResult(
+                    tool=name, status="failed", error_code="INCOMPLETE_USER_REQUIREMENTS",
+                    summary=state.stop_reason, data={"requirement_coverage": coverage.public()},
+                )
             return ToolResult(
                 tool=name,
                 status="success",
@@ -626,6 +686,9 @@ class PurchaseDecisionAgent:
                 filters = [item.model_dump(mode="json", exclude={"hard"}) for item in locator_constraints]
             else:
                 filters = self._deterministic_filters(state.constraint_set)
+            if state.product_scope is not None:
+                filters.append({"field": "model_id", "operator": "in",
+                                "value": list(state.product_scope.product_ids)})
             arguments["filters"] = filters
             arguments["_deterministic_filters"] = True
             arguments["_allow_full_pool"] = True
@@ -660,13 +723,39 @@ class PurchaseDecisionAgent:
             )
         if name in {"kb_search", "evidence_check"} and hard_flow and state.candidate_pool_rows:
             arguments["model_ids"] = list(state.candidate_pool_rows)[:10]
+        if name in {"kb_search", "evidence_check"} and state.product_scope is not None:
+            proposed_ids = arguments.get("model_ids") or state.product_scope.product_ids
+            arguments["model_ids"] = [
+                item for item in proposed_ids if state.product_scope.permits(item)
+            ]
+            if not arguments["model_ids"]:
+                return ToolResult(tool=name, status="failed", error_code="EMPTY_CANDIDATE_SCOPE",
+                                  summary="工具请求没有范围内的可信配置，未扩大为全库检索。")
         try:
             result = await asyncio.wait_for(tool.invoke(arguments), timeout=self.limits.tool_timeout_seconds)
         except TimeoutError:
             result = ToolResult(
                 tool=name, status="failed", error_code="TOOL_TIMEOUT", summary="工具超过单次执行时限。",
             )
+        if state.product_scope is not None and name in {"text2sql", "kb_search", "evidence_check"}:
+            result = result.model_copy(deep=True)
+            scope = state.product_scope
+            removed = 0
+            for key in ("rows", "hits"):
+                if key in result.data:
+                    original = result.data[key]
+                    result.data[key] = [row for row in original if scope.permits(str(row.get("model_id", "")))]
+                    removed += len(original) - len(result.data[key])
+            if "models" in result.data:
+                original = result.data["models"]
+                result.data["models"] = {key: value for key, value in original.items() if scope.permits(key)}
+                removed += len(original) - len(result.data["models"])
+            if removed:
+                result.degraded = True
+                result.summary = f"工具返回 {removed} 项范围外配置，已在观察结果进入状态前阻断。"
+                result.data["scope_rejected_count"] = removed
         if name == "text2sql" and result.data.get("rows") is not None:
+            arguments["_executed_sql"] = result.data.get("sql", "")
             state.candidate_rows = result.data["rows"]
             for row in state.candidate_rows:
                 model_id = str(row.get("model_id", ""))
@@ -737,11 +826,17 @@ class PurchaseDecisionAgent:
             return "unrelated"
         if any(token in normalized for token in ("当前价格", "现在", "库存", "多少钱")):
             return "dynamic"
+        # A factual verification subtask cannot erase an explicit purchase
+        # instruction. The model's declared task type has no authority here.
+        if re.search(r"筛选|筛出|挑选|选购|(?<!不)(?<!不要)推荐", normalized):
+            return "filter"
         # “60W 还是 65W” asks for one factual field; it is not a product
         # comparison and must retain Evidence Check's conflict/unknown state.
         factual_alternative = bool(
             re.search(r"\d+(?:\.\d+)?\s*(?:w|hz|mm|kg|英寸).*还是.*\d+(?:\.\d+)?", normalized)
         )
+        if factual_alternative:
+            return "fact"
         if ("还是" in normalized and not factual_alternative) or (
             any(token in normalized for token in ("比较", "中，哪", "中哪", "哪个", "哪台"))
             and any(token in normalized for token in (" 和 ", "与", "和", "中"))
@@ -749,7 +844,9 @@ class PurchaseDecisionAgent:
             return "comparison"
         if any(token in normalized for token in ("比较", "对比", "差别", "不同")):
             return "comparison"
-        if any(token in normalized for token in ("只查", "请查", "查询", "核验", "给证据", "怎么样", "有什么", "支持哪些")):
+        if any(token in normalized for token in (
+            "只查", "请查", "查询", "核验", "给证据", "怎么样", "有什么", "支持哪些", "是什么", "分别是多少",
+        )):
             return "fact"
         if any(token in normalized for token in ("是否", "能否", "有没有")):
             if re.search(r"\d+(?:\.\d+)?\s*(?:w|hz|mm|kg|英寸|寸|元)", normalized):
@@ -764,7 +861,6 @@ class PurchaseDecisionAgent:
     def _augment_requirements(query: str, requirements: UserRequirements) -> UserRequirements:
         """Normalize explicit user wording into fields; this parses requirements, not final eligibility."""
         normalized = query.lower().replace(" ", "")
-        explicit_existing = {"model_id", "model_name"}
         requested_fields: set[str] = set()
         field_markers = {
             "brand": ("品牌",),
@@ -784,82 +880,24 @@ class PurchaseDecisionAgent:
         }
         for field, markers in field_markers.items():
             if any(marker in normalized for marker in markers):
-                explicit_existing.add(field)
                 requested_fields.add(field)
+        # This is a legacy response adapter, not a second input parser. All
+        # supported values come from the same provenance-aware normalizer.
         constraints = {
-            item.field: item
-            for item in requirements.hard_constraints
-            if item.field in explicit_existing
+            item.field: item for item in requirements.hard_constraints
+            if item.field in {"model_id", "model_name"}
         }
-
-        allow_purchase_constraints = requirements.task_type in {"filter", "dynamic"}
-
-        def put(field: str, operator: ConstraintOperator, value: Any) -> None:
-            if allow_purchase_constraints:
-                constraints[field] = ConstraintSpec(field=field, operator=operator, value=value, hard=True)
-
-        if "中国版" in normalized or "中国大陆" in normalized:
-            put("region", ConstraintOperator.EQ, "CN")
-        elif "美国版" in normalized or "美国区" in normalized:
-            put("region", ConstraintOperator.EQ, "US")
-        elif "加拿大版" in normalized or "加拿大区" in normalized:
-            put("region", ConstraintOperator.EQ, "CA")
-        size = re.search(r"(\d+(?:\.\d+)?)英寸", normalized)
-        if size:
-            put("display_size_inch", ConstraintOperator.EQ, float(size.group(1)))
-        if "非oled" in normalized or "不要oled" in normalized:
-            put("is_oled", ConstraintOperator.EQ, False)
-        elif "oled" in normalized:
-            put("is_oled", ConstraintOperator.EQ, True)
-        explicit_resolution = re.search(r"(?<!\d)(\d{3,5})[x×](\d{3,5})(?!\d)", normalized)
-        if explicit_resolution:
-            put(
-                "resolution",
-                ConstraintOperator.EQ,
-                f"{explicit_resolution.group(1)}x{explicit_resolution.group(2)}",
-            )
+        if requirements.task_type in {"filter", "dynamic"}:
+            normalized_set = ConstraintNormalizer().build(query, source_turn=1)
+            parsed = PurchaseDecisionAgent._legacy_constraints(normalized_set)
         else:
-            resolution_map = {"8k": "7680x4320", "5k": "5120x2880", "4k": "3840x2160", "qhd": "2560x1440"}
-            for token, value in resolution_map.items():
-                if token in normalized:
-                    put("resolution", ConstraintOperator.EQ, value)
-                    break
-        refresh = re.search(r"(?:至少|不低于)(\d+(?:\.\d+)?)hz", normalized)
-        if refresh:
-            put("refresh_rate_hz", ConstraintOperator.GTE, float(refresh.group(1)))
-        elif match := re.search(r"(\d+(?:\.\d+)?)hz", normalized):
-            put("refresh_rate_hz", ConstraintOperator.EQ, float(match.group(1)))
-        if any(token in normalized for token in ("没有usb-c", "无usb-c", "不要usb-c")):
-            put("has_usb_c", ConstraintOperator.EQ, False)
-        if (
-            "usb-c视频" in normalized
-            or "usb-c输入视频" in normalized
-            or re.search(r"usb-c.{0,6}(?:传视频|视频输入|能传视频)", normalized)
-        ):
-            put("usb_c_video", ConstraintOperator.EQ, True)
-        power = re.search(r"(?:至少|不少于|不低于)(\d+(?:\.\d+)?)w", normalized)
-        if power:
-            put("usb_c_power_delivery_w", ConstraintOperator.GTE, float(power.group(1)))
-        elif match := re.search(r"(\d+(?:\.\d+)?)w供电", normalized):
-            put("usb_c_power_delivery_w", ConstraintOperator.GTE, float(match.group(1)))
-        if "不支持任何usb-c供电" in normalized or "完全不支持usb-c供电" in normalized:
-            put("usb_c_power_delivery_w", ConstraintOperator.EQ, None)
-        budget = re.search(r"预算(\d+(?:\.\d+)?)元", normalized)
-        if budget:
-            put("price_cny", ConstraintOperator.LTE, float(budget.group(1)))
-        width = re.search(
-            r"(?:机身)?宽度(?:不能超过|不得超过|不超过|最多|必须)?(?:要|还要)?(?:在)?"
-            r"(\d+(?:\.\d+)?)mm(?:以内|以下)?",
-            normalized,
-        )
-        if width:
-            put("width_mm", ConstraintOperator.LTE, float(width.group(1)))
-        weight = re.search(r"重量(?:不超过|最多|不重于)?(\d+(?:\.\d+)?)kg", normalized)
-        if weight:
-            put("weight_kg", ConstraintOperator.LTE, float(weight.group(1)))
-        requirements.hard_constraints = list(constraints.values())
+            parsed = []
+        requirements.hard_constraints = [*constraints.values(), *parsed]
         requirements.required_fields = list(
-            dict.fromkeys([*requirements.required_fields, *sorted(requested_fields), *constraints.keys()])
+            dict.fromkeys([
+                *requirements.required_fields, *sorted(requested_fields),
+                *(item.field for item in requirements.hard_constraints),
+            ])
         )
         return requirements
 
@@ -896,45 +934,31 @@ class PurchaseDecisionAgent:
         if re.search(r"(?:只推荐|只要|必须|要求).{0,12}(?:kvm|切换器)", compact, flags=re.I):
             return "unsupported_constraint"
 
-        query_tokens = {
-            token.casefold()
-            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{3,}", query)
-        }
-        if not query_tokens:
+        scope = self._catalog_scope(query)
+        return (
+            scope.resolution_reason
+            if scope is not None and scope.clarification_required else None
+        )
+
+    def _catalog_scope(self, query: str):
+        database_path = getattr(self.tools.get("text2sql"), "database_path", None)
+        if not database_path:
             return None
         try:
             connection = sqlite3.connect(
                 f"file:{getattr(database_path, 'as_posix', lambda: str(database_path))()}?mode=ro",
-                uri=True,
-                timeout=1.0,
+                uri=True, timeout=1.0,
             )
+            connection.row_factory = sqlite3.Row
             try:
-                names = [str(row[0]) for row in connection.execute("SELECT model_name FROM products")]
-                brands = {
-                    str(row[0]).casefold()
-                    for row in connection.execute("SELECT DISTINCT brand FROM products")
-                }
+                rows = [dict(row) for row in connection.execute(
+                    "SELECT model_id, model_name, brand, region FROM products"
+                )]
             finally:
                 connection.close()
+            return resolve_catalog_identity(query, rows)
         except (OSError, sqlite3.Error):
             return None
-        model_tokens: dict[str, set[str]] = {}
-        for name in names:
-            for token in re.findall(r"[A-Za-z][A-Za-z0-9]{3,}", name):
-                model_tokens.setdefault(token.casefold(), set()).add(name)
-        for token in query_tokens:
-            if token in brands:
-                continue
-            matching_names = {
-                name
-                for model_token, token_names in model_tokens.items()
-                if model_token.startswith(token)
-                for name in token_names
-            }
-            exact_names = model_tokens.get(token, set())
-            if len(matching_names) > 1 and (not exact_names or len(exact_names) > 1):
-                return "ambiguous_catalog_identity"
-        return None
 
     @staticmethod
     def _next_action(name: str, result: ToolResult, state: AgentState) -> str:
@@ -976,10 +1000,13 @@ class PurchaseDecisionAgent:
             query, session_id, user_id, mode, thread_id
         )
         state.constraint_resolution = constraint_resolution
+        state.product_scope = self._catalog_scope(query)
         preflight_reason = (
             self._preflight_clarification_reason(query)
             if constraint_resolution is None else None
         )
+        if state.product_scope is not None and state.product_scope.clarification_required:
+            preflight_reason = state.product_scope.resolution_reason
         if preflight_reason is not None:
             return DecisionReport(
                 request_summary=query[:200],
@@ -1004,6 +1031,22 @@ class PurchaseDecisionAgent:
         preferences = (
             self.preference_memory.recall(user_id, requested=use_long_term_memory) if user_id else {}
         )
+        initial_type = self._infer_task_type(query, "filter")
+        initial_constraints = (
+            constraint_resolution.constraint_set.model_copy(deep=True)
+            if constraint_resolution is not None
+            else self.constraint_normalizer.build(
+                query, source_turn=state.turn_number,
+                previous=previous_constraints, preferences=preferences,
+            )
+        )
+        state.constraint_set = self._gate_non_purchase_constraints(initial_constraints, initial_type)
+        coverage = audit_requirement_coverage(
+            query, state.constraint_set, self.requirement_pack,
+            purchase=initial_type in {"filter", "dynamic"},
+        )
+        if not coverage.complete:
+            return await self._incomplete_requirements_report(state, coverage, started, event_callback)
         previous_context = {
             "requirements": previous_requirements.model_dump(mode="json") if previous_requirements else None,
             "previous_candidates": [row.get("model_id") for row in state.candidate_rows[:10]],
@@ -1219,6 +1262,14 @@ class PurchaseDecisionAgent:
         if not state.stop_reason:
             state.stop_reason = "达到最大 ReAct 步骤数，安全停止。"
             state.degraded_states.append("agent: maximum step limit reached")
+        coverage = audit_requirement_coverage(
+            state.query, state.constraint_set, self.requirement_pack,
+            purchase=state.requirements.task_type in {"filter", "dynamic"},
+        )
+        if not coverage.complete:
+            return await self._incomplete_requirements_report(
+                state, coverage, started, event_callback, self._usage(self.provider, ledger_start)
+            )
         # Evidence sufficiency is a runtime invariant. If the model exhausted its
         # bounded loop after obtaining KB candidates but skipped Evidence Check,
         # execute one deterministic, whitelisted fallback instead of fabricating
@@ -1276,7 +1327,10 @@ class PurchaseDecisionAgent:
                 event_callback,
                 {"type": "tool_observation", "trace": fallback_trace.model_dump(mode="json")},
             )
-        pool_model_ids = list(state.candidate_pool_rows)
+        pool_model_ids = [
+            item for item in state.candidate_pool_rows
+            if state.product_scope is None or state.product_scope.permits(item)
+        ]
         if self.enable_constraint_checker:
             assert self.constraint_verifier is not None
             await self._emit(
@@ -1338,6 +1392,16 @@ class PurchaseDecisionAgent:
             state.candidate_explanations = {}
         self.session_memory.save(state)
         usage = self._usage(self.provider, ledger_start)
+        usage["requirement_coverage"] = coverage.public()
+        if state.product_scope is not None:
+            # V1 responses keep their legacy identity envelope. Scope is enforced
+            # internally and exposed as bounded audit metadata, not a partial V2
+            # report identity that could imply a data/index migration.
+            usage["candidate_scope"] = {
+                "product_ids": state.product_scope.product_ids,
+                "scope_type": state.product_scope.scope_type.value,
+                "fingerprint": state.product_scope.fingerprint,
+            }
         report = build_report(state, latency_ms=(time.perf_counter() - started) * 1000, usage=usage)
         agent_monitor.record(
             {

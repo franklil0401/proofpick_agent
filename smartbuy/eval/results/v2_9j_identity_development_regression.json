@@ -1,0 +1,22 @@
+{
+  "kind": "development_regression_after_general_fix",
+  "first_result": "v2_9j_identity_development_first.json",
+  "fixture_scope": "fictional products only; exposed product defect informed the invariant, not per-model logic",
+  "new_identity_tests": {"passed": 17, "failed": 0},
+  "existing_identity_scope_tests": {"passed": 46, "failed": 0},
+  "combined": {"passed": 63, "failed": 0},
+  "ruff": "passed",
+  "compileall": "passed",
+  "api_calls": 0,
+  "incremental_audit": {
+    "shared_series_comparison_before_fix": {
+      "input": "比较 Prism 的 axiom-prism-q123-cn 和 axiom-prism-q124-cn 的接口。",
+      "expected": ["axiom-prism-q123-cn", "axiom-prism-q124-cn"],
+      "actual_extra_product": "axiom-prism-q123-us",
+      "subsequent_fix": "shared family text within the same reference arm is refined by the exact registry identity; separate comparison arms are retained"
+    },
+    "first_suite_count": 12,
+    "final_suite_count": 17,
+    "additional_tests": "two exact alias apposition cases, one comparison scope case, two same identifier across regions cases"
+  }
+}

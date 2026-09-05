@@ -1,0 +1,66 @@
+{
+  "schema_version": "proofpick-development-regression-v1",
+  "classification": "offline_development_regression_not_independent_evaluation",
+  "base_commit": "033669d6c2d168dddbd712c2a54a105da53ffc1b",
+  "regression": {
+    "new_tests": {"passed": 79, "total": 79, "duration_seconds": 9.15},
+    "suites": {
+      "shared_quantities": {"passed": 21, "total": 21},
+      "identity": {"passed": 20, "total": 20},
+      "requirement_coverage": {"passed": 5, "total": 5},
+      "domain_coverage": {"passed": 10, "total": 10},
+      "default_portfolio_api": {"passed": 23, "total": 23}
+    },
+    "ci_equivalent": {"passed": 597, "total": 597, "failed": 0, "warnings": 3, "duration_seconds": 150.62},
+    "v1_original_files": {"files": 18, "passed": 101, "total": 101, "failed": 0, "duration_seconds": 15.11},
+    "count_explanation": "RC3 baseline 518 tests plus 79 new development tests; original test files and assertions unchanged"
+  },
+  "public_width_incident_exposed_regression": {
+    "transport": "/api/smartbuy/portfolio/run",
+    "runtime": "documented defaults, Monitor V1-compatible ReAct; model Fake, KB governed SQLite replay",
+    "database_evidence_checker": "real local implementations, unmodified governed catalog",
+    "required_constraints": [
+      {"field": "refresh_rate_hz", "operator": "gte", "value": 144, "unit": "Hz"},
+      {"field": "width_mm", "operator": "lte", "value": 610, "unit": "mm"}
+    ],
+    "recommended": [
+      {"model_id": "asus-pg27aqdm-cn", "width_mm": 605, "refresh_rate_hz": 240},
+      {"model_id": "benq-ex2710u-cn", "width_mm": 609, "refresh_rate_hz": 144},
+      {"model_id": "lg-27gs95qe-b-cn", "width_mm": 604.4, "refresh_rate_hz": 240}
+    ],
+    "overwidth_recommendations": 0,
+    "sql_evidence_checker_requirement_transfer": "both fields, operators and values preserved"
+  },
+  "safety": {
+    "unresolved_requirement_recommendations_in_tests": 0,
+    "fees_before_unresolved_requirement_pause": 0,
+    "scope_injection_accepted": 0,
+    "fact_fields_activated_as_purchase_constraints_in_tests": 0,
+    "checker_or_evidence_rule_changes": 0,
+    "historical_data_or_evaluation_changes": 0,
+    "independent_unrun_tasks_read": false,
+    "independent_evaluator_run": false,
+    "holdout_created": false
+  },
+  "quality": {
+    "ruff": "passed",
+    "compileall": "passed",
+    "javascript": {"passed": 13, "total": 13},
+    "powershell_ast": {"passed": 6, "total": 6},
+    "frozen_dependency_sync": "passed; dependency and lock files unchanged",
+    "environment_preservation": "25 pre-existing optional PoC packages pruned by default frozen sync were restored at their exact existing lock versions; no browser downloaded",
+    "environment_restore_incident": "One mistyped package-version request was rejected by dependency resolution before installation; corrected against uv.lock, then all 25 original versions restored",
+    "credential_matches": 0,
+    "new_forbidden_artifacts": 0,
+    "service_ports_not_listening": [8000, 8088, 9000, 9001],
+    "git_diff_check": "passed"
+  },
+  "api_requests": 0,
+  "estimated_cost_cny": 0,
+  "default_orchestrator_changed": false,
+  "feature_flags_changed": false,
+  "dependency_declarations_changed": false,
+  "request_schema_changed": false,
+  "api_compatibility": "Additive audit fields within existing usage and trace dictionaries; V1 report envelope preserved",
+  "release_conclusion": "No new independent release conclusion; candidate freeze requires user authorization"
+}

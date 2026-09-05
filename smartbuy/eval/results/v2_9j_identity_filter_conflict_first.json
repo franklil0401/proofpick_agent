@@ -1,0 +1,25 @@
+{
+  "kind": "development_regression_first_incremental_audit",
+  "suite": "smartbuy/tests/unit/test_v2_9j_identity.py",
+  "passed": 18,
+  "failed": 2,
+  "api_calls": 0,
+  "failures": [
+    {"input": "筛选 Axiom Prism Q124、product_id axiom-prism-q123-cn 的产品。", "actual": "catalog_literal_filter_scope / resolved", "expected": "conflicting_registry_identity / needs_clarification"},
+    {"input": "筛选 Q124-CN、商品ID axiom-prism-q123-cn。", "actual": "catalog_literal_filter_scope / resolved", "expected": "conflicting_registry_identity / needs_clarification"}
+  ],
+  "fix": "A purchase verb cannot authorize incompatible exact identities; explicitly conjoined/comparison references still retain their union.",
+  "after_fix_regression": {
+    "new_identity_tests": {"passed": 20, "failed": 0},
+    "original_identity_scope_tests": {"passed": 46, "failed": 0},
+    "existing_semantic_tests": {"passed": 15, "failed": 0},
+    "total": {"passed": 81, "failed": 0},
+    "concurrent_worktree_intermediate_run": {
+      "passed": 80,
+      "failed": 1,
+      "test": "test_family_filter_can_return_multiple_valid_configurations",
+      "actual": "empty recommendation",
+      "read_only_diagnostic": "The same current query immediately resolved the expected two products; no identity change or historical assertion change was made in response. A complete subsequent related-suite run passed 81/81."
+    }
+  }
+}

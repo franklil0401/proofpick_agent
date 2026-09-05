@@ -6,6 +6,8 @@ import re
 from copy import deepcopy
 from typing import Any, Iterable
 
+from smartbuy.contracts.quantities import extract_numeric_requirements
+
 from .models import (
     ConstraintOperator,
     ConstraintProvenance,
@@ -78,6 +80,15 @@ def normalize_resolution(value: Any) -> str:
 
 class ConstraintNormalizer:
     """Build a ConstraintSet without trusting model-generated constraint values."""
+
+    # Existing V1 syntax defaults, reused by inventory and proposal adapters.
+    # Explicit comparison words always take precedence over this profile.
+    IMPLICIT_NUMERIC_OPERATORS = {
+        "price_cny": "lte",
+        "width_mm": "lte",
+        "weight_kg": "lte",
+        "usb_c_power_delivery_w": "gte",
+    }
 
     def build(
         self,
@@ -297,18 +308,35 @@ class ConstraintNormalizer:
                 )
 
         if "resolution" not in cancelled:
-            for alias in sorted(_RESOLUTION_ALIASES, key=len, reverse=True):
+            explicit_resolution = re.search(r"(?<!\d)(\d{3,5})\s*[x×]\s*(\d{3,5})(?!\d)", query, re.I)
+            if explicit_resolution:
+                prefix = query[max(0, explicit_resolution.start() - 4):explicit_resolution.start()]
+                operator = ConstraintOperator.GTE if any(token in prefix for token in ("至少", "不低于")) else ConstraintOperator.EQ
+                add("resolution", operator, f"{explicit_resolution.group(1)}x{explicit_resolution.group(2)}", source_text=explicit_resolution.group(0))
+            for alias in (() if explicit_resolution else sorted(_RESOLUTION_ALIASES, key=len, reverse=True)):
                 if alias in compact:
                     prefix = compact[max(0, compact.index(alias) - 4):compact.index(alias)]
                     operator = ConstraintOperator.GTE if any(token in prefix for token in ("至少", "不低于")) else ConstraintOperator.EQ
                     add("resolution", operator, _RESOLUTION_ALIASES[alias], source_text=alias.upper())
                     break
 
-        refresh = re.search(r"(?:至少|不低于)(\d+(?:\.\d+)?)hz", compact)
-        if refresh:
-            add("refresh_rate_hz", ConstraintOperator.GTE, float(refresh.group(1)), unit="Hz", source_text=refresh.group(0))
-        elif exact_refresh := re.search(r"(\d+(?:\.\d+)?)hz", compact):
-            add("refresh_rate_hz", ConstraintOperator.EQ, float(exact_refresh.group(1)), unit="Hz", source_text=exact_refresh.group(0))
+        # Reuse the active field/accepted-unit contract instead of a second
+        # mm/cm/Hz/weight vocabulary over a lower-cased copy of the user text.
+        from smartbuy.domain_packs.loader import DEFAULT_MONITOR_PACK, DomainPackLoader
+
+        numeric_pack = DomainPackLoader().load(DEFAULT_MONITOR_PACK)
+        for quantity in extract_numeric_requirements(
+            query, numeric_pack,
+            field_ids={"refresh_rate_hz", "width_mm", "weight_kg"},
+            implicit_operators=self.IMPLICIT_NUMERIC_OPERATORS,
+            implicit_unit_fields={"refresh_rate_hz"},
+        ):
+            add(
+                quantity.field, ConstraintOperator(quantity.operator), quantity.value,
+                unit=quantity.unit, source_text=quantity.source_text,
+                supported=quantity.resolved, ambiguous=not quantity.resolved,
+                note=quantity.reason,
+            )
 
         if "is_oled" not in cancelled:
             if any(token in compact for token in ("不要oled", "非oled", "排除oled", "不考虑oled")):
@@ -338,32 +366,6 @@ class ConstraintNormalizer:
             add("usb_c_power_delivery_w", ConstraintOperator.GTE, float(exact_power.group(1)), unit="W", source_text=exact_power.group(0))
         if any(token in compact for token in ("不支持任何usb-c供电", "完全不支持usb-c供电")):
             add("usb_c_power_delivery_w", ConstraintOperator.EQ, None, unit="W", source_text="不支持 USB-C 供电")
-
-        width_mm = re.search(
-            r"(?:宽度|机身宽)(?:(?:不超过|最多|小于等于))?(\d+(?:\.\d+)?)mm(?:以内|以下)?",
-            compact,
-        )
-        width_cm = re.search(
-            r"(?:宽度|机身宽)(?:(?:不超过|最多|小于等于))?(\d+(?:\.\d+)?)cm(?:以内|以下)?",
-            compact,
-        )
-        if width_mm:
-            add("width_mm", ConstraintOperator.LTE, float(width_mm.group(1)), unit="mm", source_text=width_mm.group(0))
-        elif width_cm:
-            add("width_mm", ConstraintOperator.LTE, float(width_cm.group(1)) * 10.0, unit="mm", source_text=width_cm.group(0))
-
-        weight_kg = re.search(
-            r"(?:重量|机身重量)(?:不超过|最多|小于等于|不重于)?(\d+(?:\.\d+)?)kg",
-            compact,
-        )
-        weight_g = re.search(
-            r"(?:重量|机身重量)(?:不超过|最多|小于等于|不重于)?(\d+(?:\.\d+)?)g",
-            compact,
-        )
-        if weight_kg:
-            add("weight_kg", ConstraintOperator.LTE, float(weight_kg.group(1)), unit="kg", source_text=weight_kg.group(0))
-        elif weight_g:
-            add("weight_kg", ConstraintOperator.LTE, float(weight_g.group(1)) / 1000.0, unit="kg", source_text=weight_g.group(0))
 
         panel_values = {
             "ipsblack": "IPS Black",

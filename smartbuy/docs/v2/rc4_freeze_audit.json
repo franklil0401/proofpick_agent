@@ -1,0 +1,70 @@
+{
+  "audit_kind": "release_candidate_freeze_not_independent_evaluation",
+  "date": "2026-09-05",
+  "production_commit": "99c7bccc523addc7e8904571dbe8e20a24615c66",
+  "production_tree": "6b6e98009cefe5aa13f64cf8fe1b24d001fbadb1",
+  "payload_sha256": "7126740e9a893a18575f829aff78ef48b346eca0f622db73c952ece4cff8eb25",
+  "git_blob_reproduction": {
+    "groups": 23,
+    "unique_members": 725,
+    "member_occurrences": 838,
+    "all_members_aggregates_payload_equal": true,
+    "probe": "smartbuy/agent/react.py",
+    "probe_git_blob_sha256": "898ea02d041c272b23b478b8337b73dc50b88351c81aabe2e191ec05af106cd0",
+    "checkouts": [
+      {"core_autocrlf": "true", "passed": true, "probe_checkout_matches_blob": false, "probe_checkout_sha256": "c361219472cee2663ba8b171fa6f3efd862114325ff4bc244eb3f484d5c28627"},
+      {"core_autocrlf": "false", "passed": true, "probe_checkout_matches_blob": true},
+      {"core_autocrlf": "false", "core_eol": "lf", "passed": true, "probe_checkout_matches_blob": true}
+    ],
+    "method": "three fresh local clones at fixed production commit; Git ls-tree selection and independent cat-file member verification; checkout probe bytes are diagnostic only"
+  },
+  "offline_data_reconstruction": {
+    "repository_external_temporary_directory": true,
+    "monitor": {"products": 12, "sources": 16, "evidence": 180, "prices": 4, "integrity": "ok", "foreign_key_violations": 0, "data_logical_sha256": "079c4f745e8dbbb538fe7cdacf5479f4e25ebc38972ef2175edf8876a35e8ffe", "sqlite_row_layout_sha256": "3d37a2c3d89326d04f2e1fdf49f96e250fc4d109a64627359bad935e5c16bb13"},
+    "laptop": {"products": 12, "sources": 12, "evidence": 406, "prices": 0, "integrity": "ok", "foreign_key_violations": 0, "data_logical_sha256": "13cf9fffa9383921ed29a1e426da6a199edb699ec346aee985ecf21c9918f8b1"},
+    "headphone": {"products": 12, "sources": 20, "evidence": 336, "prices": 0, "integrity": "ok", "foreign_key_violations": 0, "data_logical_sha256": "c1edf981e00f6ad15b409d1d4ea37b2c8e2dc6dd36b95ce4be99ac57693fc40a"},
+    "data_versions_changed": false,
+    "index_rebuilt_or_live_probed": false,
+    "hash_definition_note": "Monitor data logical object hash differs intentionally from SQLite row-layout hash; recipes and all three original logical hashes were checked"
+  },
+  "fixed_production_validation_evidence": {
+    "local_record": "smartbuy/eval/results/v2_9j_development_regression.json",
+    "local_full": {"passed": 597, "total": 597, "duration_seconds": 150.62},
+    "targeted_subset": {"passed": 79, "total": 79, "default_portfolio_api_tests": 23},
+    "v1_original_files": {"files": 18, "passed": 101, "total": 101},
+    "windows_ci": {"run_id": 33966853197, "url": "https://github.com/franklil0401/proofpick_agent/actions/runs/33966853197", "head_sha": "99c7bccc523addc7e8904571dbe8e20a24615c66", "conclusion": "success", "passed": 597, "total": 597, "warnings": 3, "duration_seconds": 211.53},
+    "count_rule": "597 includes the 79 new targeted tests; evidence is offline and was already obtained on the exact production commit, not a new cloud model evaluation"
+  },
+  "local_freeze_environment": {"python": "3.12.3", "uv": "0.12.3", "dependency_lock_changed": false},
+  "freeze_quality": {
+    "existing_git_blob_and_semantic_tests": {"passed": 5, "total": 5, "duration_seconds": 39.28},
+    "rc4_cross_eol_reproduction": {"passed": 3, "total": 3},
+    "ruff": "passed",
+    "compileall": "passed",
+    "javascript": {"passed": 13, "total": 13},
+    "powershell_ast": {"passed": 6, "total": 6},
+    "markdown_links": {"passed": 519, "total": 519, "documents": 108},
+    "test_service_ports_listening": 0,
+    "sensitive_credential_or_private_path_matches": 0,
+    "new_forbidden_artifacts": 0,
+    "frozen_production_member_changes": 0,
+    "git_diff_check": "passed"
+  },
+  "exposure_disclosure": {
+    "development_read": ["authorized independent final report", "product_failure_audit.json", "harness_incident_audit.json", "executed failures publicly disclosed in those reports"],
+    "remaining_79_trusted_tasks_or_gold_read": false,
+    "remaining_15_online_tasks_or_gold_read": false,
+    "independent_branch_material_read_this_freeze": false,
+    "independent_evaluator_run": false,
+    "new_holdout_created": false,
+    "earlier_exposed_regression_restored_to_holdout": false
+  },
+  "api_calls": 0,
+  "estimated_cost_cny": 0,
+  "production_logic_changes": 0,
+  "historical_result_changes": 0,
+  "release_created": false,
+  "tag_created": false,
+  "pull_request_created": false,
+  "main_or_rc3_merged": false
+}

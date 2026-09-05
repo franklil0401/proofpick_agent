@@ -232,8 +232,8 @@ class ProductIdentityResolver:
             grouped.setdefault((item.start, item.end, item.priority), []).append(item)
         merged: list[_Match] = []
         for items in grouped.values():
-            values = {item.value for item in items}
-            if items[0].kind in {"family_id", "model_or_alias"} and len(values) > 1:
+            identities = {item.product_ids for item in items}
+            if items[0].kind != "product_id" and len(identities) > 1:
                 merged.append(_Match(
                     6,
                     "catalog_literal",
@@ -378,14 +378,16 @@ class ProductIdentityResolver:
                 identity_kind="region",
                 region=region,
                 matched_product_ids=ids,
+                resolution_status=(
+                    ReferenceResolutionStatus.RESOLVED if ids
+                    else ReferenceResolutionStatus.UNRESOLVED
+                ),
             ))
 
         for alias, region in _REGION_ALIASES.items():
-            if region not in available:
-                continue
             for start, end, quote in _exact_occurrences(query, alias):
                 add(region, start, end, quote)
-        for region in available:
+        for region in available | set(_REGION_ALIASES.values()):
             for start, end, quote in _exact_occurrences(query, region):
                 add(region, start, end, quote)
         return sorted(references, key=lambda item: (item.span_start, item.span_end))
@@ -612,6 +614,27 @@ class ProductIdentityResolver:
         ):
             matches = self._select_non_overlapping([*matches, *catalog_matches])
         explicit_comparison = explicit_comparison or self._comparison_between(query, matches)
+        exact_matches = [item for item in matches if item.priority <= 4 and len(item.product_ids) == 1]
+        contextual: list[_Match] = []
+        for item in matches:
+            if item.kind not in {"family_id", "catalog_literal"}:
+                continue
+            for precise in exact_matches:
+                if not set(precise.product_ids) <= set(item.product_ids):
+                    continue
+                left, right = sorted((item, precise), key=lambda match: match.start)
+                between = query[left.end:right.start]
+                separator = r"(?:[;；。与和]|\b(?:vs|versus)\b)"
+                if re.search(separator, between, flags=re.I):
+                    continue
+                if explicit_comparison and "、" in between:
+                    continue
+                # In one reference arm, an exact registry identifier refines
+                # its surrounding family wording. A separate comparison arm
+                # retains its own independently named scope.
+                contextual.append(item)
+                break
+        matches = [item for item in matches if item not in contextual]
         if explicit_comparison and self.qualifier_aliases:
             narrowed_matches = []
             for item in matches:
@@ -659,6 +682,19 @@ class ProductIdentityResolver:
         allowed_regions -= excluded_regions
         included = [item for item in references if item.polarity == ReferencePolarity.INCLUDE]
         excluded = [item for item in references if item.polarity == ReferencePolarity.EXCLUDE]
+        exact_included = [
+            item for item in included
+            if item.identity_kind in {"product_id", "configuration_id", "part_number", "model_or_alias"}
+            and len(item.matched_product_ids) == 1
+        ]
+        identity_conflict = False
+        if exact_included and not explicit_comparison:
+            exact_ids = {item.matched_product_ids[0] for item in exact_included}
+            identity_conflict = len(exact_ids) > 1 or any(
+                (allowed_regions and str(products[item]["region"]) not in allowed_regions)
+                or str(products[item]["region"]) in excluded_regions
+                for item in exact_ids
+            )
         include_products = {
             product_id for item in included if item.identity_kind not in {"family_id", "region"}
             for product_id in item.matched_product_ids
@@ -715,7 +751,13 @@ class ProductIdentityResolver:
         }
         unknown = self._unknown_reference(query, known_tokens)
         unresolved: list[ProductReference] = []
-        if unknown and not included:
+        if identity_conflict:
+            scope_type = ProductScopeType.AMBIGUOUS_PRODUCT_SCOPE
+            status = ProductScopeResolutionStatus.NEEDS_CLARIFICATION
+            clarification = True
+            reason = "conflicting_registry_identity"
+            query_intent = QueryIntent.CLARIFICATION_REQUIRED
+        elif unknown and not included:
             token, start, end = unknown
             unresolved = [ProductReference(
                 quote=query[start:end], span_start=start, span_end=end,
