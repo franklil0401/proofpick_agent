@@ -158,4 +158,3 @@ R1 Manifest本身已经通过独立复核；环境安装、数据库、索引、
 [前两条原始响应](../../eval/v2_9i_independent/results/trusted_first.jsonl) · [后续九条首次响应](../../eval/v2_9i_independent/results/trusted_continuation_first.jsonl) · [真实停止现场](../../eval/v2_9i_independent/results/trusted_v2_safety_stop.json) · [冻结范围与方法](../../eval/v2_9i_independent/README.md)
 
 没有修改开发仓库、受保护分支、生产逻辑或历史实验；没有创建PR、Tag、Release。此次评测的有效结论是**存在发布阻断反例，需要修复；并非90题全量评测已完成。**
-
