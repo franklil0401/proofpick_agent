@@ -1,0 +1,17 @@
+{
+  "kind": "development_regression_first",
+  "baseline_commit": "033669d6c2d168dddbd712c2a54a105da53ffc1b",
+  "suite": "smartbuy/tests/unit/test_v2_9j_identity.py",
+  "passed": 6,
+  "failed": 6,
+  "api_calls": 0,
+  "fixture_scope": "fictional products only; no independent holdout was read or run",
+  "failures": [
+    {"test": "test_shared_family_and_multiregion_model_need_clarification", "input": "Axiom Prism Q123 的接口是什么？", "actual": "exact_registry_identity", "expected": "needs_clarification"},
+    {"test": "test_conflicting_exact_identity_region_or_configuration_cannot_disambiguate", "input": "核验 axiom-prism-q123-cn，美国版的接口。", "actual": "candidate_set_empty_after_identity_exclusions", "expected": "needs_clarification / conflicting_registry_identity"},
+    {"test": "test_conflicting_exact_identity_region_or_configuration_cannot_disambiguate", "input": "核验 axiom-prism-q123-cn，加拿大版的接口。", "actual": "exact_registry_identity", "expected": "needs_clarification / conflicting_registry_identity"},
+    {"test": "test_conflicting_exact_identity_region_or_configuration_cannot_disambiguate", "input": "核验 axiom-prism-q123-cn，配置 Q124-CN 的接口。", "actual": "catalog_literal_matches_multiple_configurations", "expected": "needs_clarification / conflicting_registry_identity"},
+    {"test": "test_conflicting_exact_identity_region_or_configuration_cannot_disambiguate", "input": "核验 Axiom Prism Q124、axiom-prism-q123-cn 的接口。", "actual": "catalog_literal_matches_multiple_configurations", "expected": "needs_clarification / conflicting_registry_identity"},
+    {"test": "test_legacy_catalog_adapter_reuses_exact_reference_contract", "actual": "ImportError", "expected": "shared identity adapter"}
+  ]
+}

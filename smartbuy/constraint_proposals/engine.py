@@ -19,6 +19,7 @@ from smartbuy.constraints import (
     NormalizedConstraint,
 )
 from smartbuy.domain_packs.loader import DomainPackValidationError, LoadedDomainPack
+from smartbuy.contracts.quantities import extract_numeric_requirements, parse_numeric_token
 
 from .models import (
     ClarificationState,
@@ -68,35 +69,7 @@ _BOUNDS = {
 
 
 def _chinese_number(token: str) -> float:
-    compact = token.strip().replace(" ", "")
-    if re.fullmatch(r"\d+(?:\.\d+)?[kK]", compact):
-        return float(compact[:-1]) * 1000.0
-    if re.fullmatch(r"\d+(?:\.\d+)?千", compact):
-        return float(compact[:-1]) * 1000.0
-    if re.fullmatch(r"\d+(?:\.\d+)?", compact):
-        return float(compact)
-    digits = {"零": 0, "〇": 0, "一": 1, "二": 2, "两": 2, "三": 3, "四": 4,
-              "五": 5, "六": 6, "七": 7, "八": 8, "九": 9}
-    colloquial = re.fullmatch(r"([一二两三四五六七八九])千([一二三四五六七八九])", compact)
-    if colloquial:
-        return float(digits[colloquial.group(1)] * 1000 + digits[colloquial.group(2)] * 100)
-    total = section = number = 0
-    units = {"十": 10, "百": 100, "千": 1000, "万": 10_000}
-    for char in compact:
-        if char in digits:
-            number = digits[char]
-            continue
-        unit = units.get(char)
-        if unit is None:
-            raise ValueError("unsupported numeric token")
-        if unit == 10_000:
-            section = (section + number) * unit
-            total += section
-            section = number = 0
-        else:
-            section += (number or 1) * unit
-            number = 0
-    return float(total + section + number)
+    return parse_numeric_token(token)
 
 
 def _proposal_id(
@@ -1180,16 +1153,30 @@ class DeterministicConstraintParser:
                     "refresh_rate_hz", "gte", None, high_refresh, unit="Hz",
                     status="ambiguous", reason="refresh_threshold_missing",
                 )
-            refresh = re.search(
-                rf"(?:(至少|不低于|不少于)\s*)?({_NUMBER})\s*(?:hz|赫兹)",
-                query,
-                flags=re.I,
-            )
-            if refresh:
-                add(
-                    "refresh_rate_hz", "gte" if refresh.group(1) else "eq",
-                    _chinese_number(refresh.group(2)), refresh, unit="Hz",
-                )
+
+        shared_numeric_fields = {"width_mm", "refresh_rate_hz", "weight_kg"}
+        quantities = extract_numeric_requirements(
+            query, self.pack, field_ids=shared_numeric_fields,
+            implicit_operators=ConstraintNormalizer.IMPLICIT_NUMERIC_OPERATORS,
+            implicit_unit_fields={"refresh_rate_hz"},
+        )
+        for quantity in quantities:
+            if quantity.field in cancelled:
+                continue
+            raws.append({
+                "field": quantity.field,
+                "operator": quantity.operator,
+                "value": quantity.value,
+                "unit": quantity.unit,
+                "strength": "hard",
+                "status": "supported" if quantity.resolved else "needs_confirmation",
+                "action": "override" if quantity.field in previous else "add",
+                "span_start": quantity.span_start,
+                "span_end": quantity.span_end,
+                "span_text": quantity.source_text,
+                "confidence": 1.0 if quantity.resolved else 0.6,
+                "reason": quantity.reason,
+            })
 
         if "is_oled" not in cancelled:
             if match := re.search(r"不能不要\s*oled", query, flags=re.I):
@@ -1243,21 +1230,6 @@ class DeterministicConstraintParser:
                 status="needs_confirmation", reason="power_threshold_missing",
             )
 
-        if "width_mm" not in cancelled:
-            width = re.search(
-                rf"(?:机身宽度|机身宽|宽度)\s*"
-                rf"(?:不能超过|不得超过|不超过|最多|小于等于|≤|<=|必须)?\s*"
-                rf"(?:还?要)?\s*(?:在|控制在)?\s*"
-                rf"({_NUMBER})\s*(mm|毫米|cm|厘米)(?:\s*(?:以内|以下))?",
-                query,
-                flags=re.I,
-            )
-            if width:
-                raw_value = _chinese_number(width.group(1))
-                unit = width.group(2).casefold()
-                factor = 10.0 if unit in {"cm", "厘米"} else 1.0
-                add("width_mm", "lte", raw_value * factor, width, unit="mm")
-
         if "brand" not in cancelled:
             for alias, brand in _BRANDS.items():
                 match = re.search(re.escape(alias), query, flags=re.I)
@@ -1301,7 +1273,11 @@ class DeterministicConstraintParser:
             if match := re.search(pattern, query, flags=re.I):
                 add(field, "eq", value, match, status="unsupported", reason="field_not_declared_by_domain_pack")
 
-        raws.extend(self._pack_rules(query, previous=previous))
+        shared_parsed_fields = {item.field for item in quantities}
+        raws.extend(
+            item for item in self._pack_rules(query, previous=previous)
+            if item["field"] not in shared_parsed_fields or item.get("action") == "cancel"
+        )
         shadow_fields = self.pack.pack.policies.get("understanding", {}).get(
             "constraint_shadow_fields", {}
         )

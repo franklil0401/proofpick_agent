@@ -1,0 +1,63 @@
+{
+  "schema_version": "proofpick-development-audit-v1",
+  "classification": "offline_development_regression_not_independent_evaluation",
+  "base_commit": "033669d6c2d168dddbd712c2a54a105da53ffc1b",
+  "independent_report_commit": "a289ed8c944ad30f20e9bb3a9f8c7f389b23a3e7",
+  "authorized_materials": [
+    "smartbuy/docs/v2/v2_9i_rc3_r1_independent_evaluation_final_report.md",
+    "smartbuy/eval/v2_9i_independent/results/product_failure_audit.json",
+    "smartbuy/eval/v2_9i_independent/results/harness_incident_audit.json"
+  ],
+  "historical_observations_not_rerun": {
+    "executed_tasks": 11,
+    "passed": 7,
+    "denominator_scope": "Only the 11 executed tasks; not three-domain overall accuracy",
+    "task_2": "Corrected evaluator compatibility false positive; no Evidence behavior change requested",
+    "task_11": {
+      "query": "请从已收录的显示器中挑选：刷新率至少144Hz，机身宽度最多610毫米。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "actual_violation": "dell-g2724d-cn, width_mm=611.9 > 610",
+      "root_cause": "Legacy Monitor parser omitted width_mm; SQL, Evidence and Checker inherited the incomplete ConstraintSet"
+    }
+  },
+  "test_first_runs": [
+    {
+      "suite": "initial_shared_quantity_tests", "passed": 1, "failed": 8, "total": 9,
+      "causes": ["Chinese unit aliases missing", "multiple bounds or unsupported units silently discarded"]
+    },
+    {
+      "suite": "initial_identity_tests", "passed": 6, "failed": 6, "total": 12,
+      "details": "v2_9j_identity_development_first.json"
+    },
+    {
+      "suite": "initial_default_portfolio_api", "passed": 4, "failed": 10, "total": 14,
+      "details": "v2_9j_portfolio_regression.json"
+    },
+    {
+      "suite": "initial_requirement_coverage", "passed": 0, "failed": 5, "total": 5,
+      "causes": ["Unrecognized units or missing bound continued past preflight", "Dropping width from a two-field ConstraintSet did not pause"]
+    },
+    {
+      "suite": "portfolio_scope_injection_extension", "passed": 17, "failed": 2, "total": 19,
+      "causes": ["Overbroad KB/Evidence responses expanded an exact configuration scope"]
+    },
+    {
+      "suite": "purchase_intent_with_fact_subtask", "passed": 0, "failed": 1, "total": 1,
+      "cause": "A verification subtask let model-declared fact intent erase purchase requirements"
+    },
+    {
+      "suite": "domain_coverage_first", "passed": 0, "failed": 5, "total": 5,
+      "causes": ["Injected missing numeric constraints reached tools", "Unsupported unit reached tools", "Coverage audit metadata absent"]
+    }
+  ],
+  "intermediate_integration_failure": {
+    "total": 579, "passed": 559, "failed": 20, "duration_seconds": 159.92,
+    "cause": "Attaching a partial V2 product_scope envelope to a V1 report violated the existing report schema",
+    "resolution": "Preserve V1 report envelope; enforce scope internally and expose bounded audit metadata in usage. Do not weaken schema assertions.",
+    "additional_targeted_regression": "Adding a region-only model locator unnecessarily broadened the s4-014 tool pool; named-identity locators now require catalog-owned product/family references. Original assertion retained."
+  },
+  "api_requests": 0,
+  "estimated_cost_cny": 0,
+  "unrun_independent_tasks_read": false,
+  "independent_evaluator_executed": false,
+  "history_overwritten": false
+}

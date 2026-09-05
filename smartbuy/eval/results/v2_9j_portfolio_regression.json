@@ -1,0 +1,34 @@
+{
+  "schema_version": "proofpick-development-regression-v1",
+  "classification": "offline_development_regression_not_independent_holdout",
+  "baseline_commit": "033669d6c2d168dddbd712c2a54a105da53ffc1b",
+  "scope": "Actual /api/smartbuy/portfolio/run Monitor route with documented default feature flags, synthetic SQLite products and Fake model/KB providers",
+  "first_run": {
+    "test_file": "smartbuy/tests/integration/test_v2_9j_portfolio_contracts.py",
+    "total": 14,
+    "passed": 4,
+    "failed": 10,
+    "duration_seconds": 3.30,
+    "warnings": 1,
+    "cases": [
+      {"case": "width_610_millimetres_chinese", "input_fragment": "刷新率至少144Hz，机身宽度最多610毫米", "passed": false, "first_failure": "width_mm absent from active ConstraintSet"},
+      {"case": "width_610_mm", "input_fragment": "刷新率至少144Hz，机身宽度最多610mm", "passed": true},
+      {"case": "width_61_centimetres_chinese", "input_fragment": "刷新率至少144Hz，机身宽度最多61厘米", "passed": false, "first_failure": "width_mm absent from active ConstraintSet"},
+      {"case": "width_61_cm", "input_fragment": "刷新率至少144Hz，机身宽度最多61cm", "passed": true},
+      {"case": "width_decimal_centimetres_chinese", "input_fragment": "刷新率至少144Hz，机身宽度最多61.0厘米", "passed": false, "first_failure": "width_mm absent from active ConstraintSet"},
+      {"case": "width_decimal_millimetres_chinese", "input_fragment": "刷新率至少144Hz，机身宽度最多610.0毫米", "passed": false, "first_failure": "width_mm absent from active ConstraintSet"},
+      {"case": "sql_trace", "passed": false, "first_failure": "executed_sql and effective_filters absent; trace only contains suggested SQL"},
+      {"case": "exact_full_name_region", "input_fragment": "Acme Orbit X410，CN", "passed": false, "first_failure": "shared Orbit family causes pending clarification despite exact X410"},
+      {"case": "exact_name_id_region", "input_fragment": "Orbit X410，CN，acme-orbit-x410-cn", "passed": false, "first_failure": "shared Orbit family causes pending clarification despite exact product id"},
+      {"case": "exact_product_id", "input_fragment": "acme-orbit-x410-cn", "passed": false, "first_failure": "shared Orbit token inside product id causes pending clarification"},
+      {"case": "family_only", "input_fragment": "Orbit系列的宽度是多少？", "passed": true},
+      {"case": "identity_region_conflict", "input_fragment": "Acme Orbit X410，acme-orbit-x410-cn，美国版", "passed": true, "limitation": "Initial pass can also be caused by shared-family false ambiguity; separate identity tests must establish correct reason after repair"},
+      {"case": "invalid_measurement_unit", "input_fragment": "刷新率至少144Hz，机身宽度最多610光年", "passed": false, "first_failure": "unresolved explicit width did not pause; clarification_state=not_required"},
+      {"case": "qualitative_width_plus_numeric_refresh", "input_fragment": "刷新率至少144Hz，机身宽度窄一点", "passed": false, "first_failure": "numeric refresh bypassed qualitative width preflight; clarification_state=not_required"}
+    ]
+  },
+  "api_calls": 0,
+  "estimated_cost_cny": 0,
+  "historical_independent_results_modified": false,
+  "production_files_modified_by_this_test_subtask": false
+}

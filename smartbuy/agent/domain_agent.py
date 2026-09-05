@@ -47,6 +47,7 @@ from smartbuy.decision_core.intent import QueryUnderstandingEngine
 from smartbuy.decision_core.scope import CandidateScopeReducer
 from smartbuy.decision_core.result import ResultClassificationInput, classify_result
 from smartbuy.decision_core.safety import CandidateChainViolation, assert_candidate_chain
+from smartbuy.decision_core.requirements import audit_requirement_coverage
 from smartbuy.memory import DomainPreferenceMemoryStore
 from smartbuy.orchestration.contracts import EventCallback, emit_event
 from smartbuy.ranking import (
@@ -1049,6 +1050,10 @@ class DomainDecisionAgent:
             scope.resolution_status == ProductScopeResolutionStatus.NEEDS_CLARIFICATION
             and understanding.intent != QueryIntent.RECOMMENDATION_FILTER
         ):
+            early_coverage = audit_requirement_coverage(
+                query, ConstraintSet(), self.pack,
+                purchase=intent == QueryIntent.CLARIFICATION_REQUIRED,
+            )
             return DecisionReport(
                 request_summary=query,
                 product_scope=scope,
@@ -1067,6 +1072,7 @@ class DomainDecisionAgent:
                     "scope_fingerprint": scope.fingerprint,
                     "provider_calls": 0,
                     "result_status": "needs_clarification",
+                    "requirement_coverage": early_coverage.public(),
                 },
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
@@ -1108,6 +1114,38 @@ class DomainDecisionAgent:
         constraint_resolution = self._reconcile_identity_resolution(
             constraint_resolution, scope, products
         )
+        coverage = audit_requirement_coverage(
+            query, constraint_resolution.constraint_set, self.pack,
+            purchase=intent in {QueryIntent.RECOMMENDATION_FILTER, QueryIntent.CLARIFICATION_REQUIRED},
+            resolution=constraint_resolution,
+        )
+        await emit_event(event_callback, {
+            "type": "requirement_coverage_checked", "domain_id": self.pack.domain_id,
+            "complete": coverage.complete, "obligation_count": len(coverage.obligations),
+            "unresolved_fields": sorted({item["field"] for item in coverage.obligations if not item["resolved"]}),
+        })
+        if not coverage.complete:
+            return DecisionReport(
+                request_summary=query, product_scope=scope,
+                query_intent=QueryIntent.CLARIFICATION_REQUIRED,
+                requested_fields=understanding.requested_fields, task_type="filter",
+                constraint_set=constraint_resolution.constraint_set,
+                constraint_proposals=constraint_resolution.proposals,
+                clarification_state=ClarificationState.PENDING,
+                constraint_diff=constraint_resolution.diff,
+                constraint_deltas=ConstraintDeltaResolver.from_resolution(constraint_resolution),
+                constraint_verification=self._empty_batch([], constraint_resolution.constraint_set, scope),
+                pending_questions=["请确认未完整解析的硬要求及其数值、单位或作用字段。"],
+                abstained=True,
+                stop_reason="明确硬要求未完整进入有效约束；已在工具执行前暂停。",
+                usage={
+                    "domain_id": self.pack.domain_id, "data_version": self.repository.snapshot.data_version,
+                    "index_version": index_version, "scope_fingerprint": scope.fingerprint,
+                    "provider_calls": constraint_resolution.provider_calls,
+                    "requirement_coverage": coverage.public(), "result_status": "needs_clarification",
+                },
+                latency_ms=(time.perf_counter() - started) * 1000,
+            )
         constraints = self._tool_constraints(constraint_resolution)
         require_unique = bool(
             intent == QueryIntent.CLARIFICATION_REQUIRED
@@ -1149,6 +1187,7 @@ class DomainDecisionAgent:
                     "scope_fingerprint": scope.fingerprint,
                     "provider_calls": constraint_resolution.provider_calls,
                     "result_status": "no_matching_candidate",
+                    "requirement_coverage": coverage.public(),
                 },
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
@@ -1200,7 +1239,8 @@ class DomainDecisionAgent:
                 usage={"domain_id": self.pack.domain_id, "data_version": self.repository.snapshot.data_version,
                        "index_version": index_version, "scope_fingerprint": scope.fingerprint,
                        "provider_calls": constraint_resolution.provider_calls,
-                       "result_status": "needs_clarification"},
+                       "result_status": "needs_clarification",
+                       "requirement_coverage": coverage.public()},
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
 
@@ -1642,6 +1682,7 @@ class DomainDecisionAgent:
                 "output_tokens": constraint_resolution.output_tokens,
                 "estimated_cost_cny": constraint_resolution.estimated_cost_cny,
                 "result_status": result_classification.status.value,
+                "requirement_coverage": coverage.public(),
                 "result_reason": result_classification.reason,
                 "safety_blocked": safety_blocked_reason is not None,
                 "ranking_profile_version": self.ranking_profile_version,

@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-05 |
-| 当前阶段 | V1 已冻结；V2-9H-R1 修复 RC3 Git-blob Manifest 冻结，等待独立方重新审计后再出题；Trusted Core 为默认 Stable，Online Research 为 Experimental/Beta；未创建 Holdout/Tag/Release/PR |
+| 当前阶段 | V1/RC3 冻结身份保留；V2-9J 在独立修复分支修复默认 Portfolio 硬要求完整性与商品身份；仅离线开发回归，不是重新发布或独立评测；未创建 Holdout/Tag/Release/PR |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -71,7 +71,8 @@ proofpick_agent/
 │  ├─ contracts/
 │  │  ├─ __init__.py
 │  │  ├─ models.py
-│  │  └─ product_pack.py
+│  │  ├─ product_pack.py
+│  │  └─ quantities.py         # Pack 驱动的量值、单位及原文要求清单
 │  ├─ api/
 │  │  ├─ portfolio_runtime.py  # 默认关闭的 Laptop/Headphone V2 UI 运行时
 │  │  └─ router.py
@@ -206,7 +207,8 @@ proofpick_agent/
 │  │  │  ├─ v2_9h_rc3_handoff.md
 │  │  │  ├─ v2_release_candidate_rc3_manifest_r1.md
 │  │  │  ├─ v2_9h_r1_manifest_freeze_repair_report.md
-│  │  │  └─ v2_9h_r1_rc3_handoff.md
+│  │  │  ├─ v2_9h_r1_rc3_handoff.md
+│  │  │  └─ v2_9j_trusted_contracts_repair_report.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -225,11 +227,13 @@ proofpick_agent/
 │  │  ├─ canonical.py
 │  │  ├─ delta.py
 │  │  ├─ intent.py
+│  │  ├─ requirements.py       # 输入硬要求到有效 ConstraintSet 的覆盖守卫
 │  │  ├─ result.py
 │  │  ├─ safety.py
 │  │  └─ scope.py
 │  ├─ identity/
 │  │  ├─ __init__.py
+│  │  ├─ catalog.py            # 旧 SQLite 身份映射到统一 Resolver
 │  │  ├─ guards.py
 │  │  ├─ models.py
 │  │  └─ resolver.py
@@ -317,7 +321,8 @@ proofpick_agent/
 │  │     ├─ v2_9e_*            # 第二次独立评测后的 Trusted/Online 暴露回归与语义 Manifest
 │  │     ├─ v2_9f_*            # Online 修复前漏斗、评测器事故和唯一有效 exposed regression
 │  │     ├─ v2_9g_*            # 单调漏斗审计、Playwright/Bocha 有限 PoC 原始记录与语义复核
-│  │     └─ v2_9h_*            # RC3 旧失败、新 Git-blob R1 Manifest 与 Windows 复现摘要
+│  │     ├─ v2_9h_*            # RC3 旧失败、新 Git-blob R1 Manifest 与 Windows 复现摘要
+│  │     └─ v2_9j_*            # 离线开发首败、身份/API/约束修复与质量门审计；非独立评测
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -741,6 +746,10 @@ proofpick_agent/
 V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9H-R1 保持 `proofpick-v2-rc3` 生产 Commit/Tree 不变，以 Git blob 原始字节修复旧 Manifest 的跨 EOL 冻结缺陷；Trusted Core 仍为默认 Stable，Online Research 仍为 Experimental/Beta。独立方必须先通过 R1 冻结复审，才能创建新的评测题。正式浏览器、Composite Provider、自动 Evidence Promotion、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
+
+V2-9J 新增测试：`unit/test_v2_9j_units.py`、`unit/test_v2_9j_identity.py`、`unit/test_v2_9j_requirement_coverage.py`、`integration/test_v2_9j_domain_coverage.py`、`integration/test_v2_9j_portfolio_contracts.py`。前者检查共享单位/身份/未解决要求，后者通过真实 Portfolio 路由及三品类离线工具验证完整传递和范围隔离；仅替换模型与 KB 为 Fake/治理证据回放。
+
+当前修复状态见 [V2-9J 报告](../v2/v2_9j_trusted_contracts_repair_report.md)。上面的 RC3 历史记录保留不变，不代表本修复分支已通过新的独立发布评测。
 
 - [x] 树状结构来自当前工作区，不从计划或旧文档复制。
 - [x] 计划项单独列出且明确标记“计划/不存在”。

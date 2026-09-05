@@ -13,6 +13,7 @@ from .models import (
     ResolvedProductScope,
 )
 from .resolver import ProductIdentityResolver
+from .catalog import resolve_catalog_identity
 from .guards import (
     ProductIdentityMismatch,
     evidence_identity_status,
@@ -36,4 +37,5 @@ __all__ = [
     "evidence_identity_status",
     "product_identity",
     "require_product_in_scope",
+    "resolve_catalog_identity",
 ]
