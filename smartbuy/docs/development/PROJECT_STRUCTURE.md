@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-05 |
-| 当前阶段 | V1/RC3 冻结身份保留；V2-9J 在独立修复分支修复默认 Portfolio 硬要求完整性与商品身份；仅离线开发回归，不是重新发布或独立评测；未创建 Holdout/Tag/Release/PR |
+| 当前阶段 | V1/RC3 冻结身份保留；release/proofpick-v2-rc4仅冻结99c7bccc生产版本与独立评测交接，不修改业务逻辑，不创建或运行Holdout/Tag/Release/PR |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -208,7 +208,13 @@ proofpick_agent/
 │  │  │  ├─ v2_release_candidate_rc3_manifest_r1.md
 │  │  │  ├─ v2_9h_r1_manifest_freeze_repair_report.md
 │  │  │  ├─ v2_9h_r1_rc3_handoff.md
-│  │  │  └─ v2_9j_trusted_contracts_repair_report.md
+│  │  │  ├─ v2_9j_trusted_contracts_repair_report.md
+│  │  │  ├─ v2_release_candidate_rc4_manifest.md
+│  │  │  ├─ v2_rc4_independent_evaluation_handoff.md
+│  │  │  ├─ rc4_freeze_recipe.json          # 明确成员选择及默认运行配置
+│  │  │  ├─ rc4_semantic_runtime_manifest.json # 固定Git blob完整成员、组和Payload
+│  │  │  ├─ rc4_freeze_manifest.py          # 仅文档冻结/验证，不接生产链
+│  │  │  └─ rc4_freeze_audit.json           # 跨EOL复现、数据与离线证据
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -750,6 +756,8 @@ V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适�
 V2-9J 新增测试：`unit/test_v2_9j_units.py`、`unit/test_v2_9j_identity.py`、`unit/test_v2_9j_requirement_coverage.py`、`integration/test_v2_9j_domain_coverage.py`、`integration/test_v2_9j_portfolio_contracts.py`。前者检查共享单位/身份/未解决要求，后者通过真实 Portfolio 路由及三品类离线工具验证完整传递和范围隔离；仅替换模型与 KB 为 Fake/治理证据回放。
 
 当前修复状态见 [V2-9J 报告](../v2/v2_9j_trusted_contracts_repair_report.md)。上面的 RC3 历史记录保留不变，不代表本修复分支已通过新的独立发布评测。
+
+RC4仅新增[固定生产Manifest](../v2/v2_release_candidate_rc4_manifest.md)、[独立评测交接](../v2/v2_rc4_independent_evaluation_handoff.md)和配套冻结文档工具/JSON；不改变生产Commit与旧RC3身份。详细成员清单在`rc4_semantic_runtime_manifest.json`，运行语义与分组配方在`rc4_freeze_recipe.json`，复现证据在`rc4_freeze_audit.json`。文档工具不属于生产调用链，也不创建评测题。
 
 - [x] 树状结构来自当前工作区，不从计划或旧文档复制。
 - [x] 计划项单独列出且明确标记“计划/不存在”。
