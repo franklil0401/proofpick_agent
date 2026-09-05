@@ -1,0 +1,92 @@
+{
+  "schema": "rc3i-evaluator-adapter-v2",
+  "authorization": "User explicitly allowed evaluator compatibility repair and continuation, no paid replay of first two cases",
+  "files": {
+    "score_v2.py": "16f542c7960746545389b7cd7eb9e5227938552d61587b2852b68095bf333923",
+    "test_adapter_v2.py": "d99e683d013ee5f383c9505f057685ed6ffe3fcac03034320ca8d5085f3116e3",
+    "resume_v2.py": "4d6638ed04a420a78df16499e5f16a1d0121edbf0defa3f2b1f3890fb26f62ed"
+  },
+  "original_freeze_unchanged": true,
+  "synthetic_tests": {
+    "new": 8,
+    "original": 9,
+    "passed": 17
+  },
+  "first_two_reassessment": [
+    {
+      "case_id": "rc3i-monitor-001",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": false,
+      "reasons": [
+        "requested_fact_evidence_incomplete"
+      ],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 0,
+      "missing_fact_pairs": [
+        [
+          "dell-u2723qe-cn",
+          "resolution"
+        ],
+        [
+          "dell-u2723qe-cn",
+          "width_mm"
+        ]
+      ],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 0,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 1.529,
+      "calls": 0,
+      "adapter_audit": {
+        "json_scalar_decodes": 0,
+        "citation_only_refs": 0,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-002",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 35422.757,
+      "calls": 7,
+      "adapter_audit": {
+        "json_scalar_decodes": 4,
+        "citation_only_refs": 2,
+        "binding_errors": []
+      }
+    }
+  ]
+}
