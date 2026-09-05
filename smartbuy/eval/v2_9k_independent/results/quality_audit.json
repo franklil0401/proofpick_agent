@@ -1,0 +1,20 @@
+{
+  "production_commit": "99c7bccc523addc7e8904571dbe8e20a24615c66",
+  "ci_equivalent_tests": {"passed": 597, "warnings": 3, "seconds": 163.86},
+  "v1_original_file_regression": {"files": 18, "passed": 101, "seconds": 15.82},
+  "existing_harness_tests": 17,
+  "ruff": "passed",
+  "compileall": "passed",
+  "javascript": {"passed": 13},
+  "powershell_ast": {"passed": 6},
+  "markdown_at_scan": {"documents": 112, "links": 545, "missing": 0},
+  "sensitive_scan_before_quality_record": {"files": 11, "exact_matches": 0, "high_confidence_patterns": 0},
+  "prohibited_files": 0,
+  "service_ports_listening": 0,
+  "old_evaluation_files_changed": 0,
+  "production_member_mismatches": 0,
+  "trusted_unrun": 79,
+  "online_unrun": 15,
+  "new_holdout_created": false,
+  "new_remote_ci_claimed": false
+}

@@ -1,0 +1,256 @@
+{
+  "classification": "confirmed_fact_completion_contract_gap_not_scorer_false_positive",
+  "case_id": "rc3i-monitor-007",
+  "original_http_status": 200,
+  "original_trace": [
+    {
+      "step": 1,
+      "parent_step": 1,
+      "task_summary": "请做资料核对：ProArt PA27JCV（CN地区；配置标识 asus-pa27jcv-cn）的机身宽度和分辨率各是什么？分别附上证据，不用给购买建议。",
+      "tool": "kb_search",
+      "arguments_summary": {
+        "query_summary": "ProArt PA27JCV CN 官方规格",
+        "model_ids": [
+          "asus-pa27jcv-cn"
+        ],
+        "required_fields": [
+          "width_mm",
+          "resolution"
+        ],
+        "reason": "查询ProArt PA27JCV CN版的机身宽度和分辨率官方规格"
+      },
+      "status": "failed",
+      "result_summary": "必须先调用 set_requirements。",
+      "next_action": "根据错误码选择受控降级或安全停止。",
+      "stop_or_degrade_reason": "必须先调用 set_requirements。",
+      "duration_ms": 0.036
+    },
+    {
+      "step": 2,
+      "parent_step": null,
+      "task_summary": "核对ProArt PA27JCV CN版的机身宽度和分辨率",
+      "tool": "set_requirements",
+      "arguments_summary": {
+        "summary": "核对ProArt PA27JCV CN版的机身宽度和分辨率",
+        "required_fields": [
+          "width_mm",
+          "resolution"
+        ],
+        "constraint_count": 1
+      },
+      "status": "success",
+      "result_summary": "已由 provenance gate 建立带来源约束；active=1，rejected_model_fields=0。",
+      "next_action": "按问题类型选择 KB 或只读 SQL。",
+      "stop_or_degrade_reason": null,
+      "duration_ms": 3.095
+    },
+    {
+      "step": 3,
+      "parent_step": 2,
+      "task_summary": "核对ProArt PA27JCV CN版的机身宽度和分辨率",
+      "tool": "kb_search",
+      "arguments_summary": {
+        "query_summary": "ProArt PA27JCV CN 官方规格",
+        "model_ids": [
+          "asus-pa27jcv-cn"
+        ],
+        "required_fields": [
+          "width_mm",
+          "resolution"
+        ],
+        "reason": "查询ProArt PA27JCV CN版的机身宽度和分辨率官方规格"
+      },
+      "status": "success",
+      "result_summary": "KB 命中 5 个证据片段；Reranker 成功。",
+      "next_action": "根据命中片段执行字段级 Evidence Check 或补查缺失项。",
+      "stop_or_degrade_reason": null,
+      "duration_ms": 297.342
+    },
+    {
+      "step": 4,
+      "parent_step": null,
+      "task_summary": "核对ProArt PA27JCV CN版的机身宽度和分辨率",
+      "tool": "finish_decision",
+      "arguments_summary": {
+        "agent_requested_stop": true
+      },
+      "status": "success",
+      "result_summary": "已满足显式停止条件。",
+      "next_action": "停止并生成经过 Schema 校验的报告。",
+      "stop_or_degrade_reason": null,
+      "duration_ms": 0.046
+    }
+  ],
+  "original_unresolved_facts": [
+    {
+      "model_id": null,
+      "field": "model_id",
+      "status": "unknown",
+      "values": [],
+      "reason": "未获得该字段的可核验证据；工具不可用、候选为空或本轮未完成核验。",
+      "evidence": []
+    },
+    {
+      "model_id": null,
+      "field": "resolution",
+      "status": "unknown",
+      "values": [],
+      "reason": "未获得该字段的可核验证据；工具不可用、候选为空或本轮未完成核验。",
+      "evidence": []
+    },
+    {
+      "model_id": null,
+      "field": "width_mm",
+      "status": "unknown",
+      "values": [],
+      "reason": "未获得该字段的可核验证据；工具不可用、候选为空或本轮未完成核验。",
+      "evidence": []
+    }
+  ],
+  "original_abstained": false,
+  "original_stop_reason": "知识库证据检索完成，达到显式停止条件。",
+  "original_evidence_values": [
+    null,
+    null
+  ],
+  "catalog_product": {
+    "model_id": "asus-pa27jcv-cn",
+    "region": "CN",
+    "width_mm": 612.2,
+    "resolution": "5120x2880"
+  },
+  "catalog_references": [
+    {
+      "evidence_id": "ev-asus-pa27jcv-cn-resolution",
+      "model_id": "asus-pa27jcv-cn",
+      "normalized_field": "resolution",
+      "normalized_value": "\"5120x2880\"",
+      "source_id": "src-asus-pa27jcv-cn-manual",
+      "region": "CN",
+      "url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+    },
+    {
+      "evidence_id": "ev-asus-pa27jcv-cn-width-mm",
+      "model_id": "asus-pa27jcv-cn",
+      "normalized_field": "width_mm",
+      "normalized_value": "612.2",
+      "source_id": "src-asus-pa27jcv-cn-manual",
+      "region": "CN",
+      "url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV"
+    }
+  ],
+  "readonly_evidence_check": {
+    "tool": "evidence_check",
+    "status": "success",
+    "data": {
+      "models": {
+        "asus-pa27jcv-cn": [
+          {
+            "field": "width_mm",
+            "status": "matched",
+            "actual_value": 612.2,
+            "expected": null,
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pa27jcv-cn-width-mm",
+                "source_id": "src-asus-pa27jcv-cn-manual",
+                "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+                "source_type": "official_manual",
+                "model_id": "asus-pa27jcv-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "width_mm",
+                "value": "612.2",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "field": "resolution",
+            "status": "matched",
+            "actual_value": "5120x2880",
+            "expected": null,
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pa27jcv-cn-resolution",
+                "source_id": "src-asus-pa27jcv-cn-manual",
+                "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+                "source_type": "official_manual",
+                "model_id": "asus-pa27jcv-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "resolution",
+                "value": "\"5120x2880\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          }
+        ]
+      },
+      "status_counts": {
+        "matched": 2,
+        "not_matched": 0,
+        "unknown": 0,
+        "conflict": 0
+      },
+      "evidence_incomplete": false
+    },
+    "summary": "核验 1 个型号、2 个字段；matched=2，not_matched=0，unknown=0，conflict=0。",
+    "degraded": false,
+    "retryable": false,
+    "error_code": null
+  },
+  "root_cause_locations": [
+    {
+      "path": "smartbuy/agent/react.py",
+      "line": 525,
+      "finding": "Finish gate checks candidate_rows, while KB writes candidate_pool_rows."
+    },
+    {
+      "path": "smartbuy/agent/react.py",
+      "line": 1278,
+      "finding": "Deterministic Evidence fallback covers filter/comparison/dynamic, excludes fact."
+    },
+    {
+      "path": "smartbuy/agent/reporting.py",
+      "line": 323,
+      "finding": "KB hits plus empty assessment states can mark evidence sufficient despite missing requested facts."
+    }
+  ],
+  "live_usage": {
+    "requests": 33,
+    "models": {
+      "qwen-plus": 21,
+      "text-embedding-v4": 6,
+      "qwen3-rerank": 6
+    },
+    "input_tokens": 124770,
+    "output_tokens": 3567,
+    "estimated_cost_cny": 0.10515300000000001,
+    "provider_retries": 0,
+    "api_failures": 0
+  },
+  "diagnostic_api_calls": 0,
+  "production_changes": 0,
+  "evaluator_or_gold_changes_after_freeze": 0,
+  "remaining_trusted_unrun": 79,
+  "online_unrun": 15,
+  "diagnostic_command_notes": [
+    "Two initial read-only probes referenced nonexistent field_evidence table and execute method; corrected after inspecting schema and tool contract.",
+    "These probes made no model requests and did not replace any live evaluation result."
+  ]
+}
