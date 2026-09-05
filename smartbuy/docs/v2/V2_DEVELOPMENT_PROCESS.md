@@ -969,4 +969,4 @@ V2-9E 只在独立修复分支上做通用修复。相同 90 条 Trusted 的 exp
 
 V2-9G 没有再运行完整 15 条。按同一候选 lineage 重算后的单调任务漏斗为 `15→15→15→8→6→6→6→6→6`；默认关闭的 Playwright 和三条 Bocha 回退 PoC 只投影实际取证 `7/15`、Laptop `1/5`、字段 `15/21`，仍未达到联合门槛。根据 [ADR-0023](../adr/0023-trusted-core-and-experimental-online-research.md)，RC3 发布范围已收敛为 Trusted Multi-domain Decision Core，Online Research 保持 Experimental/Beta，安全 unknown 不得计为研究完成。
 
-这些 90+15 条都已暴露，不能替代新的未见发布集。V2-9H 已冻结 `proofpick-v2-rc3` 的生产 Commit/Tree、稳定语义 Manifest、三品类数据/索引合同、评分接口和测试基线；Trusted 为默认 Stable 能力，Online 为需确认的 Experimental/Beta。本阶段未创建或运行新 Holdout。下一步只能由独立评测方按 [RC3 Handoff](v2_9h_rc3_handoff.md)创建并单次运行新的未见任务；未经确认不得创建 PR、合并 `main`、Tag 或 Release。
+这些 90+15 条都已暴露，不能替代新的未见发布集。V2-9H 冻结了 `proofpick-v2-rc3` 的生产 Commit/Tree，但 V2-9I 独立审计在出题前发现旧 Manifest 的 6 个成员来自 checkout 字节，旧 Payload `4883f425…`无法跨 EOL 复现。V2-9H-R1 保持生产对象不变，改由 `git ls-tree`和 Git blob 原始字节生成新 Payload `abf65501…`；旧文件永久保留为失败历史。下一步只能由独立评测方按 [R1 Handoff](v2_9h_r1_rc3_handoff.md)先复核 267 个成员、19 个组和顶层 Payload；通过后才可创建新的未见任务。未经确认不得创建 PR、合并 `main`、Tag 或 Release。

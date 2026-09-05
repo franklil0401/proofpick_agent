@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-05 |
-| 当前阶段 | V1 已冻结；V2-9H 已冻结 `proofpick-v2-rc3` 供独立评测，Trusted Core 为默认 Stable，Online Research 为 Experimental/Beta；未创建 Tag/Release/PR |
+| 当前阶段 | V1 已冻结；V2-9H-R1 修复 RC3 Git-blob Manifest 冻结，等待独立方重新审计后再出题；Trusted Core 为默认 Stable，Online Research 为 Experimental/Beta；未创建 Holdout/Tag/Release/PR |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -203,7 +203,10 @@ proofpick_agent/
 │  │  │  ├─ v2_release_candidate_rc3_manifest.md
 │  │  │  ├─ v2_9h_rc3_release_candidate_report.md
 │  │  │  ├─ v2_9h_windows_reproduction.md
-│  │  │  └─ v2_9h_rc3_handoff.md
+│  │  │  ├─ v2_9h_rc3_handoff.md
+│  │  │  ├─ v2_release_candidate_rc3_manifest_r1.md
+│  │  │  ├─ v2_9h_r1_manifest_freeze_repair_report.md
+│  │  │  └─ v2_9h_r1_rc3_handoff.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -314,7 +317,7 @@ proofpick_agent/
 │  │     ├─ v2_9e_*            # 第二次独立评测后的 Trusted/Online 暴露回归与语义 Manifest
 │  │     ├─ v2_9f_*            # Online 修复前漏斗、评测器事故和唯一有效 exposed regression
 │  │     ├─ v2_9g_*            # 单调漏斗审计、Playwright/Bocha 有限 PoC 原始记录与语义复核
-│  │     └─ v2_9h_*            # RC3 稳定语义 Manifest 与 Windows 干净复现摘要
+│  │     └─ v2_9h_*            # RC3 旧失败、新 Git-blob R1 Manifest 与 Windows 复现摘要
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -376,7 +379,7 @@ proofpick_agent/
 │  │  ├─ __init__.py
 │  │  ├─ semantic_manifest.py   # 排除时间/路径/费用等运行噪声的稳定语义合同
 │  │  ├─ v2_9e_manifest.py      # 从不可变生产 Commit 枚举成员并生成 V2-9E Manifest
-│  │  └─ v2_9h_rc3_manifest.py  # 冻结 RC3 的完整成员组、能力边界与三品类运行合同
+│  │  └─ v2_9h_rc3_manifest.py  # 直接从 Git ls-tree/blob 冻结 RC3 成员、能力边界与运行合同
 │  ├─ portfolio/
 │  │  ├─ demos.py              # 严格加载五个脱敏回放
 │  │  ├─ dynamic_facts.py      # URL/币种/时间/TTL/hash 动态观察安全判断
@@ -563,6 +566,9 @@ proofpick_agent/
 | `smartbuy/docs/v2/v2_9h_rc3_release_candidate_report.md` / `v2_9h_rc3_handoff.md` | Trusted Stable 与 Online Experimental 范围、历史结果边界和独立评测纪律 |
 | `smartbuy/docs/v2/v2_9h_windows_reproduction.md` / `eval/results/v2_9h_rc3_windows_verification.json` | 新短 ASCII clone、冻结依赖、三 SQLite/索引、HTTP、五 Demo 与端口释放证据 |
 | `smartbuy/reproducibility/v2_9h_rc3_manifest.py` | 从不可变 RC3 生产 Commit 枚举完整成员并生成可重复 Semantic Manifest |
+| `smartbuy/docs/v2/v2_release_candidate_rc3_manifest_r1.md` / `eval/results/v2_9h_rc3_semantic_runtime_manifest_r1.json` | 直接绑定生产 Git blob 的 RC3 R1 冻结合同；旧 `4883f425…`文件保留为失败历史 |
+| `smartbuy/docs/v2/v2_9h_r1_manifest_freeze_repair_report.md` / `v2_9h_r1_rc3_handoff.md` | 六文件 EOL 根因、跨 autocrlf/LF 复现证据及独立方复审步骤 |
+| `smartbuy/eval/results/v2_9h_r1_manifest_reproduction.json` / `tests/unit/test_v2_9h_git_blob_manifest.py` | 三种 checkout 的成员、组和 Payload 一致性机器摘要与自动化测试 |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -732,7 +738,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9H 已冻结 `proofpick-v2-rc3`：Trusted Multi-domain Decision Core 为默认 Stable 能力，Online Research 为 Experimental/Beta。V2-9D 第二次独立评测仍为 `Needs revision`；V2-9F 已暴露 Online 回归为 6/15，V2-9G 未接入生产的有限 PoC 只投影 7/15。RC3 下一次发布判断必须由独立评测方执行；正式浏览器、Composite Provider、自动 Evidence Promotion、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9H-R1 保持 `proofpick-v2-rc3` 生产 Commit/Tree 不变，以 Git blob 原始字节修复旧 Manifest 的跨 EOL 冻结缺陷；Trusted Core 仍为默认 Stable，Online Research 仍为 Experimental/Beta。独立方必须先通过 R1 冻结复审，才能创建新的评测题。正式浏览器、Composite Provider、自动 Evidence Promotion、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 

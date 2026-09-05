@@ -9,9 +9,10 @@ from datetime import UTC, datetime
 from pathlib import Path
 
 from smartbuy.reproducibility.semantic_manifest import (
-    SemanticManifestError,
-    build_file_group,
+    assert_worktree_bytes_match_git,
+    build_git_file_group,
     build_semantic_manifest,
+    git_tree_members,
 )
 
 
@@ -71,7 +72,7 @@ def _git(root: Path, *args: str) -> str:
 
 
 def _members_at(root: Path, commit: str) -> list[str]:
-    return _git(root, "ls-tree", "-r", "--name-only", commit).splitlines()
+    return git_tree_members(root, commit)
 
 
 def _select(
@@ -94,17 +95,8 @@ def _select(
 
 
 def _assert_worktree_matches(root: Path, commit: str, members: list[str]) -> None:
-    if not members:
-        raise SemanticManifestError("semantic manifest group is empty")
-    result = subprocess.run(
-        ["git", "diff", "--quiet", commit, "--", *members],
-        cwd=root,
-        check=False,
-    )
-    if result.returncode != 0:
-        raise SemanticManifestError(
-            "worktree member bytes differ from the requested production commit"
-        )
+    """Compatibility diagnostic using exact bytes, not normalized ``git diff``."""
+    assert_worktree_bytes_match_git(root, commit, members)
 
 
 def build_v2_9e_manifest(root: Path, production_commit: str) -> dict[str, object]:
@@ -145,8 +137,12 @@ def build_v2_9e_manifest(root: Path, production_commit: str) -> dict[str, object
     }
     groups = {}
     for name, members in selected.items():
-        _assert_worktree_matches(root, commit, members)
-        groups[name] = build_file_group(root, members)
+        groups[name] = build_git_file_group(
+            root,
+            commit,
+            members,
+            tree_members=files,
+        )
     runtime = {
         "production_commit": commit,
         "production_tree": tree,

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
@@ -48,14 +49,56 @@ def _file_sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _bytes_sha256(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def _relative_member(raw: str) -> Path:
+    relative = Path(raw)
+    if relative.is_absolute() or ".." in relative.parts:
+        raise SemanticManifestError("manifest members must be repository-relative")
+    return relative
+
+
+def _git_bytes(root: Path, *args: str) -> bytes:
+    try:
+        return subprocess.run(
+            ["git", *args],
+            cwd=root,
+            check=True,
+            capture_output=True,
+        ).stdout
+    except subprocess.CalledProcessError as exc:
+        detail = exc.stderr.decode("utf-8", errors="replace").strip()
+        raise SemanticManifestError(f"git object read failed: {detail}") from exc
+
+
+def git_tree_members(root: Path, commit: str) -> list[str]:
+    """List repository paths from an immutable Git tree, never from checkout."""
+    raw = _git_bytes(root.resolve(), "ls-tree", "-r", "-z", "--name-only", commit)
+    try:
+        members = [item.decode("utf-8") for item in raw.split(b"\0") if item]
+    except UnicodeDecodeError as exc:
+        raise SemanticManifestError("Git tree contains a non-UTF-8 path") from exc
+    return sorted(members)
+
+
+def git_blob_bytes(root: Path, commit: str, member: str) -> bytes:
+    """Read the exact Git blob bytes for ``commit:member``."""
+    relative = _relative_member(member).as_posix()
+    return _git_bytes(root.resolve(), "cat-file", "blob", f"{commit}:{relative}")
+
+
 def build_file_group(root: Path, members: Sequence[str]) -> dict[str, Any]:
-    """Hash an explicit, sorted member set; aggregate hashes are never opaque."""
+    """Hash worktree files for non-release uses.
+
+    Release freezes must use :func:`build_git_file_group`; checkout bytes can
+    differ from Git blobs under EOL conversion while ``git diff`` stays clean.
+    """
     resolved_root = root.resolve()
     output: list[dict[str, str]] = []
     for raw in sorted(set(members)):
-        relative = Path(raw)
-        if relative.is_absolute() or ".." in relative.parts:
-            raise SemanticManifestError("manifest members must be repository-relative")
+        relative = _relative_member(raw)
         path = (resolved_root / relative).resolve()
         if resolved_root not in path.parents or not path.is_file():
             raise SemanticManifestError(f"manifest member is missing or outside root: {raw}")
@@ -63,6 +106,62 @@ def build_file_group(root: Path, members: Sequence[str]) -> dict[str, Any]:
     if not output:
         raise SemanticManifestError("manifest group must contain at least one member")
     return {"members": output, "aggregate_sha256": stable_sha256(output)}
+
+
+def build_git_file_group(
+    root: Path,
+    commit: str,
+    members: Sequence[str],
+    *,
+    tree_members: Sequence[str] | None = None,
+) -> dict[str, Any]:
+    """Hash exact blob bytes for members proven to exist in ``commit`` tree."""
+    resolved_root = root.resolve()
+    available = set(tree_members or git_tree_members(resolved_root, commit))
+    output: list[dict[str, str]] = []
+    for raw in sorted(set(members)):
+        relative = _relative_member(raw).as_posix()
+        if relative not in available:
+            raise SemanticManifestError(
+                f"manifest member is absent from immutable Git tree: {relative}"
+            )
+        output.append(
+            {
+                "path": relative,
+                "sha256": _bytes_sha256(
+                    git_blob_bytes(resolved_root, commit, relative)
+                ),
+            }
+        )
+    if not output:
+        raise SemanticManifestError("manifest group must contain at least one member")
+    return {"members": output, "aggregate_sha256": stable_sha256(output)}
+
+
+def assert_worktree_bytes_match_git(
+    root: Path,
+    commit: str,
+    members: Sequence[str],
+) -> None:
+    """Diagnose exact checkout/blob equality without Git's text normalization."""
+    if not members:
+        raise SemanticManifestError("semantic manifest group is empty")
+    resolved_root = root.resolve()
+    tree = set(git_tree_members(resolved_root, commit))
+    mismatches: list[str] = []
+    for raw in sorted(set(members)):
+        relative = _relative_member(raw)
+        normalized = relative.as_posix()
+        path = (resolved_root / relative).resolve()
+        if normalized not in tree or not path.is_file():
+            mismatches.append(normalized)
+            continue
+        if path.read_bytes() != git_blob_bytes(resolved_root, commit, normalized):
+            mismatches.append(normalized)
+    if mismatches:
+        raise SemanticManifestError(
+            "worktree bytes differ from immutable Git blobs: " + ", ".join(mismatches)
+        )
 
 
 def _domain_contract(value: Mapping[str, Any]) -> dict[str, Any]:
