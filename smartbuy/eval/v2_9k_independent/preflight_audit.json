@@ -1,0 +1,67 @@
+{
+  "manifest": {
+    "production_commit": "99c7bccc523addc7e8904571dbe8e20a24615c66",
+    "tree": "6b6e98009cefe5aa13f64cf8fe1b24d001fbadb1",
+    "payload": "7126740e9a893a18575f829aff78ef48b346eca0f622db73c952ece4cff8eb25",
+    "groups": 23,
+    "unique_members": 725,
+    "mismatches": 0
+  },
+  "runtime": [
+    {
+      "domain_id": "headphone",
+      "domain_pack_version": "1.0.0",
+      "data_version": "headphone-governed-2026-09-03-v1",
+      "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+      "collection_name": "proofpick_headphone_v2_cae477364b46ccae",
+      "document_count": 12,
+      "embedding_model": "text-embedding-v4",
+      "embedding_dimensions": 1024,
+      "data_logical_sha256": "c1edf981e00f6ad15b409d1d4ea37b2c8e2dc6dd36b95ce4be99ac57693fc40a",
+      "sqlite_integrity": "ok",
+      "foreign_key_violations": 0,
+      "products": 12,
+      "observed_chunks": 12,
+      "observed_dimensions": [
+        1024
+      ]
+    },
+    {
+      "domain_id": "laptop",
+      "domain_pack_version": "1.0.0",
+      "data_version": "laptop-governed-2026-09-02-v1",
+      "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+      "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+      "document_count": 12,
+      "embedding_model": "text-embedding-v4",
+      "embedding_dimensions": 1024,
+      "data_logical_sha256": "13cf9fffa9383921ed29a1e426da6a199edb699ec346aee985ecf21c9918f8b1",
+      "sqlite_integrity": "ok",
+      "foreign_key_violations": 0,
+      "products": 12,
+      "observed_chunks": 12,
+      "observed_dimensions": [
+        1024
+      ]
+    },
+    {
+      "domain_id": "monitor",
+      "domain_pack_version": "1.0.0",
+      "data_version": "monitor-cn-2026-08-26-v1",
+      "index_version": "monitor-fact-card-h2-v1",
+      "collection_name": "smartbuy_monitors_v1",
+      "document_count": 60,
+      "embedding_model": "text-embedding-v4",
+      "embedding_dimensions": 1024,
+      "data_logical_sha256": "079c4f745e8dbbb538fe7cdacf5479f4e25ebc38972ef2175edf8876a35e8ffe",
+      "sqlite_integrity": "ok",
+      "foreign_key_violations": 0,
+      "products": 12,
+      "observed_chunks": 60,
+      "observed_dimensions": [
+        1024
+      ]
+    }
+  ],
+  "model_calls": 0
+}

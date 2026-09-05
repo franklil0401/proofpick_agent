@@ -1,0 +1,20 @@
+{
+  "candidate": "proofpick-v2-rc4",
+  "production_commit": "99c7bccc523addc7e8904571dbe8e20a24615c66",
+  "payload": "7126740e9a893a18575f829aff78ef48b346eca0f622db73c952ece4cff8eb25",
+  "production_tests": 597,
+  "harness_tests": 17,
+  "phase1_exposed_count": 4,
+  "phase2_unrun_count": 79,
+  "online_unrun_count": 15,
+  "total_budget_cny": 5,
+  "trusted_budget_cny": 2,
+  "paid_calls_before_freeze": 0,
+  "files": {
+    "__init__.py": "1644cfd46455561e87de1ade5174e67f70a5e4296b346a466269406969d44d64",
+    "audit.py": "4011e41a30d59596b90a11a2295699dd7cd3b9ed951f97226ab4faf0728ab12b",
+    "preflight_audit.json": "1c15afd709bb9f611017c561163cb1e0d3385384e0e3f24e48159db3a2cae5e8",
+    "README.md": "b26ea2a89f43f68dafcf6743a121b56e574cfe3653c3874341be3ec01c156f0c",
+    "run.py": "8cdf6a797d68667994e07b3b805756f9363eb6c9398a472c56569d6f712d8736"
+  }
+}
