@@ -1,0 +1,91 @@
+{
+  "schema_version": "proofpick-v2-9i-rc3-freeze-audit-v1",
+  "release_candidate": "proofpick-v2-rc3",
+  "evaluation_branch": "eval/v2-9i-independent-rc3",
+  "decision": "blocked_before_holdout_creation",
+  "reason": "semantic_manifest_does_not_reproduce_from_immutable_git_blobs_or_a_clean_windows_checkout",
+  "expected_identity": {
+    "documentation_commit": "f1df16d8536b9ab6a0dafe7c8362f204db33a7e7",
+    "production_commit": "ba6606ae249bafc89c18b320935c767a3f756c34",
+    "production_tree": "84766c5d8840b50a27c612e24379b6dd63736741",
+    "payload_sha256": "4883f4251c8cb1f4dc6b86b6777b3d19ace74bee92943129c1146fc4e266b367"
+  },
+  "identity_checks": {
+    "documentation_commit_exact": true,
+    "production_commit_available": true,
+    "production_tree_exact": true,
+    "stored_payload_self_hash_exact": true
+  },
+  "git_blob_member_audit": {
+    "file_groups": 19,
+    "member_occurrences": 370,
+    "unique_members": 267,
+    "mismatched_unique_members": 6,
+    "mismatched_groups": 4,
+    "groups": [
+      "dependency_lock",
+      "governed_data",
+      "scoring_interface",
+      "test_baseline"
+    ],
+    "members": [
+      {
+        "path": "vendor/youtu-rag/pyproject.toml",
+        "manifest_sha256": "7f3278442e3cccd4c1d7ffeed9ae729cdd0af4f90263e6af17e2ef1a250d7523",
+        "production_git_blob_sha256": "a34be624b2a6de232b5826e8a1ac15552003ff7564612eff641a2ed7368ba4a8",
+        "manifest_matches_pure_crlf_variant": false
+      },
+      {
+        "path": "smartbuy/data/processed/stage6_metrics_summary.csv",
+        "manifest_sha256": "c52ede8e0581f62ed468bc3729ef341c50a1c52f54f56cf90fb8aa888676262c",
+        "production_git_blob_sha256": "d30744f18be8f6ee21f6d040736094cd884096f48b8795ee658d647756b49fba",
+        "manifest_matches_pure_crlf_variant": true
+      },
+      {
+        "path": "smartbuy/data/processed/stage7_demo_presentation_regression.json",
+        "manifest_sha256": "ff74739f0cdc19e4098569a4c72c1f8d7e652e7d2e4a8a47279fe1375d2c6b68",
+        "production_git_blob_sha256": "ed336e186429e24938b9ff9b0bc9c51c138b5f4c4b739d34e83783dbec59736f",
+        "manifest_matches_pure_crlf_variant": true
+      },
+      {
+        "path": "smartbuy/eval/v2_8_headphone_engineering.schema.json",
+        "manifest_sha256": "a0a1deb1991a4d66d83461738f31e9f4ac1c0ac35d2d924206cacd81be736108",
+        "production_git_blob_sha256": "7514d1d8eb7057edf63a53d06a030d8d9cf4d8bf574b17d78836e237fe470fa3",
+        "manifest_matches_pure_crlf_variant": true
+      },
+      {
+        "path": "smartbuy/eval/v2_8_headphone_engineering_policy.json",
+        "manifest_sha256": "c0c0b9ca1485073f7f03d5af88f3333211ce0076692ace60c901a97f0a6165eb",
+        "production_git_blob_sha256": "73d35ef80525b090927d6369e3b07d265a57fa96f3c359a571811107fd6f9987",
+        "manifest_matches_pure_crlf_variant": true
+      },
+      {
+        "path": ".github/workflows/ci.yml",
+        "manifest_sha256": "55990cdf100058ba566c483901d6b7033bc617a6fc8570bbbff3b4fd4d600803",
+        "production_git_blob_sha256": "9eaa9e4e66948eb293627b1ed25dfe0582d5264f1583ed1676036d2e1492cc88",
+        "manifest_matches_pure_crlf_variant": false
+      }
+    ]
+  },
+  "clean_checkout_regeneration": {
+    "core_autocrlf": true,
+    "regenerated_payload_sha256": "1b77000d3489cdf2d8526221a28b71b9bc3fa05563955cd203fcc42711de24ee",
+    "matches_frozen_payload": false,
+    "semantic_contract_exact": false,
+    "groups_with_different_aggregate": 19
+  },
+  "root_cause": {
+    "manifest_builder": "build_file_group hashes checked-out Path.read_bytes() content",
+    "guard": "_assert_worktree_matches uses git diff --quiet, which compares normalized Git content and does not guarantee identical checkout bytes",
+    "impact": "line-ending conversion can change the payload while the worktree remains clean; six frozen member hashes also do not identify the immutable production blobs"
+  },
+  "evaluation_activity": {
+    "trusted_cases_created": 0,
+    "online_cases_created": 0,
+    "gold_created": 0,
+    "model_or_search_api_calls": 0,
+    "estimated_cost_cny": 0,
+    "production_files_modified": 0
+  },
+  "required_remediation": "generate member hashes directly from production_commit Git blob bytes, add core.autocrlf true/false cross-checks, issue a corrected RC3 manifest revision, and restart the independent freeze audit"
+}
