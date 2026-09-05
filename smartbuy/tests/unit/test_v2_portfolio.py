@@ -89,8 +89,12 @@ def test_portfolio_ui_has_required_public_states_and_no_secret_values() -> None:
     for term in (
         "monitor", "laptop", "headphone", "trusted", "open", "online_unavailable",
         "Constraint Checker", "Decision Ranker", "Memory", "固定脱敏回放",
+        "Trusted Mode · Stable", "Online Research · Experimental",
+        "安全 unknown 不算研究完成",
     ):
         assert term.casefold() in combined.casefold()
+    assert "confirmExperimentalResearch" in script
+    assert "Open Evidence 不会进入 Trusted Checker" in script
     assert "Qianwen_api_key" not in combined
     assert "ZhiPu_api_key" not in combined
     assert "Authorization" not in combined

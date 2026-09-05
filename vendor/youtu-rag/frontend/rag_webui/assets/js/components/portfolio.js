@@ -14,6 +14,12 @@
     headphone: ['preferred_form_factor', 'preferred_connection', 'preferred_codec', 'preferred_platform', 'preferred_scenario', 'max_weight_g', 'anc_preference', 'excluded_brands', 'ranking_scenario']
   };
 
+  function confirmExperimentalResearch() {
+    return window.confirm(
+      'Online Research 是 Experimental/Beta：不保证找到目标地区官方页面或完成网页提取；失败将返回 unknown，临时 Open Evidence 不会进入 Trusted Checker。是否继续？'
+    );
+  }
+
   const byId = (id) => document.getElementById(id);
   const esc = (value) => String(value ?? '').replace(/[&<>'"]/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' }[char]));
   const identity = () => {
@@ -29,10 +35,17 @@
     const response = await fetch('assets/data/proofpick-demos.json', { cache: 'no-store' });
     if (!response.ok) throw new Error('离线回放数据不可用');
     state.bundle = await response.json();
-    populateDemos();
     const requested = new URLSearchParams(window.location.search).get('demo');
-    const initial = state.bundle.demos.some((item) => item.demo_id === requested)
-      ? requested : state.bundle.demos[0].demo_id;
+    const requestedDemo = state.bundle.demos.find((item) => item.demo_id === requested);
+    const acceptedRequestedDemo = requestedDemo && (
+      requestedDemo.mode !== 'open' || confirmExperimentalResearch()
+    );
+    if (acceptedRequestedDemo) {
+      state.domain = requestedDemo.domain_id;
+      state.mode = requestedDemo.mode;
+    }
+    populateDemos(acceptedRequestedDemo ? requestedDemo.demo_id : undefined);
+    const initial = acceptedRequestedDemo ? requestedDemo.demo_id : byId('demo-select').value;
     selectDemo(initial, true);
   }
 
@@ -44,9 +57,10 @@
   function populateDemos(selectedId) {
     if (!state.bundle) return;
     const select = byId('demo-select');
-    select.innerHTML = state.bundle.demos.map((demo) => `<option value="${esc(demo.demo_id)}">${esc(demo.title)}</option>`).join('');
     const candidates = demosForSelection();
-    select.value = selectedId && state.bundle.demos.some((demo) => demo.demo_id === selectedId) ? selectedId : (candidates[0] || state.bundle.demos[0]).demo_id;
+    select.innerHTML = candidates.map((demo) => `<option value="${esc(demo.demo_id)}">${esc(demo.title)}</option>`).join('');
+    select.value = selectedId && candidates.some((demo) => demo.demo_id === selectedId)
+      ? selectedId : (candidates[0] || state.bundle.demos[0]).demo_id;
   }
 
   function selectedDemo() {
@@ -59,9 +73,11 @@
     document.querySelectorAll('[data-run-mode]').forEach((button) => button.classList.toggle('active', button.dataset.runMode === state.runMode));
     const demo = selectedDemo();
     byId('version-card').innerHTML = `DOMAIN PACK 1.0.0<br>DATA ${esc(demo.data_version)}<br>INDEX ${esc(demo.index_version)}<br>UPDATED ${esc(demo.evidence[0]?.observed_at || 'versioned manifest')}`;
-    byId('run-notice').innerHTML = state.runMode === 'replay'
-      ? '<b>固定脱敏回放</b> · 不是实时模型调用，不包含 Prompt、Key、私人路径或隐藏推理。'
-      : '<b>在线运行</b> · 需要本机已配置运行时；失败会明确显示 online_unavailable，不会伪装成回放。';
+    byId('run-notice').innerHTML = state.mode === 'open'
+      ? '<b>Online Research · Experimental/Beta</b> · 不保证官方地区页或网页提取成功；失败返回 unknown。Open Evidence 不进入 Trusted Checker，安全 unknown 不算研究完成。'
+      : (state.runMode === 'replay'
+        ? '<b>Trusted Mode · Stable</b> · 当前为固定脱敏回放，不是实时模型调用，不包含 Prompt、Key、私人路径或隐藏推理。'
+        : '<b>Trusted Mode · Stable</b> · 需要本机已配置运行时；失败会明确显示 online_unavailable，不会伪装成回放。');
     byId('run-button').innerHTML = state.runMode === 'replay' ? '播放脱敏轨迹 <span>→</span>' : '启动在线 Agent <span>→</span>';
     byId('hero-route').textContent = `${state.domain.toUpperCase()} / ${state.mode.toUpperCase()}`;
     byId('hero-pool').textContent = `${demo.complete_candidate_pool_size} CONFIGS`;
@@ -109,7 +125,8 @@
     const notices = [...demo.degraded_states, ...demo.conflicts];
     const memory = demo.memory_story.length ? `<section class="result-section"><h3>Memory 与连续追问 <span>${demo.memory_story.length} 步</span></h3><ol>${demo.memory_story.map((item) => `<li>${esc(item)}</li>`).join('')}</ol></section>` : '';
     const dynamic = demo.dynamic_observation ? `<section class="result-section"><h3>动态观察 <span>${esc(demo.dynamic_observation.status)}</span></h3><div class="degraded-box">${esc(demo.dynamic_observation.currency)} · observed_at ${esc(demo.dynamic_observation.observed_at)} · TTL ${demo.dynamic_observation.ttl_seconds / 3600}h · expired=${esc(demo.dynamic_observation.expired)}<br>${esc(demo.dynamic_observation.reason)}；不进入 Checker / Memory / 稳定规格。</div></section>` : '';
-    byId('result-panel').innerHTML = `<div class="result-head"><div><span class="section-kicker">02 / DECISION REPORT</span><h2>${esc(demo.title)}</h2><p>${esc(demo.query)}</p></div><span class="status-badge ${demo.mode === 'open' ? 'open' : ''}">${demo.mode.toUpperCase()}</span></div>
+    const modeLabel = demo.mode === 'open' ? 'ONLINE RESEARCH · EXPERIMENTAL' : 'TRUSTED MODE · STABLE';
+    byId('result-panel').innerHTML = `<div class="result-head"><div><span class="section-kicker">02 / DECISION REPORT</span><h2>${esc(demo.title)}</h2><p>${esc(demo.query)}</p></div><span class="status-badge ${demo.mode === 'open' ? 'open' : ''}">${modeLabel}</span></div>
       <div class="summary-grid"><div><span>QUERY INTENT</span><strong>${esc(demo.query_intent)}</strong></div><div><span>COMPLETE POOL</span><strong>${demo.complete_candidate_pool_size}</strong></div><div><span>CHECKER ELIGIBLE</span><strong>${demo.candidates.filter((item) => item.checker_status === 'eligible').length}</strong></div><div><span>EVIDENCE</span><strong>${demo.evidence.length} shown</strong></div></div>
       <section class="result-section"><h3>约束与偏好 <span>${demo.constraint_sources.length} 个来源</span></h3><div class="chips">${hard}${soft}</div><div class="chips" style="margin-top:7px">${demo.constraint_sources.map((item) => `<span class="chip">${esc(item)}</span>`).join('')}</div></section>
       ${demo.clarification.length ? `<section class="result-section"><h3>待澄清</h3><div class="chips">${demo.clarification.map((item) => `<span class="chip warn">${esc(item)}</span>`).join('')}</div></section>` : ''}
@@ -255,7 +272,13 @@
 
   function bindEvents() {
     document.querySelectorAll('[data-domain]').forEach((button) => button.addEventListener('click', () => { state.domain = button.dataset.domain; populateDemos(); selectDemo(byId('demo-select').value, false); }));
-    document.querySelectorAll('[data-research-mode]').forEach((button) => button.addEventListener('click', () => { state.mode = button.dataset.researchMode; populateDemos(); selectDemo(byId('demo-select').value, false); }));
+    document.querySelectorAll('[data-research-mode]').forEach((button) => button.addEventListener('click', () => {
+      const nextMode = button.dataset.researchMode;
+      if (nextMode === 'open' && state.mode !== 'open' && !confirmExperimentalResearch()) return;
+      state.mode = nextMode;
+      populateDemos();
+      selectDemo(byId('demo-select').value, false);
+    }));
     document.querySelectorAll('[data-run-mode]').forEach((button) => button.addEventListener('click', () => { state.runMode = button.dataset.runMode; updateSelectionUI(); }));
     byId('demo-select').addEventListener('change', (event) => selectDemo(event.target.value, false));
     byId('proofpick-query').addEventListener('input', updateCounter);

@@ -24,11 +24,11 @@
   <main>
     <section class="hero">
       <div class="hero-copy">
-        <div class="eyebrow"><span></span> 可复现作品集级 MVP · V2 Release Candidate</div>
+        <div class="eyebrow"><span></span> 可复现作品集级 MVP · V2 RC3 Candidate</div>
         <h1>先验证证据，<br><em>再做消费决策。</em></h1>
-        <p>Agent 自主编排数据库、知识库与网页研究工具；确定性 Checker 对完整候选池执行硬约束安全门，Ranker 只能排列合规候选。</p>
+        <p>Agent 自主编排结构化查询与知识库证据；确定性 Checker 对完整候选池执行硬约束安全门，Ranker 只能排列合规候选。网页研究是显式启用的实验能力。</p>
         <div class="trust-strip">
-          <span>3 个 Domain Pack</span><span>Trusted / Open 隔离</span><span>LLM 无权覆盖 Checker</span>
+          <span>3 个 Domain Pack</span><span>Trusted Mode · Stable</span><span>Online Research · Experimental</span>
         </div>
       </div>
       <div class="hero-console" aria-label="ProofPick 执行摘要">
@@ -61,8 +61,8 @@
         <div class="mode-row">
           <label class="field-label">证据模式</label>
           <div class="mode-toggle">
-            <button type="button" data-research-mode="trusted" class="active"><b>Trusted</b><small>治理证据 · 可进入 Checker</small></button>
-            <button type="button" data-research-mode="open"><b>Open</b><small>临时证据 · 不授予推荐资格</small></button>
+            <button type="button" data-research-mode="trusted" class="active"><b>Trusted Mode · Stable</b><small>治理证据 · 可进入 Checker</small></button>
+            <button type="button" data-research-mode="open"><b>Online Research · Experimental</b><small>可能返回 unknown · 不授予 Trusted 资格</small></button>
           </div>
         </div>
 
@@ -91,7 +91,7 @@
     </section>
 
     <section class="principles">
-      <article><b>01</b><h3>Agent，而非固定 RAG</h3><p>按任务选择 Product Query、KB Search、Evidence Check 与 Open Research，并在信息不足时继续补查或澄清。</p></article>
+      <article><b>01</b><h3>Agent，而非固定 RAG</h3><p>主线按任务选择 Product Query、KB Search 与 Evidence Check，并在信息不足时继续补查或澄清；Online Research 仅为实验路径。</p></article>
       <article><b>02</b><h3>资格与排序分离</h3><p>Checker 决定能否推荐；Ranker 只对合规集合做软偏好排序，无法恢复已淘汰候选。</p></article>
       <article><b>03</b><h3>每个结论可追溯</h3><p>商品、配置、地区、Evidence ID、来源时间与数据版本贯穿工具调用和最终报告。</p></article>
     </section>
@@ -116,7 +116,7 @@
   </aside>
   <div class="drawer-backdrop" id="drawer-backdrop"></div>
 
-  <footer><span>ProofPick V2 RC · MIT</span><span>消费决策原型，不构成购买建议或生产 SLA。</span></footer>
+  <footer><span>ProofPick V2 RC3 Candidate · MIT</span><span>Trusted Core 候选；Online Research 为 Experimental/Beta，不构成购买建议或生产 SLA。</span></footer>
   <script src="assets/js/components/portfolio.js"></script>
 </body>
 </html>
