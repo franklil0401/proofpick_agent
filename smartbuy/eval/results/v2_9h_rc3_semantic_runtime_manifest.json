@@ -1,0 +1,1674 @@
+{
+  "semantic_contract": {
+    "schema_version": "proofpick-semantic-runtime-manifest-v1",
+    "production_commit": "ba6606ae249bafc89c18b320935c767a3f756c34",
+    "production_tree": "84766c5d8840b50a27c612e24379b6dd63736741",
+    "domains": [
+      {
+        "domain_id": "headphone",
+        "domain_pack_version": "1.0.0",
+        "data_version": "headphone-governed-2026-09-03-v1",
+        "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+        "collection_name": "proofpick_headphone_v2_cae477364b46ccae",
+        "document_count": 12,
+        "embedding_model": "text-embedding-v4",
+        "embedding_dimensions": 1024,
+        "data_logical_sha256": "c1edf981e00f6ad15b409d1d4ea37b2c8e2dc6dd36b95ce4be99ac57693fc40a"
+      },
+      {
+        "domain_id": "laptop",
+        "domain_pack_version": "1.0.0",
+        "data_version": "laptop-governed-2026-09-02-v1",
+        "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+        "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+        "document_count": 12,
+        "embedding_model": "text-embedding-v4",
+        "embedding_dimensions": 1024,
+        "data_logical_sha256": "13cf9fffa9383921ed29a1e426da6a199edb699ec346aee985ecf21c9918f8b1"
+      },
+      {
+        "domain_id": "monitor",
+        "domain_pack_version": "1.0.0",
+        "data_version": "monitor-cn-2026-08-26-v1",
+        "index_version": "monitor-fact-card-h2-v1",
+        "collection_name": "smartbuy_monitors_v1",
+        "document_count": 60,
+        "embedding_model": "text-embedding-v4",
+        "embedding_dimensions": 1024,
+        "data_logical_sha256": "079c4f745e8dbbb538fe7cdacf5479f4e25ebc38972ef2175edf8876a35e8ffe"
+      }
+    ],
+    "file_groups": {
+      "agent_tool_orchestration": {
+        "members": [
+          {
+            "path": "smartbuy/agent/__init__.py",
+            "sha256": "15f2dcdd96c5273391a734a1f593098c7ab88b52b3e592ee4e650cd9dc222dbc"
+          },
+          {
+            "path": "smartbuy/agent/domain_agent.py",
+            "sha256": "945d63979b7cece44c4f236fe87786288ff58ba9b5a7c478dd312dc7d7bf468f"
+          },
+          {
+            "path": "smartbuy/agent/domain_gateway.py",
+            "sha256": "eb7e6854ce7ae958f9a032bf1c3a45b8e5db6e8b668f5fa91509a1bcb5574317"
+          },
+          {
+            "path": "smartbuy/agent/ranking.py",
+            "sha256": "c1eeb5363a4f026efd2b96a6740982fd3a72746ea86afec5fb2778a93a3919e2"
+          },
+          {
+            "path": "smartbuy/agent/react.py",
+            "sha256": "52305595302e3a6bd59ae66b80eccbf32336cea0f65b4ba7c2747fc22b19e643"
+          },
+          {
+            "path": "smartbuy/agent/reporting.py",
+            "sha256": "0d081d5be2e6920f32a858c7732c1b53e17628a8c757eba4a670b0062ab42e14"
+          },
+          {
+            "path": "smartbuy/orchestration/__init__.py",
+            "sha256": "95a73691a9403a27d4df4e742e6ac3158a6ccefa89ed838dd707eaf623468863"
+          },
+          {
+            "path": "smartbuy/orchestration/checkpoints.py",
+            "sha256": "318388145261a679b14fbafbb462b1d117b4c622f8d9d20b2dda9cd4089e8bf3"
+          },
+          {
+            "path": "smartbuy/orchestration/contracts.py",
+            "sha256": "201da31f38b3b3a15bc03d9c30846ece29b3e460c9f07af7f62892f3dfbd34ff"
+          },
+          {
+            "path": "smartbuy/orchestration/langgraph_adapter.py",
+            "sha256": "29850ce7f1ab21d85161a916b42bba5f4ca8dd8cbdbb8e13e7e10b99dc379fe4"
+          },
+          {
+            "path": "smartbuy/orchestration/react_adapter.py",
+            "sha256": "2b60919df36110744e1e9bc6b75e24c592c1b57e138a6a35fa1f8da66965d2ca"
+          },
+          {
+            "path": "smartbuy/orchestration/safety.py",
+            "sha256": "55f247f6f9c71e428ab6f9c4ae42e309f37b62759b00ea41b3d99dc474620e58"
+          },
+          {
+            "path": "smartbuy/orchestration/selector.py",
+            "sha256": "3b62afc83d6c1ffd988d5a2c03692e1dd506b55f51efbd2b1dd6eeb888c6c4b2"
+          }
+        ],
+        "aggregate_sha256": "5615bd91cba95529bfe00012cd99a54fd0f9c3e4fcfcb70a411d36715d67dbce"
+      },
+      "all_production_python": {
+        "members": [
+          {
+            "path": "smartbuy/agent/__init__.py",
+            "sha256": "15f2dcdd96c5273391a734a1f593098c7ab88b52b3e592ee4e650cd9dc222dbc"
+          },
+          {
+            "path": "smartbuy/agent/domain_agent.py",
+            "sha256": "945d63979b7cece44c4f236fe87786288ff58ba9b5a7c478dd312dc7d7bf468f"
+          },
+          {
+            "path": "smartbuy/agent/domain_gateway.py",
+            "sha256": "eb7e6854ce7ae958f9a032bf1c3a45b8e5db6e8b668f5fa91509a1bcb5574317"
+          },
+          {
+            "path": "smartbuy/agent/ranking.py",
+            "sha256": "c1eeb5363a4f026efd2b96a6740982fd3a72746ea86afec5fb2778a93a3919e2"
+          },
+          {
+            "path": "smartbuy/agent/react.py",
+            "sha256": "52305595302e3a6bd59ae66b80eccbf32336cea0f65b4ba7c2747fc22b19e643"
+          },
+          {
+            "path": "smartbuy/agent/reporting.py",
+            "sha256": "0d081d5be2e6920f32a858c7732c1b53e17628a8c757eba4a670b0062ab42e14"
+          },
+          {
+            "path": "smartbuy/api/__init__.py",
+            "sha256": "9b5709eb0e0bef8869d698f2a246ab7a5cea6ecbdcdaa222bd4bbb534cf120b4"
+          },
+          {
+            "path": "smartbuy/api/portfolio_runtime.py",
+            "sha256": "2511eeedd597eef4eeb99e7fc765b96188634bb5752c83b1e344663003723d29"
+          },
+          {
+            "path": "smartbuy/api/router.py",
+            "sha256": "e874e64a949c993b20fad6655112a54fc0a678b782ab6e37403ce381cdbd0f97"
+          },
+          {
+            "path": "smartbuy/cache/__init__.py",
+            "sha256": "0945c2f44ea141ef865a8b29e4dc2cb3d66766838893960250c1158186c60e05"
+          },
+          {
+            "path": "smartbuy/cache/adapters.py",
+            "sha256": "cfc4441aa7eb4dcd75dd008bfce3ec3591b8b52ff12420f8b78efb3f97679ebd"
+          },
+          {
+            "path": "smartbuy/cache/safe_cache.py",
+            "sha256": "717814022d999f6dfdd8bbad59aafebf147afc9a63a028a4cfa858ce4884c13a"
+          },
+          {
+            "path": "smartbuy/config/__init__.py",
+            "sha256": "d2e1b5a0659a5fc7df4fc19d8e82573b2a73bbe39fa386b0836fbcb105c996af"
+          },
+          {
+            "path": "smartbuy/config/bailian.py",
+            "sha256": "d05f562fa6f285294395a5ab0688088dfe5216d37fc1f2d68a2f83625f7f347b"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/__init__.py",
+            "sha256": "68544c92c48ecc31132638e3345353d985fd86e892d269081430542829211261"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/coordinator.py",
+            "sha256": "c6b6940d2a4fcb982b0c6b009cd9bbe5dcd40a188b11324bd3efcd858b310d78"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/engine.py",
+            "sha256": "8457364fa28434b4ace575bfe92e3e26f5dae9de159027e9e17e70224097929c"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/models.py",
+            "sha256": "478eca3e0a6eeda12ed4fbbf0604ffcfc462a241ba7e063763659d75172c3cd7"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/provider.py",
+            "sha256": "734489fbc8a336b577a31251ef7b95aaf4ed2e5cc56debbf567b0a0054541a22"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/settings.py",
+            "sha256": "0c516152993ce61581b9c3cbac995dee6dc440e20bb73c0a345946fa7e9a4761"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/spans.py",
+            "sha256": "03ea93cb4de45c0871a67e46fea9172a368fc375a9e73e09b4fece638b4ec30d"
+          },
+          {
+            "path": "smartbuy/constraints/__init__.py",
+            "sha256": "4c431c77f23892591f4aefa073d25584b318c63d7a721428d57b863f404e984f"
+          },
+          {
+            "path": "smartbuy/constraints/models.py",
+            "sha256": "605679133c8bce70f38c2789766d7cc5a64a346b73af92356f01e002bb57afbd"
+          },
+          {
+            "path": "smartbuy/constraints/normalize.py",
+            "sha256": "120d62881297d7ec04dfa5fc5c534fd99447cfc79d073a05268d4a61e5e4b9ce"
+          },
+          {
+            "path": "smartbuy/constraints/scoring.py",
+            "sha256": "f21a78df61fea61c185149f9dc8e02c4b4fac4557d0b6180e58b61260e1448a5"
+          },
+          {
+            "path": "smartbuy/constraints/verifier.py",
+            "sha256": "f25994ec6a3d782bca77dab1f8525337f9fd95450442b8753b7750c597f10e88"
+          },
+          {
+            "path": "smartbuy/contracts/__init__.py",
+            "sha256": "c8fc318fc773b8aefff4c717857d81ae2c193de77419cf8e0322efd1cf386da0"
+          },
+          {
+            "path": "smartbuy/contracts/models.py",
+            "sha256": "1e9de2bebe12c26f8cbcdca4b5f5541d6cec8208f5b874c10fd94307b9a56105"
+          },
+          {
+            "path": "smartbuy/contracts/product_pack.py",
+            "sha256": "8fe1f66b518f3ee430f79bfb3eb3e8637aa25194f99631cbf4befded090e2691"
+          },
+          {
+            "path": "smartbuy/db/__init__.py",
+            "sha256": "ffa99a6a5384abe582f139f72e9bdc31e0800b4da2fcf94adf916a68dc1f17a7"
+          },
+          {
+            "path": "smartbuy/db/build_database.py",
+            "sha256": "3698d7b2c5e70dda7a39c71a87f77746a4716ba99a2349c6b170d90924d7f004"
+          },
+          {
+            "path": "smartbuy/decision_core/__init__.py",
+            "sha256": "437b5a174628438691119da51bf2992d5514ef31e275bde8e036bf18d4d650b8"
+          },
+          {
+            "path": "smartbuy/decision_core/canonical.py",
+            "sha256": "2ff75bbd9a1f3202db6eb2a72e26ed5ef525cd97260e4903eb41ab3ad5aa35e5"
+          },
+          {
+            "path": "smartbuy/decision_core/delta.py",
+            "sha256": "fce83641dedbaf0bbcf22f9b086582a36d9755d705b4ea47bdc1ee40e776aa86"
+          },
+          {
+            "path": "smartbuy/decision_core/intent.py",
+            "sha256": "2132b7d279459666bceba3a3ed9cb545964770c7ba7ea8e7cc09d852bd9a0222"
+          },
+          {
+            "path": "smartbuy/decision_core/result.py",
+            "sha256": "c4a3861d41a5b1df7a51f76416c8ab385bc629f86132da7e1e04efd55aa0e178"
+          },
+          {
+            "path": "smartbuy/decision_core/safety.py",
+            "sha256": "381089056ee1b8b20ec47ef5994a8338d94044a57d19840f04879927b20ddad7"
+          },
+          {
+            "path": "smartbuy/decision_core/scope.py",
+            "sha256": "5b16b970f976b90b55cc107ed1d4c38ef426731232692b4cb3bf61a2374b7032"
+          },
+          {
+            "path": "smartbuy/domain/__init__.py",
+            "sha256": "013b7e686333e3ac5c251685cc92644b2c27c102dcfe0bbc7bbe0520c2a91205"
+          },
+          {
+            "path": "smartbuy/domain/models.py",
+            "sha256": "a8d1ce9d2703f7e141cee6e38defcfb8379f85bd424ac2c2a0811364a9eab163"
+          },
+          {
+            "path": "smartbuy/identity/__init__.py",
+            "sha256": "e2cceef794dab8ee99babca805f14dac17fe0cef5a9f768543554a0bd6491f5b"
+          },
+          {
+            "path": "smartbuy/identity/guards.py",
+            "sha256": "898a97d83e4047cb30911b037b5bc253c271820d3676546fd63e862a053c5c88"
+          },
+          {
+            "path": "smartbuy/identity/models.py",
+            "sha256": "74a205e836138b99b7f13d627d175e027bc11a8a41e309b53433f06024680e30"
+          },
+          {
+            "path": "smartbuy/identity/resolver.py",
+            "sha256": "53583d198ffdd99ee7a13a0479a8c9f32047221220a973036c0e21975a0be331"
+          },
+          {
+            "path": "smartbuy/memory/__init__.py",
+            "sha256": "993b536553c9462100512be95df5466039d15e0f3118c514a33370737753c040"
+          },
+          {
+            "path": "smartbuy/memory/domain_store.py",
+            "sha256": "1b5350a77d7e714836b9db50bd3231fdd203ba54c957fd7d115422bf924c5f7b"
+          },
+          {
+            "path": "smartbuy/memory/store.py",
+            "sha256": "bceeb9fa3d95c7f9c7295c0bf076a52d986940b9b98345c1e2222dc5df9925fe"
+          },
+          {
+            "path": "smartbuy/observability/__init__.py",
+            "sha256": "1c7fc5f008b51396c9166f0c8a1be368decfff43a223b09dcbf41e60b9435b4c"
+          },
+          {
+            "path": "smartbuy/observability/agent_events.py",
+            "sha256": "cb69bcbea0c08724f5c073c18eb1b7131d48296b82ef4c294a2805ffcabc51c1"
+          },
+          {
+            "path": "smartbuy/observability/eval_ledger.py",
+            "sha256": "910cb3b6941bac3e6b8fb02594cc9b06ce60fc65de3602e3afdee6a5e3d5f28d"
+          },
+          {
+            "path": "smartbuy/observability/usage.py",
+            "sha256": "fdb0ad532cf573e08f58f1d5d7d39a4c7bfa26cb956bf2ecaba52b0a731a9302"
+          },
+          {
+            "path": "smartbuy/open_research/__init__.py",
+            "sha256": "cf602d1016b3d8328504bb66556ad21358f83a466a1990da1fbebce85b2fb055"
+          },
+          {
+            "path": "smartbuy/open_research/evidence_check.py",
+            "sha256": "112a8af5dcf1f95005eea6ef705849106695cb6baf2e8bea3245c954ba2f2d9f"
+          },
+          {
+            "path": "smartbuy/open_research/extractor.py",
+            "sha256": "a5a14d13a13362f0282c45b5b8890d8fab8c327eae31c3dbfd71c018c2aca9be"
+          },
+          {
+            "path": "smartbuy/open_research/html_parser.py",
+            "sha256": "d5dabc418080f2eef0d8ac23af20bda2b55f911782e9463652f32128e91549b8"
+          },
+          {
+            "path": "smartbuy/open_research/models.py",
+            "sha256": "9f1f8608a8dd5ca05e1f68b486fd455c84a1be8c8cd60adaec1c24c329226f4a"
+          },
+          {
+            "path": "smartbuy/open_research/normalizer.py",
+            "sha256": "66aa5c01771acf268ce82ab4e1bb410089ae046ba17dd1221d31612bd8e62bf6"
+          },
+          {
+            "path": "smartbuy/open_research/pdf_parser.py",
+            "sha256": "bb36ceba20ac4d93e0dcb97187dd2a0d02402058e823330f60d5537e5c1e0e6f"
+          },
+          {
+            "path": "smartbuy/open_research/service.py",
+            "sha256": "70ff45ceb0ed2a5a119055ee8a54a519b7824bd8ccb689e00856dae8381ed27c"
+          },
+          {
+            "path": "smartbuy/open_research/settings.py",
+            "sha256": "d792e5d379fefa35041b76069a2a06a4ee5c88797e25a945fc2a47093cd7a7fb"
+          },
+          {
+            "path": "smartbuy/open_research/store.py",
+            "sha256": "5ebf9000a8bf9e4f178ec7cfbcfe355aa040d2ef30e61226f473153e974c5e19"
+          },
+          {
+            "path": "smartbuy/open_research/url_safety.py",
+            "sha256": "13f8830e0a73af4b4a95ae29d625564c32335e693d03a53d82358c70f3aecbcb"
+          },
+          {
+            "path": "smartbuy/orchestration/__init__.py",
+            "sha256": "95a73691a9403a27d4df4e742e6ac3158a6ccefa89ed838dd707eaf623468863"
+          },
+          {
+            "path": "smartbuy/orchestration/checkpoints.py",
+            "sha256": "318388145261a679b14fbafbb462b1d117b4c622f8d9d20b2dda9cd4089e8bf3"
+          },
+          {
+            "path": "smartbuy/orchestration/contracts.py",
+            "sha256": "201da31f38b3b3a15bc03d9c30846ece29b3e460c9f07af7f62892f3dfbd34ff"
+          },
+          {
+            "path": "smartbuy/orchestration/langgraph_adapter.py",
+            "sha256": "29850ce7f1ab21d85161a916b42bba5f4ca8dd8cbdbb8e13e7e10b99dc379fe4"
+          },
+          {
+            "path": "smartbuy/orchestration/react_adapter.py",
+            "sha256": "2b60919df36110744e1e9bc6b75e24c592c1b57e138a6a35fa1f8da66965d2ca"
+          },
+          {
+            "path": "smartbuy/orchestration/safety.py",
+            "sha256": "55f247f6f9c71e428ab6f9c4ae42e309f37b62759b00ea41b3d99dc474620e58"
+          },
+          {
+            "path": "smartbuy/orchestration/selector.py",
+            "sha256": "3b62afc83d6c1ffd988d5a2c03692e1dd506b55f51efbd2b1dd6eeb888c6c4b2"
+          },
+          {
+            "path": "smartbuy/portfolio/__init__.py",
+            "sha256": "ab5b4615f1ca9c09dac4e93171ae0689d2a76e1634565bbe7b42f76de3b6708d"
+          },
+          {
+            "path": "smartbuy/portfolio/demos.py",
+            "sha256": "8c0228b6bf9f3da56239af5a29b4882105026cb3ce72b2460358bda9a3199130"
+          },
+          {
+            "path": "smartbuy/portfolio/dynamic_facts.py",
+            "sha256": "97654bda6f567af55343a7372513e651ad74a874b321c58ff62b04543c1cd331"
+          },
+          {
+            "path": "smartbuy/portfolio/models.py",
+            "sha256": "412447caf065dafcae5cca71c76f2046b93356692160f594cde4314de32adf6e"
+          },
+          {
+            "path": "smartbuy/product_packs/__init__.py",
+            "sha256": "aac24c390f122f40943ab4c5a866147eb6514f9b1e36643fd6643904ee38a929"
+          },
+          {
+            "path": "smartbuy/product_packs/builder.py",
+            "sha256": "cf1a806d4c5796f9dea152d91590065d7e45953b5ae27584cecb0abe6646ed1e"
+          },
+          {
+            "path": "smartbuy/product_packs/cli.py",
+            "sha256": "f3cb6dd4ec15ac2053e2d562e3a828104a4c17bac47d7c387d69ab5f33ef48a7"
+          },
+          {
+            "path": "smartbuy/product_packs/domain_builder.py",
+            "sha256": "500283bb5fb12eeeb2b1d653d056491a2a6742c7259fd2525a96cb41ce08a5ad"
+          },
+          {
+            "path": "smartbuy/product_packs/domain_cli.py",
+            "sha256": "406a2ec5249cbacdcdd00e246a02b5c2c65756a28e5c58e93e20f55b18dcf764"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/headphone-v1/pack.json",
+            "sha256": "ab961767131f1454a480fa048364d80b7481120aba70b4b49ee71f15c7e61f15"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/laptop-v1/pack.json",
+            "sha256": "0417332b70d772e851f705c83df7932cd60f5d879425ee04f032f08d9c16dc2a"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/monitor-u2725qe-us/pack.json",
+            "sha256": "042645ee585e05ac73725e853b0c744d854c5072c3b08ed093352faf6ca0efc8"
+          },
+          {
+            "path": "smartbuy/product_packs/ledger.py",
+            "sha256": "0fdd0beed2fa49f8d8bc54ad7bd131b472b423a3c8548719652e4b9a91da44da"
+          },
+          {
+            "path": "smartbuy/product_packs/live_index.py",
+            "sha256": "01ae566fb0d3f868cbc929d4b0c30adf768930c21899ff6c97661a46ac83dffa"
+          },
+          {
+            "path": "smartbuy/product_packs/loader.py",
+            "sha256": "2417adda33709fa0c1f7e7d445253221df499c43f4b08ea7714c0991c8b70bbf"
+          },
+          {
+            "path": "smartbuy/product_packs/models.py",
+            "sha256": "0f19ecfd1fd5724930efb4f3042322f3abfa4357bd564383b9d2778fd53d49b9"
+          },
+          {
+            "path": "smartbuy/product_packs/runtime.py",
+            "sha256": "34170a98939613b4e77b6879193cb8295b61a50700e2eb7c1054ac013bfc43ba"
+          },
+          {
+            "path": "smartbuy/product_packs/schema/product-pack-v1.schema.json",
+            "sha256": "e674e4df754d8da51b60065da8a4fa2f2f36c62147141ece7a594c71b4ac7b9b"
+          },
+          {
+            "path": "smartbuy/providers/__init__.py",
+            "sha256": "4f94b84bc1961e6c5d0bd7da18fae7d62b66b0daea409a0241c771ac9811ef23"
+          },
+          {
+            "path": "smartbuy/providers/bailian.py",
+            "sha256": "d8d5e64d0b26afcfb1d48e886ee1b427c22d8830c635bb9ec4b8870eb75a0f02"
+          },
+          {
+            "path": "smartbuy/providers/zhipu_search.py",
+            "sha256": "7379d2d3574684c26e30952fcd0aced6fb95eb894eb0dec493aa476aaa06b5ff"
+          },
+          {
+            "path": "smartbuy/ranking/__init__.py",
+            "sha256": "ae1784ab87d2b41a1adde28f06f19135eeaa9c06de8656e4cb54562857c482ce"
+          },
+          {
+            "path": "smartbuy/ranking/models.py",
+            "sha256": "ac8d2d7390dd3d31344e800581114644b332ec3949f36c091c188f7d6b1d9825"
+          },
+          {
+            "path": "smartbuy/ranking/profile.py",
+            "sha256": "1aaab6db41416844ac20b04a720a1d0abaf2c4ef1fa593f98201555da87a1278"
+          },
+          {
+            "path": "smartbuy/ranking/ranker.py",
+            "sha256": "749a388bed609796b2dc132d56759a086d3bc693f5b2fcefd59d68f125273fbd"
+          },
+          {
+            "path": "smartbuy/retrieval/__init__.py",
+            "sha256": "96e99b5213d21597194432718c2d1dede8ce80d891b140db6ef3c14427d06842"
+          },
+          {
+            "path": "smartbuy/retrieval/domain_index.py",
+            "sha256": "7e557a8c10607b5f13c17429a48c68a14fc206c3cae29366696bfe1710a88f22"
+          },
+          {
+            "path": "smartbuy/retrieval/knowledge_base.py",
+            "sha256": "1f26ea6db43fb0424c3a62ac6e67b192f47da6215d6c3d26a5049297f7aba6e3"
+          },
+          {
+            "path": "smartbuy/source_search/__init__.py",
+            "sha256": "8e8f13d893bc8d66a682d6804f5a8ef67706633ec1a43515aada5a1d06ff15e0"
+          },
+          {
+            "path": "smartbuy/source_search/cache.py",
+            "sha256": "980de8796b9f3577b7162b738b317883027dc006e1ee493891fd35632464e683"
+          },
+          {
+            "path": "smartbuy/source_search/models.py",
+            "sha256": "132d7f80eb553aa250b9e682a949459145454aadbe76c5fb224319e7a617bb12"
+          },
+          {
+            "path": "smartbuy/source_search/provider.py",
+            "sha256": "ed89e1b1740a6c65fa99f64527da601db7ee080ce57a1eadf6ae79a2e2449fa2"
+          },
+          {
+            "path": "smartbuy/source_search/settings.py",
+            "sha256": "e7db412a5cdf1540cb552ce06ee71349ad69dae840bbe7410acb8f4ebcbeb9f3"
+          },
+          {
+            "path": "smartbuy/source_search/validator.py",
+            "sha256": "5b978f8b14b8b5f97e42f2d653c21105f67fc7913b9b1152ca876a7875576e27"
+          },
+          {
+            "path": "smartbuy/tools/__init__.py",
+            "sha256": "c2d6d88cb964b1c50169cf9050cffa50cadad3c2b61550023c1bbbcef048e401"
+          },
+          {
+            "path": "smartbuy/tools/base.py",
+            "sha256": "24a0e568d3330c79ea2801dde6cd736663a49aea34df21b02103012e883a72e9"
+          },
+          {
+            "path": "smartbuy/tools/domain.py",
+            "sha256": "10453df7c42da11a64dce0d4738df98fc8e24b90f8df6b371d6eb3a1f6142969"
+          },
+          {
+            "path": "smartbuy/tools/evidence_check.py",
+            "sha256": "b898d2b7254a87ccfa90ee65ca95e5a416bccc5b1c09966eccb3512e1886fb39"
+          },
+          {
+            "path": "smartbuy/tools/kb_search.py",
+            "sha256": "9809a1faac5d1d8b4b9f7055d18092dee6e14b3f8d158e06adfbd7daf4cc000c"
+          },
+          {
+            "path": "smartbuy/tools/source_search.py",
+            "sha256": "e6d17a36df54a4fc2e1a2f43e6a7713a61ff28a1084b161640a835bd8ed3ed51"
+          },
+          {
+            "path": "smartbuy/tools/text2sql.py",
+            "sha256": "2c2675c17bd24795cd4d08718d1d9a5bd6efd5f99b7e1e1c1598ddac41734eca"
+          },
+          {
+            "path": "smartbuy/tools/web_extractor.py",
+            "sha256": "d786c8279624359299c59b43c38d56443852f2937d6933a770438d245ac44854"
+          },
+          {
+            "path": "smartbuy/tools/web_search.py",
+            "sha256": "9ded83cbe415dd2b00b686f826a07b466634c481bf864657741024ed2accc8e0"
+          }
+        ],
+        "aggregate_sha256": "f82a2015f708f899510ab0c658821f2c6d3e53e642f8d9124a16f89d44dfceda"
+      },
+      "constraint_checker": {
+        "members": [
+          {
+            "path": "smartbuy/constraints/__init__.py",
+            "sha256": "4c431c77f23892591f4aefa073d25584b318c63d7a721428d57b863f404e984f"
+          },
+          {
+            "path": "smartbuy/constraints/models.py",
+            "sha256": "605679133c8bce70f38c2789766d7cc5a64a346b73af92356f01e002bb57afbd"
+          },
+          {
+            "path": "smartbuy/constraints/normalize.py",
+            "sha256": "120d62881297d7ec04dfa5fc5c534fd99447cfc79d073a05268d4a61e5e4b9ce"
+          },
+          {
+            "path": "smartbuy/constraints/scoring.py",
+            "sha256": "f21a78df61fea61c185149f9dc8e02c4b4fac4557d0b6180e58b61260e1448a5"
+          },
+          {
+            "path": "smartbuy/constraints/verifier.py",
+            "sha256": "f25994ec6a3d782bca77dab1f8525337f9fd95450442b8753b7750c597f10e88"
+          }
+        ],
+        "aggregate_sha256": "18d1fda357cb8e68b6504b85e6ff8e96471a7add9f0da104603700e4171d729c"
+      },
+      "constraint_resolution_clarification": {
+        "members": [
+          {
+            "path": "smartbuy/constraint_proposals/__init__.py",
+            "sha256": "68544c92c48ecc31132638e3345353d985fd86e892d269081430542829211261"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/coordinator.py",
+            "sha256": "c6b6940d2a4fcb982b0c6b009cd9bbe5dcd40a188b11324bd3efcd858b310d78"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/engine.py",
+            "sha256": "8457364fa28434b4ace575bfe92e3e26f5dae9de159027e9e17e70224097929c"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/models.py",
+            "sha256": "478eca3e0a6eeda12ed4fbbf0604ffcfc462a241ba7e063763659d75172c3cd7"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/provider.py",
+            "sha256": "734489fbc8a336b577a31251ef7b95aaf4ed2e5cc56debbf567b0a0054541a22"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/settings.py",
+            "sha256": "0c516152993ce61581b9c3cbac995dee6dc440e20bb73c0a345946fa7e9a4761"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/spans.py",
+            "sha256": "03ea93cb4de45c0871a67e46fea9172a368fc375a9e73e09b4fece638b4ec30d"
+          }
+        ],
+        "aggregate_sha256": "9cf516b4e2ba9368be94ce18abf3680b32100b231acb74289fdfd788cdaa1e58"
+      },
+      "dependency_lock": {
+        "members": [
+          {
+            "path": "vendor/youtu-rag/pyproject.toml",
+            "sha256": "7f3278442e3cccd4c1d7ffeed9ae729cdd0af4f90263e6af17e2ef1a250d7523"
+          },
+          {
+            "path": "vendor/youtu-rag/uv.lock",
+            "sha256": "8e2e889757a4369d0dfef9d5a262f50b6934ef0eede063434a726bb7b8ab94d8"
+          }
+        ],
+        "aggregate_sha256": "d0802f956a36e0ae65d9306fea81b4c80614ace2237ab32f24616fdc7e3fdf9c"
+      },
+      "domain_pack_config": {
+        "members": [
+          {
+            "path": "smartbuy/domain_packs/category_registry.json",
+            "sha256": "996848b673550861610ef118562766596402cf78e00bc29b2cdec38f4ee3fae5"
+          },
+          {
+            "path": "smartbuy/domain_packs/headphone/fields.json",
+            "sha256": "a86f86a9e038ceaea50fd15c14d798e8c329bf60ce2c4823a6b132bb1a16d880"
+          },
+          {
+            "path": "smartbuy/domain_packs/headphone/manifest.json",
+            "sha256": "151b35605ca1e1b52740c78eb35d6ee90a8b64f145d82ac85b032847aa0280c4"
+          },
+          {
+            "path": "smartbuy/domain_packs/headphone/policies.json",
+            "sha256": "0af0a24e11db06767350b51d278f4dbf2882a3ef026ca127ed52a437dcd07ae1"
+          },
+          {
+            "path": "smartbuy/domain_packs/laptop/fields.json",
+            "sha256": "d857e5282e0282eb17691aed1b9cffae3a92ffb00d5b8a923ed547e089540b96"
+          },
+          {
+            "path": "smartbuy/domain_packs/laptop/manifest.json",
+            "sha256": "60584b5b27aec57c4209f3604f6bc75e73e24553d5540ffeebd89f86ee878a41"
+          },
+          {
+            "path": "smartbuy/domain_packs/laptop/policies.json",
+            "sha256": "63af71d989bb93a1eafa925eaa95c8af1622defa3a806f059587c360f8cbf1c0"
+          },
+          {
+            "path": "smartbuy/domain_packs/monitor/fields.json",
+            "sha256": "abec7759b54a8ebb1f2cd98731f6dce3ea09efeb3f3b44bacab995b556a9810f"
+          },
+          {
+            "path": "smartbuy/domain_packs/monitor/manifest.json",
+            "sha256": "39288a6ddb6c887b62c374ea907223a381190752f76486f0445f18d3f019553b"
+          },
+          {
+            "path": "smartbuy/domain_packs/monitor/policies.json",
+            "sha256": "f715bbb8f837c52d26f2a1acb40ab52fa6409271d602d56f3bbdfb7f6675dc40"
+          }
+        ],
+        "aggregate_sha256": "822b494e9b0c6320b9f9c03148c0471f4b1bf97eb9c40c9d1e23e59b7fe47c7c"
+      },
+      "evidence_check": {
+        "members": [
+          {
+            "path": "smartbuy/open_research/evidence_check.py",
+            "sha256": "112a8af5dcf1f95005eea6ef705849106695cb6baf2e8bea3245c954ba2f2d9f"
+          },
+          {
+            "path": "smartbuy/product_packs/ledger.py",
+            "sha256": "0fdd0beed2fa49f8d8bc54ad7bd131b472b423a3c8548719652e4b9a91da44da"
+          },
+          {
+            "path": "smartbuy/tools/evidence_check.py",
+            "sha256": "b898d2b7254a87ccfa90ee65ca95e5a416bccc5b1c09966eccb3512e1886fb39"
+          }
+        ],
+        "aggregate_sha256": "c977ef1fe3e249d60d83b2b8b1e66725a386cbaae7fa59ad70cb224bfd61a96b"
+      },
+      "governed_data": {
+        "members": [
+          {
+            "path": "smartbuy/data/catalog/monitors_v1.json",
+            "sha256": "b50fd4818575747dab00ffe922ea9720b3a7196e1a5162c0494cd6454a04210a"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/asus-pa279crv-cn.md",
+            "sha256": "4d9716558562723c5fd8c31817c565929b1f29690c9f4461a9c8cf00795b1c1c"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/asus-pa27jcv-cn.md",
+            "sha256": "4d6e27d6f8f370a8f95671c0c968b47d315a2aff2a6eea57c4fee95a57909634"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/asus-pg27aqdm-cn.md",
+            "sha256": "5b2cf704eaac7d3dcbb4c07f294eafa8978f6c987ab628132163c473ee868121"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/benq-ex2710u-cn.md",
+            "sha256": "981ab847b609440c60bfa3ae89cc4520c3d1436f74a7e8a619a44259df20533b"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/benq-pd2705u-us.md",
+            "sha256": "a0cb2206865da118b6ce7123634e29a254c5f4d092b90c6cd4e60ca4dcf723af"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/benq-pd2725u-ca.md",
+            "sha256": "0088b3a6913353753196e85b941a816eb98d972782cdf7241e0d8f95c6bea82e"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/dell-g2724d-cn.md",
+            "sha256": "18ca25ba22836a84da74cfeb1880e3d1df10d4dfde87e0b3dd2bc9eafc24d30f"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/dell-s2722qc-cn.md",
+            "sha256": "4e3dcabe2cdd3331b5537a23e56fde98a7013939f71877982df2bed8f43dffa0"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/dell-u2723qe-cn.md",
+            "sha256": "cee81e1a8999aab610c34dbbe1502c459b26cb3758b3f286aad5d84cacee878b"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/dell-u2724d-cn.md",
+            "sha256": "008dccab583ac92828476a6fca7139edf7d70bb4c6791e4eb171deabfd125596"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/lg-27gs95qe-b-cn.md",
+            "sha256": "14cf940ac0132ce75006a283ae577b63f93562954e66785249c2a802bc8eeef7"
+          },
+          {
+            "path": "smartbuy/data/demo/fact_cards/lg-27up850k-w-cn.md",
+            "sha256": "63ef99c840f9268cf5f1ffaef7979dcc295ff96738f09a705d78ec902df4503c"
+          },
+          {
+            "path": "smartbuy/data/demo/manifest.json",
+            "sha256": "1c591f29fafb79ca05653b18de9ab3e5bb7aae79937a706809b84a100748ac44"
+          },
+          {
+            "path": "smartbuy/data/headphone/headphone_configurations_v1.json",
+            "sha256": "4b3ef3853e62f9eb7b9d15d7faf3300ee53c9a87a47ee5d97d5c95cd298384cb"
+          },
+          {
+            "path": "smartbuy/data/laptop/laptop_configurations_v1.json",
+            "sha256": "e0e1f72e0608c22bf2ce1b362a476c323670853def3b03954e8165074922da0c"
+          },
+          {
+            "path": "smartbuy/data/processed/evidence_records.jsonl",
+            "sha256": "1210cdc3020afc492ac533a81342255c27256296b293b4477def3a88b3e9e925"
+          },
+          {
+            "path": "smartbuy/data/processed/index_manifest.json",
+            "sha256": "b74d5022a7615676f9a3409fff68b30fd08f5c7d494757668e37bf332efedb8a"
+          },
+          {
+            "path": "smartbuy/data/processed/price_observations.jsonl",
+            "sha256": "a3f1ddab0def9ee0bcfc8a17f38ac63e1dfec3b2bc1c4c11aad5e1035b799670"
+          },
+          {
+            "path": "smartbuy/data/processed/products.jsonl",
+            "sha256": "a25545a00aa6a177dc18dd00900b36e4320749cdd5895733a21aa98187358da2"
+          },
+          {
+            "path": "smartbuy/data/processed/source_records.jsonl",
+            "sha256": "3655f01f3f757797c4ae3aa4646b4be41904f94d2fa18418bacd20a1660527d8"
+          },
+          {
+            "path": "smartbuy/data/processed/stage3_retrieval_results.json",
+            "sha256": "0bf59bcf13f9fa787b93800fab0c051cf7235f6237af740554f91d13c9630e81"
+          },
+          {
+            "path": "smartbuy/data/processed/stage4_dry_run_results.json",
+            "sha256": "6d13ab8c39a29118d50eb5364e10e18f531cd1fbcdcd14f283f621e838681def"
+          },
+          {
+            "path": "smartbuy/data/processed/stage4_e2e_results.json",
+            "sha256": "a8adbe0c653a69b5e0db9a46a40ab127f69207bbee9e500863586a7a21c87317"
+          },
+          {
+            "path": "smartbuy/data/processed/stage4_postfix_s4_014_results.json",
+            "sha256": "62615c8c86084d14845663d001d6e4db9f7fa866f0c28e62585c884d0b6bd5c2"
+          },
+          {
+            "path": "smartbuy/data/processed/stage5_agent_dry_run_results.json",
+            "sha256": "46a6eb2ce471fee6c2f814fb0151f9382da3186bc68a9c0a27ac117da9266098"
+          },
+          {
+            "path": "smartbuy/data/processed/stage5_agent_e2e_results.json",
+            "sha256": "6b354fad28310d585e240f12e78ed7b117be8b70acbc34d3069251ce61734185"
+          },
+          {
+            "path": "smartbuy/data/processed/stage5_agent_regression_results.json",
+            "sha256": "e0d364d7ae82adba67a686f24d69148a109dcdb7826364e107d9ba37c6f73db1"
+          },
+          {
+            "path": "smartbuy/data/processed/stage5_agent_s4_012_order_regression_results.json",
+            "sha256": "b79f41368299f3b8051af1361f62aac751dda928ed0036a37b7977cad79a6d7b"
+          },
+          {
+            "path": "smartbuy/data/processed/stage5_agent_s4_012_regression_results.json",
+            "sha256": "91e145400429576c3ca5ca356b69e9baf469de049a773bb417d1cd2ff3c3f7c9"
+          },
+          {
+            "path": "smartbuy/data/processed/stage5_fixed_ablation_results.json",
+            "sha256": "ac14c533e18e7ec3cc0a737d83849f5ed7bc34c0241890a9414887f604e10268"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_cache_ledger.jsonl",
+            "sha256": "fde82aa38ba4260c4b379631daa9cf580ff973a0022dc6ca582d7419dbad44f2"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_cache_results.json",
+            "sha256": "0f95c57bf66073c918c5837c92f42eb847d975ad22c5a3cb0936ecec1cf1032e"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_checker_determinism_results.json",
+            "sha256": "e0e75d171d3f92f291de9b9122d61a7a01aa0b76d8703785c08b9cdc5168ba3f"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_checkpoint_merge_audit.json",
+            "sha256": "5ae634a5e4cd0155dd8b4ee9e07d66112f2c5b06ab18082161f3b46abdbfa643"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_cost_summary.json",
+            "sha256": "d988d84ec20f67b17ca13825da2721ab5390d9512c25b046db3f1a5545088275"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_evaluation_ledger.jsonl",
+            "sha256": "86bccc2f9506fb064fd625b3f2ce6a23ef17585b3353f767891cf34f04cc0a7b"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_failure_results.json",
+            "sha256": "bdd4259f65770ed3424f515f747cdf279c90ffc069e5d1ac6d4585a601392142"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_four_group_results.json",
+            "sha256": "b8546a19afa83efa3edfb009c99feacb48a613f7127dd6da59a951a4ae9b62ad"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_initial_scoring_failure.json",
+            "sha256": "64d6958b3b7624b21b96b8cb8a5b383afcd4ef830971a05a7a04755c26ae6c7f"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_memory_initial_results.json",
+            "sha256": "275a4ab0514e22407983ed0bcdff1cfa8adc6720a8c40686656c179ac83c72d4"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_memory_results.json",
+            "sha256": "56797ecac107def02444b19d8b98028f1208f89d45b178ca00dac8e6b386b2a8"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_metrics_summary.csv",
+            "sha256": "c52ede8e0581f62ed468bc3729ef341c50a1c52f54f56cf90fb8aa888676262c"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_resilience_ledger.jsonl",
+            "sha256": "e2ed33a64a4c6b4b39b5107b5e208414bfd8be1b3729d604ba042c6484348b13"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_smoke_initial_failure.json",
+            "sha256": "613dc26c6f74eba7ec825d221b82f85d0b029375b86893522bf212910fb974cc"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_smoke_results.json",
+            "sha256": "8d0e97c4a8f2184842f13eae4421dd053308dc92b21d0cb20577e59fa3ead49d"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_stage4_regression_results.json",
+            "sha256": "399ad6256297c3624abf57c6a4918437d4487280c7d7b3b7f70459a4803225d6"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_targeted_regression_results.json",
+            "sha256": "3acd2faed94922790efdf770cc2da8bf171863cfb08948ea653a4eb4de60f8d8"
+          },
+          {
+            "path": "smartbuy/data/processed/stage6_unified_ledger.jsonl",
+            "sha256": "83f1a0eae2edaf0eea30e036af2beb2801ba84cffe06d54b7736cbf20e6c7a92"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_demo_presentation_regression.json",
+            "sha256": "ff74739f0cdc19e4098569a4c72c1f8d7e652e7d2e4a8a47279fe1375d2c6b68"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_demo_results.json",
+            "sha256": "ac476d5ab47c9f67e737b9cef9a8f11cb72b1130b2f5b8c19b356e139b598d9c"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_release_candidate_ledger.jsonl",
+            "sha256": "89286c096bdf4fe0f545c051bfd8402ec272fb50c1bca898eb46bbf541161fd2"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_release_candidate_results.json",
+            "sha256": "24b4b362f277768d04093063c9b6d6bf3b91cd428e792ed88f719f3ea878f281"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_targeted_h6_015_ledger.jsonl",
+            "sha256": "98952340b9e2417eb6052b2ecc15c95be2aea8e1465709ac28c8d05d0359c6df"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_targeted_h6_015_results.json",
+            "sha256": "acb19bc4787fb1dada27f6dfa0c269017e9f98cdec104ccef01d26e457e35bd7"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_targeted_h6_018_ledger.jsonl",
+            "sha256": "fcc4639cd140ef804ed9d1331624b513ae1f1843d48f1ad2822c1b094ff5fc61"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_targeted_h6_018_results.json",
+            "sha256": "9248597d75ef9771b096aa05f740fdf9097311465410af807271cb3d5459922c"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_targeted_s4_011_ledger.jsonl",
+            "sha256": "340713a68b4473f4de903d19b3cb3919985d7880d99270577da92d00ca31b1d6"
+          },
+          {
+            "path": "smartbuy/data/processed/stage7_targeted_s4_011_results.json",
+            "sha256": "af599e67ff429ccd326d45efc954584a5db18dde08536d86f24371412fdb0250"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5_first_results.json",
+            "sha256": "41cdf2fb29ba80ca1bd9ed2a54e494facc652dcb0b2d5033ed169ced43735091"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5_initial_implementation_results.json",
+            "sha256": "bd300a85f9f0265938083e675284bb2d5a68fd617364ebb4c8fffab705e2165f"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5_postfix_results.json",
+            "sha256": "2baf3292b0ce303bb3b42755bc5199fbdf86b2db18d6dff993ec3832274a8cfb"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5_v1_regression_results.json",
+            "sha256": "f496bee098dcd361302879491b87c1b7b90428de9c79466d8ef4a9fd43433ded"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5b_initial_failure_audit.json",
+            "sha256": "2cbcdaf2ebd4f54dc2e8ea84575bcb1638df582c2da21b864c47c96791f6ab96"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5b_live_holdout_first_results.json",
+            "sha256": "c22113410d2f7b964b255176f30659b08ef13f5a14fc8dddc3c621a8ae43c748"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5c_exposed_regression_results.json",
+            "sha256": "c52f60f01fa1ba8e8fa17249cb2554f92d54f6dcea16385ce163b8a1d687924e"
+          },
+          {
+            "path": "smartbuy/data/processed/v2_stage5c_live_holdout_v2_first_results.json",
+            "sha256": "1184969b7cd3508493552783405e4769e167269c949933a68721d2d65b2a8d65"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/headphone-v1/pack.json",
+            "sha256": "ab961767131f1454a480fa048364d80b7481120aba70b4b49ee71f15c7e61f15"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/laptop-v1/pack.json",
+            "sha256": "0417332b70d772e851f705c83df7932cd60f5d879425ee04f032f08d9c16dc2a"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/monitor-u2725qe-us/pack.json",
+            "sha256": "042645ee585e05ac73725e853b0c744d854c5072c3b08ed093352faf6ca0efc8"
+          }
+        ],
+        "aggregate_sha256": "58804852ff1031fd576a0ae5ed0553b6b390106837171c57c21fb26f3f7799f9"
+      },
+      "memory": {
+        "members": [
+          {
+            "path": "smartbuy/memory/__init__.py",
+            "sha256": "993b536553c9462100512be95df5466039d15e0f3118c514a33370737753c040"
+          },
+          {
+            "path": "smartbuy/memory/domain_store.py",
+            "sha256": "1b5350a77d7e714836b9db50bd3231fdd203ba54c957fd7d115422bf924c5f7b"
+          },
+          {
+            "path": "smartbuy/memory/store.py",
+            "sha256": "bceeb9fa3d95c7f9c7295c0bf076a52d986940b9b98345c1e2222dc5df9925fe"
+          }
+        ],
+        "aggregate_sha256": "b22a0bc751344d429d8310418ca6b8a050009417b7b58268e788b0d327ef2dc6"
+      },
+      "open_research_source_search_beta": {
+        "members": [
+          {
+            "path": "smartbuy/api/portfolio_runtime.py",
+            "sha256": "2511eeedd597eef4eeb99e7fc765b96188634bb5752c83b1e344663003723d29"
+          },
+          {
+            "path": "smartbuy/open_research/__init__.py",
+            "sha256": "cf602d1016b3d8328504bb66556ad21358f83a466a1990da1fbebce85b2fb055"
+          },
+          {
+            "path": "smartbuy/open_research/evidence_check.py",
+            "sha256": "112a8af5dcf1f95005eea6ef705849106695cb6baf2e8bea3245c954ba2f2d9f"
+          },
+          {
+            "path": "smartbuy/open_research/extractor.py",
+            "sha256": "a5a14d13a13362f0282c45b5b8890d8fab8c327eae31c3dbfd71c018c2aca9be"
+          },
+          {
+            "path": "smartbuy/open_research/html_parser.py",
+            "sha256": "d5dabc418080f2eef0d8ac23af20bda2b55f911782e9463652f32128e91549b8"
+          },
+          {
+            "path": "smartbuy/open_research/models.py",
+            "sha256": "9f1f8608a8dd5ca05e1f68b486fd455c84a1be8c8cd60adaec1c24c329226f4a"
+          },
+          {
+            "path": "smartbuy/open_research/normalizer.py",
+            "sha256": "66aa5c01771acf268ce82ab4e1bb410089ae046ba17dd1221d31612bd8e62bf6"
+          },
+          {
+            "path": "smartbuy/open_research/pdf_parser.py",
+            "sha256": "bb36ceba20ac4d93e0dcb97187dd2a0d02402058e823330f60d5537e5c1e0e6f"
+          },
+          {
+            "path": "smartbuy/open_research/service.py",
+            "sha256": "70ff45ceb0ed2a5a119055ee8a54a519b7824bd8ccb689e00856dae8381ed27c"
+          },
+          {
+            "path": "smartbuy/open_research/settings.py",
+            "sha256": "d792e5d379fefa35041b76069a2a06a4ee5c88797e25a945fc2a47093cd7a7fb"
+          },
+          {
+            "path": "smartbuy/open_research/store.py",
+            "sha256": "5ebf9000a8bf9e4f178ec7cfbcfe355aa040d2ef30e61226f473153e974c5e19"
+          },
+          {
+            "path": "smartbuy/open_research/url_safety.py",
+            "sha256": "13f8830e0a73af4b4a95ae29d625564c32335e693d03a53d82358c70f3aecbcb"
+          },
+          {
+            "path": "smartbuy/providers/zhipu_search.py",
+            "sha256": "7379d2d3574684c26e30952fcd0aced6fb95eb894eb0dec493aa476aaa06b5ff"
+          },
+          {
+            "path": "smartbuy/source_search/__init__.py",
+            "sha256": "8e8f13d893bc8d66a682d6804f5a8ef67706633ec1a43515aada5a1d06ff15e0"
+          },
+          {
+            "path": "smartbuy/source_search/cache.py",
+            "sha256": "980de8796b9f3577b7162b738b317883027dc006e1ee493891fd35632464e683"
+          },
+          {
+            "path": "smartbuy/source_search/models.py",
+            "sha256": "132d7f80eb553aa250b9e682a949459145454aadbe76c5fb224319e7a617bb12"
+          },
+          {
+            "path": "smartbuy/source_search/provider.py",
+            "sha256": "ed89e1b1740a6c65fa99f64527da601db7ee080ce57a1eadf6ae79a2e2449fa2"
+          },
+          {
+            "path": "smartbuy/source_search/settings.py",
+            "sha256": "e7db412a5cdf1540cb552ce06ee71349ad69dae840bbe7410acb8f4ebcbeb9f3"
+          },
+          {
+            "path": "smartbuy/source_search/validator.py",
+            "sha256": "5b978f8b14b8b5f97e42f2d653c21105f67fc7913b9b1152ca876a7875576e27"
+          },
+          {
+            "path": "smartbuy/tools/source_search.py",
+            "sha256": "e6d17a36df54a4fc2e1a2f43e6a7713a61ff28a1084b161640a835bd8ed3ed51"
+          },
+          {
+            "path": "smartbuy/tools/web_extractor.py",
+            "sha256": "d786c8279624359299c59b43c38d56443852f2937d6933a770438d245ac44854"
+          },
+          {
+            "path": "smartbuy/tools/web_search.py",
+            "sha256": "9ded83cbe415dd2b00b686f826a07b466634c481bf864657741024ed2accc8e0"
+          }
+        ],
+        "aggregate_sha256": "55f3e39be11549e040970f996f9134f481dd68d466d521ae2395bb058466b583"
+      },
+      "product_pack_contract_and_runtime": {
+        "members": [
+          {
+            "path": "smartbuy/product_packs/__init__.py",
+            "sha256": "aac24c390f122f40943ab4c5a866147eb6514f9b1e36643fd6643904ee38a929"
+          },
+          {
+            "path": "smartbuy/product_packs/builder.py",
+            "sha256": "cf1a806d4c5796f9dea152d91590065d7e45953b5ae27584cecb0abe6646ed1e"
+          },
+          {
+            "path": "smartbuy/product_packs/cli.py",
+            "sha256": "f3cb6dd4ec15ac2053e2d562e3a828104a4c17bac47d7c387d69ab5f33ef48a7"
+          },
+          {
+            "path": "smartbuy/product_packs/domain_builder.py",
+            "sha256": "500283bb5fb12eeeb2b1d653d056491a2a6742c7259fd2525a96cb41ce08a5ad"
+          },
+          {
+            "path": "smartbuy/product_packs/domain_cli.py",
+            "sha256": "406a2ec5249cbacdcdd00e246a02b5c2c65756a28e5c58e93e20f55b18dcf764"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/headphone-v1/pack.json",
+            "sha256": "ab961767131f1454a480fa048364d80b7481120aba70b4b49ee71f15c7e61f15"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/laptop-v1/pack.json",
+            "sha256": "0417332b70d772e851f705c83df7932cd60f5d879425ee04f032f08d9c16dc2a"
+          },
+          {
+            "path": "smartbuy/product_packs/examples/monitor-u2725qe-us/pack.json",
+            "sha256": "042645ee585e05ac73725e853b0c744d854c5072c3b08ed093352faf6ca0efc8"
+          },
+          {
+            "path": "smartbuy/product_packs/ledger.py",
+            "sha256": "0fdd0beed2fa49f8d8bc54ad7bd131b472b423a3c8548719652e4b9a91da44da"
+          },
+          {
+            "path": "smartbuy/product_packs/live_index.py",
+            "sha256": "01ae566fb0d3f868cbc929d4b0c30adf768930c21899ff6c97661a46ac83dffa"
+          },
+          {
+            "path": "smartbuy/product_packs/loader.py",
+            "sha256": "2417adda33709fa0c1f7e7d445253221df499c43f4b08ea7714c0991c8b70bbf"
+          },
+          {
+            "path": "smartbuy/product_packs/models.py",
+            "sha256": "0f19ecfd1fd5724930efb4f3042322f3abfa4357bd564383b9d2778fd53d49b9"
+          },
+          {
+            "path": "smartbuy/product_packs/runtime.py",
+            "sha256": "34170a98939613b4e77b6879193cb8295b61a50700e2eb7c1054ac013bfc43ba"
+          },
+          {
+            "path": "smartbuy/product_packs/schema/product-pack-v1.schema.json",
+            "sha256": "e674e4df754d8da51b60065da8a4fa2f2f36c62147141ece7a594c71b4ac7b9b"
+          }
+        ],
+        "aggregate_sha256": "2e7457d03604c51d8a8e8ebc7a90499a433af2f5e25438302a1e0aad90aac90d"
+      },
+      "product_ui_and_demo_contract": {
+        "members": [
+          {
+            "path": "smartbuy/portfolio/demos.py",
+            "sha256": "8c0228b6bf9f3da56239af5a29b4882105026cb3ce72b2460358bda9a3199130"
+          },
+          {
+            "path": "smartbuy/scripts/verify_v2_9a_demos.py",
+            "sha256": "389e722c560fe534346e5a57f68f00f67ab3826a97040522d011e55a5aed7a03"
+          },
+          {
+            "path": "vendor/youtu-rag/frontend/rag_webui/app.html",
+            "sha256": "b6fb67ed2be55ffc9e6f184fa6dd8f6576d63e2b5958745d392646894f7f7a8f"
+          },
+          {
+            "path": "vendor/youtu-rag/frontend/rag_webui/assets/css/portfolio.css",
+            "sha256": "9519170362ec2202bf9003ec82467f6b75e04d91557fa758fed2075f57eb60ae"
+          },
+          {
+            "path": "vendor/youtu-rag/frontend/rag_webui/assets/data/proofpick-demos.json",
+            "sha256": "1badc6cfe145b5adf58ee4d20aec12814acd5a713157103005c585d9c75e3f8f"
+          },
+          {
+            "path": "vendor/youtu-rag/frontend/rag_webui/assets/js/components/portfolio.js",
+            "sha256": "03a9f4c34fd763bbf7dda0d7c65cc5227fe7d2284b224eaef31903782927b1de"
+          }
+        ],
+        "aggregate_sha256": "fb5c5cf15669834d8e5f8b0e9eae5f5354dcc3b8de2a821b563f246d44f1682e"
+      },
+      "prompt_contract": {
+        "members": [
+          {
+            "path": "smartbuy/agent/ranking.py",
+            "sha256": "c1eeb5363a4f026efd2b96a6740982fd3a72746ea86afec5fb2778a93a3919e2"
+          },
+          {
+            "path": "smartbuy/agent/react.py",
+            "sha256": "52305595302e3a6bd59ae66b80eccbf32336cea0f65b4ba7c2747fc22b19e643"
+          },
+          {
+            "path": "smartbuy/constraint_proposals/provider.py",
+            "sha256": "734489fbc8a336b577a31251ef7b95aaf4ed2e5cc56debbf567b0a0054541a22"
+          }
+        ],
+        "aggregate_sha256": "8c577e1501b82a5f2d7d2788883f1fa5e41eb994bf3aaddd295a0579ed89de7b"
+      },
+      "query_intent_product_reference_candidate_scope": {
+        "members": [
+          {
+            "path": "smartbuy/decision_core/__init__.py",
+            "sha256": "437b5a174628438691119da51bf2992d5514ef31e275bde8e036bf18d4d650b8"
+          },
+          {
+            "path": "smartbuy/decision_core/canonical.py",
+            "sha256": "2ff75bbd9a1f3202db6eb2a72e26ed5ef525cd97260e4903eb41ab3ad5aa35e5"
+          },
+          {
+            "path": "smartbuy/decision_core/delta.py",
+            "sha256": "fce83641dedbaf0bbcf22f9b086582a36d9755d705b4ea47bdc1ee40e776aa86"
+          },
+          {
+            "path": "smartbuy/decision_core/intent.py",
+            "sha256": "2132b7d279459666bceba3a3ed9cb545964770c7ba7ea8e7cc09d852bd9a0222"
+          },
+          {
+            "path": "smartbuy/decision_core/result.py",
+            "sha256": "c4a3861d41a5b1df7a51f76416c8ab385bc629f86132da7e1e04efd55aa0e178"
+          },
+          {
+            "path": "smartbuy/decision_core/safety.py",
+            "sha256": "381089056ee1b8b20ec47ef5994a8338d94044a57d19840f04879927b20ddad7"
+          },
+          {
+            "path": "smartbuy/decision_core/scope.py",
+            "sha256": "5b16b970f976b90b55cc107ed1d4c38ef426731232692b4cb3bf61a2374b7032"
+          },
+          {
+            "path": "smartbuy/identity/__init__.py",
+            "sha256": "e2cceef794dab8ee99babca805f14dac17fe0cef5a9f768543554a0bd6491f5b"
+          },
+          {
+            "path": "smartbuy/identity/guards.py",
+            "sha256": "898a97d83e4047cb30911b037b5bc253c271820d3676546fd63e862a053c5c88"
+          },
+          {
+            "path": "smartbuy/identity/models.py",
+            "sha256": "74a205e836138b99b7f13d627d175e027bc11a8a41e309b53433f06024680e30"
+          },
+          {
+            "path": "smartbuy/identity/resolver.py",
+            "sha256": "53583d198ffdd99ee7a13a0479a8c9f32047221220a973036c0e21975a0be331"
+          }
+        ],
+        "aggregate_sha256": "b60a872eee4cc7ff2d60424f8df7cbde297fcbc232c40aaae2c5ee65e14ad3ca"
+      },
+      "ranker": {
+        "members": [
+          {
+            "path": "smartbuy/ranking/__init__.py",
+            "sha256": "ae1784ab87d2b41a1adde28f06f19135eeaa9c06de8656e4cb54562857c482ce"
+          },
+          {
+            "path": "smartbuy/ranking/models.py",
+            "sha256": "ac8d2d7390dd3d31344e800581114644b332ec3949f36c091c188f7d6b1d9825"
+          },
+          {
+            "path": "smartbuy/ranking/profile.py",
+            "sha256": "1aaab6db41416844ac20b04a720a1d0abaf2c4ef1fa593f98201555da87a1278"
+          },
+          {
+            "path": "smartbuy/ranking/ranker.py",
+            "sha256": "749a388bed609796b2dc132d56759a086d3bc693f5b2fcefd59d68f125273fbd"
+          }
+        ],
+        "aggregate_sha256": "4a8cba4a1333b83545c4456dc07c6cdb2b528e9eb1b521239e9f802affee2715"
+      },
+      "scoring_interface": {
+        "members": [
+          {
+            "path": "smartbuy/eval/audit_v2_9g_online_funnel.py",
+            "sha256": "b87b1aaad1ace632dd7ef7e72e7521a07adf6d5a5f58db0bee607359036a84a9"
+          },
+          {
+            "path": "smartbuy/eval/run_v2_9e_exposed_regression.py",
+            "sha256": "4a1cb451090ab9954b99f2935b35c44ba2fdf62ff63528064872b9af47a5a37b"
+          },
+          {
+            "path": "smartbuy/eval/run_v2_9f_online_regression.py",
+            "sha256": "e7caaada2ce0e1e3c0be99b05ff09a20137e063e9d5cb391b524439ee6c21f72"
+          },
+          {
+            "path": "smartbuy/eval/stage6_scoring.py",
+            "sha256": "e8ed3319e72b6e64243fbc65b2018cd0c9aa0d2b4800cc4158149b3b8cc919d8"
+          },
+          {
+            "path": "smartbuy/eval/v2_6c_r2_laptop_scorer.py",
+            "sha256": "4fb494700ffb90558ffb2a5a0c49c6f0a0f854516ce5f7ced4e643eb7480edc8"
+          },
+          {
+            "path": "smartbuy/eval/v2_6c_r2_laptop_scoring_policy.json",
+            "sha256": "7cf3395ca1c2bdb5675577a42b885de78b1ebb8bb6962cbe2bd49d210c0a1c7a"
+          },
+          {
+            "path": "smartbuy/eval/v2_6c_r3_validation.schema.json",
+            "sha256": "9451a05860a21fe9b31e2dc39dee218bee0075a7c904ce8dc8fd21134dc3e96a"
+          },
+          {
+            "path": "smartbuy/eval/v2_6c_r3_validation_scorer.py",
+            "sha256": "b6fbf17888c864d7c635a8d0eacf74477acde35d1de87811ecc5f10c971e019e"
+          },
+          {
+            "path": "smartbuy/eval/v2_8_headphone_engineering.schema.json",
+            "sha256": "a0a1deb1991a4d66d83461738f31e9f4ac1c0ac35d2d924206cacd81be736108"
+          },
+          {
+            "path": "smartbuy/eval/v2_8_headphone_engineering_policy.json",
+            "sha256": "c0c0b9ca1485073f7f03d5af88f3333211ce0076692ace60c901a97f0a6165eb"
+          }
+        ],
+        "aggregate_sha256": "0caf6c39b80a51982f4ea19db6dcdcb1ba31232dcb0050a712fb3cb705107725"
+      },
+      "test_baseline": {
+        "members": [
+          {
+            "path": ".github/workflows/ci.yml",
+            "sha256": "55990cdf100058ba566c483901d6b7033bc617a6fc8570bbbff3b4fd4d600803"
+          },
+          {
+            "path": "smartbuy/tests/fixtures/stage1_baseline.md",
+            "sha256": "a2120edf20c5c4605606563621ed741ab699c3d24cdd582bf9e76b6cc2d597c8"
+          },
+          {
+            "path": "smartbuy/tests/fixtures/v2_9g/rendered_monitor.html",
+            "sha256": "f47914ef7d882c8e16e595662693e8d11f967a7de81d2c6c4a7dacd90ce7e452"
+          },
+          {
+            "path": "smartbuy/tests/fixtures/v2_checkpoint_worker.py",
+            "sha256": "f5eb8050a5a4a23306453bac659ee9168663d71a06d35c367037408e48155ff7"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_stage4_api.py",
+            "sha256": "0ba7faef5427315f54ad70d6a9cd4e0dfaeaf119fbae4141b1baf08f05d64559"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_9c_semantic_boundaries.py",
+            "sha256": "be1de7537666985b1d88a12ea8e2f97f20ea992d294116d8ec9dc9328156e9fb"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_api_orchestration.py",
+            "sha256": "9b362282a57a63b5c4712f05289c2a9d227b541b9a3f5aa02c80223195f6616e"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_clarification_orchestration.py",
+            "sha256": "ba19ef604f3ca747a8ffb2a55288cc751ffc487983c85262e58ac0044c177941"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_domain_pack_compat.py",
+            "sha256": "354e9a5d73ee210465edef168c1cb118458c30b30dc1f908306d8450bda4f495"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_headphone_domain_pack.py",
+            "sha256": "c66fd2bedd362b080e927f2c81d07915c25466d1e248b6c400b7a5cf79dc979d"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_headphone_toolchain.py",
+            "sha256": "2703c11e94ddae240764bcdcfb1eb2b8d17438141fe36ba7c369dbbeb81ec479"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_laptop_agent_e2e.py",
+            "sha256": "d5e7fa2f2a90f6f89e6d72455b9ed6a7663a50eae0bca136b68cb2da1af8422e"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_laptop_domain_pack.py",
+            "sha256": "34acde01982df0497fd1bbbf90f248514764a019d638d0b35e3c0e642f5aa330"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_laptop_toolchain.py",
+            "sha256": "3cb8f1c4003daca815b0b2ea5be445a248783b4aae20fff04518be77acd8a7e3"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_live_product_index.py",
+            "sha256": "fcb1801c2c9808093009e5c4d800477aaa830d642964a48c0e9847939a8555e0"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_open_research_agent.py",
+            "sha256": "d6632168d9292f37f9d37e9afe3008159b84e3e621933817d513de65737a4d7c"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_product_pack_pipeline.py",
+            "sha256": "e3b85a4fc3cac07795c0b754023d1002d517aab8367697403851780d29b78f64"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_ranking_memory_api.py",
+            "sha256": "e5f6330769deb29a3921379921b2713114f390c221aec0ef4c40583515da3e76"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_source_search_agent.py",
+            "sha256": "dac80b06427104100dcad00e466a27c2555901106d7ee7702355fdfe8c820818"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_sqlite_checkpoint.py",
+            "sha256": "6e42fe19020644d852350ad37fb1de92968da5fdb28a56e076b7e1a98bd57a9b"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_v2_three_domain_isolation.py",
+            "sha256": "3d61895c81fe8e6e7e951af41b1d6cf2b7eb0ec397a9921d9e4cc8702ddbbde8"
+          },
+          {
+            "path": "smartbuy/tests/integration/test_youtu_bailian_adapters.py",
+            "sha256": "656ef4ca90f7eaf97724909a3ca02aae85e86f3ef58e125f0f2c69cf6013e0f4"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_bailian_config.py",
+            "sha256": "1601eff0d316750a2189d68e6f057e27b9d406fc60832bea6165303fdffcc22f"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_bailian_provider.py",
+            "sha256": "bd8a032e2304d831d95628b2c27e7137288d22581922d718685bee55b9ea694b"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage3_data.py",
+            "sha256": "1bbac9f0557a101da06b3014d32648a23e72ed45a12b6080a62b4c07dfd9171d"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage3_database.py",
+            "sha256": "13b58f1eb1a6de46221cfcb65f357c71c910ae2114fe97c1ed0c4204c673d86b"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage3_retrieval_contract.py",
+            "sha256": "bd9cf69fd5ee6ecf3fb0b7aac8c66eeca88186572c9a86b95f5cce792f509523"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage4_agent.py",
+            "sha256": "1a97b940bc9bc78da07ca7fdfc18d2440ecf5ae382a216b2168a95c7cc239234"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage4_evidence.py",
+            "sha256": "ba3d50b8e0f8b42b948207a6e8ec0baf16b6be08c49236a5e4a7638d730afc49"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage4_kb_search.py",
+            "sha256": "94d960497e7b3951194bcb8015af25378dab58acef8a8374ecf618573a45779a"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage4_memory.py",
+            "sha256": "e1b7ae7311e1fa8321b2165dcadf4e30a70f07cb699b8ec1b54079c2e7b5d2a0"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage4_text2sql.py",
+            "sha256": "9ce19c340ad98199ca28a9a6a9d21d250f7852efe238af4faa628f28554f5ae5"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage5_agent_gate.py",
+            "sha256": "bb2e770f3836aaa1cc592b751e05b4413bfbc4c6c62cf070326e2bbcd2b2259e"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage5_constraints.py",
+            "sha256": "4658b47f518f7cfe73fd98c653783ea3817c8800a341369f8b2e1da3cfa79410"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage5_verifier.py",
+            "sha256": "8b1d519149b0e25d3ae17419c2d8663cc6dc95c155d08a0bba6ff25aa74205d2"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage6_cache.py",
+            "sha256": "befcee2fb9d8cbbedc15c243e44f351fec7d6cc529aa6073fa97555346fc1ef5"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage6_eval_contract.py",
+            "sha256": "2c3ff849180c624eef117e11581e903bf348dd3ab8e405c58ddc62bf7fd67251"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_stage7_reporting.py",
+            "sha256": "580544988835c7d28eda5be168db7863bbe4b78cd8dcafbb71be5954ac607971"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_9e_semantic_manifest.py",
+            "sha256": "c8fe02f940f808470d029469bf9a50c0c1b473feef874b62fa9080f6f9401cc6"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_9f_online_research.py",
+            "sha256": "b962c04e85dc17923baa57906ec9d461527e3e7a69b89526e71f2a5762979a92"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_9g_online_feasibility.py",
+            "sha256": "d662020190a1500ff594e7a9683acac43052baf670b3d2a4df199854b1fe7323"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_constraint_proposals.py",
+            "sha256": "ab4ce15c12576b600a82a08d3a466aac27a7cbfd5428777582f464247c20e920"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_decision_core_metamorphic.py",
+            "sha256": "0160cb6d66643be2a01f74ba052137ddabc4da71bbf8348ec31b5e4f1fe7df79"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_decision_ranking.py",
+            "sha256": "88f677c8861768e1fa4dcd1a93fb74de79621e9e67eb5c7a438e37ae31ecfcb1"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_domain_pack.py",
+            "sha256": "a9c004336c3a8d4d333c3913f5715f12327b03cd3dcdec07407b5f093b0ee508"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_headphone_open_research.py",
+            "sha256": "ecdd239c3e2f2af56be2da7a6ad2809f209fc3e0a3ab178dda531f2b1d2324d6"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_layered_memory.py",
+            "sha256": "37fe68f65eecb096b2edde605a6a699ede393a6fde22f51da889de3f44ee05e4"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_live_constraint_provider_contract.py",
+            "sha256": "39afb7ec0300f252f6db27a967c7f61343e254a9e2bd0b3c3a05bc529131e8ec"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_open_research.py",
+            "sha256": "39780fdd61306d3f82bb1cb058a3292190b565210d3212309410ebb44e980205"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_orchestration_contract.py",
+            "sha256": "0c2011b7e8305eb6255034403aa8d433da66686439dab08db9fd2f9235f39b34"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_portfolio.py",
+            "sha256": "867286f17a5b924b1e55b734083272032cac9df2f12a2e8149ad2903bd0a141e"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_product_identity_scope.py",
+            "sha256": "4c67705f10046a02e65a311e0b698f55950e5d695620085e025224e231e2cacf"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_product_pack.py",
+            "sha256": "69519694d70d47ba4df827d01945a4a72dd27c67c96dac2284e5ef9460c71524"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_quote_span_contract.py",
+            "sha256": "275dc60b414e85b2718a5d9e1d35c236676e96d3d1dfbff4924ad55528c677a3"
+          },
+          {
+            "path": "smartbuy/tests/unit/test_v2_source_search.py",
+            "sha256": "e58136ad8569e47f54bb878704925609e7202604e95e0706d237f3e793d383e4"
+          }
+        ],
+        "aggregate_sha256": "6cfa05cdf43a1cf4c79a988d1f318b50794935f069251071e6b17e2661d5549b"
+      },
+      "tool_schema_and_contracts": {
+        "members": [
+          {
+            "path": "smartbuy/contracts/__init__.py",
+            "sha256": "c8fc318fc773b8aefff4c717857d81ae2c193de77419cf8e0322efd1cf386da0"
+          },
+          {
+            "path": "smartbuy/contracts/models.py",
+            "sha256": "1e9de2bebe12c26f8cbcdca4b5f5541d6cec8208f5b874c10fd94307b9a56105"
+          },
+          {
+            "path": "smartbuy/contracts/product_pack.py",
+            "sha256": "8fe1f66b518f3ee430f79bfb3eb3e8637aa25194f99631cbf4befded090e2691"
+          },
+          {
+            "path": "smartbuy/domain/__init__.py",
+            "sha256": "013b7e686333e3ac5c251685cc92644b2c27c102dcfe0bbc7bbe0520c2a91205"
+          },
+          {
+            "path": "smartbuy/domain/models.py",
+            "sha256": "a8d1ce9d2703f7e141cee6e38defcfb8379f85bd424ac2c2a0811364a9eab163"
+          },
+          {
+            "path": "smartbuy/tools/__init__.py",
+            "sha256": "c2d6d88cb964b1c50169cf9050cffa50cadad3c2b61550023c1bbbcef048e401"
+          },
+          {
+            "path": "smartbuy/tools/base.py",
+            "sha256": "24a0e568d3330c79ea2801dde6cd736663a49aea34df21b02103012e883a72e9"
+          },
+          {
+            "path": "smartbuy/tools/domain.py",
+            "sha256": "10453df7c42da11a64dce0d4738df98fc8e24b90f8df6b371d6eb3a1f6142969"
+          },
+          {
+            "path": "smartbuy/tools/evidence_check.py",
+            "sha256": "b898d2b7254a87ccfa90ee65ca95e5a416bccc5b1c09966eccb3512e1886fb39"
+          },
+          {
+            "path": "smartbuy/tools/kb_search.py",
+            "sha256": "9809a1faac5d1d8b4b9f7055d18092dee6e14b3f8d158e06adfbd7daf4cc000c"
+          },
+          {
+            "path": "smartbuy/tools/source_search.py",
+            "sha256": "e6d17a36df54a4fc2e1a2f43e6a7713a61ff28a1084b161640a835bd8ed3ed51"
+          },
+          {
+            "path": "smartbuy/tools/text2sql.py",
+            "sha256": "2c2675c17bd24795cd4d08718d1d9a5bd6efd5f99b7e1e1c1598ddac41734eca"
+          },
+          {
+            "path": "smartbuy/tools/web_extractor.py",
+            "sha256": "d786c8279624359299c59b43c38d56443852f2937d6933a770438d245ac44854"
+          },
+          {
+            "path": "smartbuy/tools/web_search.py",
+            "sha256": "9ded83cbe415dd2b00b686f826a07b466634c481bf864657741024ed2accc8e0"
+          }
+        ],
+        "aggregate_sha256": "f6957181de292f39b4709becc0dfb447650281fa2f7b20cb9e0eefbe92c55c91"
+      },
+      "windows_scripts": {
+        "members": [
+          {
+            "path": "smartbuy/scripts/bootstrap.ps1",
+            "sha256": "b680eadaf17acaa3acbf353966f366e7dd370124a312eb100559c425a5c42c15"
+          },
+          {
+            "path": "smartbuy/scripts/preflight.ps1",
+            "sha256": "53682747ef826dc0fe05090b879b230613097d4d44b849d1c2c29131eeefce00"
+          },
+          {
+            "path": "smartbuy/scripts/replay.ps1",
+            "sha256": "c15bab10862c8188623422fc45c4ac416b91ba6bf7244783cd903dc90f0dc4b1"
+          },
+          {
+            "path": "smartbuy/scripts/start.ps1",
+            "sha256": "72123cb9e993901094b1e1864e8899b69d9bcac800af4e2daf919ee4fca31279"
+          },
+          {
+            "path": "smartbuy/scripts/start_youtu_rag.ps1",
+            "sha256": "b165113aec1051f7582ff173213bd18fecbdedf500ae567a89326e5acf30250c"
+          },
+          {
+            "path": "smartbuy/scripts/stop.ps1",
+            "sha256": "fc5cfdcd207ba3cbef13bddb5def7905c34111799b60d815ff74bf4d5ed78441"
+          }
+        ],
+        "aggregate_sha256": "0368c621181fcc6f5996e5541541922cfc70d3de4934ab3d4746dc2d5c6d1382"
+      }
+    },
+    "scoring_contract_sha256": "0caf6c39b80a51982f4ea19db6dcdcb1ba31232dcb0050a712fb3cb705107725",
+    "test_baseline_sha256": "6cfa05cdf43a1cf4c79a988d1f318b50794935f069251071e6b17e2661d5549b",
+    "release_contract": {
+      "release_candidate": "proofpick-v2-rc3",
+      "positioning": "Trusted Multi-domain Decision Core + Experimental/Beta Online Research",
+      "default_mode": "trusted",
+      "trusted_capabilities": [
+        "domain_and_product_packs",
+        "agent_tool_orchestration",
+        "product_query_and_text2sql",
+        "kb_embedding_reranker",
+        "multi_hop_evidence_retrieval",
+        "four_state_evidence",
+        "constraint_checker",
+        "deterministic_ranker",
+        "layered_memory",
+        "active_clarification",
+        "monotonic_candidate_scope",
+        "windows_local_reproduction"
+      ],
+      "experimental_capabilities": [
+        "source_search",
+        "web_extractor",
+        "request_scoped_open_evidence",
+        "online_research"
+      ],
+      "trusted_release_gates": {
+        "per_domain_task_accuracy_min": 0.8,
+        "hard_constraint_f1_min": 0.95,
+        "recommended_fact_evidence_coverage_min": 0.95,
+        "wrong_configuration_recommendations_max": 0,
+        "wrong_region_recommendations_max": 0,
+        "scope_checker_report_leakage_max": 0,
+        "unknown_overclaim_max": 0,
+        "clarification_bypass_max": 0,
+        "open_evidence_in_trusted_checker_max": 0
+      },
+      "online_safety_gates": {
+        "invalid_domain_model_configuration_region_usable_max": 0,
+        "search_snippet_to_evidence_max": 0,
+        "open_evidence_in_trusted_checker_max": 0,
+        "unknown_presented_as_verified_max": 0,
+        "ssrf_or_off_allowlist_redirect_accepted_max": 0
+      },
+      "online_completion_metrics_release_blocking": false
+    }
+  },
+  "payload_sha256": "4883f4251c8cb1f4dc6b86b6777b3d19ace74bee92943129c1146fc4e266b367",
+  "runtime_audit": {
+    "created_at": "2026-09-05T08:32:42.077334Z",
+    "release_candidate": "proofpick-v2-rc3",
+    "release_scope": "Trusted Multi-domain Decision Core + Experimental/Beta Online Research",
+    "default_mode": "trusted",
+    "machine_path": "excluded_from_semantic_contract",
+    "latency_token_cost": "excluded_from_semantic_contract"
+  }
+}

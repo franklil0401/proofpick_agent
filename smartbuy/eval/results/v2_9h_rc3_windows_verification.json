@@ -1,0 +1,41 @@
+{
+  "schema_version": "proofpick-v2-9h-windows-verification-v1",
+  "release_candidate": "proofpick-v2-rc3",
+  "production_commit": "ba6606ae249bafc89c18b320935c767a3f756c34",
+  "production_tree": "84766c5d8840b50a27c612e24379b6dd63736741",
+  "environment": {
+    "os": "Windows 11",
+    "python": "3.12.3",
+    "clone_path": "new_short_ascii_path",
+    "runtime_location": "outside_repository"
+  },
+  "checks": {
+    "clean_clone": true,
+    "vendor_subtree_present": true,
+    "uv_sync_frozen": true,
+    "locked_packages": 296,
+    "preflight": {"passed": 11, "total": 11},
+    "sqlite_integrity_ok": 3,
+    "sqlite_foreign_key_violations": 0,
+    "http_200": ["root", "health", "monitor", "capabilities", "classic_webui", "minio_health"],
+    "trusted_default_visible": true,
+    "online_experimental_visible": true,
+    "online_requires_confirmation": true,
+    "fixed_demos": {"passed": 5, "total": 5},
+    "offline_replay_http_200": true,
+    "released_ports": [8000, 8088, 9000, 9001],
+    "final_clone_clean": true
+  },
+  "data": {
+    "monitor": {"products": 12, "sources": 16, "evidence": 180, "documents": 60, "embedding_dimensions": 1024},
+    "laptop": {"products": 12, "sources": 12, "evidence": 406, "documents": 12, "embedding_dimensions": 1024},
+    "headphone": {"products": 12, "sources": 20, "evidence": 336, "documents": 12, "embedding_dimensions": 1024}
+  },
+  "paid_api_calls": 0,
+  "estimated_cost_cny": 0,
+  "notes": [
+    "Fixed demos verify repository contracts and sanitized replay data; they are not a new independent release evaluation.",
+    "No embedding index was rebuilt during this verification.",
+    "Secret values and private machine paths are not stored."
+  ]
+}

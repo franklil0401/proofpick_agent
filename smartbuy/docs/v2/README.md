@@ -74,6 +74,10 @@
 - [V2-9F Online Research 专项修复报告](v2_9f_online_research_repair_report.md)
 - [V2-9G Online 发布范围与有限可行性报告](v2_9g_online_scope_and_feasibility_report.md)
 - [ADR-0023：Trusted Core 与 Experimental Online](../adr/0023-trusted-core-and-experimental-online-research.md)
+- [V2-9H RC3 Semantic Manifest](v2_release_candidate_rc3_manifest.md)
+- [V2-9H RC3 范围收敛与冻结报告](v2_9h_rc3_release_candidate_report.md)
+- [V2-9H RC3 Windows 干净复现](v2_9h_windows_reproduction.md)
+- [V2-9H RC3 独立评测交接](v2_9h_rc3_handoff.md)
 
 ## 当前状态
 
@@ -101,9 +105,10 @@
 - V2-9A 已形成三品类统一产品首页、Trusted/Open 展示、五个脱敏 Demo、仓库外 Windows bootstrap 与无 Key Offline Replay；新短 ASCII 路径完成三 SQLite、三索引、HTTP 与端口释放验证。
 - V2-9B 独立首次评测结论为 `Needs revision`：Trusted 64/90，Online 安全终态 15/15 但真实网页 Evidence 仅 2/15。V2-9C 通用修复后的同题 exposed regression 为 86/90、Evidence 297/297、安全越界 0；该结果不能替代新的独立发布集。
 - V2-9C 修复后生产代码已冻结为 `proofpick-v2-9c-rc2`，冻结对象是 Commit `2d41773981c69b815efa21c0bf21675d095b920d` 及其 Tree；RC2 只是文档化候选，不是 Tag 或 Release，新的发布判断仍须由独立评测方完成。
-- V2-9G 将 V2-9F 非单调的候选混合指标重算为严格任务 lineage 漏斗 `15→15→15→8→6→6→6→6→6`；Playwright + Bocha 有限 PoC 仅投影 `7/15`、Laptop `1/5`、字段 `15/21`，因此没有正式接入或运行完整回归。后续 RC3 范围建议收敛为 Trusted Multi-domain Decision Core，Online Research 保持 Experimental/Beta。
+- V2-9G 将 V2-9F 非单调的候选混合指标重算为严格任务 lineage 漏斗 `15→15→15→8→6→6→6→6→6`；Playwright + Bocha 有限 PoC 仅投影 `7/15`、Laptop `1/5`、字段 `15/21`，因此没有正式接入或运行完整回归。V2-9H 已据此把 RC3 范围收敛为 Trusted Multi-domain Decision Core，Online Research 保持 Experimental/Beta。
 - V2-9D 第二次独立首次评测仍为 `Needs revision`：Trusted 72/90、Online 实际完成网页取证 0/15；V2-9E 同题 exposed regression 为 86/90，Online 三轮最高 5/15，所有错误地区/型号/域名接受、Scope/Checker 越界和 unknown 过度声明保持为 0。修复成绩不替代独立首次结果。
 - V2-9E 新增稳定语义 Manifest：完整列举七组成员，并把三品类 Data/Index/Collection/文档数/1024 维纳入合同；运行时间、Token、费用和机器路径不参与 payload 哈希。
-- V2 当前仍不具备合并、Tag 或 Release 条件；下一步由用户决定是否按“Trusted Core + Experimental/Beta Online”冻结候选。冻结后的发布判断仍须由独立评测方创建新的未见任务，且 Online 的安全终态与实际 Evidence 完成必须分开报告。
+- V2-9H 已按 ADR-0023 冻结 `proofpick-v2-rc3`：Trusted Multi-domain Decision Core 为 Stable/default，Online Research 为 Experimental/Beta。生产 Commit、Tree、19 组完整成员和三品类 Data/Index 合同绑定在 Semantic Manifest；Windows 干净克隆、五 Demo 与安全门通过，API 调用为 0。
+- RC3 尚未运行新的独立评测，仍不具备合并、Tag 或 Release 条件。下一步只能由独立评测方在冻结后创建新的未见任务；Trusted 发布门与 Online Beta 安全/完成指标必须分开报告。
 - 当前没有创建 PR、合并 `main`、Tag 或 Release，也没有创建或运行新的 Holdout。
 - 每个阶段完成后必须测试、提交、推送并停止，等待用户确认。

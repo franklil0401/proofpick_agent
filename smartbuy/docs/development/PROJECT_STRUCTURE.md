@@ -5,7 +5,7 @@
 | 项目 | 内容 |
 |---|---|
 | 最后更新时间 | 2026-09-05 |
-| 当前阶段 | V1 已冻结；V2-9G 有限 PoC 未达到 Online 联合门槛，RC3 尚未冻结，发布范围建议收敛为 Trusted Core + Experimental Online |
+| 当前阶段 | V1 已冻结；V2-9H 已冻结 `proofpick-v2-rc3` 供独立评测，Trusted Core 为默认 Stable，Online Research 为 Experimental/Beta；未创建 Tag/Release/PR |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -198,7 +198,12 @@ proofpick_agent/
 │  │  │  ├─ v2_8_three_domain_evaluation.md
 │  │  │  ├─ v2_8_headphone_runtime.md
 │  │  │  ├─ v2_9f_online_research_repair_report.md
-│  │  │  └─ v2_9f_online_research_runtime.md
+│  │  │  ├─ v2_9f_online_research_runtime.md
+│  │  │  ├─ v2_9g_online_scope_and_feasibility_report.md
+│  │  │  ├─ v2_release_candidate_rc3_manifest.md
+│  │  │  ├─ v2_9h_rc3_release_candidate_report.md
+│  │  │  ├─ v2_9h_windows_reproduction.md
+│  │  │  └─ v2_9h_rc3_handoff.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -308,7 +313,8 @@ proofpick_agent/
 │  │     ├─ v2_8_headphone_*   # Headphone 检索、工程首次/暴露回归与 Open Research 脱敏结果
 │  │     ├─ v2_9e_*            # 第二次独立评测后的 Trusted/Online 暴露回归与语义 Manifest
 │  │     ├─ v2_9f_*            # Online 修复前漏斗、评测器事故和唯一有效 exposed regression
-│  │     └─ v2_9g_*            # 单调漏斗审计、Playwright/Bocha 有限 PoC 原始记录与语义复核
+│  │     ├─ v2_9g_*            # 单调漏斗审计、Playwright/Bocha 有限 PoC 原始记录与语义复核
+│  │     └─ v2_9h_*            # RC3 稳定语义 Manifest 与 Windows 干净复现摘要
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
 │  │  └─ store.py              # V1 会话与长期偏好兼容实现
@@ -369,7 +375,8 @@ proofpick_agent/
 │  ├─ reproducibility/
 │  │  ├─ __init__.py
 │  │  ├─ semantic_manifest.py   # 排除时间/路径/费用等运行噪声的稳定语义合同
-│  │  └─ v2_9e_manifest.py      # 从不可变生产 Commit 枚举成员并生成 V2-9E Manifest
+│  │  ├─ v2_9e_manifest.py      # 从不可变生产 Commit 枚举成员并生成 V2-9E Manifest
+│  │  └─ v2_9h_rc3_manifest.py  # 冻结 RC3 的完整成员组、能力边界与三品类运行合同
 │  ├─ portfolio/
 │  │  ├─ demos.py              # 严格加载五个脱敏回放
 │  │  ├─ dynamic_facts.py      # URL/币种/时间/TTL/hash 动态观察安全判断
@@ -552,6 +559,10 @@ proofpick_agent/
 | `smartbuy/eval/audit_v2_9g_online_funnel.py` / `results/v2_9g_monotonic_funnel_audit.json` | 将候选级并行分支与任务级单调漏斗分开计算的只读审计器和结果 |
 | `smartbuy/eval/v2_9g_feasibility.py` / `run_v2_9g_feasibility_poc.py` | 不接生产主链、默认关闭的受控 Playwright 与 Bocha 失败类型 PoC |
 | `smartbuy/tests/fixtures/v2_9g/` / `unit/test_v2_9g_online_feasibility.py` | 虚构商品渲染页、默认关闭/地区门与单调漏斗测试，不含评测商品答案 |
+| `smartbuy/docs/v2/v2_release_candidate_rc3_manifest.md` / `eval/results/v2_9h_rc3_semantic_runtime_manifest.json` | RC3 生产 Commit/Tree、19 组完整成员、三品类版本、发布门槛及稳定 Payload Hash |
+| `smartbuy/docs/v2/v2_9h_rc3_release_candidate_report.md` / `v2_9h_rc3_handoff.md` | Trusted Stable 与 Online Experimental 范围、历史结果边界和独立评测纪律 |
+| `smartbuy/docs/v2/v2_9h_windows_reproduction.md` / `eval/results/v2_9h_rc3_windows_verification.json` | 新短 ASCII clone、冻结依赖、三 SQLite/索引、HTTP、五 Demo 与端口释放证据 |
+| `smartbuy/reproducibility/v2_9h_rc3_manifest.py` | 从不可变 RC3 生产 Commit 枚举完整成员并生成可重复 Semantic Manifest |
 | `smartbuy/docs/v2/v2_5_expression_eval.md` | 50 条新表达的冻结哈希、评分口径与不可覆盖结果索引 |
 | `experiments/langgraph_poc/` | 不被生产入口导入、可整体删除的 StateGraph/Fake Tool/Checkpoint/Interrupt/Checker 可行性实验 |
 | `experiments/langgraph_poc/graph.py` | PoC StateGraph、条件边、并行 fan-out/fan-in、预算、Interrupt 与强制 Checker 拓扑 |
@@ -624,7 +635,7 @@ proofpick_agent/
 | `smartbuy/observability/usage.py` | 不记录正文或凭据的内存 Token、延迟和成本账本 |
 | `smartbuy/observability/agent_events.py` | 有界、脱敏的 Agent 运行摘要和 Monitor 聚合 |
 | `smartbuy/observability/eval_ledger.py` | 阶段 6 统一运行/步骤账本 Schema、脱敏校验与 JSONL 输出 |
-| `smartbuy/reproducibility/semantic_manifest.py` / `v2_9e_manifest.py` | 明确成员集、稳定聚合哈希、三品类版本合同和独立运行审计 envelope |
+| `smartbuy/reproducibility/semantic_manifest.py` / `v2_9e_manifest.py` / `v2_9h_rc3_manifest.py` | 明确成员集、稳定聚合哈希、三品类版本合同、RC3 发布边界和独立运行审计 envelope |
 | `smartbuy/data/catalog/monitors_v1.json` | 12 个型号、来源、追加式价格和冲突证据的唯一 canonical 源数据 |
 | `smartbuy/data/laptop/laptop_configurations_v1.json` | Laptop Product Pack 的紧凑治理源：型号、地区、精确配置、官方来源与可核验字段；未知保留 null |
 | `smartbuy/data/headphone/headphone_configurations_v1.json` | Headphone Product Pack 的紧凑治理源：12 个精确配置、官方/专业实测/主观来源及字段级证据引用 |
@@ -721,7 +732,7 @@ proofpick_agent/
 
 ## 计划结构
 
-V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9D 第二次独立评测仍给出 `Needs revision`；V2-9F 已暴露 Online 回归完成 6/15，V2-9G 默认关闭的浏览器/备用 Provider 有限 PoC 只投影 7/15、Laptop 1/5、字段 15/21，没有达到正式接入门槛。RC3 尚未冻结，候选发布范围应收敛为 Trusted Multi-domain Decision Core，Online Research 保持 Experimental/Beta。下一次发布判断必须由独立评测方执行；正式浏览器、Composite Provider、自动 Evidence Promotion、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
+V2 已创建 Monitor、Laptop、Headphone 三套 Domain Pack，以及兼容适配层、Product Pack/Ledger、Source Search、Open Research、服务端 Quote-to-Span、确定性 Ranker、分层 Memory 和统一产品 UI。默认仍使用 ReAct；LangGraph 只是显式启用的兼容外壳。V2-9H 已冻结 `proofpick-v2-rc3`：Trusted Multi-domain Decision Core 为默认 Stable 能力，Online Research 为 Experimental/Beta。V2-9D 第二次独立评测仍为 `Needs revision`；V2-9F 已暴露 Online 回归为 6/15，V2-9G 未接入生产的有限 PoC 只投影 7/15。RC3 下一次发布判断必须由独立评测方执行；正式浏览器、Composite Provider、自动 Evidence Promotion、GraphRAG、Neo4j 和第四品类均不在当前已实现范围。
 
 ## 维护检查清单
 
