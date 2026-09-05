@@ -1,0 +1,463 @@
+{
+  "scorer_revision": "v2-citation-compatibility",
+  "summary": {
+    "passed": 7,
+    "total": 11,
+    "domains": {
+      "monitor": {
+        "passed": 7,
+        "total": 11
+      },
+      "laptop": {
+        "passed": 0,
+        "total": 0
+      },
+      "headphone": {
+        "passed": 0,
+        "total": 0
+      }
+    },
+    "tp": 1,
+    "fp": 0,
+    "fn": 1,
+    "precision": 1.0,
+    "recall": 0.5,
+    "f1": 0.6666666666666666,
+    "recommendation_fact_evidence": [
+      4,
+      8
+    ],
+    "requested_fact_evidence": [
+      17,
+      26
+    ],
+    "negative": [
+      0,
+      0
+    ],
+    "safety": {
+      "hard_constraint_ineligible_recommendation": 1
+    },
+    "release_gate_passed": false
+  },
+  "cases": [
+    {
+      "case_id": "rc3i-monitor-001",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": false,
+      "reasons": [
+        "requested_fact_evidence_incomplete"
+      ],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 0,
+      "missing_fact_pairs": [
+        [
+          "dell-u2723qe-cn",
+          "resolution"
+        ],
+        [
+          "dell-u2723qe-cn",
+          "width_mm"
+        ]
+      ],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 0,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 1.529,
+      "calls": 0,
+      "adapter_audit": {
+        "json_scalar_decodes": 0,
+        "citation_only_refs": 0,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-002",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 35422.757,
+      "calls": 7,
+      "adapter_audit": {
+        "json_scalar_decodes": 4,
+        "citation_only_refs": 2,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-003",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-g2724d-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 31293.93,
+      "calls": 7,
+      "adapter_audit": {
+        "json_scalar_decodes": 6,
+        "citation_only_refs": 2,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-004",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-u2724d-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 22608.664,
+      "calls": 6,
+      "adapter_audit": {
+        "json_scalar_decodes": 6,
+        "citation_only_refs": 2,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-005",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": false,
+      "reasons": [
+        "requested_fact_evidence_incomplete"
+      ],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 0,
+      "missing_fact_pairs": [
+        [
+          "asus-pa279crv-cn",
+          "usb_c_video"
+        ],
+        [
+          "asus-pa279crv-cn",
+          "width_mm"
+        ]
+      ],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "asus-pa279crv-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 0,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 0.931,
+      "calls": 0,
+      "adapter_audit": {
+        "json_scalar_decodes": 0,
+        "citation_only_refs": 0,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-006",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "asus-pg27aqdm-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 24079.657,
+      "calls": 7,
+      "adapter_audit": {
+        "json_scalar_decodes": 4,
+        "citation_only_refs": 2,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-007",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": false,
+      "reasons": [
+        "requested_fact_evidence_incomplete"
+      ],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 0,
+      "missing_fact_pairs": [
+        [
+          "asus-pa27jcv-cn",
+          "resolution"
+        ],
+        [
+          "asus-pa27jcv-cn",
+          "width_mm"
+        ]
+      ],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "asus-pa27jcv-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 0,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 0.922,
+      "calls": 0,
+      "adapter_audit": {
+        "json_scalar_decodes": 0,
+        "citation_only_refs": 0,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-008",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 12056.623,
+      "calls": 6,
+      "adapter_audit": {
+        "json_scalar_decodes": 3,
+        "citation_only_refs": 4,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-009",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "lg-27gs95qe-b-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 12065.446,
+      "calls": 4,
+      "adapter_audit": {
+        "json_scalar_decodes": 8,
+        "citation_only_refs": 0,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-010",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": true,
+      "reasons": [],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 2,
+      "missing_fact_pairs": [],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "benq-pd2705u-us"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 18481.415,
+      "calls": 6,
+      "adapter_audit": {
+        "json_scalar_decodes": 10,
+        "citation_only_refs": 2,
+        "binding_errors": []
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-011",
+      "domain": "monitor",
+      "kind": "filter",
+      "passed": false,
+      "reasons": [
+        "constraint_semantics",
+        "hard_constraint_ineligible_recommendation",
+        "ineligible_recommendation",
+        "recommendation_evidence_incomplete"
+      ],
+      "safety": [
+        "hard_constraint_ineligible_recommendation"
+      ],
+      "tp": 1,
+      "fp": 0,
+      "fn": 1,
+      "false_constraints": [],
+      "missed_constraints": [
+        [
+          "width_mm",
+          "lte",
+          "610.0"
+        ]
+      ],
+      "expected_fact_pairs": 6,
+      "covered_fact_pairs": 3,
+      "missing_fact_pairs": [
+        [
+          "asus-pg27aqdm-cn",
+          "width_mm"
+        ],
+        [
+          "benq-ex2710u-cn",
+          "width_mm"
+        ],
+        [
+          "lg-27gs95qe-b-cn",
+          "width_mm"
+        ]
+      ],
+      "recommendation_fact_pairs": 8,
+      "supported_recommendation_fact_pairs": 4,
+      "allowed_ids": [
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "recommended_ids": [
+        "asus-pg27aqdm-cn",
+        "benq-ex2710u-cn",
+        "dell-g2724d-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "returned_allowed_ids": 3,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 30012.893,
+      "calls": 12,
+      "adapter_audit": {
+        "json_scalar_decodes": 5,
+        "citation_only_refs": 9,
+        "binding_errors": []
+      }
+    }
+  ]
+}

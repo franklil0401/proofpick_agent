@@ -1,0 +1,74 @@
+{
+  "status": "confirmed_product_hard_constraint_omission",
+  "case_id": "rc3i-monitor-011",
+  "query": "请从已收录的显示器中挑选：刷新率至少144Hz，机身宽度最多610毫米。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+  "pure_parser_readonly_reproduction": {
+    "version": "smartbuy-constraint-set-v1",
+    "constraints": [
+      {
+        "field": "region",
+        "operator": "eq",
+        "normalized_value": "CN",
+        "unit": null,
+        "hard_or_soft": "soft",
+        "provenance": "system_default",
+        "source_text": "默认展示中国大陆市场；未作为硬约束",
+        "source_turn": 1,
+        "confidence": 1,
+        "supported": true,
+        "active": true,
+        "ambiguous": false,
+        "note": null
+      },
+      {
+        "field": "refresh_rate_hz",
+        "operator": "gte",
+        "normalized_value": 144,
+        "unit": "Hz",
+        "hard_or_soft": "hard",
+        "provenance": "current_input",
+        "source_text": "至少144hz",
+        "source_turn": 1,
+        "confidence": 1,
+        "supported": true,
+        "active": true,
+        "ambiguous": false,
+        "note": null
+      }
+    ],
+    "cancelled_fields": [],
+    "rejected_model_constraints": []
+  },
+  "independent_readonly_sql_passing": [
+    {
+      "model_id": "asus-pg27aqdm-cn",
+      "refresh_rate_hz": 240,
+      "width_mm": 605
+    },
+    {
+      "model_id": "benq-ex2710u-cn",
+      "refresh_rate_hz": 144,
+      "width_mm": 609
+    },
+    {
+      "model_id": "lg-27gs95qe-b-cn",
+      "refresh_rate_hz": 240,
+      "width_mm": 604.4
+    }
+  ],
+  "incorrectly_recommended_candidate": {
+    "model_id": "dell-g2724d-cn",
+    "refresh_rate_hz": 165,
+    "width_mm": 611.9
+  },
+  "user_width_limit_mm": 610,
+  "actual_width_mm": 611.9,
+  "checker_received_width_constraint": false,
+  "checker_bypass": false,
+  "api_calls_during_audit": 0,
+  "production_changes": 0,
+  "remaining_trusted_unrun": 79,
+  "online_unrun": 15,
+  "first_raw_sha256": "a14ca12f372d3eb8267dfc079270e353a5271b813181a36397514c21e9d3a5cb",
+  "continuation_raw_sha256": "d204a750b88fd72d7d4494e7f0a101b86439fe142c283a4490a7ba9cd55ae711"
+}

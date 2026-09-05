@@ -1,0 +1,65 @@
+{
+  "case_id": "rc3i-monitor-011",
+  "domain": "monitor",
+  "kind": "filter",
+  "passed": false,
+  "reasons": [
+    "constraint_semantics",
+    "hard_constraint_ineligible_recommendation",
+    "ineligible_recommendation",
+    "recommendation_evidence_incomplete"
+  ],
+  "safety": [
+    "hard_constraint_ineligible_recommendation"
+  ],
+  "tp": 1,
+  "fp": 0,
+  "fn": 1,
+  "false_constraints": [],
+  "missed_constraints": [
+    [
+      "width_mm",
+      "lte",
+      "610.0"
+    ]
+  ],
+  "expected_fact_pairs": 6,
+  "covered_fact_pairs": 3,
+  "missing_fact_pairs": [
+    [
+      "asus-pg27aqdm-cn",
+      "width_mm"
+    ],
+    [
+      "benq-ex2710u-cn",
+      "width_mm"
+    ],
+    [
+      "lg-27gs95qe-b-cn",
+      "width_mm"
+    ]
+  ],
+  "recommendation_fact_pairs": 8,
+  "supported_recommendation_fact_pairs": 4,
+  "allowed_ids": [
+    "asus-pg27aqdm-cn",
+    "benq-ex2710u-cn",
+    "lg-27gs95qe-b-cn"
+  ],
+  "recommended_ids": [
+    "asus-pg27aqdm-cn",
+    "benq-ex2710u-cn",
+    "dell-g2724d-cn",
+    "lg-27gs95qe-b-cn"
+  ],
+  "returned_allowed_ids": 3,
+  "invalid_evidence": [],
+  "unknown_overclaims": [],
+  "latency_ms": 30012.893,
+  "calls": 12,
+  "adapter_audit": {
+    "json_scalar_decodes": 5,
+    "citation_only_refs": 9,
+    "binding_errors": []
+  }
+}
