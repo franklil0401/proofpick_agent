@@ -1,0 +1,57 @@
+{
+  "status": "harness_failure_confirmed_evaluation_paused",
+  "production_commit": "ba6606ae249bafc89c18b320935c767a3f756c34",
+  "evaluator_freeze_commit": "3fa3902",
+  "raw_first_results_sha256": "a14ca12f372d3eb8267dfc079270e353a5271b813181a36397514c21e9d3a5cb",
+  "trusted_completed": 2,
+  "trusted_frozen_total": 90,
+  "trusted_remaining_never_run": 88,
+  "online_run_count": 0,
+  "gold_changed": false,
+  "scorer_changed_after_freeze": false,
+  "production_changed": false,
+  "paid_case_repeats": 0,
+  "responsible_component": "independent evaluator score.py",
+  "incident": [
+    "V1 EvidenceReference.value is JSON-encoded SQLite TEXT; the scorer incorrectly compared it directly against typed gold values.",
+    "Citation-only references with value=null were incorrectly treated as contradictory factual assertions."
+  ],
+  "manual_case_audit": [
+    {
+      "case_id": "rc3i-monitor-001",
+      "conclusion": "product_functional_failure_over_clarification",
+      "known_fields": {"width_mm": 611.4, "resolution": "3840x2160"},
+      "returned_fact_pairs": 0,
+      "requested_fact_pairs": 2,
+      "paid_calls": 0,
+      "diagnostic": "UltraSharp matches two catalog names; early identity clarification ignores the exact U2723QE and dell-u2723qe-cn also present in the query.",
+      "source_location": "smartbuy/agent/react.py:880"
+    },
+    {
+      "case_id": "rc3i-monitor-002",
+      "conclusion": "correct_product_response_scorer_false_positive",
+      "actual_values": {"refresh_rate_hz": 60.0, "display_size_inch": 27.0},
+      "requested_fact_pairs_with_verified_identity_and_source": 2,
+      "requested_fact_pairs": 2,
+      "recommended_ids": [],
+      "confirmed_product_safety_failure": false,
+      "source_location": "smartbuy/tools/evidence_check.py:141"
+    }
+  ],
+  "published_release_metrics_valid": false,
+  "why_not_release_metrics": "Incomplete two-case run and incompatible first scorer. Do not publish 0/90, 0/2 or 1/2 as release accuracy.",
+  "cost": {
+    "bootstrap_estimated_cny": 0.015586,
+    "trusted_estimated_cny": 0.0202718,
+    "total_estimated_cny": 0.0358578,
+    "trusted_requests": 7,
+    "qwen_plus_calls": 5,
+    "embedding_calls": 1,
+    "reranker_calls": 1,
+    "trusted_input_tokens": 22484,
+    "trusted_output_tokens": 1241,
+    "search_calls": 0,
+    "provider_retries": 0
+  },
+  "resumption_requires": "Explicit permission for an additive evaluator revision. Preserve original scorer/results, audit existing two raw responses without paid replay, then run each remaining frozen case at most once."
+}

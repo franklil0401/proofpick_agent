@@ -1,0 +1,154 @@
+{
+  "summary": {
+    "passed": 0,
+    "total": 2,
+    "domains": {
+      "monitor": {
+        "passed": 0,
+        "total": 2
+      },
+      "laptop": {
+        "passed": 0,
+        "total": 0
+      },
+      "headphone": {
+        "passed": 0,
+        "total": 0
+      }
+    },
+    "tp": 0,
+    "fp": 0,
+    "fn": 0,
+    "precision": null,
+    "recall": null,
+    "f1": null,
+    "recommendation_fact_evidence": [
+      0,
+      0
+    ],
+    "requested_fact_evidence": [
+      0,
+      4
+    ],
+    "negative": [
+      0,
+      0
+    ],
+    "safety": {
+      "invalid_evidence_binding": 1
+    },
+    "release_gate_passed": false
+  },
+  "cases": [
+    {
+      "case_id": "rc3i-monitor-001",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": false,
+      "reasons": [
+        "requested_fact_evidence_incomplete"
+      ],
+      "safety": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 0,
+      "missing_fact_pairs": [
+        [
+          "dell-u2723qe-cn",
+          "resolution"
+        ],
+        [
+          "dell-u2723qe-cn",
+          "width_mm"
+        ]
+      ],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-u2723qe-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 0,
+      "invalid_evidence": [],
+      "unknown_overclaims": [],
+      "latency_ms": 1.529,
+      "calls": 0
+    },
+    {
+      "case_id": "rc3i-monitor-002",
+      "domain": "monitor",
+      "kind": "fact",
+      "passed": false,
+      "reasons": [
+        "invalid_evidence_binding",
+        "requested_fact_evidence_incomplete"
+      ],
+      "safety": [
+        "invalid_evidence_binding"
+      ],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "false_constraints": [],
+      "missed_constraints": [],
+      "expected_fact_pairs": 2,
+      "covered_fact_pairs": 0,
+      "missing_fact_pairs": [
+        [
+          "dell-s2722qc-cn",
+          "display_size_inch"
+        ],
+        [
+          "dell-s2722qc-cn",
+          "refresh_rate_hz"
+        ]
+      ],
+      "recommendation_fact_pairs": 0,
+      "supported_recommendation_fact_pairs": 0,
+      "allowed_ids": [
+        "dell-s2722qc-cn"
+      ],
+      "recommended_ids": [],
+      "returned_allowed_ids": 1,
+      "invalid_evidence": [
+        {
+          "evidence_id": "ev-dell-s2722qc-cn-refresh-rate-hz",
+          "product_id": "dell-s2722qc-cn",
+          "field": "refresh_rate_hz"
+        },
+        {
+          "evidence_id": "ev-dell-s2722qc-cn-display-size-inch",
+          "product_id": "dell-s2722qc-cn",
+          "field": "display_size_inch"
+        },
+        {
+          "evidence_id": "ev-dell-s2722qc-cn-region",
+          "product_id": "dell-s2722qc-cn",
+          "field": "region"
+        },
+        {
+          "evidence_id": "ev-dell-s2722qc-cn-refresh-rate-hz",
+          "product_id": "dell-s2722qc-cn",
+          "field": "refresh_rate_hz"
+        },
+        {
+          "evidence_id": "ev-dell-s2722qc-cn-display-size-inch",
+          "product_id": "dell-s2722qc-cn",
+          "field": "display_size_inch"
+        },
+        {
+          "evidence_id": "ev-dell-s2722qc-cn-region",
+          "product_id": "dell-s2722qc-cn",
+          "field": "region"
+        }
+      ],
+      "unknown_overclaims": [],
+      "latency_ms": 35422.757,
+      "calls": 7
+    }
+  ]
+}
