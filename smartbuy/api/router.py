@@ -487,6 +487,7 @@ async def portfolio_run(
             "clarification_required", "query_intent", "requested_fields", "node",
             "reason", "scenario", "eligible_count", "ranking_degraded",
             "ranking_profile_version", "memory_enabled", "trace",
+            "completion", "check", "fact_completion",
         }
         events.append({key: value for key, value in event.items() if key in allowed})
 

@@ -16,6 +16,7 @@ from pydantic import ValidationError
 
 from smartbuy.agent.ranking import rank_compliant_candidates
 from smartbuy.agent.reporting import build_report
+from smartbuy.agent.fact_completion import from_agent_state, missing_fact_fields
 from smartbuy.constraints import (
     CandidateConstraintVerifier,
     ConstraintNormalizer,
@@ -365,6 +366,118 @@ class PurchaseDecisionAgent:
         if source not in sources:
             sources.append(source)
 
+    @staticmethod
+    def _record_evidence_result(
+        state: AgentState, arguments: dict[str, Any], result: ToolResult, *, terminal: bool = False,
+    ) -> None:
+        """Only executed, requested cells enter the field ledger; partial returns merge."""
+        models = result.data.get("models", {}) if result.status == "success" else {}
+        if not isinstance(models, dict):
+            models = {}
+        for model_id in arguments.get("model_ids", []):
+            if state.product_scope is not None and not state.product_scope.permits(model_id):
+                continue
+            previous = {item.field: item for item in state.assessments.get(model_id, [])}
+            fields = set(arguments.get("required_fields", []))
+            returned: dict[str, list[FieldAssessment]] = {}
+            raw_items = models.get(model_id, [])
+            for raw in raw_items if isinstance(raw_items, list) else []:
+                try:
+                    item = FieldAssessment.model_validate(raw)
+                except (ValidationError, TypeError):
+                    continue
+                if item.field in fields:
+                    returned.setdefault(item.field, []).append(item)
+            attempts = state.fact_check_attempts.setdefault(model_id, {})
+            for field in fields:
+                attempts[field] = ("checked" if field in returned else
+                                   "not_checked" if result.status == "success" and not terminal else "tool_failed")
+            # Do not overwrite an earlier completed cell merely because another
+            # requested field arrived in a later partial response.
+            if state.requirements.task_type in {"fact", "comparison"}:
+                combined = list(state.assessments.get(model_id, []))
+                for items in returned.values():
+                    for item in items:
+                        if item not in combined:
+                            combined.append(item)
+                state.assessments[model_id] = combined
+            else:
+                previous.update({field: items[-1] for field, items in returned.items()})
+                state.assessments[model_id] = list(previous.values())
+            state.verified_fields[model_id] = list(dict.fromkeys(item.field for item in state.assessments[model_id]))
+            PurchaseDecisionAgent._remember_candidate(
+                state, model_id, (state.fact_identities or {}).get(model_id, {"model_id": model_id}), "evidence_check"
+            )
+
+    async def _complete_facts(
+        self, state: AgentState, started: float, ledger_start: int,
+        callback: EventCallback | None, *, reserve_calls: int = 0,
+    ) -> None:
+        """Bounded local Evidence Check closure, independent of model planning.
+
+        These are terminal verification subcalls, not additional LLM-selected
+        tools. They consume the same tool budget and have a separate public
+        audit/Monitor event, preserving the V1 tools_used planning contract.
+        """
+        if state.mode != ResearchMode.TRUSTED or state.requirements.task_type not in {"fact", "comparison"}:
+            return
+        remaining = missing_fact_fields(from_agent_state(state))
+        for model_id, fields in remaining.items():
+            fields = [field for field in fields
+                      if state.fact_check_attempts.get(model_id, {}).get(field) in {None, "not_checked"}]
+            if not fields:
+                continue
+            time_left = started + self.limits.max_steps * self.limits.tool_timeout_seconds - time.perf_counter()
+            budget_ok = (
+                state.tool_call_count + reserve_calls < self.limits.max_tool_calls
+                and time_left > 0
+                and float(self._usage(self.provider, ledger_start)["estimated_cost_cny"]) < self.limits.max_task_cost_cny
+            )
+            if not budget_ok:
+                state.fact_check_attempts.setdefault(model_id, {}).update(dict.fromkeys(fields, "budget_exhausted"))
+                continue
+            arguments = {"model_ids": [model_id], "required_fields": fields, "constraints": [],
+                         "reason": "确定性终态补齐尚未核验的商品—字段；不生成购买条件。"}
+            check_started = time.perf_counter()
+            # Scope and requested fields were bound by the completion contract;
+            # reuse the existing read-only tool, not retrieval text or a second
+            # Evidence implementation. No paid provider or retry is involved.
+            try:
+                result = await asyncio.wait_for(
+                    self.tools["evidence_check"].invoke(arguments),
+                    timeout=min(self.limits.tool_timeout_seconds, time_left),
+                )
+            except TimeoutError:
+                result = ToolResult(tool="evidence_check", status="failed", error_code="TOOL_TIMEOUT",
+                                    summary="确定性字段核验超时；未确认资料缺失。")
+            except Exception:
+                result = ToolResult(tool="evidence_check", status="failed", error_code="EVIDENCE_CHECK_FAILED",
+                                    summary="确定性字段核验失败；未暴露底层错误。")
+            state.tool_call_count += 1
+            self._record_evidence_result(state, arguments, result, terminal=True)
+            check = {
+                "tool": "evidence_check", "execution_mode": "deterministic_completion",
+                "product_ids": [model_id], "required_fields": fields, "status": result.status,
+                "error_code": result.error_code, "summary": result.summary,
+                "duration_ms": round((time.perf_counter() - check_started) * 1000, 3),
+                "additional_model_calls": 0, "estimated_cost_cny": 0,
+            }
+            state.fact_completion_checks.append(check)
+            agent_monitor.record_orchestration_event({
+                "type": "fact_verification_observation", "selected": "evidence_check",
+                "status": result.status, "reason": result.error_code or "deterministic_completion",
+            })
+            await self._emit(callback, {"type": "fact_verification_observation", "check": check})
+        completion = from_agent_state(state)
+        agent_monitor.record_orchestration_event({
+            "type": "fact_completion", "selected": "evidence_check",
+            "status": completion["completion_status"],
+            "reason": f"checked_{completion['checked_count']}_of_{completion['required_count']}",
+        })
+        if not completion["answer_sufficient"]:
+            state.degraded_states.append("fact_completion: " + completion["completion_status"])
+        await self._emit(callback, {"type": "fact_completion", "completion": completion})
+
     def _start_state(
         self,
         query: str,
@@ -399,6 +512,9 @@ class PurchaseDecisionAgent:
         previous.candidate_explanations = {}
         previous.source_candidates = {}
         previous.open_research = None
+        previous.fact_check_attempts = {}
+        previous.fact_completion_checks = []
+        previous.fact_identities = {}
         return previous, previous_requirements, previous_constraints
 
     async def _invoke_tool(
@@ -409,6 +525,8 @@ class PurchaseDecisionAgent:
         previous_requirements: UserRequirements | None,
         previous_constraints: ConstraintSet | None,
         preferences: dict[str, Any],
+        *,
+        completion_request: bool = False,
     ) -> ToolResult:
         if name == "set_requirements":
             try:
@@ -517,6 +635,14 @@ class PurchaseDecisionAgent:
                 },
             )
         if name == "finish_decision":
+            if state.mode == ResearchMode.TRUSTED and state.requirements.task_type in {"fact", "comparison"}:
+                completion = from_agent_state(state)
+                if completion["completion_status"] != "complete":
+                    return ToolResult(
+                        tool=name, status="failed", error_code="FACT_VERIFICATION_INCOMPLETE",
+                        summary="商品×请求字段尚未全部核验；不能将未执行核验称为资料缺失或证据充分。",
+                        data={"fact_completion": completion},
+                    )
             observed = {
                 trace.tool
                 for trace in state.traces
@@ -664,19 +790,6 @@ class PurchaseDecisionAgent:
                     tool=name, status="failed", error_code="DEPENDENT_EVIDENCE_REQUIRED",
                     summary="数值来源冲突核验必须依赖 SQL 候选和针对候选的 KB 证据。",
                 )
-            fact_fields = {
-                "model_id", "model_name", "brand", "display_size_inch", "resolution", "refresh_rate_hz",
-                "panel_type", "width_mm", "weight_kg",
-            }
-            if set(state.requirements.required_fields).issubset(fact_fields):
-                return ToolResult(
-                    tool=name, status="failed", error_code="KB_FACT_SUFFICIENT",
-                    summary=(
-                        "简单官方事实必须先由 KB Search 取证。"
-                        if not state.kb_hits
-                        else "简单官方事实已由 KB 命中，应直接结束而非增加工具调用。"
-                    ),
-                )
         if name == "text2sql":
             state_constraints = state.requirements.hard_constraints
             locator_constraints = [item for item in state_constraints if item.field in {"model_id", "model_name"}]
@@ -708,6 +821,12 @@ class PurchaseDecisionAgent:
                 required_fields = [
                     field for field in state.requirements.required_fields if field not in identity_fields
                 ]
+            if state.requirements.task_type in {"fact", "comparison"}:
+                required_fields = [row["field"] for row in from_agent_state(state)["matrix"]]
+                eligibility_constraints = []
+                if completion_request:
+                    required_fields = [field for field in arguments.get("required_fields", [])
+                                       if field in required_fields]
             arguments["required_fields"] = list(dict.fromkeys(required_fields))
             arguments["constraints"] = [
                 item.model_dump(mode="json") for item in eligibility_constraints
@@ -721,7 +840,8 @@ class PurchaseDecisionAgent:
             arguments["_local_evidence_sufficient"] = bool(
                 required and required.issubset(locally_bound)
             )
-        if name in {"kb_search", "evidence_check"} and hard_flow and state.candidate_pool_rows:
+        if (name in {"kb_search", "evidence_check"} and hard_flow and state.candidate_pool_rows
+                and not completion_request):
             arguments["model_ids"] = list(state.candidate_pool_rows)[:10]
         if name in {"kb_search", "evidence_check"} and state.product_scope is not None:
             proposed_ids = arguments.get("model_ids") or state.product_scope.product_ids
@@ -731,12 +851,33 @@ class PurchaseDecisionAgent:
             if not arguments["model_ids"]:
                 return ToolResult(tool=name, status="failed", error_code="EMPTY_CANDIDATE_SCOPE",
                                   summary="工具请求没有范围内的可信配置，未扩大为全库检索。")
+        if name == "evidence_check" and state.requirements.task_type in {"fact", "comparison"}:
+            missing = missing_fact_fields(from_agent_state(state))
+            # One actual call contains only products with the same missing
+            # fields; other cells remain visible for bounded terminal closure.
+            groups: dict[tuple[str, ...], list[str]] = {}
+            for model_id in arguments["model_ids"]:
+                fields = tuple(field for field in missing.get(model_id, [])
+                               if state.fact_check_attempts.get(model_id, {}).get(field) in {None, "not_checked"})
+                if fields:
+                    groups.setdefault(fields, []).append(model_id)
+            if not groups:
+                return ToolResult(tool=name, status="success", summary="本轮已有核验或失败记录；未重复执行工具。",
+                                  data={"reused": True, "fact_completion": from_agent_state(state)})
+            fields, model_ids = next(iter(groups.items()))
+            arguments["model_ids"] = model_ids[:10]
+            arguments["required_fields"] = list(fields)
         try:
             result = await asyncio.wait_for(tool.invoke(arguments), timeout=self.limits.tool_timeout_seconds)
         except TimeoutError:
             result = ToolResult(
                 tool=name, status="failed", error_code="TOOL_TIMEOUT", summary="工具超过单次执行时限。",
             )
+        except Exception:
+            if name != "evidence_check":
+                raise
+            result = ToolResult(tool=name, status="failed", error_code="EVIDENCE_CHECK_FAILED",
+                                summary="字段核验失败，未将底层错误或未核验字段作为事实返回。")
         if state.product_scope is not None and name in {"text2sql", "kb_search", "evidence_check"}:
             result = result.model_copy(deep=True)
             scope = state.product_scope
@@ -748,6 +889,11 @@ class PurchaseDecisionAgent:
                     removed += len(original) - len(result.data[key])
             if "models" in result.data:
                 original = result.data["models"]
+                if not isinstance(original, dict):
+                    original = {}
+                    result.status = "failed"
+                    result.error_code = "INVALID_EVIDENCE_RESULT"
+                    result.summary = "Evidence 返回结构无效，字段核验未完成。"
                 result.data["models"] = {key: value for key, value in original.items() if scope.permits(key)}
                 removed += len(original) - len(result.data["models"])
             if removed:
@@ -793,10 +939,7 @@ class PurchaseDecisionAgent:
                     "kb_search",
                 )
         elif name == "evidence_check":
-            for model_id, items in result.data.get("models", {}).items():
-                state.assessments[model_id] = [FieldAssessment.model_validate(item) for item in items]
-                state.verified_fields[model_id] = [item.field for item in state.assessments[model_id]]
-                self._remember_candidate(state, str(model_id), {"model_id": model_id}, "evidence_check")
+            self._record_evidence_result(state, arguments, result)
         elif name == "source_search":
             for group in ("usable_candidates", "navigation_candidates"):
                 for candidate in result.data.get(group, []):
@@ -1052,6 +1195,29 @@ class PurchaseDecisionAgent:
             "previous_candidates": [row.get("model_id") for row in state.candidate_rows[:10]],
             "confirmed_preferences": preferences,
         }
+        if initial_type in {"fact", "comparison"}:
+            # Session preferences may survive, but previous-turn observations
+            # must not certify a different current question or data identity.
+            state.assessments = {}
+            state.verified_fields = {}
+            state.kb_hits = []
+            state.candidate_rows = []
+            state.candidate_pool_rows = {}
+            state.candidate_pool_sources = {}
+            state.fact_identities = {}
+            database_path = getattr(self.tools.get("text2sql"), "database_path", None)
+            if database_path:
+                try:
+                    connection = sqlite3.connect(f"file:{database_path.as_posix()}?mode=ro", uri=True, timeout=1)
+                    connection.row_factory = sqlite3.Row
+                    try:
+                        state.fact_identities = {row["model_id"]: dict(row) for row in connection.execute(
+                            "SELECT model_id, region, brand, model_name FROM products"
+                        ) if state.product_scope is None or state.product_scope.permits(row["model_id"])}
+                    finally:
+                        connection.close()
+                except (OSError, sqlite3.Error):
+                    state.fact_identities = {}
         system_prompt = SYSTEM_PROMPT
         if "source_search" in self.tools:
             system_prompt += (
@@ -1124,6 +1290,8 @@ class PurchaseDecisionAgent:
                         summary="工具参数不是有效 JSON 对象。",
                     )
                 else:
+                    if name == "finish_decision":
+                        await self._complete_facts(state, started, ledger_start, event_callback, reserve_calls=1)
                     if name == "source_search":
                         raw_requested_count = arguments.get("max_results", 10)
                         started_event = {
@@ -1248,7 +1416,9 @@ class PurchaseDecisionAgent:
                             ),
                         }
                     )
-                if name == "evidence_check" and result.status == "success":
+                if (name == "evidence_check" and result.status == "success"
+                        and (state.requirements.task_type not in {"fact", "comparison"}
+                             or from_agent_state(state)["completion_status"] == "complete")):
                     messages.append(
                         {
                             "role": "system",
@@ -1275,7 +1445,7 @@ class PurchaseDecisionAgent:
         # execute one deterministic, whitelisted fallback instead of fabricating
         # a conclusion. This does not call the LLM and remains fully auditable.
         if (
-            state.requirements.task_type in {"filter", "comparison", "dynamic"}
+            state.requirements.task_type in {"filter", "dynamic"}
             and state.candidate_pool_rows
             and state.kb_hits
             and not state.assessments
@@ -1327,6 +1497,7 @@ class PurchaseDecisionAgent:
                 event_callback,
                 {"type": "tool_observation", "trace": fallback_trace.model_dump(mode="json")},
             )
+        await self._complete_facts(state, started, ledger_start, event_callback)
         pool_model_ids = [
             item for item in state.candidate_pool_rows
             if state.product_scope is None or state.product_scope.permits(item)
@@ -1378,7 +1549,7 @@ class PurchaseDecisionAgent:
             state.candidate_explanations = explanations
             if ranking_degraded:
                 state.degraded_states.append("soft ranking: model unavailable; preserved verifier order")
-            if state.requirements.task_type in {"filter", "comparison", "dynamic"}:
+            if state.requirements.task_type in {"filter", "dynamic"}:
                 if state.constraint_verification.degraded:
                     state.stop_reason = "Constraint Checker 降级并 fail closed，本次不输出合规推荐。"
                 elif state.constraint_verification.eligible_model_ids:

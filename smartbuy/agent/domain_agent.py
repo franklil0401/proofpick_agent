@@ -39,6 +39,7 @@ from smartbuy.identity import (
     QueryIntent,
     ReferencePolarity,
     evidence_identity_status,
+    product_identity,
     require_product_in_scope,
 )
 from smartbuy.decision_core.delta import ConstraintDeltaResolver
@@ -48,6 +49,7 @@ from smartbuy.decision_core.scope import CandidateScopeReducer
 from smartbuy.decision_core.result import ResultClassificationInput, classify_result
 from smartbuy.decision_core.safety import CandidateChainViolation, assert_candidate_chain
 from smartbuy.decision_core.requirements import audit_requirement_coverage
+from smartbuy.agent.fact_completion import build_fact_completion
 from smartbuy.memory import DomainPreferenceMemoryStore
 from smartbuy.orchestration.contracts import EventCallback, emit_event
 from smartbuy.ranking import (
@@ -67,6 +69,7 @@ from smartbuy.tools.domain import (
     DomainProductQueryTool,
     DomainReadonlyRepository,
 )
+from smartbuy.tools import ToolResult
 
 
 _FACT_MARKERS = ("多少", "是什么", "哪个", "属于", "核验", "是否", "能否", "比较", "区分")
@@ -833,6 +836,81 @@ class DomainDecisionAgent:
             )
         return output
 
+    def _fact_requests(self, product: dict[str, Any], fields: set[str]) -> list[dict[str, Any]]:
+        """Request governed checks without inventing purchase constraints.
+
+        Some Pack fields permit only ordering operators. A reflexive value
+        check still delegates type, unit and Evidence four-state semantics to
+        the existing Evidence tool; it does not enter the user's ConstraintSet.
+        """
+        output = []
+        for field in sorted(fields):
+            definition = self.pack.fields[field]
+            allowed = {item.value for item in definition.allowed_operators}
+            operator = next((item for item in ("eq", "lte", "gte", "range", "in", "contains_all") if item in allowed), "eq")
+            actual = product["attributes"].get(field)
+            expected = (
+                [actual, actual] if operator == "range"
+                else [actual] if operator == "in" else actual
+            )
+            output.append({"field": field, "operator": operator, "value": expected, "unit": definition.unit})
+        return output
+
+    def _checked_fact_fields(
+        self,
+        product: dict[str, Any],
+        fields: set[str],
+        result: ToolResult,
+        scope: ResolvedProductScope,
+        *,
+        index_version: str | None,
+    ) -> tuple[list[FieldAssessment], dict[str, str]]:
+        """Consume executed Evidence results, never synthesize completion from rows."""
+        attempts = dict.fromkeys(fields, "not_checked")
+        identity = product_identity(product, data_version=self.repository.snapshot.data_version)
+        if result.status != "success" or any(result.data.get(key) != value for key, value in identity.items()):
+            return [], dict.fromkeys(fields, "tool_failed")
+        rows = result.data.get("field_results")
+        if not isinstance(rows, list):
+            return [], dict.fromkeys(fields, "tool_failed")
+        references = self._references(product, fields, scope, index_version=index_version)
+        assessments = []
+        for field in sorted(fields):
+            matching = [row for row in rows if isinstance(row, dict) and row.get("field_id") == field]
+            if not matching:
+                continue
+            if len(matching) != 1:
+                attempts[field] = "tool_failed"
+                continue
+            row = matching[0]
+            try:
+                status = ConstraintStatus(row["state"])
+                evidence_ids = set(row["evidence_ids"])
+                source_ids = set(row["source_ids"])
+            except (KeyError, TypeError, ValueError):
+                attempts[field] = "tool_failed"
+                continue
+            refs = [ref for ref in references if ref.field == field and ref.evidence_id in evidence_ids and ref.source_id in source_ids]
+            if status in {ConstraintStatus.MATCHED, ConstraintStatus.NOT_MATCHED, ConstraintStatus.CONFLICT} and not refs:
+                attempts[field] = "tool_failed"
+                continue
+            actual = row.get("actual_value")
+            if status in {ConstraintStatus.MATCHED, ConstraintStatus.NOT_MATCHED} and actual is None:
+                attempts[field] = "tool_failed"
+                continue
+            if status == ConstraintStatus.CONFLICT:
+                values = {json.dumps(ref.value, ensure_ascii=False, sort_keys=True) for ref in refs}
+                if len(values) < 2:
+                    attempts[field] = "tool_failed"
+                    continue
+                actual = [json.loads(value) for value in sorted(values)]
+            assessments.append(FieldAssessment(
+                field=field, status=status, actual_value=actual,
+                reason=str(row.get("reason") or "governed_field_checked"), evidence=refs,
+            ))
+            attempts.pop(field)
+        return assessments, attempts
+
     def _batch(
         self,
         result: Any,
@@ -1301,8 +1379,13 @@ class DomainDecisionAgent:
             if intent == QueryIntent.EXPLICIT_COMPARISON
             else evidence_candidate_ids
         )
+        fact_task = intent != QueryIntent.RECOMMENDATION_FILTER
+        fact_assessments: dict[str, list[FieldAssessment]] = {}
+        fact_attempts = {
+            product_id: dict.fromkeys(fields, "budget_exhausted") for product_id in scope.product_ids
+        } if fact_task else {}
         for product_id in evidence_targets[: max(0, self.max_tool_calls - len(trace) - 1)]:
-            requested = constraints
+            requested = self._fact_requests(products[product_id], fields) if fact_task else constraints
             if not requested:
                 requested = [
                     {"field": field, "operator": "eq", "value": products[product_id]["attributes"].get(field),
@@ -1312,9 +1395,16 @@ class DomainDecisionAgent:
                     and "eq" in {item.value for item in self.pack.fields[field].allowed_operators}
                 ]
             if requested:
-                evidence_result = self.evidence_check.run(
-                    product_id, requested, scope=scope
-                )
+                if fact_task:
+                    try:
+                        evidence_result = self.evidence_check.run(product_id, requested, scope=scope)
+                    except Exception:
+                        evidence_result = ToolResult(tool="domain_evidence_check", status="failed", summary="字段核验未完成。", error_code="evidence_tool_failed")
+                    fact_assessments[product_id], fact_attempts[product_id] = self._checked_fact_fields(
+                        products[product_id], fields, evidence_result, scope, index_version=index_version,
+                    )
+                else:
+                    evidence_result = self.evidence_check.run(product_id, requested, scope=scope)
                 await self._trace(event_callback, trace, evidence_result.tool, evidence_result.status,
                                   evidence_result.summary, arguments={"product_id": product_id,
                                                                      "fields": [item["field"] for item in requested]})
@@ -1391,7 +1481,7 @@ class DomainDecisionAgent:
                 }
             )
 
-        recommended = list(batch.eligible_model_ids) if checker_required else []
+        recommended = list(batch.eligible_model_ids) if checker_required and not fact_task else []
         report_ids = sorted(set(
             batch.candidate_pool_model_ids if checker_required else candidate_ids
         ))
@@ -1434,13 +1524,28 @@ class DomainDecisionAgent:
         verified_by_id = {item.model_id: item for item in batch.candidates}
         for product_id in report_ids:
             product = products[product_id]
-            refs = self._references(
-                product, fields, scope, index_version=index_version
+            checked_fields = {item.field: item for item in fact_assessments.get(product_id, [])}
+            refs = (
+                [ref for item in checked_fields.values() for ref in item.evidence]
+                if fact_task else self._references(product, fields, scope, index_version=index_version)
             )
             all_evidence.extend(refs)
             verification = verified_by_id.get(product_id)
             field_assessments = []
             for field in sorted(fields):
+                if fact_task:
+                    assessment = checked_fields.get(field)
+                    if assessment is None:
+                        attempt = fact_attempts.get(product_id, {}).get(field, "not_checked")
+                        assessment = FieldAssessment(field=field, status=ConstraintStatus.UNKNOWN,
+                                                     actual_value=None, reason=f"fact_check_{attempt}", evidence=[])
+                    field_assessments.append(assessment)
+                    if assessment.status in {ConstraintStatus.UNKNOWN, ConstraintStatus.CONFLICT}:
+                        values = assessment.actual_value if isinstance(assessment.actual_value, list) else []
+                        unresolved.append(UnresolvedFact(model_id=product_id, field=field,
+                                                         status=assessment.status.value, values=values,
+                                                         reason=assessment.reason, evidence=assessment.evidence))
+                    continue
                 field_refs = [item for item in refs if item.field == field]
                 actual = product["attributes"].get(field)
                 status = ConstraintStatus.MATCHED if field_refs and actual is not None else ConstraintStatus.UNKNOWN
@@ -1453,6 +1558,10 @@ class DomainDecisionAgent:
                     unresolved.append(UnresolvedFact(model_id=product_id, field=field, status="unknown",
                                                      reason="目标配置缺少治理字段证据。"))
             overall = (
+                ConstraintStatus.CONFLICT if fact_task and any(item.status == ConstraintStatus.CONFLICT for item in field_assessments) else
+                ConstraintStatus.NOT_MATCHED if fact_task and any(item.status == ConstraintStatus.NOT_MATCHED for item in field_assessments) else
+                ConstraintStatus.UNKNOWN if fact_task and any(item.status == ConstraintStatus.UNKNOWN for item in field_assessments) else
+                ConstraintStatus.MATCHED if fact_task and field_assessments else
                 ConstraintStatus.MATCHED if verification and verification.eligible else
                 ConstraintStatus.NOT_MATCHED if verification and verification.overall_status == VerificationStatus.FAILED else
                 ConstraintStatus.CONFLICT if verification and verification.overall_status == VerificationStatus.CONFLICT else
@@ -1470,7 +1579,7 @@ class DomainDecisionAgent:
                 data_version=self.repository.snapshot.data_version,
                 index_version=index_version,
                 overall_status=overall,
-                fields=field_assessments, eligible=bool(verification and verification.eligible),
+                fields=field_assessments, eligible=bool(not fact_task and verification and verification.eligible),
                 verifier_status=verification.overall_status if verification else None,
                 constraint_results=verification.constraint_results if verification else [],
                 violated_fields=verification.violated_fields if verification else [],
@@ -1627,6 +1736,23 @@ class DomainDecisionAgent:
                 ) + int(cross_region_inference),
             )
         )
+        fact_completion = None
+        if fact_task:
+            fact_completion = build_fact_completion(
+                list(scope.product_ids), sorted(fields), fact_assessments,
+                identities={product_id: product_identity(products[product_id], data_version=self.repository.snapshot.data_version, index_version=index_version)
+                            for product_id in scope.product_ids},
+                attempts=fact_attempts,
+            )
+            sufficient = bool(fact_completion["answer_sufficient"]) and not cross_region_inference
+            result_classification = classify_result(ResultClassificationInput(
+                recommendation_task=False, clarification_required=pending, unsupported_request=bool(unsupported),
+                tool_failure=any(item.status == "failed" for item in trace),
+                safety_blocked=safety_blocked_reason is not None,
+                candidate_count=len(candidates), evidence_complete_count=len(candidates) if sufficient else 0,
+            ))
+            await emit_event(event_callback, {"type": "fact_completion_checked", "domain_id": self.pack.domain_id,
+                                               "fact_completion": fact_completion})
         abstained = result_classification.abstained
         if kb_result and kb_result.status in {"success", "degraded"}:
             index_version = kb_result.data.get("index_version", index_version)
@@ -1667,7 +1793,13 @@ class DomainDecisionAgent:
             ),
             pending_questions=[item.clarification_question for item in unsupported if item.clarification_question],
             abstained=abstained,
-            stop_reason=result_classification.reason,
+            stop_reason=(
+                "请求字段已逐一执行核验；存在 unknown/conflict，不能声明全部事实已经确定。"
+                if fact_completion and fact_completion["completion_status"] == "complete" and not fact_completion["answer_sufficient"]
+                else "请求字段核验尚未完成；未执行、失败或预算耗尽的字段保留未完成状态。"
+                if fact_completion and fact_completion["completion_status"] != "complete"
+                else result_classification.reason
+            ),
             trace=trace, tool_call_count=len(trace),
             latency_ms=(time.perf_counter() - started) * 1000,
             usage={
@@ -1687,6 +1819,7 @@ class DomainDecisionAgent:
                 "safety_blocked": safety_blocked_reason is not None,
                 "ranking_profile_version": self.ranking_profile_version,
                 "ranking_model_calls": 0,
+                **({"fact_completion": fact_completion} if fact_completion is not None else {}),
             },
             ranking=ranking,
         )

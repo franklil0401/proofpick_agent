@@ -364,6 +364,20 @@ class DecisionReport(BaseModel):
                     lines.append(f"  - unknown：{', '.join(ranked.unknown_dimensions)}")
             lines.append("")
         lines.extend(["## 实际工具", "", ", ".join(self.tools_used) or "无", ""])
+        completion = self.usage.get("fact_completion")
+        if isinstance(completion, dict):
+            lines.extend([
+                "## 字段核验完成度", "",
+                f"- 核验状态：{completion.get('completion_status')}；"
+                f"已核验 {completion.get('checked_count', 0)}/{completion.get('required_count', 0)}。",
+                "- complete 表示每个请求字段都已执行核验，不表示 unknown/conflict 已变成确定事实。",
+            ])
+            for check in completion.get("checks", []):
+                lines.append(
+                    f"- 确定性终态工具 `{check.get('tool')}` / {check.get('status')}："
+                    f"{', '.join(check.get('required_fields', []))}；计入工具预算，无额外模型调用。"
+                )
+            lines.append("")
         lines.extend(["## 候选判断", ""])
         if not self.candidates:
             lines.extend(["没有可被完整验证的候选。", ""])
@@ -473,6 +487,9 @@ class AgentState(BaseModel):
     candidate_pool_rows: dict[str, dict[str, Any]] = Field(default_factory=dict)
     candidate_pool_sources: dict[str, list[str]] = Field(default_factory=dict)
     assessments: dict[str, list[FieldAssessment]] = Field(default_factory=dict)
+    fact_check_attempts: dict[str, dict[str, str]] = Field(default_factory=dict)
+    fact_completion_checks: list[dict[str, Any]] = Field(default_factory=list)
+    fact_identities: dict[str, dict[str, Any]] | None = None
     kb_hits: list[EvidenceReference] = Field(default_factory=list)
     traces: list[ToolTrace] = Field(default_factory=list)
     degraded_states: list[str] = Field(default_factory=list)
