@@ -1,0 +1,130 @@
+{
+  "scope": "four_exposed_monitor_cases_only",
+  "run_id": "fact-completion-exposed-20260906T025229Z",
+  "production_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "summary": {
+    "passed": 4,
+    "total": 4,
+    "domains": {
+      "monitor": {
+        "passed": 4,
+        "total": 4
+      },
+      "laptop": {
+        "passed": 0,
+        "total": 0
+      },
+      "headphone": {
+        "passed": 0,
+        "total": 0
+      }
+    },
+    "tp": 2,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "recommendation_fact_evidence": [
+      6,
+      6
+    ],
+    "requested_fact_evidence": [
+      12,
+      12
+    ],
+    "negative": [
+      0,
+      0
+    ],
+    "safety": {},
+    "release_gate_passed": false
+  },
+  "completion_checks": [
+    {
+      "case_id": "rc3i-monitor-001",
+      "matrix_required": 3,
+      "matrix_checked": 3,
+      "successful_evidence_calls": 1,
+      "deterministic_terminal_fallback_triggered": false,
+      "requested_fields_including_identity_helpers": [
+        "width_mm",
+        "resolution",
+        "region"
+      ],
+      "values": {
+        "width_mm": 611.4,
+        "resolution": "3840x2160",
+        "region": "CN"
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-005",
+      "matrix_required": 4,
+      "matrix_checked": 4,
+      "successful_evidence_calls": 1,
+      "deterministic_terminal_fallback_triggered": false,
+      "requested_fields_including_identity_helpers": [
+        "usb_c_video",
+        "width_mm",
+        "has_usb_c",
+        "region"
+      ],
+      "values": {
+        "usb_c_video": 1,
+        "width_mm": 612.2,
+        "has_usb_c": 1,
+        "region": "CN"
+      }
+    },
+    {
+      "case_id": "rc3i-monitor-007",
+      "matrix_required": 3,
+      "matrix_checked": 3,
+      "successful_evidence_calls": 1,
+      "deterministic_terminal_fallback_triggered": false,
+      "requested_fields_including_identity_helpers": [
+        "width_mm",
+        "resolution",
+        "region"
+      ],
+      "values": {
+        "width_mm": 612.2,
+        "resolution": "5120x2880",
+        "region": "CN"
+      }
+    }
+  ],
+  "facts_only_gold_coverage": [
+    6,
+    6
+  ],
+  "recommended_hard_field_coverage": [
+    6,
+    6
+  ],
+  "counts_note": "Scorer requested_fact_evidence includes both six fact-query pairs and six filter gold pairs.",
+  "requests": 32,
+  "models": {
+    "qwen-plus": 20,
+    "text-embedding-v4": 6,
+    "qwen3-rerank": 6
+  },
+  "input_tokens": 141515,
+  "output_tokens": 2555,
+  "provider_retries": 0,
+  "api_failures": 0,
+  "estimated_cost_cny": 0.1165169,
+  "latencies_ms": [
+    16217.229,
+    17748.265,
+    11962.408,
+    29271.02
+  ],
+  "raw_lf_sha256": "e5971415af8f78f204f920fecf28e0c07c3c9bc1578a18acae1ef43ae29c1187",
+  "scores_lf_sha256": "b158d6da531bcd80efc486545a4b116f0e92049f8ec57cbde7926df47191d924",
+  "remaining_trusted_unrun": 79,
+  "online_unrun": 15,
+  "audit_model_calls": 0,
+  "caveat": "Live paths did not require terminal fallback; fallback and unknown/conflict branches were validated offline only."
+}

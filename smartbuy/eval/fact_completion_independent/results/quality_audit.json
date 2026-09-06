@@ -1,0 +1,26 @@
+{
+  "production_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "production_tree": "7e6b036bc3255714cd378e887ae8b9779a5ef98a",
+  "production_members_verified": 1193,
+  "production_member_mismatches": 0,
+  "ci_equivalent_tests": {"passed": 681, "warnings": 3, "seconds": 165.66},
+  "v1_original_file_regression": {"files": 18, "passed": 101, "seconds": 15.65},
+  "existing_harness_tests": 17,
+  "ruff": "passed",
+  "compileall": "passed",
+  "javascript": 13,
+  "powershell_ast": 6,
+  "markdown_at_scan": {"documents": 114, "links": 565, "missing": 0},
+  "new_material_sensitive_scan_before_quality_record": {"files": 11, "exact_matches": 0, "high_confidence_matches": 0},
+  "new_prohibited_files": 0,
+  "service_ports_listening": 0,
+  "old_evaluation_files_changed": 0,
+  "remaining_trusted_unrun": 79,
+  "online_unrun": 15,
+  "new_holdout_created": false,
+  "new_remote_ci_claimed": false,
+  "minor_local_setup_notes": [
+    "PowerShell initially parsed an unquoted Git tree expression incorrectly; rerun with a quoted revision before auditing.",
+    "An evaluation-branch merge conflict affected only PROJECT_STRUCTURE.md and was resolved to the exact fixed production file. No protected branch changed."
+  ]
+}
