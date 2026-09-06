@@ -95,14 +95,20 @@ def _explicit_hard_field_obligations(query: str, constraints: ConstraintSet, pac
     natural-language interpreter. Whole-query source text is not field proof.
     """
     obligations = []
-    for match in re.finditer(r"(?:必须|硬性要求|\bmust\b)\s*([^，,；;。！？!?\n]+)", query, re.I):
-        body = match.group(1)
-        if re.match(r"(?:给出|列出|展示|解释|比较|对比|核验|保持|保留|返回)", body):
+    # Keep the complete subject/predicate clause: cutting at '必须' loses
+    # '分辨率' in '分辨率必须为…'. Chinese aliases are not ASCII words and
+    # must also match directly after a number (e.g. '4K分辨率').
+    for match in re.finditer(r"[^，,；;。！？!?\n]+", query):
+        body = match.group(0)
+        imperative = re.search(r"(?:必须|硬性要求|\bmust\b)\s*", body, re.I)
+        if not imperative:
+            continue
+        if re.match(r"(?:给出|列出|展示|解释|比较|对比|核验|保持|保留|返回)", body[imperative.end():]):
             continue
         mentioned = set()
         for field_id, definition in pack.fields.items():
             if any(
-                re.search(rf"(?<![A-Za-z0-9_]){re.escape(term)}(?![A-Za-z0-9_])", body, re.I)
+                _mentions_term(body, term)
                 for term in {field_id, definition.label, *definition.aliases} if term
             ):
                 mentioned.add(field_id)
@@ -111,7 +117,10 @@ def _explicit_hard_field_obligations(query: str, constraints: ConstraintSet, pac
             unresolved = {
                 field for field in mentioned
                 if pack.fields[field].data_type.value not in {"number", "integer"}
-                and not any(item.field == field for item in constraints.active(hard_only=True, supported_only=True))
+                and not any(
+                    item.field == field and item.provenance.value == "current_input"
+                    for item in constraints.active(hard_only=True, supported_only=True)
+                )
                 and field not in {"product_id", "model_id", "model_name", "family_id", "configuration_id", "region"}
             }
         else:
@@ -123,6 +132,62 @@ def _explicit_hard_field_obligations(query: str, constraints: ConstraintSet, pac
                 "resolved": False, "reason": "unresolved_explicit_requirement",
             })
     return obligations
+
+
+def _mentions_term(text: str, term: str) -> bool:
+    pattern = re.escape(term)
+    if term.isascii():
+        pattern = rf"(?<![A-Za-z0-9_]){pattern}(?![A-Za-z0-9_])"
+    return bool(re.search(pattern, text, re.I))
+
+
+def clarification_obligations(query: str, pack: LoadedDomainPack) -> list[dict[str, Any]]:
+    """Unresolved process/qualitative requirements cannot mean 'no constraints'.
+
+    No model or catalog values are consulted. Numeric evidence in another field
+    cannot resolve a qualitative bound. An explicit ask-first instruction is
+    retained even when an otherwise valid threshold has already been supplied.
+    """
+    from smartbuy.decision_core.query_semantics import analyze_trusted_query_intent
+
+    signals = analyze_trusted_query_intent(query)
+    if signals.ask_first:
+        return [{"field": "confirmation", "operator": None, "value": None, "unit": None,
+                 "source_text": query, "span_start": 0, "span_end": len(query),
+                 "resolved": False, "reason": "explicit_confirmation_required"}]
+    if signals.task_type in {"fact", "comparison"}:
+        return []
+    pattern = re.compile(
+        r"(?:(?:不能|不得|不宜|不应|不要|别)\s*太\s*(?:大|小|宽|窄|重|轻|高|低|贵|慢)|"
+        r"(?:宽|窄|大|小|重|轻|高|低|贵|便宜|快|慢|强|好|久)(?:一点|一些)|"
+        r"(?:阈值|上限|下限|限制).*?(?:没确定|未定|待定|还没量))"
+    )
+    quantities = extract_numeric_requirements(
+        query, pack, implicit_operators=ConstraintNormalizer.IMPLICIT_NUMERIC_OPERATORS,
+        implicit_unit_fields={"display_size_inch", "refresh_rate_hz"},
+    )
+    resolved_fields = {item.field for item in quantities if item.resolved}
+    output = [
+        item for item in _explicit_hard_field_obligations(query, ConstraintSet(), pack)
+        if item["field"] == "unknown"
+    ]
+    for clause in re.finditer(r"[^，,；;。！？!?\n]+", query):
+        text = clause.group(0)
+        if not pattern.search(text):
+            continue
+        if re.search(r"偏好|最好|希望|更喜欢", text) and not re.search(r"必须|不能|不得|硬性", text):
+            continue
+        fields = {
+            field for field, definition in pack.fields.items()
+            if any(_mentions_term(text, term) for term in {field, definition.label, *definition.aliases} if term)
+        }
+        # Unknown objects are not guessed from a model or from unrelated digits.
+        unresolved = fields - resolved_fields if fields else {"unknown"}
+        for field in sorted(unresolved):
+            output.append({"field": field, "operator": None, "value": None, "unit": None,
+                           "source_text": text, "span_start": clause.start(), "span_end": clause.end(),
+                           "resolved": False, "reason": "qualitative_threshold_missing"})
+    return output
 
 
 def audit_requirement_coverage(
@@ -137,11 +202,11 @@ def audit_requirement_coverage(
     """
     if not purchase:
         return RequirementCoverage([])
-    obligations = []
+    obligations = clarification_obligations(query, pack)
     implicit_operators = dict(ConstraintNormalizer.IMPLICIT_NUMERIC_OPERATORS)
     for item in extract_numeric_requirements(
         query, pack, implicit_operators=implicit_operators,
-        implicit_unit_fields={"refresh_rate_hz"},
+        implicit_unit_fields={"display_size_inch", "refresh_rate_hz"},
     ):
         record = asdict(item)
         record["resolved"] = item.resolved and _bound(item, constraints)

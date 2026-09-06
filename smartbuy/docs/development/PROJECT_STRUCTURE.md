@@ -4,8 +4,8 @@
 
 | 项目 | 内容 |
 |---|---|
-| 最后更新时间 | 2026-09-05 |
-| 当前阶段 | V1/RC3/RC4 及历史结果保持不变；fix/v2-fact-completion 从固定99c7bccc基线修复默认Portfolio事实/比较的字段核验与完成语义；仅离线开发回归，历史真实回归仍3/4，未创建Holdout/Tag/Release/PR |
+| 最后更新时间 | 2026-09-06 |
+| 当前阶段 | fix/v2-trusted-intent-clarification 从固定02e97a2c修复默认Portfolio意图、澄清与约束覆盖；只做离线开发回归，独立Trusted79首次仍4/15，剩余64题未读未运行；V1/RC和历史结果不变 |
 | 结构生成范围 | 根目录、自研 `smartbuy/`、隔离 `experiments/`、供应商目录的维护入口与关键子目录 |
 | 排除目录 | `.git`、`.venv`、`__pycache__`、`node_modules`、模型缓存、构建产物、运行数据库、向量索引、MinIO 数据和临时文件 |
 | 更新规则 | 新增、删除、移动、重命名文件，或文件职责/入口/配置明显变化时，必须在同一 Commit 中更新本文 |
@@ -73,6 +73,7 @@ proofpick_agent/
 │  │  ├─ __init__.py
 │  │  ├─ models.py
 │  │  ├─ product_pack.py
+│  │  ├─ modality.py           # 原文中的可选字段及取消作用域，不将“也可以”当作否定事实
 │  │  └─ quantities.py         # Pack 驱动的量值、单位及原文要求清单
 │  ├─ api/
 │  │  ├─ portfolio_runtime.py  # 默认关闭的 Laptop/Headphone V2 UI 运行时
@@ -230,6 +231,7 @@ proofpick_agent/
 │  │  ├─ delta.py
 │  │  ├─ intent.py
 │  │  ├─ requirements.py       # 输入硬要求到有效 ConstraintSet 的覆盖守卫
+│  │  ├─ query_semantics.py    # 原始分句的动作/否定/先澄清共享合同，无商品或case规则
 │  │  ├─ result.py
 │  │  ├─ safety.py
 │  │  └─ scope.py
@@ -290,6 +292,8 @@ proofpick_agent/
 │  │  ├─ v2_stage5c_live_holdout_v2_manifest.json
 │  │  ├─ run_v2_quote_span_live_eval.py
 │  │  ├─ run_v2_9f_online_regression.py
+│  │  ├─ run_trusted_intent_regression.py # 默认Portfolio的重建式Fake开发回归，不调用独立评分器
+│  │  ├─ trusted_intent_exposed_v1.json   # 仅已执行15题的公开原文/响应重建输入，非新Holdout
 │  │  ├─ v2_6a_laptop_cases.jsonl
 │  │  ├─ v2_6b_laptop_retrieval_cases.jsonl
 │  │  ├─ v2_6b_laptop_retrieval_runner.py
@@ -326,6 +330,8 @@ proofpick_agent/
 │  │     ├─ v2_9h_*            # RC3 旧失败、新 Git-blob R1 Manifest 与 Windows 复现摘要
 │  │     ├─ v2_9j_*            # 离线开发首败、身份/API/约束修复与质量门审计；非独立评测
 │  │     ├─ fact_completion_development_first.json
+│  │     ├─ trusted_intent_development_first.json
+│  │     ├─ trusted_intent_offline_regression.json
 │  │     └─ fact_completion_development_regression.json
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
@@ -443,6 +449,7 @@ proofpick_agent/
 │     │  └─ v2_checkpoint_worker.py
 │     ├─ integration/
 │     │  ├─ test_fact_completion_portfolio.py
+│     │  ├─ test_trusted_clarification_portfolio.py
 │     │  ├─ test_stage4_api.py
 │     │  ├─ test_v2_headphone_domain_pack.py
 │     │  ├─ test_v2_headphone_toolchain.py
@@ -460,6 +467,10 @@ proofpick_agent/
 │     └─ unit/
 │        ├─ test_fact_completion_contract.py
 │        ├─ test_domain_fact_completion.py
+│        ├─ test_trusted_constraint_semantics.py
+│        ├─ test_trusted_query_intent.py
+│        ├─ test_trusted_report_intent_guard.py
+│        ├─ test_trusted_requirement_obligations.py
 │        ├─ test_bailian_config.py
 │        ├─ test_bailian_provider.py
 │        ├─ test_stage3_data.py

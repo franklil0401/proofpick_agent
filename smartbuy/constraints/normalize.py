@@ -6,7 +6,8 @@ import re
 from copy import deepcopy
 from typing import Any, Iterable
 
-from smartbuy.contracts.quantities import extract_numeric_requirements
+from smartbuy.contracts.modality import optional_requirement_spans
+from smartbuy.contracts.quantities import NUMERIC_PATTERN, extract_numeric_requirements, parse_numeric_token
 
 from .models import (
     ConstraintOperator,
@@ -292,20 +293,15 @@ class ConstraintNormalizer:
                 note="缺少可确定执行的预算数值，需要用户补充。",
             )
 
-        size_range = re.search(r"(\d+(?:\.\d+)?)\s*(?:-|到|至|~|～)\s*(\d+(?:\.\d+)?)\s*(?:英寸|寸)", query)
-        if size_range:
-            low, high = sorted((float(size_range.group(1)), float(size_range.group(2))))
-            add("display_size_inch", ConstraintOperator.RANGE, [low, high], unit="inch", source_text=size_range.group(0))
-        else:
-            size = re.search(r"(\d+(?:\.\d+)?)\s*(?:英寸|寸)(左右)?", query)
-            if size:
-                vague = bool(size.group(2))
-                add(
-                    "display_size_inch", ConstraintOperator.EQ, float(size.group(1)), unit="inch",
-                    strength=ConstraintStrength.SOFT if vague else ConstraintStrength.HARD,
-                    source_text=size.group(0), confidence=0.7 if vague else 1.0, ambiguous=vague,
-                    note="“左右”作为软偏好，不参与确定性淘汰。" if vague else None,
-                )
+        # Keep the historical explicit approximate-size preference. Exact size,
+        # upper/lower bounds and ranges now use the shared Pack quantity parser.
+        vague_size = re.search(rf"({NUMERIC_PATTERN})\s*(?:英寸|寸|inch)\s*左右", query, re.I)
+        if vague_size:
+            add(
+                "display_size_inch", ConstraintOperator.EQ, parse_numeric_token(vague_size.group(1)), unit="inch",
+                strength=ConstraintStrength.SOFT, source_text=vague_size.group(0), confidence=0.7,
+                ambiguous=True, note="“左右”作为软偏好，不参与确定性淘汰。",
+            )
 
         if "resolution" not in cancelled:
             explicit_resolution = re.search(r"(?<!\d)(\d{3,5})\s*[x×]\s*(\d{3,5})(?!\d)", query, re.I)
@@ -327,9 +323,9 @@ class ConstraintNormalizer:
         numeric_pack = DomainPackLoader().load(DEFAULT_MONITOR_PACK)
         for quantity in extract_numeric_requirements(
             query, numeric_pack,
-            field_ids={"refresh_rate_hz", "width_mm", "weight_kg"},
+            field_ids={"display_size_inch", "refresh_rate_hz", "width_mm", "weight_kg"},
             implicit_operators=self.IMPLICIT_NUMERIC_OPERATORS,
-            implicit_unit_fields={"refresh_rate_hz"},
+            implicit_unit_fields={"display_size_inch", "refresh_rate_hz"},
         ):
             add(
                 quantity.field, ConstraintOperator(quantity.operator), quantity.value,
@@ -344,20 +340,61 @@ class ConstraintNormalizer:
             elif "oled" in compact:
                 add("is_oled", ConstraintOperator.EQ, True, source_text="要求 OLED")
 
-        if "has_usb_c" not in cancelled:
-            if any(token in compact for token in ("没有usb-c", "无usb-c", "不要usb-c", "排除usb-c")):
-                add("has_usb_c", ConstraintOperator.EQ, False, source_text="不需要 USB-C")
-            elif any(token in compact for token in ("需要usb-c", "有usb-c", "支持usb-c")):
-                add("has_usb_c", ConstraintOperator.EQ, True, source_text="需要 USB-C")
-
-        if "usb_c_video" not in cancelled and (
-            any(
-                token in compact
-                for token in ("usb-c视频", "usb-c输入视频", "usb-c视频输入", "usb-c传视频")
-            )
-            or re.search(r"usb-c.{0,6}(?:传视频|视频输入|能传视频)", compact)
-        ):
-            add("usb_c_video", ConstraintOperator.EQ, True, source_text="USB-C 视频输入")
+        usb_pattern = r"(?:usb[\s_-]?c|type[\s_-]?c)"
+        usb_definition = numeric_pack.fields["has_usb_c"]
+        optional_usb = optional_requirement_spans(
+            query, [usb_definition.label, *usb_definition.aliases, "USB C", "Type C"],
+        )
+        video_definition = numeric_pack.fields["usb_c_video"]
+        optional_video = optional_requirement_spans(
+            query, [video_definition.label, *video_definition.aliases,
+                    "USB-C 视频", "Type-C 视频", "USB-C 视频输入", "Type-C 视频输入"],
+        )
+        video_matches = list(re.finditer(
+            rf"{usb_pattern}[^，,。；;、\n]{{0,8}}?(?:一线通|能传视频|传视频|输入视频|视频输入|视频)", query, re.I,
+        ))
+        video_matches = [match for match in video_matches if not any(
+            start <= match.start() < end for start, end in optional_video
+        )]
+        if optional_video:
+            video_matches = [match for match in video_matches if match.start() >= optional_video[-1][1]]
+            if not video_matches:
+                cancelled.add("usb_c_video")
+        positive_video = False
+        for match in video_matches:
+            prefix = query[max(0, match.start() - 8):match.start()]
+            negative = bool(re.search(r"(?:不要|不支持|排除)\s*$", prefix))
+            add("usb_c_video", ConstraintOperator.EQ, not negative, source_text=match.group(0))
+            positive_video |= not negative
+        explicit_interfaces = []
+        for match in re.finditer(usb_pattern, query, re.I):
+            if any(start <= match.start() < end for start, end in optional_usb):
+                continue
+            if any(start <= match.start() < end for start, end in optional_video):
+                continue
+            if any(video.start() <= match.start() < video.end() for video in video_matches):
+                # A separately worded interface request is different from the
+                # interface logically implied by a requested video capability.
+                continue
+            prefix = query[max(0, match.start() - 12):match.start()]
+            double_negative = re.search(r"(?:不要不带|不能没有|不能不带)\s*$", prefix)
+            negative = re.search(r"(?:没有|无|不要|排除|不需要)\s*$", prefix)
+            positive = re.search(r"(?:需要|必须有|要有|有|支持)\s*$", prefix)
+            if double_negative or negative or positive:
+                value = bool(double_negative or (positive and not negative))
+                explicit_interfaces.append((match, value))
+        if optional_usb:
+            explicit_interfaces = [(match, value) for match, value in explicit_interfaces
+                                   if match.start() >= optional_usb[-1][1]]
+            if not explicit_interfaces:
+                cancelled.add("has_usb_c")
+        for match, value in explicit_interfaces:
+            add("has_usb_c", ConstraintOperator.EQ, value, source_text=match.group(0))
+        if positive_video and not explicit_interfaces and "has_usb_c" not in cancelled:
+            # Keep the old public active() field for report compatibility, but
+            # a derived prerequisite is not an independent user hard condition.
+            add("has_usb_c", ConstraintOperator.EQ, True, source_text=video_matches[0].group(0),
+                strength=ConstraintStrength.SOFT, note="视频能力隐含接口；不是用户单独提出的硬约束。")
 
         power = re.search(r"(?:至少|不少于|不低于)(\d+(?:\.\d+)?)w", compact)
         if power:
