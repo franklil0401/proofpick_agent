@@ -1,0 +1,21 @@
+{
+  "production_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "production_tree": "7e6b036bc3255714cd378e887ae8b9779a5ef98a",
+  "offline_tests": 681,
+  "harness_tests": 17,
+  "planned_exposed_cases": [
+    "rc3i-monitor-001",
+    "rc3i-monitor-005",
+    "rc3i-monitor-007",
+    "rc3i-monitor-011"
+  ],
+  "budget_cny": 1,
+  "paid_calls_before_freeze": 0,
+  "files": {
+    "__init__.py": "ef21bf91bf65f2f1cbe9a831c26f2b5b86c617a4e4027eb134f61f7cfddf836a",
+    "preflight.json": "9fc44626f7d5397ad79e14bf71e7f7bae41ed9fd27280a9780cf31c79283f7fc",
+    "preflight.py": "535bf25e50839ed6d9eb30911ae70a6e1a3eb6f9c580ea2ea04059583af4ffb5",
+    "README.md": "615fb72f40182bed471a168bbfa42b37e45ad57188892d6732867a569cfde7f0",
+    "run.py": "0459ddb65335d6b792ef51f56b09c1b0ccc5a720ce3299017600e8cdf947d97b"
+  }
+}
