@@ -1,0 +1,22 @@
+{
+  "classification": "offline_development_quality_not_independent_evaluation",
+  "production_commit": "bad83ea7512e6b53ae554bbd4a1f80f0c3f4f715",
+  "production_tree": "5f3bdc6f50ec4ad71636ac745d31881f4323f7ed",
+  "baseline_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "pytest": {"passed": 790, "failed": 0, "skipped": 0, "baseline_retained": 681, "new_tests": 109, "duration_seconds": 154.15, "existing_dependency_warnings": 3},
+  "v1_original_files": {"files": 18, "passed": 101, "failed": 0, "duration_seconds": 15.09},
+  "new_test_groups": {"query_intent": 31, "constraint_semantics": 51, "requirement_obligations": 10, "report_guard": 3, "default_portfolio_api": 14},
+  "ruff": "passed",
+  "compileall": "passed",
+  "javascript": {"passed": 13, "total": 13, "scope": "all git-tracked js"},
+  "powershell_ast": {"passed": 6, "total": 6},
+  "markdown_links": {"passed": 532, "documents": 108, "broken": 0},
+  "git_diff_check": "passed",
+  "security": {"staged_sensitive_pattern_matches": 0, "reviewed_actual_credentials": 0, "repository_historical_synthetic_pattern_matches": 1, "new_forbidden_artifacts": 0, "read_real_credential_values": false},
+  "ports": {"checked": [8000, 8088, 9000, 9001], "listening": 0, "persistent_test_services_started": 0},
+  "unchanged": {"original_test_files": true, "existing_gold_and_results": true, "data_and_packs": true, "checker_and_evidence_rules": true, "dependencies": true, "default_feature_flags": true, "public_request_schema": true, "protected_refs": true},
+  "paid_api_calls": 0,
+  "estimated_cost_cny": 0,
+  "remaining_independent_inputs_read": 0,
+  "remaining_independent_tasks_run": 0
+}

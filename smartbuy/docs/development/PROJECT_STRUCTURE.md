@@ -211,7 +211,8 @@ proofpick_agent/
 │  │  │  ├─ v2_9h_r1_manifest_freeze_repair_report.md
 │  │  │  ├─ v2_9h_r1_rc3_handoff.md
 │  │  │  ├─ v2_9j_trusted_contracts_repair_report.md
-│  │  │  └─ fact_completion_repair_report.md
+│  │  │  ├─ fact_completion_repair_report.md
+│  │  │  └─ trusted_intent_clarification_repair_report.md
 │  │  ├─ data_card.md
 │  │  ├─ runtime_manifest.md
 │  │  ├─ stage1_smoke_test.md
@@ -332,6 +333,8 @@ proofpick_agent/
 │  │     ├─ fact_completion_development_first.json
 │  │     ├─ trusted_intent_development_first.json
 │  │     ├─ trusted_intent_offline_regression.json
+│  │     ├─ trusted_intent_offline_fixed.json
+│  │     ├─ trusted_intent_quality_audit.json
 │  │     └─ fact_completion_development_regression.json
 │  ├─ memory/
 │  │  ├─ domain_store.py       # V2 全局/品类分层偏好、版本/过期及摘要身份隔离
@@ -771,6 +774,8 @@ V2-9J 新增测试：`unit/test_v2_9j_units.py`、`unit/test_v2_9j_identity.py`�
 当前修复状态见 [V2-9J 报告](../v2/v2_9j_trusted_contracts_repair_report.md)。上面的 RC3 历史记录保留不变，不代表本修复分支已通过新的独立发布评测。
 
 后续字段完成修复见 [修复报告](../v2/fact_completion_repair_report.md)：`test_fact_completion_portfolio.py` 验证默认API有界补核与事件；`test_fact_completion_contract.py` 验证共享闭包及可信身份；`test_domain_fact_completion.py` 验证Domain实际工具四态及未完成终态。`fact_completion_development_first.json` 保存开发首败，`fact_completion_development_regression.json` 单独记录修复后结果，不覆盖独立真实3/4。
+
+默认入口意图/澄清收尾见 [Trusted 意图修复报告](../v2/trusted_intent_clarification_repair_report.md)：新增109项离线测试；`query_semantics.py` 共享动作否定合同，`modality.py` 共享可选原文片段。`trusted_intent_*` 新结果区分首败、中间Fake及固定生产Fake回归；原独立4/15保持不变，未读未运行64题。没有新的独立评测或发布结论。
 
 - [x] 树状结构来自当前工作区，不从计划或旧文档复制。
 - [x] 计划项单独列出且明确标记“计划/不存在”。
