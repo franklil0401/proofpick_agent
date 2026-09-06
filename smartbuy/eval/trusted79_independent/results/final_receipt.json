@@ -1,0 +1,32 @@
+{
+  "production_runtime_unchanged": true,
+  "original_freezes_unchanged": true,
+  "final_files_scanned": 21,
+  "credential_hits": 0,
+  "new_forbidden_artifacts": 0,
+  "local_report_matches": true,
+  "report_sha256": "19fa3604b9d2568e24bb5619b2b62f532563abf91823cb1c63b71a7335ace317",
+  "model_calls_in_final_audit": 0,
+  "tests": {
+    "production_ci_equivalent": 681,
+    "v1_original_files_current": 101,
+    "evaluator_synthetics": 22
+  },
+  "static": {
+    "ruff": "passed",
+    "compileall": "passed",
+    "javascript": 13,
+    "powershell": 6,
+    "markdown_links": 565,
+    "markdown_documents": 115
+  },
+  "ports": [
+    8000,
+    8088,
+    9000,
+    9001
+  ],
+  "port_listeners": 0,
+  "api_calls": 103,
+  "estimated_cost_cny": 0.389128
+}

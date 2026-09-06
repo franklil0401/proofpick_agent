@@ -1,0 +1,84 @@
+{
+  "production_and_runtime_unchanged": true,
+  "production_audit": {
+    "production_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+    "production_tree": "7e6b036bc3255714cd378e887ae8b9779a5ef98a",
+    "production_member_count": 1193,
+    "git_blob_aggregate_sha256": "7bc167d9dd6744d8c9d9efaa76adad0f6402c0619dbbd18c6ef61bc5cf022816",
+    "checkout_mismatches": 0,
+    "runtime": [
+      {
+        "domain_id": "headphone",
+        "domain_pack_version": "1.0.0",
+        "data_version": "headphone-governed-2026-09-03-v1",
+        "index_version": "headphone-governed-2026-09-03-v1-embedding1024-v1",
+        "collection_name": "proofpick_headphone_v2_cae477364b46ccae",
+        "document_count": 12,
+        "embedding_model": "text-embedding-v4",
+        "embedding_dimensions": 1024,
+        "data_logical_sha256": "c1edf981e00f6ad15b409d1d4ea37b2c8e2dc6dd36b95ce4be99ac57693fc40a",
+        "sqlite_integrity": "ok",
+        "foreign_key_violations": 0,
+        "products": 12,
+        "observed_chunks": 12,
+        "observed_dimensions": [
+          1024
+        ]
+      },
+      {
+        "domain_id": "laptop",
+        "domain_pack_version": "1.0.0",
+        "data_version": "laptop-governed-2026-09-02-v1",
+        "index_version": "laptop-governed-2026-09-02-v1-embedding1024-v1",
+        "collection_name": "proofpick_laptop_v2_4e6d332c11bf8f7c",
+        "document_count": 12,
+        "embedding_model": "text-embedding-v4",
+        "embedding_dimensions": 1024,
+        "data_logical_sha256": "13cf9fffa9383921ed29a1e426da6a199edb699ec346aee985ecf21c9918f8b1",
+        "sqlite_integrity": "ok",
+        "foreign_key_violations": 0,
+        "products": 12,
+        "observed_chunks": 12,
+        "observed_dimensions": [
+          1024
+        ]
+      },
+      {
+        "domain_id": "monitor",
+        "domain_pack_version": "1.0.0",
+        "data_version": "monitor-cn-2026-08-26-v1",
+        "index_version": "monitor-fact-card-h2-v1",
+        "collection_name": "smartbuy_monitors_v1",
+        "document_count": 60,
+        "embedding_model": "text-embedding-v4",
+        "embedding_dimensions": 1024,
+        "data_logical_sha256": "079c4f745e8dbbb538fe7cdacf5479f4e25ebc38972ef2175edf8876a35e8ffe",
+        "sqlite_integrity": "ok",
+        "foreign_key_violations": 0,
+        "products": 12,
+        "observed_chunks": 60,
+        "observed_dimensions": [
+          1024
+        ]
+      }
+    ],
+    "model_calls": 0,
+    "not_a_new_release_candidate_manifest": true
+  },
+  "checked_files": 1267,
+  "exact_secret_hits": 0,
+  "credential_pattern_hits": 0,
+  "new_forbidden_artifacts": [],
+  "old_evaluation_changes": [],
+  "protected_refs": {
+    "refs/heads/fix/v2-fact-completion": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+    "refs/heads/main": "d51b6668a6a45c1b01ef4e64da3c4b9ac84ed10c",
+    "refs/heads/release/proofpick-v2-rc3": "033669d6c2d168dddbd712c2a54a105da53ffc1b",
+    "refs/heads/release/proofpick-v2-rc4": "e7ea993a6393c4c886be977a5eed2532d800fe26",
+    "refs/tags/v1.0.0-portfolio^{}": "d51b6668a6a45c1b01ef4e64da3c4b9ac84ed10c"
+  },
+  "raw_sha256": "87cd927c50d09d5c65de5f452340dd0991c81d7fa972315cd116ca9e46d276d8",
+  "phase_model_requests": 103,
+  "phase_model_cost_cny": 0.389128,
+  "new_model_calls_in_quality_audit": 0
+}

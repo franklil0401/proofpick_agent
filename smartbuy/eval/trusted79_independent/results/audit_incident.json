@@ -1,0 +1,14 @@
+{
+  "incident": "post_run_recalculation_python_tuple_vs_json_list",
+  "scope": "offline audit.py equality assertion only",
+  "observed": "Saved false_constraints tuples were JSON arrays; reloaded arrays are Python lists, while fresh scorer output still contains tuples.",
+  "direct_python_equality": false,
+  "json_roundtrip_equality": true,
+  "aggregate_equality": true,
+  "real_task_scoring_affected": false,
+  "raw_records_affected": false,
+  "gold_or_criteria_change": false,
+  "model_replays": 0,
+  "authorization": "User preauthorized additive serialization compatibility repair with saved-output reassessment.",
+  "disposition": "Keep the frozen audit.py unchanged; add audit_v2.py to compare identical canonical JSON serialization. Do not resume: a separately verified production clarification safety failure remains."
+}

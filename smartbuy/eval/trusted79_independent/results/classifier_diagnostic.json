@@ -1,0 +1,31 @@
+{
+  "method": "Read-only existing static classifier; no Agent run, no model, no changes",
+  "results": [
+    {
+      "case_id": "rc3i-monitor-021",
+      "declared": "comparison",
+      "deterministic_type": "filter"
+    },
+    {
+      "case_id": "rc3i-monitor-022",
+      "declared": "comparison",
+      "deterministic_type": "filter"
+    },
+    {
+      "case_id": "rc3i-monitor-023",
+      "declared": "comparison",
+      "deterministic_type": "filter"
+    },
+    {
+      "case_id": "rc3i-monitor-024",
+      "declared": "comparison",
+      "deterministic_type": "filter"
+    },
+    {
+      "case_id": "rc3i-monitor-025",
+      "declared": "comparison",
+      "deterministic_type": "filter"
+    }
+  ],
+  "model_calls": 0
+}

@@ -1,0 +1,627 @@
+{
+  "raw_sha256": "87cd927c50d09d5c65de5f452340dd0991c81d7fa972315cd116ca9e46d276d8",
+  "scores_sha256": "c0fb79cf106fea2820aa7c2d459bdc1633bb685545991cad015aa941b37ae0a2",
+  "unique_execution_ids": 15,
+  "json_serialized_score_recalculation_equal": true,
+  "summary_equal": true,
+  "model_calls_in_audit": 0,
+  "unrun_ids": [
+    "rc3i-monitor-027",
+    "rc3i-monitor-028",
+    "rc3i-monitor-029",
+    "rc3i-monitor-030",
+    "rc3i-laptop-001",
+    "rc3i-laptop-002",
+    "rc3i-laptop-003",
+    "rc3i-laptop-004",
+    "rc3i-laptop-005",
+    "rc3i-laptop-006",
+    "rc3i-laptop-007",
+    "rc3i-laptop-008",
+    "rc3i-laptop-009",
+    "rc3i-laptop-010",
+    "rc3i-laptop-011",
+    "rc3i-laptop-012",
+    "rc3i-laptop-013",
+    "rc3i-laptop-014",
+    "rc3i-laptop-015",
+    "rc3i-laptop-016",
+    "rc3i-laptop-017",
+    "rc3i-laptop-018",
+    "rc3i-laptop-019",
+    "rc3i-laptop-020",
+    "rc3i-laptop-021",
+    "rc3i-laptop-022",
+    "rc3i-laptop-023",
+    "rc3i-laptop-024",
+    "rc3i-laptop-025",
+    "rc3i-laptop-026",
+    "rc3i-laptop-027",
+    "rc3i-laptop-028",
+    "rc3i-laptop-029",
+    "rc3i-laptop-030",
+    "rc3i-headphone-001",
+    "rc3i-headphone-002",
+    "rc3i-headphone-003",
+    "rc3i-headphone-004",
+    "rc3i-headphone-005",
+    "rc3i-headphone-006",
+    "rc3i-headphone-007",
+    "rc3i-headphone-008",
+    "rc3i-headphone-009",
+    "rc3i-headphone-010",
+    "rc3i-headphone-011",
+    "rc3i-headphone-012",
+    "rc3i-headphone-013",
+    "rc3i-headphone-014",
+    "rc3i-headphone-015",
+    "rc3i-headphone-016",
+    "rc3i-headphone-017",
+    "rc3i-headphone-018",
+    "rc3i-headphone-019",
+    "rc3i-headphone-020",
+    "rc3i-headphone-021",
+    "rc3i-headphone-022",
+    "rc3i-headphone-023",
+    "rc3i-headphone-024",
+    "rc3i-headphone-025",
+    "rc3i-headphone-026",
+    "rc3i-headphone-027",
+    "rc3i-headphone-028",
+    "rc3i-headphone-029",
+    "rc3i-headphone-030"
+  ],
+  "summary": {
+    "passed": 4,
+    "total": 15,
+    "domains": {
+      "monitor": {
+        "passed": 4,
+        "total": 15
+      },
+      "laptop": {
+        "passed": 0,
+        "total": 0
+      },
+      "headphone": {
+        "passed": 0,
+        "total": 0
+      }
+    },
+    "tp": 17,
+    "fp": 6,
+    "fn": 1,
+    "precision": 0.7391304347826086,
+    "recall": 0.9444444444444444,
+    "f1": 0.8292682926829268,
+    "recommendation_fact_evidence": [
+      67,
+      67
+    ],
+    "requested_fact_evidence": [
+      56,
+      68
+    ],
+    "negative": [
+      0,
+      1
+    ],
+    "safety": {
+      "clarification_bypassed_paid_tools": 1
+    },
+    "planned": 79,
+    "remaining": 64,
+    "scored": 15,
+    "executed": 15,
+    "by_kind": {
+      "fact": {
+        "passed": 0,
+        "total": 0
+      },
+      "comparison": {
+        "passed": 0,
+        "total": 5
+      },
+      "filter": {
+        "passed": 4,
+        "total": 9
+      },
+      "negative": {
+        "passed": 0,
+        "total": 1
+      }
+    },
+    "fact_comparison_requested_evidence": [
+      18,
+      20
+    ],
+    "sufficient_data_empty_recommendations": [
+      3,
+      9
+    ],
+    "trusted79_gate_passed": false,
+    "usage": {
+      "ledger_records": 103,
+      "models": {
+        "qwen-plus": 77,
+        "text-embedding-v4": 13,
+        "qwen3-rerank": 13
+      },
+      "http_attempts": 103,
+      "retries": 0,
+      "failed_records": 0,
+      "input_tokens": 466551,
+      "output_tokens": 10418,
+      "estimated_cost_cny": 0.389128
+    },
+    "latency_ms": {
+      "mean": 18552.979866666665,
+      "p95_nearest_rank": 33880.96
+    }
+  },
+  "first_failure_stages_inferred": {
+    "constraint_resolution": 3,
+    "requirement_coverage": 2,
+    "intent_resolution": 5,
+    "clarification_preflight": 1
+  },
+  "safety_audit": {
+    "production_clarification_failure_confirmed": true,
+    "question": "准备买显示器，宽度不能太大。请先问清楚具体能放多宽，再开始筛选。",
+    "actual_status": "completed",
+    "pending_questions": [],
+    "clarification_state": "not_required",
+    "model_requests": 5,
+    "recommendations": [
+      "dell-g2724d-cn",
+      "dell-s2722qc-cn",
+      "dell-u2724d-cn",
+      "dell-u2723qe-cn",
+      "asus-pa279crv-cn",
+      "asus-pa27jcv-cn",
+      "asus-pg27aqdm-cn",
+      "benq-ex2710u-cn",
+      "benq-pd2705u-us",
+      "benq-pd2725u-ca",
+      "lg-27gs95qe-b-cn",
+      "lg-27up850k-w-cn"
+    ],
+    "hard_constraints": [],
+    "requirement_coverage": {
+      "version": "input-requirement-coverage-v1",
+      "complete": true,
+      "obligations": []
+    },
+    "trace": [
+      {
+        "step": 1,
+        "parent_step": null,
+        "task_summary": "用户希望购买显示器，但对宽度有硬性限制，需先确认具体可接受的最大宽度。",
+        "tool": "set_requirements",
+        "arguments_summary": {
+          "summary": "用户希望购买显示器，但对宽度有硬性限制，需先确认具体可接受的最大宽度。",
+          "required_fields": [
+            "width_mm"
+          ],
+          "constraint_count": 0
+        },
+        "status": "success",
+        "result_summary": "已由 provenance gate 建立带来源约束；active=1，rejected_model_fields=0。",
+        "next_action": "按问题类型选择 KB 或只读 SQL。",
+        "stop_or_degrade_reason": null,
+        "duration_ms": 7.219
+      },
+      {
+        "step": 3,
+        "parent_step": null,
+        "task_summary": "用户希望购买显示器，宽度不能超过桌面可用空间；需将最大宽度设为硬约束。",
+        "tool": "set_requirements",
+        "arguments_summary": {
+          "summary": "用户希望购买显示器，宽度不能超过桌面可用空间；需将最大宽度设为硬约束。",
+          "required_fields": [
+            "width_mm",
+            "region"
+          ],
+          "constraint_count": 1
+        },
+        "status": "success",
+        "result_summary": "已由 provenance gate 建立带来源约束；active=1，rejected_model_fields=1。",
+        "next_action": "按问题类型选择 KB 或只读 SQL。",
+        "stop_or_degrade_reason": null,
+        "duration_ms": 7.228
+      },
+      {
+        "step": 4,
+        "parent_step": null,
+        "task_summary": "用户希望购买显示器，宽度不能超过桌面可用空间；需将最大宽度设为硬约束。",
+        "tool": "text2sql",
+        "arguments_summary": {
+          "sql": "SELECT p.model_id, p.brand, p.model_name, p.region, p.display_size_inch, p.resolution, p.refresh_rate_hz, p.panel_type, p.is_oled, p.has_usb_c, p.usb_c_video, p.usb_c_power_delivery_w, p.stand_adjustment, p.width_mm, po.price_cny, po.observed_at, po.seller, po.stock_status FROM products p LEFT JOIN price_observations po ON po.observation_id = (SELECT po2.observation_id FROM price_observations po2 WHERE po2.model_id = p.model_id ORDER BY po2.observed_at DESC LIMIT 1) WHERE p.model_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ORDER BY po.price_cny IS NULL, po.price_cny, p.model_id",
+          "executed_sql": "SELECT p.model_id, p.brand, p.model_name, p.region, p.display_size_inch, p.resolution, p.refresh_rate_hz, p.panel_type, p.is_oled, p.has_usb_c, p.usb_c_video, p.usb_c_power_delivery_w, p.stand_adjustment, p.width_mm, po.price_cny, po.observed_at, po.seller, po.stock_status FROM products p LEFT JOIN price_observations po ON po.observation_id = (SELECT po2.observation_id FROM price_observations po2 WHERE po2.model_id = p.model_id ORDER BY po2.observed_at DESC LIMIT 1) WHERE p.model_id IN (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ORDER BY po.price_cny IS NULL, po.price_cny, p.model_id",
+          "suggested_sql": "SELECT model_id, model_name, width_mm, region FROM products WHERE width_mm <= 500 AND region = 'CN' LIMIT 10;",
+          "effective_filters": [
+            {
+              "field": "model_id",
+              "operator": "in",
+              "value": [
+                "asus-pa279crv-cn",
+                "asus-pa27jcv-cn",
+                "asus-pg27aqdm-cn",
+                "benq-ex2710u-cn",
+                "benq-pd2705u-us",
+                "benq-pd2725u-ca",
+                "dell-g2724d-cn",
+                "dell-s2722qc-cn",
+                "dell-u2723qe-cn",
+                "dell-u2724d-cn",
+                "lg-27gs95qe-b-cn",
+                "lg-27up850k-w-cn"
+              ]
+            }
+          ],
+          "execution_mode": "deterministic_template",
+          "filter_count": 1,
+          "reason": "根据用户确认的最大宽度500mm和中国大陆市场软偏好，筛选候选型号。"
+        },
+        "status": "success",
+        "result_summary": "确定性只读模板返回 12 个完整候选；缺失字段 6 类。",
+        "next_action": "用返回的候选型号核验官方资料与缺失字段。",
+        "stop_or_degrade_reason": null,
+        "duration_ms": 2.214
+      }
+    ],
+    "distinction": "Checker enforced the reduced effective set; this is missing upstream requirements/clarification, not an override of Checker results."
+  },
+  "cases": [
+    {
+      "case_id": "rc3i-monitor-012",
+      "query": "请从已收录的显示器中挑选：尺寸正好27英寸，必须支持USB-C视频输入。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": false,
+      "first_failure_stage_inferred": "constraint_resolution",
+      "reasons": [
+        "constraint_semantics"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 7,
+      "pending_questions": [],
+      "false_constraints": [
+        [
+          "has_usb_c",
+          "eq",
+          "true"
+        ]
+      ],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 8
+    },
+    {
+      "case_id": "rc3i-monitor-013",
+      "query": "请从已收录的显示器中挑选：不要OLED，刷新率至少120Hz。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": true,
+      "first_failure_stage_inferred": null,
+      "reasons": [],
+      "reported_task_type": "filter",
+      "recommended_count": 3,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 8
+    },
+    {
+      "case_id": "rc3i-monitor-014",
+      "query": "请从已收录的显示器中挑选：USB-C供电至少90W，宽度最多613毫米。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": true,
+      "first_failure_stage_inferred": null,
+      "reasons": [],
+      "reported_task_type": "filter",
+      "recommended_count": 3,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 8
+    },
+    {
+      "case_id": "rc3i-monitor-015",
+      "query": "请从已收录的显示器中挑选：要OLED，机身宽度最多605毫米。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": true,
+      "first_failure_stage_inferred": null,
+      "reasons": [],
+      "reported_task_type": "filter",
+      "recommended_count": 2,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 8
+    },
+    {
+      "case_id": "rc3i-monitor-016",
+      "query": "请从已收录的显示器中挑选：刷新率至少165Hz，尺寸最多27英寸。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": false,
+      "first_failure_stage_inferred": "constraint_resolution",
+      "reasons": [
+        "constraint_semantics",
+        "empty_recommendation"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 0,
+      "pending_questions": [
+        "请确认可执行的要求：尺寸最多27英寸（explicit_requirement_missing_from_constraint_set）。"
+      ],
+      "false_constraints": [
+        [
+          "display_size_inch",
+          "eq",
+          "27.0"
+        ]
+      ],
+      "missed_constraints": [
+        [
+          "display_size_inch",
+          "lte",
+          "27.0"
+        ]
+      ],
+      "missing_fact_pairs": [
+        [
+          "asus-pg27aqdm-cn",
+          "display_size_inch"
+        ],
+        [
+          "asus-pg27aqdm-cn",
+          "refresh_rate_hz"
+        ],
+        [
+          "dell-g2724d-cn",
+          "display_size_inch"
+        ],
+        [
+          "dell-g2724d-cn",
+          "refresh_rate_hz"
+        ],
+        [
+          "lg-27gs95qe-b-cn",
+          "display_size_inch"
+        ],
+        [
+          "lg-27gs95qe-b-cn",
+          "refresh_rate_hz"
+        ]
+      ],
+      "calls": 0
+    },
+    {
+      "case_id": "rc3i-monitor-017",
+      "query": "请从已收录的显示器中挑选：分辨率必须为5120x2880，USB-C供电至少90W。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": false,
+      "first_failure_stage_inferred": "requirement_coverage",
+      "reasons": [
+        "empty_recommendation"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 0,
+      "pending_questions": [
+        "请确认可执行的要求：必须为5120x2880（unresolved_explicit_requirement）。"
+      ],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [
+        [
+          "asus-pa27jcv-cn",
+          "resolution"
+        ],
+        [
+          "asus-pa27jcv-cn",
+          "usb_c_power_delivery_w"
+        ]
+      ],
+      "calls": 0
+    },
+    {
+      "case_id": "rc3i-monitor-018",
+      "query": "请从已收录的显示器中挑选：宽度最多615毫米，USB-C供电至少96W。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": true,
+      "first_failure_stage_inferred": null,
+      "reasons": [],
+      "reported_task_type": "filter",
+      "recommended_count": 2,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 8
+    },
+    {
+      "case_id": "rc3i-monitor-019",
+      "query": "请从已收录的显示器中挑选：分辨率必须为3840x2160，刷新率至少100Hz。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": false,
+      "first_failure_stage_inferred": "requirement_coverage",
+      "reasons": [
+        "empty_recommendation"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 0,
+      "pending_questions": [
+        "请确认可执行的要求：必须为3840x2160（unresolved_explicit_requirement）。"
+      ],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [
+        [
+          "benq-ex2710u-cn",
+          "refresh_rate_hz"
+        ],
+        [
+          "benq-ex2710u-cn",
+          "resolution"
+        ]
+      ],
+      "calls": 0
+    },
+    {
+      "case_id": "rc3i-monitor-020",
+      "query": "请从已收录的显示器中挑选：没有USB-C接口也可以，但必须是OLED且刷新率至少240Hz。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "kind": "filter",
+      "passed": false,
+      "first_failure_stage_inferred": "constraint_resolution",
+      "reasons": [
+        "constraint_semantics"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 2,
+      "pending_questions": [],
+      "false_constraints": [
+        [
+          "has_usb_c",
+          "eq",
+          "false"
+        ]
+      ],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 8
+    },
+    {
+      "case_id": "rc3i-monitor-021",
+      "query": "把 dell-u2723qe-cn 与 dell-g2724d-cn 放在一起比较，只核对机身宽度、刷新率，逐个列证据；这是参数对照，不要把对象当作推荐商品。",
+      "kind": "comparison",
+      "passed": false,
+      "first_failure_stage_inferred": "intent_resolution",
+      "reasons": [
+        "facts_classified_as_recommendations"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 2,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 9
+    },
+    {
+      "case_id": "rc3i-monitor-022",
+      "query": "把 dell-u2724d-cn 与 asus-pg27aqdm-cn 放在一起比较，只核对分辨率、屏幕尺寸，逐个列证据；这是参数对照，不要把对象当作推荐商品。",
+      "kind": "comparison",
+      "passed": false,
+      "first_failure_stage_inferred": "intent_resolution",
+      "reasons": [
+        "facts_classified_as_recommendations"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 2,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 9
+    },
+    {
+      "case_id": "rc3i-monitor-023",
+      "query": "把 asus-pa27jcv-cn 与 lg-27gs95qe-b-cn 放在一起比较，只核对分辨率、屏幕尺寸，逐个列证据；这是参数对照，不要把对象当作推荐商品。",
+      "kind": "comparison",
+      "passed": false,
+      "first_failure_stage_inferred": "intent_resolution",
+      "reasons": [
+        "facts_classified_as_recommendations"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 2,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 9
+    },
+    {
+      "case_id": "rc3i-monitor-024",
+      "query": "把 dell-s2722qc-cn 与 benq-pd2725u-ca 放在一起比较，只核对屏幕尺寸、USB-C视频输入能力，逐个列证据；这是参数对照，不要把对象当作推荐商品。",
+      "kind": "comparison",
+      "passed": false,
+      "first_failure_stage_inferred": "intent_resolution",
+      "reasons": [
+        "fact_fields_became_hard_constraints",
+        "facts_classified_as_recommendations",
+        "requested_fact_evidence_incomplete"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 2,
+      "pending_questions": [],
+      "false_constraints": [
+        [
+          "usb_c_video",
+          "eq",
+          "true"
+        ]
+      ],
+      "missed_constraints": [],
+      "missing_fact_pairs": [
+        [
+          "benq-pd2725u-ca",
+          "display_size_inch"
+        ],
+        [
+          "dell-s2722qc-cn",
+          "display_size_inch"
+        ]
+      ],
+      "calls": 11
+    },
+    {
+      "case_id": "rc3i-monitor-025",
+      "query": "把 lg-27up850k-w-cn 与 benq-ex2710u-cn 放在一起比较，只核对USB-C视频输入能力、是否OLED，逐个列证据；这是参数对照，不要把对象当作推荐商品。",
+      "kind": "comparison",
+      "passed": false,
+      "first_failure_stage_inferred": "intent_resolution",
+      "reasons": [
+        "fact_fields_became_hard_constraints"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 0,
+      "pending_questions": [],
+      "false_constraints": [
+        [
+          "is_oled",
+          "eq",
+          "true"
+        ],
+        [
+          "usb_c_video",
+          "eq",
+          "true"
+        ]
+      ],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 12
+    },
+    {
+      "case_id": "rc3i-monitor-026",
+      "query": "准备买显示器，宽度不能太大。请先问清楚具体能放多宽，再开始筛选。",
+      "kind": "negative",
+      "passed": false,
+      "first_failure_stage_inferred": "clarification_preflight",
+      "reasons": [
+        "clarification_bypassed_paid_tools",
+        "negative_request_recommended"
+      ],
+      "reported_task_type": "filter",
+      "recommended_count": 12,
+      "pending_questions": [],
+      "false_constraints": [],
+      "missed_constraints": [],
+      "missing_fact_pairs": [],
+      "calls": 5
+    }
+  ]
+}
