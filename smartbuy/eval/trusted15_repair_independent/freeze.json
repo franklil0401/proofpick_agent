@@ -1,0 +1,32 @@
+{
+  "schema": "original-exposed15-repair-v1",
+  "production_commit": "bad83ea7512e6b53ae554bbd4a1f80f0c3f4f715",
+  "production_tree": "5f3bdc6f50ec4ad71636ac745d31881f4323f7ed",
+  "created_at": "2026-09-06T12:00:26.291105+00:00",
+  "planned": 15,
+  "budget_cny": 1.0,
+  "reserve_before_task_cny": 0.2,
+  "timeout_seconds": 180,
+  "files": {
+    "__init__.py": "ff5586654e862b1b286ce040a7fc0fdfd05e24e54a8deabea82dd3eec9c64734",
+    "audit.py": "0308a36b70d96700d81c42ccca04c05e45271fb73a9d7d467aef5399f9bd17cf",
+    "freeze.py": "eebce48379cadab07f52fe5044028d6c7db6325322d23e089df406d42911e59f",
+    "metrics.py": "0300dc2e775bfdcdadc68e7089b0815ad418b9221289015637dff463cb9bed13",
+    "preflight.json": "c161a43d857d3895d302ce7341119c74bdcc4b7642e2c80a3f85f4c4a0bdb27a",
+    "preflight.py": "5106f881b32ea3dd26b0ab66a0a86e675ad665eb612a1c1b8607ce06ca95cd3e",
+    "README.md": "f3639e0f91c133332549d3f3a34e7163e9fefb75dd476fd90a470b897373916a",
+    "run.py": "b9116431105397e63eadee730af2570643e3d6c32fb8a827fe80bc9a9e7a9364",
+    "selection.json": "b006b66b5effe3e8f71c1e709e19c056e057e9bf00ac8d74d295bcb84bcbc478",
+    "test_metrics.py": "4d9047d7c997ccab576155a4a66a03a86a262c8e2a5081fe28e0e9d943ec7688"
+  },
+  "scorer_files": {
+    "freeze.json": "7f489f0e18459e7e1b4570455bf66af736a4c71a0d133eb2de295933d6130ebc",
+    "adapter_revision_freeze.json": "cafaa2451d1e1a3f7e6a51a230026b4e8f2717a1a66aab5c8d2d13ac9f73cb8e",
+    "score.py": "42865a4882a616ec900a03908e208266e262bf2b05c56845282854f9c62c5158",
+    "score_v2.py": "16f542c7960746545389b7cd7eb9e5227938552d61587b2852b68095bf333923"
+  },
+  "prior_raw_sha256": "87cd927c50d09d5c65de5f452340dd0991c81d7fa972315cd116ca9e46d276d8",
+  "original_case_file_sha256": "ba1c146f14d257ad1c27f3367475eae78d1bf55c4f16dc2f2804a93a76244dd3",
+  "all15_pass_and_zero_safety_required": true,
+  "model_calls_before_freeze": 0
+}

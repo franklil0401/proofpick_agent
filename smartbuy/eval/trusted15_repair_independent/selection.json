@@ -1,0 +1,102 @@
+{
+  "status": "exposed_regression",
+  "count": 15,
+  "kinds": {
+    "filter": 9,
+    "comparison": 5,
+    "negative": 1
+  },
+  "cases": [
+    {
+      "case_id": "rc3i-monitor-012",
+      "case_sha256": "32c0fdaa80c19dad66af9eb13795de97738a99baf2720f27b7c2a8c8e97a714b",
+      "query_sha256": "05e46d237f9dc9f29d629ec93f8e91c00639f157c196957c8422fac23721ba0d",
+      "gold_sha256": "c04663642bef308d765a8c964784656c8d7aaec65e13057dc22a02a1182d81a4"
+    },
+    {
+      "case_id": "rc3i-monitor-013",
+      "case_sha256": "fd96b58ffaa223149bd149c1aaffc46c770315a79136d1ff186daeda693bcee0",
+      "query_sha256": "e7c4f4973a41d2de29a89f3cb06b0563d2039fd9241b544aa9a8ed7abbb84fd4",
+      "gold_sha256": "2e31a6c3dafed8cc208e91688d6f100bed4ac7d35ed25cc9d1ee7978f135d07a"
+    },
+    {
+      "case_id": "rc3i-monitor-014",
+      "case_sha256": "bf652042985ddda8176a2c5a9aae9788ea75cda9af617ff23209705613a1afde",
+      "query_sha256": "6780e12083edc5c8c3142264b43702987ab04c5e77c747bc5e1c14fa4504402a",
+      "gold_sha256": "8d103677914624fbde46cb93a7c4abf603ad2c1c7f5ea10b5e268b93bcf30cfc"
+    },
+    {
+      "case_id": "rc3i-monitor-015",
+      "case_sha256": "b34b8a3b6fa1fd6e01fecda9944bbae232e837deec5355f76d6377e56bf8d224",
+      "query_sha256": "8accd7abd3eea10f8218d0b19a9031a7653ee3aa4882d56d9abcc3c4898eb9a3",
+      "gold_sha256": "af7f7596da6c8c59e96ef89e5512e5eda0466f3a22186635dcb520d90364cf49"
+    },
+    {
+      "case_id": "rc3i-monitor-016",
+      "case_sha256": "80d43e17052c0176eb33158a919529ac99d47a0d8fd8fae04bb386bed3232db7",
+      "query_sha256": "d6d0e994e5f929a92f840a50226c611deb6ccbe1c52278f4a2902b4bafb92ae2",
+      "gold_sha256": "9d30da0826d6861f3ea7bb149f88ac733c5d5b3493a79879f24ee094f5d25fb4"
+    },
+    {
+      "case_id": "rc3i-monitor-017",
+      "case_sha256": "86d2d67aab54cfa90684caf53897fd9f10610dfc658acb1b95c77835272ab05e",
+      "query_sha256": "567c0f7e9c06f12275cb3a9b5ae3c4bd07c0bf73f1fc512cc62ebd220aa5fc44",
+      "gold_sha256": "e91d4c7091265173520813c8c35b072bd2a94303c284e7817094326c1cdef4bc"
+    },
+    {
+      "case_id": "rc3i-monitor-018",
+      "case_sha256": "3ebb27147d9156ac5fe76157ddd6b0dcec5d2c0af3c106008c6c5d9c9c6d3fbe",
+      "query_sha256": "890fc5f52c5d40c20f78485ef2474c55298b83b9d5ee5f3004f0c917783dbec8",
+      "gold_sha256": "21f8ee7f7874cad4bc9f0c674fba944deb887cda1572a8578b5fe37e79f6896b"
+    },
+    {
+      "case_id": "rc3i-monitor-019",
+      "case_sha256": "644e7f0808adacf7f19308ff9d72d38d30707718ab458379ae6e45d1c7355a1f",
+      "query_sha256": "27adfa318d96cbf5dc1ee6f2c727c1c0aeed0219a00d07ba99c3fd763117bbdf",
+      "gold_sha256": "4e787049df8983b6eaf6c19f445d99b14f1f20617c311009092c790707ef3d5d"
+    },
+    {
+      "case_id": "rc3i-monitor-020",
+      "case_sha256": "001c31ed93d3a35e32a9c958f408d663cacccc5761c089c6d75c2aeeb4c0d1ee",
+      "query_sha256": "e79958a1508e4e0f945c1e5c5e15ef7f84695f3228f745fa651c8a16082a9c39",
+      "gold_sha256": "0531797c7ee5a396b22b8ef60cdefec10f6cbc9289f16982d8b04d2e704676d3"
+    },
+    {
+      "case_id": "rc3i-monitor-021",
+      "case_sha256": "9f555b2597c1c4eae0cb1cf1aa4afb6b25daefc2693753fb9c92f8b9a4cd1391",
+      "query_sha256": "1850031223b604679ed2c30a0c2f363fc7a923ce8c044ba461582edb495f5d05",
+      "gold_sha256": "344e9e86b5252f74ea9e8d72d03750267862124ee4ee86923c3696002bd0d66f"
+    },
+    {
+      "case_id": "rc3i-monitor-022",
+      "case_sha256": "9dfe258439fc85054564fbb9b9dd5bd4f3f7fdfb72dcaf9e378e743576099fcf",
+      "query_sha256": "9c33d729b868e837e1cfd1e4437006d28ff1b2b8a69d8ae15972bd8d01a5f578",
+      "gold_sha256": "f0a3ce734d26806455e39d955a90350361c79923217083ece3ae890ab0736081"
+    },
+    {
+      "case_id": "rc3i-monitor-023",
+      "case_sha256": "b1cb4c6fcd45650ea6332e2e8383813bb5e254c7a13c750d0cdbcc17a9816294",
+      "query_sha256": "0968055a20d90730f26517b244e8c0610b96d50fbc55b7656b007499e0edeed3",
+      "gold_sha256": "36c338fe8b5fbb8bfb49ce3ee96d173b953cd8375cc004156eab8424786aa3e7"
+    },
+    {
+      "case_id": "rc3i-monitor-024",
+      "case_sha256": "ae7f54eeb30b970936a886e4fc8ccc9a43cbda8ee52a33c5145fb9cbbaf856c7",
+      "query_sha256": "f15b5732c4c98b795832331227ac025bba4f7eacf96df0a342ef8eee2a5eca62",
+      "gold_sha256": "b1e95ce422c4b5052c13ff58ca88b7a56a91d8469369979df9a10f388b5bff8f"
+    },
+    {
+      "case_id": "rc3i-monitor-025",
+      "case_sha256": "777ac0834e6598e9db8582736b6d993fc0143e250840894da2f047d60aa051f6",
+      "query_sha256": "1983d006ebf68568db3b875fb62cd5ecb17b51f5157759fb146d2f6bd52c4e4a",
+      "gold_sha256": "65f3cec82b33e4c67016c2d22e4407a2bd36a83a1795a4f29c975519d758cf5c"
+    },
+    {
+      "case_id": "rc3i-monitor-026",
+      "case_sha256": "6566990d7be67af9abd4e339d3481cfff7468651307de0ae390159547bd76d8e",
+      "query_sha256": "cd1e82b2cc486d0389eae40937883858a9122ebd4c1bfe0b31c2b334e0fa0f55",
+      "gold_sha256": "36e4b3086be7311947cca201a31c6e34df6d336ddc387143ef6b40041be461f2"
+    }
+  ],
+  "remaining64_execution_authorized": false
+}
