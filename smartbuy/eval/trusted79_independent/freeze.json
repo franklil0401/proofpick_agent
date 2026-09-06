@@ -1,0 +1,38 @@
+{
+  "schema": "trusted79-continuation-v1",
+  "created_at": "2026-09-06T03:59:16.906811+00:00",
+  "production_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "production_tree": "7e6b036bc3255714cd378e887ae8b9779a5ef98a",
+  "starting_evaluation_commit": "f0e8989c6667e3c1e7daa5bce296189416618910",
+  "branch": "eval/v2-trusted79-continuation",
+  "budget_cny": 3.0,
+  "reserve_before_task_cny": 0.25,
+  "timeout_seconds": 180,
+  "planned_count": 79,
+  "preflight_model_calls": 0,
+  "original_freeze_sha256": "7f489f0e18459e7e1b4570455bf66af736a4c71a0d133eb2de295933d6130ebc",
+  "adapter_freeze_sha256": "cafaa2451d1e1a3f7e6a51a230026b4e8f2717a1a66aab5c8d2d13ac9f73cb8e",
+  "previous_full_production_preflight_sha256": "9fc44626f7d5397ad79e14bf71e7f7bae41ed9fd27280a9780cf31c79283f7fc",
+  "files": {
+    "__init__.py": "b3eba39cb684b4c6f12a9809514cb14242f7db32c26c11406f49bed36f11b162",
+    "aggregate.py": "a9327a6345ec3bad65beec00503077c06bc17b5bf72dae22324724a2c933cf96",
+    "audit.py": "c921f9e821f45c092ae50b59e07f07a386a487b3c8b23d1c9230056de88e245c",
+    "freeze.py": "a87ac320c5dac06fc16bac022ef2fc530f1eb23bd5ae21d66a38f69963b722d1",
+    "preflight.json": "cb79799707d5bd134bc3483da43fd7d7f68fe264de5f0e331d18b35997410768",
+    "README.md": "ab3051e5273129c82d24083c36490995388f37fcb869021c5de963e62746c317",
+    "run.py": "8c521eee051f3ef6038f49dafad2f23d99ae70b99b850cb09aa50591da7f72a2",
+    "selection.json": "4ad0f94f4c2cd70481dce7ab686e6bc62732b5ce51a561755a1838e522967fee",
+    "test_aggregate.py": "397843f08ba6085fd900b9163a94a268795576497a3bf0ec9cfc42d4d17f62fb"
+  },
+  "gate": {
+    "domain_pass_minimum": {
+      "monitor": 16,
+      "laptop": 24,
+      "headphone": 24
+    },
+    "micro_constraint_f1": 0.95,
+    "recommendation_evidence": 0.95,
+    "safety_findings": 0,
+    "all_planned_tasks_required": true
+  }
+}

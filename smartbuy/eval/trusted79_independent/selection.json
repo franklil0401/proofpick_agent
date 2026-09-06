@@ -1,0 +1,661 @@
+{
+  "excluded_previously_run": [
+    "rc3i-monitor-001",
+    "rc3i-monitor-002",
+    "rc3i-monitor-003",
+    "rc3i-monitor-004",
+    "rc3i-monitor-005",
+    "rc3i-monitor-006",
+    "rc3i-monitor-007",
+    "rc3i-monitor-008",
+    "rc3i-monitor-009",
+    "rc3i-monitor-010",
+    "rc3i-monitor-011"
+  ],
+  "count": 79,
+  "domains": {
+    "monitor": 19,
+    "laptop": 30,
+    "headphone": 30
+  },
+  "kinds": {
+    "filter": 29,
+    "comparison": 15,
+    "negative": 15,
+    "fact": 20
+  },
+  "cases": [
+    {
+      "case_id": "rc3i-monitor-012",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "32c0fdaa80c19dad66af9eb13795de97738a99baf2720f27b7c2a8c8e97a714b",
+      "query_sha256": "05e46d237f9dc9f29d629ec93f8e91c00639f157c196957c8422fac23721ba0d",
+      "gold_sha256": "c04663642bef308d765a8c964784656c8d7aaec65e13057dc22a02a1182d81a4"
+    },
+    {
+      "case_id": "rc3i-monitor-013",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "fd96b58ffaa223149bd149c1aaffc46c770315a79136d1ff186daeda693bcee0",
+      "query_sha256": "e7c4f4973a41d2de29a89f3cb06b0563d2039fd9241b544aa9a8ed7abbb84fd4",
+      "gold_sha256": "2e31a6c3dafed8cc208e91688d6f100bed4ac7d35ed25cc9d1ee7978f135d07a"
+    },
+    {
+      "case_id": "rc3i-monitor-014",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "bf652042985ddda8176a2c5a9aae9788ea75cda9af617ff23209705613a1afde",
+      "query_sha256": "6780e12083edc5c8c3142264b43702987ab04c5e77c747bc5e1c14fa4504402a",
+      "gold_sha256": "8d103677914624fbde46cb93a7c4abf603ad2c1c7f5ea10b5e268b93bcf30cfc"
+    },
+    {
+      "case_id": "rc3i-monitor-015",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "b34b8a3b6fa1fd6e01fecda9944bbae232e837deec5355f76d6377e56bf8d224",
+      "query_sha256": "8accd7abd3eea10f8218d0b19a9031a7653ee3aa4882d56d9abcc3c4898eb9a3",
+      "gold_sha256": "af7f7596da6c8c59e96ef89e5512e5eda0466f3a22186635dcb520d90364cf49"
+    },
+    {
+      "case_id": "rc3i-monitor-016",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "80d43e17052c0176eb33158a919529ac99d47a0d8fd8fae04bb386bed3232db7",
+      "query_sha256": "d6d0e994e5f929a92f840a50226c611deb6ccbe1c52278f4a2902b4bafb92ae2",
+      "gold_sha256": "9d30da0826d6861f3ea7bb149f88ac733c5d5b3493a79879f24ee094f5d25fb4"
+    },
+    {
+      "case_id": "rc3i-monitor-017",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "86d2d67aab54cfa90684caf53897fd9f10610dfc658acb1b95c77835272ab05e",
+      "query_sha256": "567c0f7e9c06f12275cb3a9b5ae3c4bd07c0bf73f1fc512cc62ebd220aa5fc44",
+      "gold_sha256": "e91d4c7091265173520813c8c35b072bd2a94303c284e7817094326c1cdef4bc"
+    },
+    {
+      "case_id": "rc3i-monitor-018",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "3ebb27147d9156ac5fe76157ddd6b0dcec5d2c0af3c106008c6c5d9c9c6d3fbe",
+      "query_sha256": "890fc5f52c5d40c20f78485ef2474c55298b83b9d5ee5f3004f0c917783dbec8",
+      "gold_sha256": "21f8ee7f7874cad4bc9f0c674fba944deb887cda1572a8578b5fe37e79f6896b"
+    },
+    {
+      "case_id": "rc3i-monitor-019",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "644e7f0808adacf7f19308ff9d72d38d30707718ab458379ae6e45d1c7355a1f",
+      "query_sha256": "27adfa318d96cbf5dc1ee6f2c727c1c0aeed0219a00d07ba99c3fd763117bbdf",
+      "gold_sha256": "4e787049df8983b6eaf6c19f445d99b14f1f20617c311009092c790707ef3d5d"
+    },
+    {
+      "case_id": "rc3i-monitor-020",
+      "domain": "monitor",
+      "kind": "filter",
+      "case_sha256": "001c31ed93d3a35e32a9c958f408d663cacccc5761c089c6d75c2aeeb4c0d1ee",
+      "query_sha256": "e79958a1508e4e0f945c1e5c5e15ef7f84695f3228f745fa651c8a16082a9c39",
+      "gold_sha256": "0531797c7ee5a396b22b8ef60cdefec10f6cbc9289f16982d8b04d2e704676d3"
+    },
+    {
+      "case_id": "rc3i-monitor-021",
+      "domain": "monitor",
+      "kind": "comparison",
+      "case_sha256": "9f555b2597c1c4eae0cb1cf1aa4afb6b25daefc2693753fb9c92f8b9a4cd1391",
+      "query_sha256": "1850031223b604679ed2c30a0c2f363fc7a923ce8c044ba461582edb495f5d05",
+      "gold_sha256": "344e9e86b5252f74ea9e8d72d03750267862124ee4ee86923c3696002bd0d66f"
+    },
+    {
+      "case_id": "rc3i-monitor-022",
+      "domain": "monitor",
+      "kind": "comparison",
+      "case_sha256": "9dfe258439fc85054564fbb9b9dd5bd4f3f7fdfb72dcaf9e378e743576099fcf",
+      "query_sha256": "9c33d729b868e837e1cfd1e4437006d28ff1b2b8a69d8ae15972bd8d01a5f578",
+      "gold_sha256": "f0a3ce734d26806455e39d955a90350361c79923217083ece3ae890ab0736081"
+    },
+    {
+      "case_id": "rc3i-monitor-023",
+      "domain": "monitor",
+      "kind": "comparison",
+      "case_sha256": "b1cb4c6fcd45650ea6332e2e8383813bb5e254c7a13c750d0cdbcc17a9816294",
+      "query_sha256": "0968055a20d90730f26517b244e8c0610b96d50fbc55b7656b007499e0edeed3",
+      "gold_sha256": "36c338fe8b5fbb8bfb49ce3ee96d173b953cd8375cc004156eab8424786aa3e7"
+    },
+    {
+      "case_id": "rc3i-monitor-024",
+      "domain": "monitor",
+      "kind": "comparison",
+      "case_sha256": "ae7f54eeb30b970936a886e4fc8ccc9a43cbda8ee52a33c5145fb9cbbaf856c7",
+      "query_sha256": "f15b5732c4c98b795832331227ac025bba4f7eacf96df0a342ef8eee2a5eca62",
+      "gold_sha256": "b1e95ce422c4b5052c13ff58ca88b7a56a91d8469369979df9a10f388b5bff8f"
+    },
+    {
+      "case_id": "rc3i-monitor-025",
+      "domain": "monitor",
+      "kind": "comparison",
+      "case_sha256": "777ac0834e6598e9db8582736b6d993fc0143e250840894da2f047d60aa051f6",
+      "query_sha256": "1983d006ebf68568db3b875fb62cd5ecb17b51f5157759fb146d2f6bd52c4e4a",
+      "gold_sha256": "65f3cec82b33e4c67016c2d22e4407a2bd36a83a1795a4f29c975519d758cf5c"
+    },
+    {
+      "case_id": "rc3i-monitor-026",
+      "domain": "monitor",
+      "kind": "negative",
+      "case_sha256": "6566990d7be67af9abd4e339d3481cfff7468651307de0ae390159547bd76d8e",
+      "query_sha256": "cd1e82b2cc486d0389eae40937883858a9122ebd4c1bfe0b31c2b334e0fa0f55",
+      "gold_sha256": "36e4b3086be7311947cca201a31c6e34df6d336ddc387143ef6b40041be461f2"
+    },
+    {
+      "case_id": "rc3i-monitor-027",
+      "domain": "monitor",
+      "kind": "negative",
+      "case_sha256": "8f3645912f95cd83e0a522ad6b2bb72ebdb8195722bbd3fe25972723b04f75b6",
+      "query_sha256": "7cd07db83acbd1a91adc275056fc663223d72a845d8320d95fda64c286d3c48e",
+      "gold_sha256": "7d08014bcfd740ddf9f38ac087e29bb7f557e1aa71d255a0cb1228a1a6441576"
+    },
+    {
+      "case_id": "rc3i-monitor-028",
+      "domain": "monitor",
+      "kind": "negative",
+      "case_sha256": "aa67dd04cd46a57110a81dc9684fab881c155ee6dc6237df14f910c58884565f",
+      "query_sha256": "10cddf5a704131e0ea3c66cff541709afbcc3a8d2788ca4b0e54ed21e1f77bdb",
+      "gold_sha256": "e5a35bce2dfdb760daa79f36fc742e214ae00f548788be0581f20aae55d3b426"
+    },
+    {
+      "case_id": "rc3i-monitor-029",
+      "domain": "monitor",
+      "kind": "negative",
+      "case_sha256": "3538d8f52450434c3cc59521fe9640b797f7faae90113cf9f291146f7316a8ca",
+      "query_sha256": "fd1b7bcf9e81e48997ef4c46a91b50d6cbea844e1a089e69dc50a0a815755dc8",
+      "gold_sha256": "678191c1a1cd7f13c394f63dce919ab7ef303f3c496741c7a2fbf299d78a1757"
+    },
+    {
+      "case_id": "rc3i-monitor-030",
+      "domain": "monitor",
+      "kind": "negative",
+      "case_sha256": "36add27b555c94e93152d677d3077f825377e6a6821805dce145d3abfc45cc5f",
+      "query_sha256": "67c83061c06618e96053e235f5ea416c63d549a00f024b1994bf08bc0ae86ce3",
+      "gold_sha256": "586838a48c26a4f5d0e309f80a3bf7bc76bdde3d7c10159021b760e848a628ba"
+    },
+    {
+      "case_id": "rc3i-laptop-001",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "bf142932121b2aef3870886db3671368fe6ef23509e01c9f00d8df58d013771d",
+      "query_sha256": "e046ccdf1cb2beb91d07ea484938618314cd655bb86f98a665b6c9084591fc2f",
+      "gold_sha256": "dc539ed04d6e0b2cc3dcc75978f0aba25c1798341b1a299b5ff44f1cd738515c"
+    },
+    {
+      "case_id": "rc3i-laptop-002",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "5d5f57cf03010c5fb6afabe6f9d071248d311927da461390cc2556942a6027e8",
+      "query_sha256": "c99bf46a56c645ff1ed2ff0c66e06ddd9f101a1a6f6327d197effde872a8bbd2",
+      "gold_sha256": "8d2806ff4e9ee95b78255e605c1b45bd2ba0ca080d62e71f0d5d1e82029cb8db"
+    },
+    {
+      "case_id": "rc3i-laptop-003",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "f4621ecb64d52dbc5bb79c90017368957eadf0d149ce7bf8e46dd4f3183c5be2",
+      "query_sha256": "5a663ff2cf23b7796ec36757d4bc365f0d875681dd512f26acfd3422cbaf0bc0",
+      "gold_sha256": "02971c6f4f72b4af66f37e056d834aba2abf8bf15e842841c5279a84fb5fe2a1"
+    },
+    {
+      "case_id": "rc3i-laptop-004",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "bdb198bafcbcf5bfe2574123096a2eece09f314c14016614f95539a6057e4bcf",
+      "query_sha256": "2368191b63a0dbcbb7cdfbe52b0a7d2d435e639e0c82160a8d86970a29d7f9bf",
+      "gold_sha256": "2260b2da7d1405fdcc1f024edbc205877e8340728a9e34318ec5246aea338418"
+    },
+    {
+      "case_id": "rc3i-laptop-005",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "3fa0c26179b791e3c77f2ecc6d1c5337833068c56c92481c98fcdd1207b3177e",
+      "query_sha256": "38aa79292c96ba375e106d056a81689763296cc3650403c15f440cf5e0ebf11b",
+      "gold_sha256": "575a890212596431465817e362570ab1ac60963d66a82e58089d0c7e7c9336de"
+    },
+    {
+      "case_id": "rc3i-laptop-006",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "6128b3554e501b0dea9e77658fa3ad9eeb0888387676e9777fe50396ee9f0661",
+      "query_sha256": "1ea11cd389ffefdd8c7358e17f5b96c984d624cedeb43da6d7e276aa3dbf75ba",
+      "gold_sha256": "0c30629a66d6a1bc9ef1cc27dd70dc2d01656a71af4fdb05c25141a4ec26ec10"
+    },
+    {
+      "case_id": "rc3i-laptop-007",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "76f84e864b4dcc4693c553a9f2c555416daf0ed73dc1cd7827183bf435ae690b",
+      "query_sha256": "c9696887bc1f10dbc986a16e536e4a9319a8f9dff60e3c0418eb93a66f544a8a",
+      "gold_sha256": "ccbb3e70e4d6bcecb8c9ea3e04f637d9df4bcb6f3dd704a75745b222f32946c8"
+    },
+    {
+      "case_id": "rc3i-laptop-008",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "c12aae76040f5af2d00a2fba9ce1dd436b2ecb9cf4a2312573c71274bb8a20c9",
+      "query_sha256": "f2e2aceded077b21e2de471a574fdf1f41baf356a69e988614c778beb5953a05",
+      "gold_sha256": "233b72baf2a1414151381f14d257b881590d0466e511f9935565731b30001448"
+    },
+    {
+      "case_id": "rc3i-laptop-009",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "8a88ec93b47eb34fbf6739a9149b7434d23e6e3df9fe928a1b7d2b18c93a1c0a",
+      "query_sha256": "737d323f6ef014e36218ad97cb54ed2714c071eea30ffea1927369a6f5a9a7a4",
+      "gold_sha256": "bbd13d68a777a71ca547d1629cdfbb9148f1c69aea885fc7ea5a352351f68eba"
+    },
+    {
+      "case_id": "rc3i-laptop-010",
+      "domain": "laptop",
+      "kind": "fact",
+      "case_sha256": "71b21cf1b22e6cf8475586f8109bf27215f041606bd3949f20780fec29884df7",
+      "query_sha256": "643f7e5627544d179066987a3e8990b034ac1f39eaeece3f10eba73598930c19",
+      "gold_sha256": "355566699691a062c3bb187f6e033fbbfaa77d864a25520dd5e65421b9fd4ba0"
+    },
+    {
+      "case_id": "rc3i-laptop-011",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "4a00e5ff5e83ca577e49ce8702c657fb8e7c2154141d87d4e3f18af1e6c946d9",
+      "query_sha256": "2fb815560c55a81534c3c994a97ed39dd322234db67c87fface6b9705f195843",
+      "gold_sha256": "c9927921aac731ac5b5eba168bbfceb9acfd9775ddf2a0a97843b1809c0cb467"
+    },
+    {
+      "case_id": "rc3i-laptop-012",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "e4068b7a46874d8b5906a98a7eacc1a90892a26b74082bd6bfa638220036ca8c",
+      "query_sha256": "260111265a95777d7485e52b16b3090b0802c2ee160cb7b129d7c77930a0f6b8",
+      "gold_sha256": "b2433e13f9a0aeeb7ebe0f197c4ab8d75c8bff9a5dc7a05fa18e96c36cdd7168"
+    },
+    {
+      "case_id": "rc3i-laptop-013",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "5c49fe5a5a3890d0c6fb02e0d06a3413740e7a05ff07d0ea5f5120c2e75cce56",
+      "query_sha256": "0678b418fab8a96c90a4660abf83c16e588616e29c35076576d22547c58cc10d",
+      "gold_sha256": "b29e48069c53cb5f159807fd2259014b15d81ba2f790d4543acc77ff61aae4d9"
+    },
+    {
+      "case_id": "rc3i-laptop-014",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "7dcbba942ab169a562ae37c62399b8e7b9d7bcffd24cb63ece72d47fe62f2ab3",
+      "query_sha256": "2b3bdebbae578582c3f701ea663a5356b19201118f35f8da9aab187a148207a6",
+      "gold_sha256": "8b19e51e178ef32e76dae6bd0e5fc81983deb0a8ea09d55595d0f310de461eca"
+    },
+    {
+      "case_id": "rc3i-laptop-015",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "93b25b9cfc9a50b65cf1e3fb6a0b70dd0d53a1535e908eb0ffd9fb0882b27a98",
+      "query_sha256": "b447ac6afc5711bbf309b5fe7acc996edfc95b1ca903921ae48ff8e9fa5b5162",
+      "gold_sha256": "0624d03dff4160ee2adf12ef3e2b7f3c5c5da6de4693df8dd9150bb535aec1fb"
+    },
+    {
+      "case_id": "rc3i-laptop-016",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "04bab0baa48f54cf7e2d417f4cc99d47030d1c032d003798e64462f97fb46984",
+      "query_sha256": "6e8027d6d6fb3f9a39a5453343ce42bf9d38984a58d701d5b2116b7a1a5d8a72",
+      "gold_sha256": "5b5609485ae401fca268465989a2bcef73f7d00e26f2023ce268788d58199243"
+    },
+    {
+      "case_id": "rc3i-laptop-017",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "5ebd112441b78aa7fef086e4338e3d40e4055462da9b5b36319a8d8f9651b8c5",
+      "query_sha256": "309b92819083195c7dc09e257c8a0161fad51f35d9c276d320b7a24f8e7b0fa2",
+      "gold_sha256": "21db849b16d5a922db1159c10bf0972e8a72a35c6992407d52f2fa41e5127e4d"
+    },
+    {
+      "case_id": "rc3i-laptop-018",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "651c39eb4f26b805d73202db1ad68ec392fb631a8c60700821a932c73e8fda86",
+      "query_sha256": "39579119cb640a22c3a51249a832616e63c1652c46d842cff03914b8b73c24db",
+      "gold_sha256": "dc7b024704a034f52c993156ce4e46eb88932acb88599198894d144a5a255f89"
+    },
+    {
+      "case_id": "rc3i-laptop-019",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "42c622e49ad12a7922e8c64d2aad8b33b2fa6c45ebb0b42c5cdf33b4dae80c1f",
+      "query_sha256": "88149b67b657a2f95e47c0a02aacb8426437e4945c5e3f22ebdd2a39f6a23b45",
+      "gold_sha256": "fd17bb3f96e0183a1004456581e0fbe07a79338bce02253553dcb7188d43e50c"
+    },
+    {
+      "case_id": "rc3i-laptop-020",
+      "domain": "laptop",
+      "kind": "filter",
+      "case_sha256": "e8c10841776cfa823937c9a2d039cae575856e20565bc9abbff6a41883c4dce9",
+      "query_sha256": "10560990d0daadfae86546e3848dece7906e96446eb90d9a9a04a13cff2a7a64",
+      "gold_sha256": "d6fa2196b3edaca0ae2f59817a204a2e8f865e83b5bc190b5e1344ad67354d64"
+    },
+    {
+      "case_id": "rc3i-laptop-021",
+      "domain": "laptop",
+      "kind": "comparison",
+      "case_sha256": "629a3649f7ab5761cb447862b8487a505c70543877b1ace3e06ad18620ffc4ec",
+      "query_sha256": "32933af8dd56b5dee127bc1e928cddb35f0fb8b27ef1230fbb7da5527f8dfa47",
+      "gold_sha256": "dec3691bb57fa625d89cd827b25d161c6b908d54c3d7d80e4ff73e1a8bf27878"
+    },
+    {
+      "case_id": "rc3i-laptop-022",
+      "domain": "laptop",
+      "kind": "comparison",
+      "case_sha256": "c27ad4d188718d284d4d54cb303e3407eadbc7be1e5b5eff0b0c99ccfcb6a740",
+      "query_sha256": "2393640bf759d6e3c33b575ed28390ebe9105b005b4ff5d8b1d8d93b8790f6d1",
+      "gold_sha256": "526e83c6b4dcba2d45aeccf234b0f9b21d0b58df2efc2fb6dd24e46c99641acf"
+    },
+    {
+      "case_id": "rc3i-laptop-023",
+      "domain": "laptop",
+      "kind": "comparison",
+      "case_sha256": "4fbb01ef908893b8dc491ef9aae6f37389d5dd628bcbfc4c2633623849db123f",
+      "query_sha256": "1771775fc19914ea05dab17feb30ab6359dd58e026cdd6ceab12e7b938a03f9b",
+      "gold_sha256": "520f8f7b1202758b0fc4f45f5e1a3d4c01f7c8a5b65167ba5b34fcaebaa8091e"
+    },
+    {
+      "case_id": "rc3i-laptop-024",
+      "domain": "laptop",
+      "kind": "comparison",
+      "case_sha256": "6b778585a56451209b092495d864e3733d7bfc01ea7fbcf53096039d7391c155",
+      "query_sha256": "2aa2eb42952a86249b058ebcb81a34cfffaccfc0e56fe3732ae55d8b3ba3752f",
+      "gold_sha256": "6370c70ece10700169a0c789ad3b521d838fd47db33dccc97ae6361afed89834"
+    },
+    {
+      "case_id": "rc3i-laptop-025",
+      "domain": "laptop",
+      "kind": "comparison",
+      "case_sha256": "16a38f7b132c93b259b9bc5acc8975fa97cd8436afce4b02cd52ab2d4fb00686",
+      "query_sha256": "577cc186eba96f4f5b61cffe7d1ad79903a60ef23cff1d158dc1e6b73b41e3e0",
+      "gold_sha256": "99463938cff9cc288b7a2e66527adb0591656b4bd3ec118b0c71aeac61b002df"
+    },
+    {
+      "case_id": "rc3i-laptop-026",
+      "domain": "laptop",
+      "kind": "negative",
+      "case_sha256": "e2b85eb1d6e51a415d4edfce7171e3437ad7ede71306bbb2a00df94a1752843a",
+      "query_sha256": "25d35fd581da6e5b9b11dc0400576620aa22076721ff390924c72bd277befdcf",
+      "gold_sha256": "36e4b3086be7311947cca201a31c6e34df6d336ddc387143ef6b40041be461f2"
+    },
+    {
+      "case_id": "rc3i-laptop-027",
+      "domain": "laptop",
+      "kind": "negative",
+      "case_sha256": "ca1a4d2ea2d8200cd560cb439f0329dded3f7edd2b4ef0c9c4398efcf01b0cef",
+      "query_sha256": "ae743cf60e3596d25f2431cab36aef4cd06ddcd784e638287ef772b9f481fdb8",
+      "gold_sha256": "7d08014bcfd740ddf9f38ac087e29bb7f557e1aa71d255a0cb1228a1a6441576"
+    },
+    {
+      "case_id": "rc3i-laptop-028",
+      "domain": "laptop",
+      "kind": "negative",
+      "case_sha256": "5ef0e2b1281b1bc3e837869cbb77690418c4da6f0d7dd3e312a0e4fb981b260d",
+      "query_sha256": "29dfe5cd60894cdb53e42d1545a7debd6875461c9c59b27c4fb6f6d326e2f921",
+      "gold_sha256": "bacab11c52cbeee6c3f5dba266e3da0317d80fb1f745e318091db4f4b6258e6e"
+    },
+    {
+      "case_id": "rc3i-laptop-029",
+      "domain": "laptop",
+      "kind": "negative",
+      "case_sha256": "4519eeaa754f38a8cbce4f48a28637009ab278b509e89e5dc5ea36028bfb6cef",
+      "query_sha256": "3716c222ecdec22d917793a34fbbfd3de8232d392c20c84af74b2f7d5536aa77",
+      "gold_sha256": "586838a48c26a4f5d0e309f80a3bf7bc76bdde3d7c10159021b760e848a628ba"
+    },
+    {
+      "case_id": "rc3i-laptop-030",
+      "domain": "laptop",
+      "kind": "negative",
+      "case_sha256": "659afb298c64756ea047d199196f4625d250c0d67c6fbbc3c5bc98de15f8312c",
+      "query_sha256": "f96185188a75aaa40fb4db0b50917220d06ef555b09286bfec47a8a2e7796746",
+      "gold_sha256": "586838a48c26a4f5d0e309f80a3bf7bc76bdde3d7c10159021b760e848a628ba"
+    },
+    {
+      "case_id": "rc3i-headphone-001",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "caadab0137e8fcabc2470aa4045baf55daa97960a6c68016e7d71450dab47bf7",
+      "query_sha256": "1edc7bb158c3dc471c0cd53022fe63f40f8aadc9c52fa4c93e7d1863a8e4025e",
+      "gold_sha256": "cbf07af6e70ddc6cbbcd0411a040b273afd6d3e4e4221b0d4248cbc683769b47"
+    },
+    {
+      "case_id": "rc3i-headphone-002",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "2c68bc30d02827e3acf33a0d1a6c14c047295f934f6c497a528efd52a8313504",
+      "query_sha256": "0ae339b22f058cd52f11f8c4b92a45ade6203ee780d30d00ffe11f6b1267af6e",
+      "gold_sha256": "5a7839c7713e5bd8af1a7aaf74c2e878085d3a3317fd1ccc6d874afd8ac13bf6"
+    },
+    {
+      "case_id": "rc3i-headphone-003",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "d9286d1ca4f1149f1730236c1f24423727754af7fbc6db1cca088bf936402025",
+      "query_sha256": "e3e932d6967e607585e6139f7a7249bc93b3639eb3abd1a8c41cc881d496e4ef",
+      "gold_sha256": "3aad6dbbb0c40a92f9503cb667877735802bb3399b2af84579921cdb6b536447"
+    },
+    {
+      "case_id": "rc3i-headphone-004",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "13a128eafcdbff0407d687225111422064057a077efe50d6b7ba9a47e3251114",
+      "query_sha256": "fb2457705e0e53a157138fcc18bec14e3b985a2a8e8ddcbedc9cd9231160b58a",
+      "gold_sha256": "fdd8b5182721e5df8b683b58bad7c01d3d727d53ed59ed965e06270fc935134b"
+    },
+    {
+      "case_id": "rc3i-headphone-005",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "bbf459f554890517229b434712a61ecc241f262cd6368890a0196392bd87d3c9",
+      "query_sha256": "7a1fdaac87ae9c05b1be152a4e9464f6cdcb4dd2c5ac33fddeaa726e00b9994d",
+      "gold_sha256": "a88d7206473b1a806718a7a3418d2cb014013dc6624483ae729dfd7ea848a8c9"
+    },
+    {
+      "case_id": "rc3i-headphone-006",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "c5cbfc08c61e5ea61eac19a7eeb18b81821701d748de9cb04bf21c24c469e5f3",
+      "query_sha256": "e0e17d873c1d02db34c15cb8088f21a2340fa418f2b585b2c9a54ed6aa7dc842",
+      "gold_sha256": "c562fe9a45f90f33425dc9c308107a4bfb0439cf95e663773351ed36366291c9"
+    },
+    {
+      "case_id": "rc3i-headphone-007",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "e28058bec1a487146315b3cd595fde6f560e41cbb73127d67f6b45529f26bb35",
+      "query_sha256": "7a68f01160e80e0f6fdaf737db2cb3ea892842c32a3cc59d611970fd094b9215",
+      "gold_sha256": "224c336061d28af8f52e8221a3c8eccb50410c9800e0f9179b8ff273413d5e0b"
+    },
+    {
+      "case_id": "rc3i-headphone-008",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "3c786f92eab7fb27eff1bfcb7388502e765d4321b57c5e58b36dde3f511ea748",
+      "query_sha256": "b94e36b5b235c9c323f24b668d0f1c8c8cf85cbef89795c592df46ce5fa04a55",
+      "gold_sha256": "7fd08ab0715f57f88ca270593c69f634e39843ac32ecbf3eb62178536ad3cb30"
+    },
+    {
+      "case_id": "rc3i-headphone-009",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "d9d0e835753ea9eb3b43f189c44f598622d617001bcc1add492fc84d158ba530",
+      "query_sha256": "0a8af31ad47af5a953a6bc2d2b8e3ba7389fb2d64855c6cc5d0e32edc13ac128",
+      "gold_sha256": "3a1f5da09385ef636411d574559b2c92e8ead9517f2f06262e7b2357763eb0eb"
+    },
+    {
+      "case_id": "rc3i-headphone-010",
+      "domain": "headphone",
+      "kind": "fact",
+      "case_sha256": "56f29be8a425ed27b3b256e50d49d3fcc89cd69e4b06eaa767c21726143d364d",
+      "query_sha256": "7663db79d0159aecbbec6cd5a83f7cfc5bb2db786a2cea9b0df3ed844c9fd7d7",
+      "gold_sha256": "d07cebbaee85d8cbb21eb49c2544b4321a69e18039b290a623b9831e190be71b"
+    },
+    {
+      "case_id": "rc3i-headphone-011",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "43b518b2eef85179fdc608dcfe9130f621ae2a130ba4058d18ec0768b2323e2d",
+      "query_sha256": "a365bb76e60ea437d5d1042bb4ded8008f28ef4690967b90e1d4eca678f8e074",
+      "gold_sha256": "42be596a7eb6ae3bf60966b485bfa67160107a1b154eb52b2e6291ea5e2dab3b"
+    },
+    {
+      "case_id": "rc3i-headphone-012",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "f2b526aa8abebf8b165552bd6e65286d079bf1ebff243cee703ca78aab6dcb35",
+      "query_sha256": "e720c8aab2950705236c6c83521ab7b908f6d63a246167f7ebd2118b8257e1de",
+      "gold_sha256": "16d2f9dc76afa3b2de49c25b0b7db620ee6d66cb9f4090060ed5b2c369f9ea8a"
+    },
+    {
+      "case_id": "rc3i-headphone-013",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "55bc10519c77cfc994d7dd3ffb224f3335db4114146d51a63e44ccb2b2e9c293",
+      "query_sha256": "46740cc75a6090a34303db977b4532bb47199f3a371e39d12759077b305e4b4b",
+      "gold_sha256": "48486b153afc0e933910501d79c818d08dcb9a1dfffa5434138d7e0f166183a9"
+    },
+    {
+      "case_id": "rc3i-headphone-014",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "52506f45b4c8787d68d32a484e1a2f8ba59c28879caa15bcbc284f62061c123d",
+      "query_sha256": "3a66243a5a61350723f87730a4622c992f28d44298d18c96fd0d33a353c36124",
+      "gold_sha256": "2626beea9093721e8a9143503496ca4e1d9254eb97e2e16b9c8b5f69b2631a15"
+    },
+    {
+      "case_id": "rc3i-headphone-015",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "04d7ad6be0eed9918015889c407af4d7bd196cb44b3e6f458ebf001c55d218a5",
+      "query_sha256": "94563669e12fce0a27de9694129f81bf44a8d12bf2fc404f47918efd796dff73",
+      "gold_sha256": "4e23d948ad54df48440f2863ea1001a4c152a90ebd2d3591625e6f5e5636d69e"
+    },
+    {
+      "case_id": "rc3i-headphone-016",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "25df2e94c71e0b9df2cc1e0a324218638cdf9764381d82be76033b2ae327d1d2",
+      "query_sha256": "1cdcf74fc34751bada887799f6f06773f5b29464fa05250864a9c90bd2a55931",
+      "gold_sha256": "e95f58c77e93da8914e73458b89949c5ceb887e84ef68c30f2fa3064c9f86829"
+    },
+    {
+      "case_id": "rc3i-headphone-017",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "9cc7ec78dc1a513e4aa132df043fef0470f1f0fb1d8680a6e16f560cf23fc435",
+      "query_sha256": "91e7406682244ac14d3740c527832e51d61734a5a2a63611aa7e99c25a3b4f38",
+      "gold_sha256": "688c932a542026b62a37a31924cd3323b2b5f6b5325624ecfe1107d244494f9a"
+    },
+    {
+      "case_id": "rc3i-headphone-018",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "e717958f8677e5840a75045caf5084e7e9ad853b3891767e1b47c34bc14b5d9d",
+      "query_sha256": "53a54662714bf0fb8182dce40eccef84092e77079b5604c851010e8aad20c494",
+      "gold_sha256": "a79503ee6efc9aa31c4aa375ddff59b69417bf1add21446dfbfd1aa0f192c2a2"
+    },
+    {
+      "case_id": "rc3i-headphone-019",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "9553ff1ea857ef58b1a5b8c3859733552622e34ce917c23de90c5de2c0c76fee",
+      "query_sha256": "ac7eb4450aa1cd03e090f7816f6dc4766511244a28c6801b70c20660a06e540d",
+      "gold_sha256": "ea683d80eaa0b0a64e839f77730682c08dbd1015e586a49593985e5861cfea07"
+    },
+    {
+      "case_id": "rc3i-headphone-020",
+      "domain": "headphone",
+      "kind": "filter",
+      "case_sha256": "0e88b191a9a6d917b0967940257ad7c0cf1af8715d97624a6673ce575fadcdf1",
+      "query_sha256": "c52f0b57367e94bcd1ea9d114ca3da36585bc48dabce68a20029add4fdccf035",
+      "gold_sha256": "2a4594aa7eac00eb2cf0d568b66c495250fbd369f1d689b6714665584a4b747a"
+    },
+    {
+      "case_id": "rc3i-headphone-021",
+      "domain": "headphone",
+      "kind": "comparison",
+      "case_sha256": "289794e5f5105bc8277e0af537dc2bf0b62d7dd837664ad40a5821471f2c6137",
+      "query_sha256": "96c611de0799ae0580823d098c41035a266b74be60832d3fa499b06f87d718b6",
+      "gold_sha256": "1ff67f226dcd798f4d8fd257021c583d4cd6be8b2d7ec87fdd228342b6b3741e"
+    },
+    {
+      "case_id": "rc3i-headphone-022",
+      "domain": "headphone",
+      "kind": "comparison",
+      "case_sha256": "8eed2199cd8c82b97639b7a9f9b3ef5489fc33de0b06b53d77e6aa261a24ddfb",
+      "query_sha256": "f13fd6d5c37feed362e5f0b391a8c13ffcfa996c573e1ec4b043af6a97cc5b11",
+      "gold_sha256": "995f16a2bd7e52e0b4cf7658f23d88ad59ec7efd51d1d99ac47ad469600653ca"
+    },
+    {
+      "case_id": "rc3i-headphone-023",
+      "domain": "headphone",
+      "kind": "comparison",
+      "case_sha256": "02e144f1a8a2bef312f988f9c36218ba2d017857289df146102378fbcef6edea",
+      "query_sha256": "17ac7535f6a5aa10b7c266eba19a663d7a5308ed835380c4b98fd8b43992c387",
+      "gold_sha256": "291eaabdeb2a000927661a8f3a2c9645d5388ddd6f5760ebbfd6c11ca34fdf3f"
+    },
+    {
+      "case_id": "rc3i-headphone-024",
+      "domain": "headphone",
+      "kind": "comparison",
+      "case_sha256": "2c1f81080205fd5485159d952143f87abd39038ae217dc1be58df22dcd570ba4",
+      "query_sha256": "b67e14792ae08cf449ca96a054affb336ba33e9a0c0c2ee74d68e04f0dd4b235",
+      "gold_sha256": "10d9e67070038a70e3b7771474dcacb4243f41d6ee182283527357f02cfda11f"
+    },
+    {
+      "case_id": "rc3i-headphone-025",
+      "domain": "headphone",
+      "kind": "comparison",
+      "case_sha256": "8b05b87c74cef5412db1dbe4349061effa4b27efe0f26aa9f09e3b2a81f70251",
+      "query_sha256": "92a96a84113686e508fd653f19949c51589d3999f146866fd1141248a03c7a7a",
+      "gold_sha256": "2eb61712fff7a5df191ce4c10a480fccc8d8090411b712d9e4d9c4c230a09060"
+    },
+    {
+      "case_id": "rc3i-headphone-026",
+      "domain": "headphone",
+      "kind": "negative",
+      "case_sha256": "3fe44bbd2bc653477a856e92c5019e2af36dc6446c529fdc81eaa7274934a8d1",
+      "query_sha256": "3c3685503f4f0485ac14a222379ff35b4074710fe652216e748328f3b981647d",
+      "gold_sha256": "36e4b3086be7311947cca201a31c6e34df6d336ddc387143ef6b40041be461f2"
+    },
+    {
+      "case_id": "rc3i-headphone-027",
+      "domain": "headphone",
+      "kind": "negative",
+      "case_sha256": "b1ae9d88e13449f8649aec3cb51062878273d6c5b2b6883ef02eafaa7d26c1bb",
+      "query_sha256": "ffbb67890cfa5e1fd8f05d655e34babbff7048e1045b4b97b84ecf8e70be614a",
+      "gold_sha256": "7d08014bcfd740ddf9f38ac087e29bb7f557e1aa71d255a0cb1228a1a6441576"
+    },
+    {
+      "case_id": "rc3i-headphone-028",
+      "domain": "headphone",
+      "kind": "negative",
+      "case_sha256": "a00f271f35c25d35d3bddbb503945baabce8308cf8d3536ba234f706bb4de0cd",
+      "query_sha256": "fa45b8094f1b9c58696f98dc52cd17951f4b1276e3cb71a00cce971be877e386",
+      "gold_sha256": "a96e735630c76205daa25d20355fe15f2f8dfc95845a202a1ed8795b809490bb"
+    },
+    {
+      "case_id": "rc3i-headphone-029",
+      "domain": "headphone",
+      "kind": "negative",
+      "case_sha256": "79535f6a145d165d381b936c9fee7627d85c4a8545efccdad926825d52c0a4a9",
+      "query_sha256": "3b39f17e33cffd70daf24c462925bb74c7991a413aa2b71dc163de3b8ef00bca",
+      "gold_sha256": "586838a48c26a4f5d0e309f80a3bf7bc76bdde3d7c10159021b760e848a628ba"
+    },
+    {
+      "case_id": "rc3i-headphone-030",
+      "domain": "headphone",
+      "kind": "negative",
+      "case_sha256": "a7d8a4b71f6f5af61f690e3bb7595c13e8a5db49ab52a267e8e7860455e8e917",
+      "query_sha256": "e8333b62a041f9689e1666beee47641b81a42f78580f7c504def2355d9a9f5a9",
+      "gold_sha256": "586838a48c26a4f5d0e309f80a3bf7bc76bdde3d7c10159021b760e848a628ba"
+    }
+  ]
+}
