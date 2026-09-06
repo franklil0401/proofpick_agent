@@ -1,0 +1,1 @@
+{"run_id": "trusted15-repair-20260906T120144Z", "freeze_sha256": "c414585b07883e27da2eb63106e1fb9d819f87659945d9080ba093f3cc44e9f0", "production_commit": "bad83ea7512e6b53ae554bbd4a1f80f0c3f4f715", "evaluation_commit": "5ccdd3b1b9d98348566009d16c58474786da069a", "planned": 15, "budget_cny": 1.0, "remaining64_authorized": false}

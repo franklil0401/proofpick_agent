@@ -1,0 +1,307 @@
+{
+  "raw_sha256": "acc30c5adf24d770aafdcf3d2824ebcb860cacd2cd4ecb10408cf54995209a51",
+  "scores_sha256": "8634fbd08f4994f2bba22bd5ca615a58d8a2a07ed629eb51fd6e159373ec13c0",
+  "raw_recalculation_equal": true,
+  "production_runtime_unchanged": true,
+  "summary": {
+    "passed": 14,
+    "total": 15,
+    "domains": {
+      "monitor": {
+        "passed": 14,
+        "total": 15
+      },
+      "laptop": {
+        "passed": 0,
+        "total": 0
+      },
+      "headphone": {
+        "passed": 0,
+        "total": 0
+      }
+    },
+    "tp": 18,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "recommendation_fact_evidence": [
+      34,
+      34
+    ],
+    "requested_fact_evidence": [
+      54,
+      68
+    ],
+    "negative": [
+      1,
+      1
+    ],
+    "safety": {},
+    "planned": 15,
+    "scored": 15,
+    "executed": 15,
+    "by_kind": {
+      "fact": {
+        "passed": 0,
+        "total": 0
+      },
+      "comparison": {
+        "passed": 5,
+        "total": 5
+      },
+      "filter": {
+        "passed": 8,
+        "total": 9
+      },
+      "negative": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "fact_comparison_requested_evidence": [
+      20,
+      20
+    ],
+    "sufficient_data_empty_recommendations": [
+      1,
+      9
+    ],
+    "usage": {
+      "ledger_records": 117,
+      "models": {
+        "qwen-plus": 87,
+        "text-embedding-v4": 15,
+        "qwen3-rerank": 15
+      },
+      "http_attempts": 117,
+      "retries": 0,
+      "failed_records": 0,
+      "input_tokens": 507365,
+      "output_tokens": 11472,
+      "estimated_cost_cny": 0.4239502
+    },
+    "latency_ms": {
+      "mean": 20208.447933333333,
+      "p95_nearest_rank": 30377.975
+    },
+    "remaining_in_phase": 0,
+    "remaining64_executed": 0,
+    "exposed15_regression_passed": false,
+    "new_holdout_or_release_result": false
+  },
+  "old_same15_summary": {
+    "passed": 4,
+    "total": 15,
+    "domains": {
+      "monitor": {
+        "passed": 4,
+        "total": 15
+      },
+      "laptop": {
+        "passed": 0,
+        "total": 0
+      },
+      "headphone": {
+        "passed": 0,
+        "total": 0
+      }
+    },
+    "tp": 17,
+    "fp": 6,
+    "fn": 1,
+    "precision": 0.7391304347826086,
+    "recall": 0.9444444444444444,
+    "f1": 0.8292682926829268,
+    "recommendation_fact_evidence": [
+      67,
+      67
+    ],
+    "requested_fact_evidence": [
+      56,
+      68
+    ],
+    "negative": [
+      0,
+      1
+    ],
+    "safety": {
+      "clarification_bypassed_paid_tools": 1
+    },
+    "planned": 79,
+    "remaining": 64,
+    "scored": 15,
+    "executed": 15,
+    "by_kind": {
+      "fact": {
+        "passed": 0,
+        "total": 0
+      },
+      "comparison": {
+        "passed": 0,
+        "total": 5
+      },
+      "filter": {
+        "passed": 4,
+        "total": 9
+      },
+      "negative": {
+        "passed": 0,
+        "total": 1
+      }
+    },
+    "fact_comparison_requested_evidence": [
+      18,
+      20
+    ],
+    "sufficient_data_empty_recommendations": [
+      3,
+      9
+    ],
+    "trusted79_gate_passed": false,
+    "usage": {
+      "ledger_records": 103,
+      "models": {
+        "qwen-plus": 77,
+        "text-embedding-v4": 13,
+        "qwen3-rerank": 13
+      },
+      "http_attempts": 103,
+      "retries": 0,
+      "failed_records": 0,
+      "input_tokens": 466551,
+      "output_tokens": 10418,
+      "estimated_cost_cny": 0.389128
+    },
+    "latency_ms": {
+      "mean": 18552.979866666665,
+      "p95_nearest_rank": 33880.96
+    }
+  },
+  "paired": [
+    {
+      "case_id": "rc3i-monitor-012",
+      "old_passed": false,
+      "new_passed": false,
+      "new_reasons": [
+        "empty_recommendation"
+      ]
+    },
+    {
+      "case_id": "rc3i-monitor-013",
+      "old_passed": true,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-014",
+      "old_passed": true,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-015",
+      "old_passed": true,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-016",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-017",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-018",
+      "old_passed": true,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-019",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-020",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-021",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-022",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-023",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-024",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-025",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    },
+    {
+      "case_id": "rc3i-monitor-026",
+      "old_passed": false,
+      "new_passed": true,
+      "new_reasons": []
+    }
+  ],
+  "clarification_corroboration": [
+    {
+      "case_id": "rc3i-monitor-026",
+      "state": "pending",
+      "questions": [
+        "请确认可执行的要求：准备买显示器，宽度不能太大。请先问清楚具体能放多宽，再开始筛选。（explicit_confirmation_required）。"
+      ],
+      "paid_calls": 0,
+      "business_tools": [],
+      "recommended_ids": [],
+      "abstained": true,
+      "coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": false,
+        "obligations": [
+          {
+            "field": "confirmation",
+            "operator": null,
+            "value": null,
+            "unit": null,
+            "source_text": "准备买显示器，宽度不能太大。请先问清楚具体能放多宽，再开始筛选。",
+            "span_start": 0,
+            "span_end": 32,
+            "resolved": false,
+            "reason": "explicit_confirmation_required"
+          }
+        ]
+      }
+    }
+  ],
+  "model_calls_in_audit": 0
+}

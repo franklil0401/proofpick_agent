@@ -1,0 +1,193 @@
+{
+  "kind": "offline_parser_diagnostic_not_agent_replay",
+  "model_calls": 0,
+  "cases": [
+    {
+      "label": "original_independent",
+      "query": "请从已收录的显示器中挑选：尺寸正好27英寸，必须支持USB-C视频输入。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "constraints": {
+        "version": "smartbuy-constraint-set-v1",
+        "constraints": [
+          {
+            "field": "region",
+            "operator": "eq",
+            "normalized_value": "CN",
+            "unit": null,
+            "hard_or_soft": "soft",
+            "provenance": "system_default",
+            "source_text": "默认展示中国大陆市场；未作为硬约束",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": null
+          },
+          {
+            "field": "display_size_inch",
+            "operator": "eq",
+            "normalized_value": 27.0,
+            "unit": "inch",
+            "hard_or_soft": "hard",
+            "provenance": "current_input",
+            "source_text": "尺寸正好27英寸",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": null
+          },
+          {
+            "field": "usb_c_video",
+            "operator": "eq",
+            "normalized_value": true,
+            "unit": null,
+            "hard_or_soft": "hard",
+            "provenance": "current_input",
+            "source_text": "USB-C视频输入",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": null
+          },
+          {
+            "field": "has_usb_c",
+            "operator": "eq",
+            "normalized_value": true,
+            "unit": null,
+            "hard_or_soft": "soft",
+            "provenance": "current_input",
+            "source_text": "USB-C视频输入",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": "视频能力隐含接口；不是用户单独提出的硬约束。"
+          }
+        ],
+        "cancelled_fields": [],
+        "rejected_model_constraints": []
+      },
+      "coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": false,
+        "obligations": [
+          {
+            "field": "display_size_inch",
+            "operator": "eq",
+            "value": 27.0,
+            "unit": "inch",
+            "source_text": "尺寸正好27英寸",
+            "span_start": 13,
+            "span_end": 21,
+            "resolved": true,
+            "reason": null
+          },
+          {
+            "field": "has_usb_c",
+            "operator": null,
+            "value": null,
+            "unit": null,
+            "source_text": "必须支持USB-C视频输入",
+            "span_start": 22,
+            "span_end": 35,
+            "resolved": false,
+            "reason": "unresolved_explicit_requirement"
+          }
+        ]
+      }
+    },
+    {
+      "label": "developer_reconstructed",
+      "query": "请从已收录显示器中筛选：尺寸正好27英寸，需要USB-C视频输入。不限制地区，保持各配置独立。",
+      "constraints": {
+        "version": "smartbuy-constraint-set-v1",
+        "constraints": [
+          {
+            "field": "region",
+            "operator": "eq",
+            "normalized_value": "CN",
+            "unit": null,
+            "hard_or_soft": "soft",
+            "provenance": "system_default",
+            "source_text": "默认展示中国大陆市场；未作为硬约束",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": null
+          },
+          {
+            "field": "display_size_inch",
+            "operator": "eq",
+            "normalized_value": 27.0,
+            "unit": "inch",
+            "hard_or_soft": "hard",
+            "provenance": "current_input",
+            "source_text": "尺寸正好27英寸",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": null
+          },
+          {
+            "field": "usb_c_video",
+            "operator": "eq",
+            "normalized_value": true,
+            "unit": null,
+            "hard_or_soft": "hard",
+            "provenance": "current_input",
+            "source_text": "USB-C视频输入",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": null
+          },
+          {
+            "field": "has_usb_c",
+            "operator": "eq",
+            "normalized_value": true,
+            "unit": null,
+            "hard_or_soft": "soft",
+            "provenance": "current_input",
+            "source_text": "USB-C视频输入",
+            "source_turn": 1,
+            "confidence": 1.0,
+            "supported": true,
+            "active": true,
+            "ambiguous": false,
+            "note": "视频能力隐含接口；不是用户单独提出的硬约束。"
+          }
+        ],
+        "cancelled_fields": [],
+        "rejected_model_constraints": []
+      },
+      "coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "display_size_inch",
+            "operator": "eq",
+            "value": 27.0,
+            "unit": "inch",
+            "source_text": "尺寸正好27英寸",
+            "span_start": 12,
+            "span_end": 20,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "production_runtime_unchanged": true,
+  "production_member_count": 1204,
+  "git_blob_aggregate_sha256": "ab022c69801cd1dd5cfc403d9d76e3ad97aabfc1c733c1a9dfc86837c1f49e28",
+  "files_scanned": 1297,
+  "exact_credentials_and_high_confidence_patterns": 0,
+  "new_forbidden_artifacts": 0,
+  "protected_refs": {
+    "refs/heads/main": "d51b6668a6a45c1b01ef4e64da3c4b9ac84ed10c",
+    "refs/tags/v1.0.0-portfolio^{}": "d51b6668a6a45c1b01ef4e64da3c4b9ac84ed10c",
+    "refs/heads/release/proofpick-v2-rc3": "033669d6c2d168dddbd712c2a54a105da53ffc1b",
+    "refs/heads/release/proofpick-v2-rc4": "e7ea993a6393c4c886be977a5eed2532d800fe26",
+    "refs/heads/fix/v2-trusted-intent-clarification": "1c7104bf8dbafd79945082200c6dc6cae9dbce5b",
+    "refs/heads/eval/v2-trusted79-continuation": "faa1b108771959949a2f1a71937c03860685daeb"
+  },
+  "old_evaluation_changes": 0,
+  "raw_sha256": "acc30c5adf24d770aafdcf3d2824ebcb860cacd2cd4ecb10408cf54995209a51",
+  "phase_model_requests": 117,
+  "phase_estimated_cost_cny": 0.4239502,
+  "quality_model_calls": 0
+}

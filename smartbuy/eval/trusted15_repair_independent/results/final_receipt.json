@@ -1,0 +1,121 @@
+{
+  "production_and_runtime_unchanged": true,
+  "frozen_inputs_scorer_unchanged": true,
+  "final_files_scanned": 20,
+  "credential_hits": 0,
+  "forbidden_artifacts": 0,
+  "critical_clarification_manually_corroborated": true,
+  "local_report_matches": true,
+  "report_sha256": "7b5cb3ddc2a8953542fe6d9211ce37cc0796e947984afb3f41add848b06b6d27",
+  "summary": {
+    "passed": 14,
+    "total": 15,
+    "domains": {
+      "monitor": {
+        "passed": 14,
+        "total": 15
+      },
+      "laptop": {
+        "passed": 0,
+        "total": 0
+      },
+      "headphone": {
+        "passed": 0,
+        "total": 0
+      }
+    },
+    "tp": 18,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1,
+    "recall": 1,
+    "f1": 1,
+    "recommendation_fact_evidence": [
+      34,
+      34
+    ],
+    "requested_fact_evidence": [
+      54,
+      68
+    ],
+    "negative": [
+      1,
+      1
+    ],
+    "safety": {},
+    "planned": 15,
+    "scored": 15,
+    "executed": 15,
+    "by_kind": {
+      "fact": {
+        "passed": 0,
+        "total": 0
+      },
+      "comparison": {
+        "passed": 5,
+        "total": 5
+      },
+      "filter": {
+        "passed": 8,
+        "total": 9
+      },
+      "negative": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "fact_comparison_requested_evidence": [
+      20,
+      20
+    ],
+    "sufficient_data_empty_recommendations": [
+      1,
+      9
+    ],
+    "usage": {
+      "ledger_records": 117,
+      "models": {
+        "qwen-plus": 87,
+        "text-embedding-v4": 15,
+        "qwen3-rerank": 15
+      },
+      "http_attempts": 117,
+      "retries": 0,
+      "failed_records": 0,
+      "input_tokens": 507365,
+      "output_tokens": 11472,
+      "estimated_cost_cny": 0.4239502
+    },
+    "latency_ms": {
+      "mean": 20208.447933333333,
+      "p95_nearest_rank": 30377.975
+    },
+    "remaining_in_phase": 0,
+    "remaining64_executed": 0,
+    "exposed15_regression_passed": false,
+    "new_holdout_or_release_result": false
+  },
+  "model_calls_in_receipt": 0,
+  "offline_tests": {
+    "production_ci_equivalent": 790,
+    "v1_original_files_current": 101,
+    "evaluator_synthetic": 19
+  },
+  "static_checks": {
+    "ruff": "passed",
+    "compileall": "passed",
+    "javascript": 13,
+    "powershell": 6,
+    "markdown_links": 565,
+    "markdown_documents": 116
+  },
+  "ports": {
+    "checked": [
+      8000,
+      8088,
+      9000,
+      9001
+    ],
+    "listeners": 0
+  }
+}
