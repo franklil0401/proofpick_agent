@@ -19,6 +19,7 @@ from smartbuy.constraints import (
     NormalizedConstraint,
 )
 from smartbuy.domain_packs.loader import DomainPackValidationError, LoadedDomainPack
+from smartbuy.contracts.modality import optional_requirement_spans
 from smartbuy.contracts.quantities import extract_numeric_requirements, parse_numeric_token
 
 from .models import (
@@ -1045,6 +1046,53 @@ class DeterministicConstraintParser:
             if match := re.search(pattern, query, flags=re.I):
                 cancelled.add(field)
                 add(field, None, None, match, action="cancel")
+        usb_definition = self.pack.fields.get("has_usb_c")
+        optional_usb_handled = False
+        if usb_definition is not None and "has_usb_c" not in cancelled:
+            optional_usb = optional_requirement_spans(
+                query, [usb_definition.label, *usb_definition.aliases, "USB C", "Type C"],
+            )
+            if optional_usb:
+                start, end = optional_usb[-1]
+                optional_usb_handled = True
+                later_interface = re.compile(
+                    r"(?:不要不带|不能没有|不能不带|必须有|需要|要有|不要|排除|无)\s*"
+                    r"(?:usb[\s_-]?c|type[\s_-]?c)(?!\s*(?:视频|传视频|一线通|供电|pd))",
+                    re.I,
+                ).search(query, end)
+                if later_interface:
+                    phrase = later_interface.group(0)
+                    double_negative = re.match(r"不要不带|不能没有|不能不带", phrase)
+                    negative = re.match(r"不要|排除|无", phrase)
+                    add("has_usb_c", "eq", bool(double_negative or not negative), later_interface)
+                else:
+                    cancelled.add("has_usb_c")
+                    raws.append({
+                        "field": "has_usb_c", "operator": None, "value": None, "unit": None,
+                        "strength": "hard", "status": "supported", "action": "cancel",
+                        "span_start": start, "span_end": end, "span_text": query[start:end],
+                        "confidence": 1.0, "reason": "explicitly_optional_requirement",
+                    })
+        video_definition = self.pack.fields.get("usb_c_video")
+        optional_video: list[tuple[int, int]] = []
+        if video_definition is not None:
+            optional_video = optional_requirement_spans(
+                query, [video_definition.label, *video_definition.aliases,
+                        "USB-C 视频", "Type-C 视频", "USB-C 视频输入", "Type-C 视频输入"],
+            )
+            if optional_video and "usb_c_video" not in cancelled:
+                start, end = optional_video[-1]
+                later_video = re.compile(
+                    r"(?:usb[\s_-]?c|type[\s_-]?c)[^，,。；;]*?(?:一线通|传视频|视频)", re.I,
+                ).search(query, end)
+                if not later_video:
+                    cancelled.add("usb_c_video")
+                    raws.append({
+                        "field": "usb_c_video", "operator": None, "value": None, "unit": None,
+                        "strength": "hard", "status": "supported", "action": "cancel",
+                        "span_start": start, "span_end": end, "span_text": query[start:end],
+                        "confidence": 1.0, "reason": "explicitly_optional_requirement",
+                    })
 
         if match := re.search(r"([一二两三四五六七八九])([一二三四五六七八九])千", query):
             low = _chinese_number(match.group(1) + "千")
@@ -1088,32 +1136,12 @@ class DeterministicConstraintParser:
                     "display_size_inch", "lte", None, vague, unit="inch",
                     status="ambiguous", reason="size_limit_missing",
                 )
-            size_range = re.search(
-                rf"({_NUMBER})\s*(?:到|至|[-~～])\s*({_NUMBER})\s*(?:英寸|寸|inch)",
-                query,
-                flags=re.I,
-            )
-            if size_range:
-                add(
-                    "display_size_inch", "range",
-                    sorted([_chinese_number(size_range.group(1)), _chinese_number(size_range.group(2))]),
-                    size_range, unit="inch",
-                )
-            else:
-                size = re.search(
-                    rf"(?:(至少|不低于)\s*)?({_NUMBER})\s*(?:英寸|寸|inch)\s*(左右|以下|以内)?",
-                    query,
-                    flags=re.I,
-                )
-                if size:
-                    suffix = (size.group(3) or "").casefold()
-                    operator = "gte" if size.group(1) else ("lte" if suffix in {"以下", "以内"} else "eq")
-                    status = "needs_confirmation" if suffix == "左右" else "supported"
-                    add(
-                        "display_size_inch", operator, _chinese_number(size.group(2)), size,
-                        unit="inch", strength="soft" if suffix == "左右" else "hard",
-                        status=status, reason="approximate_size" if status != "supported" else None,
-                    )
+            # Approximate preferences keep their original public Proposal
+            # contract; all exact size quantities share the Pack parser below.
+            size = re.search(rf"({_NUMBER})\s*(?:英寸|寸|inch)\s*左右", query, flags=re.I)
+            if size:
+                add("display_size_inch", "eq", _chinese_number(size.group(1)), size,
+                    unit="inch", strength="soft", status="needs_confirmation", reason="approximate_size")
 
         if "resolution" not in cancelled:
             explicit_resolution = re.search(
@@ -1154,11 +1182,11 @@ class DeterministicConstraintParser:
                     status="ambiguous", reason="refresh_threshold_missing",
                 )
 
-        shared_numeric_fields = {"width_mm", "refresh_rate_hz", "weight_kg"}
+        shared_numeric_fields = {"display_size_inch", "width_mm", "refresh_rate_hz", "weight_kg"}
         quantities = extract_numeric_requirements(
             query, self.pack, field_ids=shared_numeric_fields,
             implicit_operators=ConstraintNormalizer.IMPLICIT_NUMERIC_OPERATORS,
-            implicit_unit_fields={"refresh_rate_hz"},
+            implicit_unit_fields={"display_size_inch", "refresh_rate_hz"},
         )
         for quantity in quantities:
             if quantity.field in cancelled:
@@ -1187,16 +1215,19 @@ class DeterministicConstraintParser:
                 add("is_oled", "eq", True, match)
 
         usb_pattern = r"(?:usb[\s_-]?c|type[\s_-]?c)"
-        usb_match = re.search(usb_pattern, query, flags=re.I)
-        if usb_match and "has_usb_c" not in cancelled:
+        usb_match = next((match for match in re.finditer(usb_pattern, query, flags=re.I)
+                          if not any(start <= match.start() < end for start, end in optional_video)), None)
+        if usb_match and "has_usb_c" not in cancelled and not optional_usb_handled:
             double_negative = re.search(rf"不要不带\s*{usb_pattern}\s*的", query, flags=re.I)
             negative = re.search(rf"(?:不需要|不要|无|排除)\s*{usb_pattern}", query, flags=re.I)
             if double_negative:
                 add("has_usb_c", "eq", True, double_negative)
             elif negative:
                 add("has_usb_c", "eq", False, negative)
-            elif re.search(r"(?:一线通|传视频|视频)", query[usb_match.start():], flags=re.I):
-                video = re.search(rf"{usb_pattern}[^，。；]*?(?:一线通|传视频|视频)", query, flags=re.I)
+            elif "usb_c_video" not in cancelled and re.search(r"(?:一线通|传视频|视频)", query[usb_match.start():], flags=re.I):
+                video = next((match for match in re.finditer(
+                    rf"{usb_pattern}[^，。；]*?(?:一线通|传视频|视频)", query, flags=re.I,
+                ) if not any(start <= match.start() < end for start, end in optional_video)), None)
                 assert video is not None
                 add("usb_c_video", "eq", True, video)
                 add("has_usb_c", "eq", True, video)
@@ -1397,6 +1428,26 @@ class NaturalConstraintEngine:
         proposals = self.parser.parse(
             query, source_turn=source_turn, previous_fields=previous_fields
         )
+        # Historical V2 video proposals also carried an implied interface
+        # prerequisite. Waiving that capability removes only this same-source
+        # prerequisite, never a separately expressed interface preference.
+        video_cancellation = next((item for item in proposals if item.field == "usb_c_video"
+                                   and item.action == ProposalAction.CANCEL and item.source_span
+                                   and item.status == ProposalStatus.SUPPORTED), None)
+        if previous and video_cancellation and not any(item.field == "has_usb_c" for item in proposals):
+            old_video = [item for item in previous.active() if item.field == "usb_c_video"]
+            old_interface = [item for item in previous.active() if item.field == "has_usb_c"]
+            if old_interface and all(any(
+                interface.source_text == video.source_text and interface.source_turn == video.source_turn
+                for video in old_video
+            ) for interface in old_interface):
+                span = video_cancellation.source_span
+                proposals.append(self.validator.validate(query, {
+                    "field": "has_usb_c", "operator": None, "value": None, "unit": None,
+                    "strength": "hard", "status": "supported", "action": "cancel",
+                    "span_start": span.start, "span_end": span.end, "span_text": span.text,
+                    "confidence": 1.0, "reason": "waived_same_source_video_prerequisite",
+                }, source=ProposalSource.RULE, source_turn=source_turn))
         provider_calls = input_tokens = output_tokens = 0
         cost = provider_latency = 0.0
         if (

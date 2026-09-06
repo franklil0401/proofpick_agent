@@ -85,8 +85,9 @@ def extract_numeric_requirements(
     """Return every numeric obligation, including unresolved explicit bounds.
 
 Aliases, legal units, decimal conversion and bounds come from the Domain Pack.
-Raw offsets are always measured on ``query`` itself.  Shared units need a field
-mention; a unique unit can identify its field.  Unknown units are never inferred.
+Raw offsets are always measured on ``query`` itself. Shared units require either
+a field mention or exactly one caller-declared implicit field owner. Unknown
+units are never inferred and all values still pass the same Pack unit contract.
 """
     selected = set(field_ids) if field_ids is not None else set(pack.fields)
     implicit_fields = set(implicit_unit_fields)
@@ -163,10 +164,16 @@ mention; a unique unit can identify its field.  Unknown units are never inferred
                 previous_end = alias_end - start
                 for match in matches:
                     actual_unit = match.group("unit") or match.group("high_unit")
-                    if not explicit and unit_owners.get(actual_unit.casefold()) != {field_id}:
+                    if not explicit and (unit_owners.get(actual_unit.casefold(), set()) & implicit_fields) != {field_id}:
                         continue
                     if not explicit and any(pos <= match.start() < end for pos, end, _ in kept):
                         continue
+                    if not explicit:
+                        preceding_mentions = [item for item in kept if item[1] <= match.start()]
+                        if preceding_mentions:
+                            owner = preceding_mentions[-1][2]
+                            if owner != field_id and owner in unit_owners.get(actual_unit.casefold(), set()):
+                                continue
                     context_start = max(0, previous_end)
                     # A later bound's comparator must not change the earlier bound.
                     prefix = segment[context_start:match.start()]

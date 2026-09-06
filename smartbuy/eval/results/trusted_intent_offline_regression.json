@@ -1,0 +1,2871 @@
+{
+  "classification": "exposed_development_regression_not_independent_retest",
+  "method": "response-reconstructed Portfolio API, fake planner and KB, real SQLite/Evidence/Checker",
+  "production_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "worktree_diff_sha256": "ca1aa78525636d3ca72e18936047aefc3cfaab4bc8dbe5e4818777f572ddd722",
+  "fixture_sha256": "2e07c908e3ef67fe4c13d288c1627f9cc3e0bfdd63a042e1d770f89636a1d68b",
+  "source_commit": "faa1b108771959949a2f1a71937c03860685daeb",
+  "source_files": [
+    "smartbuy/eval/trusted79_independent/results/first.jsonl",
+    "smartbuy/eval/trusted79_independent/results/first_scores.json",
+    "smartbuy/docs/v2/trusted79_independent_evaluation_report.md"
+  ],
+  "limitations": [
+    "原始first.jsonl未保存大多数完整用户输入；11条只能由已执行响应摘要、source_text和覆盖义务重建。",
+    "016、017、019使用预澄清响应中的完整输入；026使用已公开报告原文。",
+    "仅核验已执行15条所暴露语义；未读取剩余64条、selection、原始题库、金标目录或独立评分器。",
+    "Fake LLM和Fake KB不衡量真实模型路由、检索召回或端到端泛化，不替代历史4/15。",
+    "断言是本轮明确列出的开发合同，不是原独立评分器。"
+  ],
+  "fixture_validation": {
+    "case_count": 15,
+    "known_identity_and_field_checks": 15,
+    "sqlite_filter_result_set_checks": 9
+  },
+  "database": {
+    "counts": {
+      "products": 12,
+      "price_observations": 4,
+      "source_records": 16,
+      "evidence_records": 180
+    },
+    "foreign_key_violations": 0,
+    "integrity": "ok",
+    "logical_sha256": "3d37a2c3d89326d04f2e1fdf49f96e250fc4d109a64627359bad935e5c16bb13"
+  },
+  "historical_independent_first_unchanged": {
+    "passed": 4,
+    "total_executed": 15,
+    "planned": 79,
+    "not_run": 64,
+    "f1": 0.8292682926829268
+  },
+  "summary": {
+    "development_passed": 15,
+    "total": 15,
+    "by_kind": {
+      "filter": {
+        "passed": 9,
+        "total": 9
+      },
+      "comparison": {
+        "passed": 5,
+        "total": 5
+      },
+      "negative": {
+        "passed": 1,
+        "total": 1
+      }
+    },
+    "tp": 18,
+    "fp": 0,
+    "fn": 0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1": 1.0,
+    "requested_fact_evidence": [
+      68,
+      68
+    ],
+    "actual_api_calls": 0,
+    "estimated_cost_cny": 0
+  },
+  "cases": [
+    {
+      "case_id": "dev-trusted-intent-012",
+      "historical_case_id": "rc3i-monitor-012",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        14,
+        14
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "display_size_inch",
+          "operator": "eq",
+          "normalized_value": 27.0,
+          "unit": "inch",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "尺寸正好27英寸",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "usb_c_video",
+          "operator": "eq",
+          "normalized_value": true,
+          "unit": null,
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "USB-C视频输入",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "benq-pd2705u-us",
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn",
+        "dell-u2723qe-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "display_size_inch",
+            "operator": "eq",
+            "value": 27.0,
+            "unit": "inch",
+            "source_text": "尺寸正好27英寸",
+            "span_start": 12,
+            "span_end": 20,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 6,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 72.943
+    },
+    {
+      "case_id": "dev-trusted-intent-013",
+      "historical_case_id": "rc3i-monitor-013",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        6,
+        6
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "refresh_rate_hz",
+          "operator": "gte",
+          "normalized_value": 120.0,
+          "unit": "Hz",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "刷新率至少120Hz",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "is_oled",
+          "operator": "eq",
+          "normalized_value": false,
+          "unit": null,
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "排除 OLED",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "benq-ex2710u-cn",
+        "dell-g2724d-cn",
+        "dell-u2724d-cn"
+      ],
+      "recommended_ids": [
+        "benq-ex2710u-cn",
+        "dell-g2724d-cn",
+        "dell-u2724d-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "refresh_rate_hz",
+            "operator": "gte",
+            "value": 120.0,
+            "unit": "Hz",
+            "source_text": "刷新率至少120Hz",
+            "span_start": 13,
+            "span_end": 23,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 32.833
+    },
+    {
+      "case_id": "dev-trusted-intent-014",
+      "historical_case_id": "rc3i-monitor-014",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        6,
+        6
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "width_mm",
+          "operator": "lte",
+          "normalized_value": 613.0,
+          "unit": "mm",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "宽度最多613毫米",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "usb_c_power_delivery_w",
+          "operator": "gte",
+          "normalized_value": 90.0,
+          "unit": "W",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "至少90w",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "dell-u2723qe-cn"
+      ],
+      "recommended_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn",
+        "dell-u2723qe-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "usb_c_power_delivery_w",
+            "operator": "gte",
+            "value": 90.0,
+            "unit": "W",
+            "source_text": "USB-C供电至少90W",
+            "span_start": 6,
+            "span_end": 18,
+            "resolved": true,
+            "reason": null
+          },
+          {
+            "field": "width_mm",
+            "operator": "lte",
+            "value": 613.0,
+            "unit": "mm",
+            "source_text": "宽度最多613毫米",
+            "span_start": 19,
+            "span_end": 28,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 34.59
+    },
+    {
+      "case_id": "dev-trusted-intent-015",
+      "historical_case_id": "rc3i-monitor-015",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "width_mm",
+          "operator": "lte",
+          "normalized_value": 605.0,
+          "unit": "mm",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "机身宽度最多605毫米",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "is_oled",
+          "operator": "eq",
+          "normalized_value": true,
+          "unit": null,
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "要求 OLED",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "recommended_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "width_mm",
+            "operator": "lte",
+            "value": 605.0,
+            "unit": "mm",
+            "source_text": "机身宽度最多605毫米",
+            "span_start": 13,
+            "span_end": 24,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 30.808
+    },
+    {
+      "case_id": "dev-trusted-intent-016",
+      "historical_case_id": "rc3i-monitor-016",
+      "query_origin": "public_original_from_preflight_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        6,
+        6
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "refresh_rate_hz",
+          "operator": "gte",
+          "normalized_value": 165.0,
+          "unit": "Hz",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "刷新率至少165Hz",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "display_size_inch",
+          "operator": "lte",
+          "normalized_value": 27.0,
+          "unit": "inch",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "尺寸最多27英寸",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "asus-pg27aqdm-cn",
+        "dell-g2724d-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "recommended_ids": [
+        "asus-pg27aqdm-cn",
+        "dell-g2724d-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "refresh_rate_hz",
+            "operator": "gte",
+            "value": 165.0,
+            "unit": "Hz",
+            "source_text": "刷新率至少165Hz",
+            "span_start": 13,
+            "span_end": 23,
+            "resolved": true,
+            "reason": null
+          },
+          {
+            "field": "display_size_inch",
+            "operator": "lte",
+            "value": 27.0,
+            "unit": "inch",
+            "source_text": "尺寸最多27英寸",
+            "span_start": 24,
+            "span_end": 32,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 40.292
+    },
+    {
+      "case_id": "dev-trusted-intent-017",
+      "historical_case_id": "rc3i-monitor-017",
+      "query_origin": "public_original_from_preflight_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        2,
+        2
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "resolution",
+          "operator": "eq",
+          "normalized_value": "5120x2880",
+          "unit": null,
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "5120x2880",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "usb_c_power_delivery_w",
+          "operator": "gte",
+          "normalized_value": 90.0,
+          "unit": "W",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "至少90w",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "asus-pa27jcv-cn"
+      ],
+      "recommended_ids": [
+        "asus-pa27jcv-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "usb_c_power_delivery_w",
+            "operator": "gte",
+            "value": 90.0,
+            "unit": "W",
+            "source_text": "USB-C供电至少90W",
+            "span_start": 29,
+            "span_end": 41,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 50.426
+    },
+    {
+      "case_id": "dev-trusted-intent-018",
+      "historical_case_id": "rc3i-monitor-018",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "width_mm",
+          "operator": "lte",
+          "normalized_value": 615.0,
+          "unit": "mm",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "宽度最多615毫米",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "usb_c_power_delivery_w",
+          "operator": "gte",
+          "normalized_value": 96.0,
+          "unit": "W",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "至少96w",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "recommended_ids": [
+        "asus-pa279crv-cn",
+        "asus-pa27jcv-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "width_mm",
+            "operator": "lte",
+            "value": 615.0,
+            "unit": "mm",
+            "source_text": "宽度最多615毫米",
+            "span_start": 6,
+            "span_end": 15,
+            "resolved": true,
+            "reason": null
+          },
+          {
+            "field": "usb_c_power_delivery_w",
+            "operator": "gte",
+            "value": 96.0,
+            "unit": "W",
+            "source_text": "USB-C供电至少96W",
+            "span_start": 16,
+            "span_end": 28,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 32.277
+    },
+    {
+      "case_id": "dev-trusted-intent-019",
+      "historical_case_id": "rc3i-monitor-019",
+      "query_origin": "public_original_from_preflight_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        2,
+        2
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "resolution",
+          "operator": "eq",
+          "normalized_value": "3840x2160",
+          "unit": null,
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "3840x2160",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "refresh_rate_hz",
+          "operator": "gte",
+          "normalized_value": 100.0,
+          "unit": "Hz",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "刷新率至少100Hz",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "benq-ex2710u-cn"
+      ],
+      "recommended_ids": [
+        "benq-ex2710u-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "refresh_rate_hz",
+            "operator": "gte",
+            "value": 100.0,
+            "unit": "Hz",
+            "source_text": "刷新率至少100Hz",
+            "span_start": 29,
+            "span_end": 39,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 34.548
+    },
+    {
+      "case_id": "dev-trusted-intent-020",
+      "historical_case_id": "rc3i-monitor-020",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "filter",
+      "passed": true,
+      "reasons": [],
+      "tp": 2,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [
+        {
+          "field": "refresh_rate_hz",
+          "operator": "gte",
+          "normalized_value": 240.0,
+          "unit": "Hz",
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "刷新率至少240Hz",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        },
+        {
+          "field": "is_oled",
+          "operator": "eq",
+          "normalized_value": true,
+          "unit": null,
+          "hard_or_soft": "hard",
+          "provenance": "current_input",
+          "source_text": "要求 OLED",
+          "source_turn": 1,
+          "confidence": 1.0,
+          "supported": true,
+          "active": true,
+          "ambiguous": false,
+          "note": null
+        }
+      ],
+      "candidate_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "recommended_ids": [
+        "asus-pg27aqdm-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "filter",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": [
+          {
+            "field": "refresh_rate_hz",
+            "operator": "gte",
+            "value": 240.0,
+            "unit": "Hz",
+            "source_text": "刷新率至少240Hz",
+            "span_start": 26,
+            "span_end": 36,
+            "resolved": true,
+            "reason": null
+          }
+        ]
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 33.975
+    },
+    {
+      "case_id": "dev-trusted-intent-021",
+      "historical_case_id": "rc3i-monitor-021",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "comparison",
+      "passed": true,
+      "reasons": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [],
+      "candidate_ids": [
+        "dell-g2724d-cn",
+        "dell-u2723qe-cn"
+      ],
+      "recommended_ids": [],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "comparison",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": {
+        "version": "proofpick-fact-completion-v1",
+        "completion_status": "complete",
+        "checked_count": 6,
+        "required_count": 6,
+        "answer_sufficient": true,
+        "matrix": [
+          {
+            "product_id": "dell-g2724d-cn",
+            "field": "width_mm",
+            "status": "verified_value",
+            "actual_value": 611.9,
+            "evidence_ids": [
+              "ev-dell-g2724d-cn-width-mm"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-g2724d-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-g2724d-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-g2724d-cn-width-mm",
+                "source_id": "src-dell-g2724d-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-g2724d-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "width_mm",
+                "value": "611.9",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-g2724d-cn",
+            "field": "refresh_rate_hz",
+            "status": "verified_value",
+            "actual_value": 165.0,
+            "evidence_ids": [
+              "ev-dell-g2724d-cn-refresh-rate-hz"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-g2724d-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-g2724d-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-g2724d-cn-refresh-rate-hz",
+                "source_id": "src-dell-g2724d-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-g2724d-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "refresh_rate_hz",
+                "value": "165.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-g2724d-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-dell-g2724d-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-g2724d-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-g2724d-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-g2724d-cn-region",
+                "source_id": "src-dell-g2724d-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-%E6%B8%B8%E6%88%8F%E6%98%BE%E7%A4%BA%E5%99%A8-g2724d/apd/210-bhxl/%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-g2724d-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-u2723qe-cn",
+            "field": "width_mm",
+            "status": "verified_value",
+            "actual_value": 611.4,
+            "evidence_ids": [
+              "ev-dell-u2723qe-cn-width-mm"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-u2723qe-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-u2723qe-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-u2723qe-cn-width-mm",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-u2723qe-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "width_mm",
+                "value": "611.4",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-u2723qe-cn",
+            "field": "refresh_rate_hz",
+            "status": "verified_value",
+            "actual_value": 60.0,
+            "evidence_ids": [
+              "ev-dell-u2723qe-cn-refresh-rate-hz"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-u2723qe-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-u2723qe-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-u2723qe-cn-refresh-rate-hz",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-u2723qe-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "refresh_rate_hz",
+                "value": "60.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-u2723qe-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-dell-u2723qe-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-u2723qe-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-u2723qe-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-u2723qe-cn-region",
+                "source_id": "src-dell-u2723qe-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-4k-usb-c-hub-%E6%98%BE%E7%A4%BA%E5%99%A8-u2723qe/apd/210-bdzj/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-u2723qe-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          }
+        ],
+        "checks": []
+      },
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": []
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 32.3
+    },
+    {
+      "case_id": "dev-trusted-intent-022",
+      "historical_case_id": "rc3i-monitor-022",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "comparison",
+      "passed": true,
+      "reasons": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [],
+      "candidate_ids": [
+        "asus-pg27aqdm-cn",
+        "dell-u2724d-cn"
+      ],
+      "recommended_ids": [],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "comparison",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": {
+        "version": "proofpick-fact-completion-v1",
+        "completion_status": "complete",
+        "checked_count": 6,
+        "required_count": 6,
+        "answer_sufficient": true,
+        "matrix": [
+          {
+            "product_id": "asus-pg27aqdm-cn",
+            "field": "resolution",
+            "status": "verified_value",
+            "actual_value": "2560x1440",
+            "evidence_ids": [
+              "ev-asus-pg27aqdm-cn-resolution"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "asus-pg27aqdm-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "asus-pg27aqdm-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pg27aqdm-cn-resolution",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "source_url": "https://rog.asus.com.cn/monitors/27-to-31-5-inches/rog-swift-oled-pg27aqdm/spec/",
+                "source_type": "official_product",
+                "model_id": "asus-pg27aqdm-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "resolution",
+                "value": "\"2560x1440\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "asus-pg27aqdm-cn",
+            "field": "display_size_inch",
+            "status": "verified_value",
+            "actual_value": 26.5,
+            "evidence_ids": [
+              "ev-asus-pg27aqdm-cn-display-size-inch"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "asus-pg27aqdm-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "asus-pg27aqdm-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pg27aqdm-cn-display-size-inch",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "source_url": "https://rog.asus.com.cn/monitors/27-to-31-5-inches/rog-swift-oled-pg27aqdm/spec/",
+                "source_type": "official_product",
+                "model_id": "asus-pg27aqdm-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "display_size_inch",
+                "value": "26.5",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "asus-pg27aqdm-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-asus-pg27aqdm-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "asus-pg27aqdm-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "asus-pg27aqdm-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pg27aqdm-cn-region",
+                "source_id": "src-asus-pg27aqdm-cn-spec",
+                "source_url": "https://rog.asus.com.cn/monitors/27-to-31-5-inches/rog-swift-oled-pg27aqdm/spec/",
+                "source_type": "official_product",
+                "model_id": "asus-pg27aqdm-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-u2724d-cn",
+            "field": "resolution",
+            "status": "verified_value",
+            "actual_value": "2560x1440",
+            "evidence_ids": [
+              "ev-dell-u2724d-cn-resolution"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-u2724d-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-u2724d-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-u2724d-cn-resolution",
+                "source_id": "src-dell-u2724d-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-u2724d-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "resolution",
+                "value": "\"2560x1440\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-u2724d-cn",
+            "field": "display_size_inch",
+            "status": "verified_value",
+            "actual_value": 27.0,
+            "evidence_ids": [
+              "ev-dell-u2724d-cn-display-size-inch"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-u2724d-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-u2724d-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-u2724d-cn-display-size-inch",
+                "source_id": "src-dell-u2724d-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-u2724d-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "display_size_inch",
+                "value": "27.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-u2724d-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-dell-u2724d-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-u2724d-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-u2724d-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-u2724d-cn-region",
+                "source_id": "src-dell-u2724d-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-ultrasharp-27-%E6%98%BE%E7%A4%BA%E5%99%A8-u2724d/apd/210-bkmy/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-u2724d-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          }
+        ],
+        "checks": []
+      },
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": []
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 31.793
+    },
+    {
+      "case_id": "dev-trusted-intent-023",
+      "historical_case_id": "rc3i-monitor-023",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "comparison",
+      "passed": true,
+      "reasons": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [],
+      "candidate_ids": [
+        "asus-pa27jcv-cn",
+        "lg-27gs95qe-b-cn"
+      ],
+      "recommended_ids": [],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "comparison",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": {
+        "version": "proofpick-fact-completion-v1",
+        "completion_status": "complete",
+        "checked_count": 6,
+        "required_count": 6,
+        "answer_sufficient": true,
+        "matrix": [
+          {
+            "product_id": "asus-pa27jcv-cn",
+            "field": "resolution",
+            "status": "verified_value",
+            "actual_value": "5120x2880",
+            "evidence_ids": [
+              "ev-asus-pa27jcv-cn-resolution"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "asus-pa27jcv-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "asus-pa27jcv-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pa27jcv-cn-resolution",
+                "source_id": "src-asus-pa27jcv-cn-manual",
+                "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+                "source_type": "official_manual",
+                "model_id": "asus-pa27jcv-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "resolution",
+                "value": "\"5120x2880\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "asus-pa27jcv-cn",
+            "field": "display_size_inch",
+            "status": "verified_value",
+            "actual_value": 27.0,
+            "evidence_ids": [
+              "ev-asus-pa27jcv-cn-display-size-inch"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "asus-pa27jcv-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "asus-pa27jcv-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pa27jcv-cn-display-size-inch",
+                "source_id": "src-asus-pa27jcv-cn-manual",
+                "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+                "source_type": "official_manual",
+                "model_id": "asus-pa27jcv-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "display_size_inch",
+                "value": "27.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "asus-pa27jcv-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-asus-pa27jcv-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "asus-pa27jcv-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "asus-pa27jcv-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-asus-pa27jcv-cn-region",
+                "source_id": "src-asus-pa27jcv-cn-manual",
+                "source_url": "https://dlcdnets.asus.com.cn/pub/ASUS/LCD%20Monitors/PA27JCV/PA27JCV_UM_SC.pdf?model=PA27JCV",
+                "source_type": "official_manual",
+                "model_id": "asus-pa27jcv-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "lg-27gs95qe-b-cn",
+            "field": "resolution",
+            "status": "verified_value",
+            "actual_value": "2560x1440",
+            "evidence_ids": [
+              "ev-lg-27gs95qe-b-cn-resolution"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "lg-27gs95qe-b-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "lg-27gs95qe-b-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-lg-27gs95qe-b-cn-resolution",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "source_url": "https://www.lg.com/cn/monitors/lg-27gs95qe-b",
+                "source_type": "official_product",
+                "model_id": "lg-27gs95qe-b-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "resolution",
+                "value": "\"2560x1440\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "lg-27gs95qe-b-cn",
+            "field": "display_size_inch",
+            "status": "verified_value",
+            "actual_value": 26.5,
+            "evidence_ids": [
+              "ev-lg-27gs95qe-b-cn-display-size-inch"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "lg-27gs95qe-b-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "lg-27gs95qe-b-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-lg-27gs95qe-b-cn-display-size-inch",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "source_url": "https://www.lg.com/cn/monitors/lg-27gs95qe-b",
+                "source_type": "official_product",
+                "model_id": "lg-27gs95qe-b-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "display_size_inch",
+                "value": "26.5",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "lg-27gs95qe-b-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-lg-27gs95qe-b-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "lg-27gs95qe-b-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "lg-27gs95qe-b-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-lg-27gs95qe-b-cn-region",
+                "source_id": "src-lg-27gs95qe-b-cn-product",
+                "source_url": "https://www.lg.com/cn/monitors/lg-27gs95qe-b",
+                "source_type": "official_product",
+                "model_id": "lg-27gs95qe-b-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          }
+        ],
+        "checks": []
+      },
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": []
+      },
+      "fake_planner_calls": 5,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 31.129
+    },
+    {
+      "case_id": "dev-trusted-intent-024",
+      "historical_case_id": "rc3i-monitor-024",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "comparison",
+      "passed": true,
+      "reasons": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [],
+      "candidate_ids": [
+        "benq-pd2725u-ca",
+        "dell-s2722qc-cn"
+      ],
+      "recommended_ids": [],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "comparison",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": {
+        "version": "proofpick-fact-completion-v1",
+        "completion_status": "complete",
+        "checked_count": 10,
+        "required_count": 10,
+        "answer_sufficient": true,
+        "matrix": [
+          {
+            "product_id": "benq-pd2725u-ca",
+            "field": "display_size_inch",
+            "status": "verified_value",
+            "actual_value": 27.0,
+            "evidence_ids": [
+              "ev-benq-pd2725u-ca-display-size-inch"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-pd2725u-ca",
+              "region": "CA",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-pd2725u-ca"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-pd2725u-ca-display-size-inch",
+                "source_id": "src-benq-pd2725u-ca-spec",
+                "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-pd2725u-ca",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CA",
+                "data_version": null,
+                "index_version": null,
+                "field": "display_size_inch",
+                "value": "27.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "benq-pd2725u-ca",
+            "field": "usb_c_video",
+            "status": "verified_value",
+            "actual_value": 1,
+            "evidence_ids": [
+              "ev-benq-pd2725u-ca-usb-c-video"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-pd2725u-ca",
+              "region": "CA",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-pd2725u-ca"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-pd2725u-ca-usb-c-video",
+                "source_id": "src-benq-pd2725u-ca-spec",
+                "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-pd2725u-ca",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CA",
+                "data_version": null,
+                "index_version": null,
+                "field": "usb_c_video",
+                "value": "true",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "benq-pd2725u-ca",
+            "field": "has_usb_c",
+            "status": "verified_value",
+            "actual_value": 1,
+            "evidence_ids": [
+              "ev-benq-pd2725u-ca-has-usb-c"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-pd2725u-ca",
+              "region": "CA",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-pd2725u-ca"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-pd2725u-ca-has-usb-c",
+                "source_id": "src-benq-pd2725u-ca-spec",
+                "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-pd2725u-ca",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CA",
+                "data_version": null,
+                "index_version": null,
+                "field": "has_usb_c",
+                "value": "true",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "benq-pd2725u-ca",
+            "field": "usb_c_power_delivery_w",
+            "status": "verified_value",
+            "actual_value": 65.0,
+            "evidence_ids": [
+              "ev-benq-pd2725u-ca-usb-c-power-delivery-w"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-pd2725u-ca",
+              "region": "CA",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-pd2725u-ca"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-pd2725u-ca-usb-c-power-delivery-w",
+                "source_id": "src-benq-pd2725u-ca-spec",
+                "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-pd2725u-ca",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CA",
+                "data_version": null,
+                "index_version": null,
+                "field": "usb_c_power_delivery_w",
+                "value": "65.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "benq-pd2725u-ca",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CA",
+            "evidence_ids": [
+              "ev-benq-pd2725u-ca-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-pd2725u-ca",
+              "region": "CA",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-pd2725u-ca"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-pd2725u-ca-region",
+                "source_id": "src-benq-pd2725u-ca-spec",
+                "source_url": "https://www.benq.com/en-ca/monitor/creative-pro/pd2725u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-pd2725u-ca",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CA",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CA\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-s2722qc-cn",
+            "field": "display_size_inch",
+            "status": "verified_value",
+            "actual_value": 27.0,
+            "evidence_ids": [
+              "ev-dell-s2722qc-cn-display-size-inch"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-s2722qc-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-s2722qc-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-s2722qc-cn-display-size-inch",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-s2722qc-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "display_size_inch",
+                "value": "27.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-s2722qc-cn",
+            "field": "usb_c_video",
+            "status": "verified_value",
+            "actual_value": 1,
+            "evidence_ids": [
+              "ev-dell-s2722qc-cn-usb-c-video"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-s2722qc-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-s2722qc-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-s2722qc-cn-usb-c-video",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-s2722qc-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "usb_c_video",
+                "value": "true",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-s2722qc-cn",
+            "field": "has_usb_c",
+            "status": "verified_value",
+            "actual_value": 1,
+            "evidence_ids": [
+              "ev-dell-s2722qc-cn-has-usb-c"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-s2722qc-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-s2722qc-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-s2722qc-cn-has-usb-c",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-s2722qc-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "has_usb_c",
+                "value": "true",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-s2722qc-cn",
+            "field": "usb_c_power_delivery_w",
+            "status": "verified_value",
+            "actual_value": 65.0,
+            "evidence_ids": [
+              "ev-dell-s2722qc-cn-usb-c-power-delivery-w"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-s2722qc-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-s2722qc-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-s2722qc-cn-usb-c-power-delivery-w",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-s2722qc-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "usb_c_power_delivery_w",
+                "value": "65.0",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "dell-s2722qc-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-dell-s2722qc-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "dell-s2722qc-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "dell-s2722qc-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-dell-s2722qc-cn-region",
+                "source_id": "src-dell-s2722qc-cn-product",
+                "source_url": "https://www.dell.com/zh-cn/shop/%E6%88%B4%E5%B0%94-27-4k-uhd-usb-c-%E6%98%BE%E7%A4%BA%E5%99%A8-s2722qc/apd/210-bgfw/%E6%88%B4%E5%B0%94%E6%98%BE%E7%A4%BA%E5%99%A8",
+                "source_type": "official_product",
+                "model_id": "dell-s2722qc-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          }
+        ],
+        "checks": []
+      },
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": []
+      },
+      "fake_planner_calls": 6,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 32.457
+    },
+    {
+      "case_id": "dev-trusted-intent-025",
+      "historical_case_id": "rc3i-monitor-025",
+      "query_origin": "reconstructed_from_executed_response",
+      "kind": "comparison",
+      "passed": true,
+      "reasons": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        4,
+        4
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [],
+      "candidate_ids": [
+        "benq-ex2710u-cn",
+        "lg-27up850k-w-cn"
+      ],
+      "recommended_ids": [],
+      "clarification_state": "not_required",
+      "pending_questions": [],
+      "task_type": "comparison",
+      "abstained": false,
+      "tool_path": [
+        {
+          "step": 1,
+          "tool": "set_requirements",
+          "status": "success"
+        },
+        {
+          "step": 2,
+          "tool": "text2sql",
+          "status": "success"
+        },
+        {
+          "step": 3,
+          "tool": "kb_search",
+          "status": "success"
+        },
+        {
+          "step": 4,
+          "tool": "evidence_check",
+          "status": "success"
+        },
+        {
+          "step": 5,
+          "tool": "finish_decision",
+          "status": "success"
+        }
+      ],
+      "fact_completion": {
+        "version": "proofpick-fact-completion-v1",
+        "completion_status": "complete",
+        "checked_count": 8,
+        "required_count": 8,
+        "answer_sufficient": true,
+        "matrix": [
+          {
+            "product_id": "benq-ex2710u-cn",
+            "field": "usb_c_video",
+            "status": "verified_value",
+            "actual_value": 0,
+            "evidence_ids": [
+              "ev-benq-ex2710u-cn-usb-c-video"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-ex2710u-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-ex2710u-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-ex2710u-cn-usb-c-video",
+                "source_id": "src-benq-ex2710u-cn-spec",
+                "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-ex2710u-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "usb_c_video",
+                "value": "false",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "benq-ex2710u-cn",
+            "field": "is_oled",
+            "status": "verified_value",
+            "actual_value": 0,
+            "evidence_ids": [
+              "ev-benq-ex2710u-cn-is-oled"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-ex2710u-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-ex2710u-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-ex2710u-cn-is-oled",
+                "source_id": "src-benq-ex2710u-cn-spec",
+                "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-ex2710u-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "is_oled",
+                "value": "false",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "benq-ex2710u-cn",
+            "field": "has_usb_c",
+            "status": "verified_value",
+            "actual_value": 0,
+            "evidence_ids": [
+              "ev-benq-ex2710u-cn-has-usb-c"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-ex2710u-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-ex2710u-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-ex2710u-cn-has-usb-c",
+                "source_id": "src-benq-ex2710u-cn-spec",
+                "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-ex2710u-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "has_usb_c",
+                "value": "false",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "benq-ex2710u-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-benq-ex2710u-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "benq-ex2710u-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "benq-ex2710u-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-benq-ex2710u-cn-region",
+                "source_id": "src-benq-ex2710u-cn-spec",
+                "source_url": "https://www.benq.com.cn/zh-cn/monitor/gaming/ex2710u/spec.html",
+                "source_type": "official_product",
+                "model_id": "benq-ex2710u-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "lg-27up850k-w-cn",
+            "field": "usb_c_video",
+            "status": "verified_value",
+            "actual_value": 1,
+            "evidence_ids": [
+              "ev-lg-27up850k-w-cn-usb-c-video"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "lg-27up850k-w-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "lg-27up850k-w-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-lg-27up850k-w-cn-usb-c-video",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+                "source_type": "official_product",
+                "model_id": "lg-27up850k-w-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "usb_c_video",
+                "value": "true",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "lg-27up850k-w-cn",
+            "field": "is_oled",
+            "status": "verified_value",
+            "actual_value": 0,
+            "evidence_ids": [
+              "ev-lg-27up850k-w-cn-is-oled"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "lg-27up850k-w-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "lg-27up850k-w-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-lg-27up850k-w-cn-is-oled",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+                "source_type": "official_product",
+                "model_id": "lg-27up850k-w-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "is_oled",
+                "value": "false",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "lg-27up850k-w-cn",
+            "field": "has_usb_c",
+            "status": "verified_value",
+            "actual_value": 1,
+            "evidence_ids": [
+              "ev-lg-27up850k-w-cn-has-usb-c"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "lg-27up850k-w-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "lg-27up850k-w-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-lg-27up850k-w-cn-has-usb-c",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+                "source_type": "official_product",
+                "model_id": "lg-27up850k-w-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "has_usb_c",
+                "value": "true",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          },
+          {
+            "product_id": "lg-27up850k-w-cn",
+            "field": "region",
+            "status": "verified_value",
+            "actual_value": "CN",
+            "evidence_ids": [
+              "ev-lg-27up850k-w-cn-region"
+            ],
+            "reason": "字段有同型号、同地区证据且满足条件。",
+            "identity": {
+              "model_id": "lg-27up850k-w-cn",
+              "region": "CN",
+              "data_version": "v1-catalog",
+              "domain_id": "monitor",
+              "product_id": "lg-27up850k-w-cn"
+            },
+            "evidence": [
+              {
+                "evidence_id": "ev-lg-27up850k-w-cn-region",
+                "source_id": "src-lg-27up850k-w-cn-product",
+                "source_url": "https://www.lg.com/cn/monitors/lg-27up850k-w",
+                "source_type": "official_product",
+                "model_id": "lg-27up850k-w-cn",
+                "product_id": null,
+                "domain_id": null,
+                "family_id": null,
+                "configuration_id": null,
+                "region": "CN",
+                "data_version": null,
+                "index_version": null,
+                "field": "region",
+                "value": "\"CN\"",
+                "location": "官方资料对应规格项；公开仓库仅保留自制摘要",
+                "effective_time": "2026-08-26"
+              }
+            ]
+          }
+        ],
+        "checks": []
+      },
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": true,
+        "obligations": []
+      },
+      "fake_planner_calls": 6,
+      "fake_kb_calls": 1,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 29.463
+    },
+    {
+      "case_id": "dev-trusted-intent-026",
+      "historical_case_id": "rc3i-monitor-026",
+      "query_origin": "public_original_from_evaluation_report",
+      "kind": "negative",
+      "passed": true,
+      "reasons": [],
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "requested_fact_evidence": [
+        0,
+        0
+      ],
+      "missing_pairs": [],
+      "invalid_bindings": [],
+      "effective_hard_constraints": [],
+      "candidate_ids": [],
+      "recommended_ids": [],
+      "clarification_state": "pending",
+      "pending_questions": [
+        "请确认可执行的要求：准备买显示器，宽度不能太大。请先问清楚具体能放多宽，再开始筛选。（explicit_confirmation_required）。"
+      ],
+      "task_type": "filter",
+      "abstained": true,
+      "tool_path": [],
+      "fact_completion": null,
+      "requirement_coverage": {
+        "version": "input-requirement-coverage-v1",
+        "complete": false,
+        "obligations": [
+          {
+            "field": "confirmation",
+            "operator": null,
+            "value": null,
+            "unit": null,
+            "source_text": "准备买显示器，宽度不能太大。请先问清楚具体能放多宽，再开始筛选。",
+            "span_start": 0,
+            "span_end": 32,
+            "resolved": false,
+            "reason": "explicit_confirmation_required"
+          }
+        ]
+      },
+      "fake_planner_calls": 0,
+      "fake_kb_calls": 0,
+      "actual_api_calls": 0,
+      "estimated_cost_cny": 0,
+      "local_latency_ms": 7.173
+    }
+  ]
+}

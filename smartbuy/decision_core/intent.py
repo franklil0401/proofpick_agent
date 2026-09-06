@@ -9,6 +9,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from smartbuy.domain_packs import LoadedDomainPack
 from smartbuy.identity import ProductScopeType, QueryIntent, ResolvedProductScope
+from smartbuy.decision_core.query_semantics import analyze_trusted_query_intent
 
 
 _COMPARISON = (
@@ -106,20 +107,25 @@ class QueryUnderstandingEngine:
 
     def analyze(self, query: str, scope: ResolvedProductScope) -> QueryUnderstanding:
         folded = _fold(query)
+        signals = analyze_trusted_query_intent(query)
         requested = self.requested_fields(query)
         included_exact = {
             item.product_id for item in scope.references
             if item.polarity.value == "include" and item.product_id
         }
-        if scope.scope_type == ProductScopeType.OPEN_UNKNOWN_PRODUCT:
+        if signals.ask_first:
+            intent = QueryIntent.CLARIFICATION_REQUIRED
+        elif scope.scope_type == ProductScopeType.OPEN_UNKNOWN_PRODUCT:
             intent = QueryIntent.OPEN_PRODUCT_RESEARCH
         elif scope.resolution_status.value == "needs_clarification":
             intent = QueryIntent.CLARIFICATION_REQUIRED
-        elif scope.scope_type == ProductScopeType.EXPLICIT_COMPARISON or any(
-            marker in folded for marker in _COMPARISON
-        ):
+        elif signals.purchase_requested:
+            intent = QueryIntent.RECOMMENDATION_FILTER
+        elif signals.task_type == "fact":
+            intent = QueryIntent.EXACT_FACT_VERIFICATION
+        elif scope.scope_type == ProductScopeType.EXPLICIT_COMPARISON or signals.comparison_requested:
             intent = QueryIntent.EXPLICIT_COMPARISON
-        elif any(marker in folded for marker in _CLARIFY):
+        elif any(marker in folded for marker in _CLARIFY if "先" not in marker):
             intent = QueryIntent.CLARIFICATION_REQUIRED
         elif (
             any(marker in folded for marker in _QUALITATIVE_WITHOUT_THRESHOLD)
@@ -162,7 +168,8 @@ class QueryUnderstandingEngine:
         reason = None
         if intent == QueryIntent.CLARIFICATION_REQUIRED:
             reason = (
-                scope.resolution_reason
+                "explicit_clarification_language" if signals.ask_first
+                else scope.resolution_reason
                 if scope.resolution_status.value == "needs_clarification"
                 else "qualitative_threshold_missing"
                 if any(marker in folded for marker in _QUALITATIVE_WITHOUT_THRESHOLD)

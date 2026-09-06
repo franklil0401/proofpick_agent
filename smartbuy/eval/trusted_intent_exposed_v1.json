@@ -1,0 +1,124 @@
+{
+  "version": "trusted-intent-response-reconstruction-v1",
+  "classification": "exposed_development_regression_not_independent_retest",
+  "source_commit": "faa1b108771959949a2f1a71937c03860685daeb",
+  "production_baseline": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "source_files": [
+    "smartbuy/eval/trusted79_independent/results/first.jsonl",
+    "smartbuy/eval/trusted79_independent/results/first_scores.json",
+    "smartbuy/docs/v2/trusted79_independent_evaluation_report.md"
+  ],
+  "limitations": [
+    "原始first.jsonl未保存大多数完整用户输入；11条只能由已执行响应摘要、source_text和覆盖义务重建。",
+    "016、017、019使用预澄清响应中的完整输入；026使用已公开报告原文。",
+    "仅核验已执行15条所暴露语义；未读取剩余64条、selection、原始题库、金标目录或独立评分器。",
+    "Fake LLM和Fake KB不衡量真实模型路由、检索召回或端到端泛化，不替代历史4/15。",
+    "断言是本轮明确列出的开发合同，不是原独立评分器。"
+  ],
+  "cases": [
+    {
+      "case_id": "dev-trusted-intent-012", "historical_case_id": "rc3i-monitor-012", "kind": "filter",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "请从已收录显示器中筛选：尺寸正好27英寸，需要USB-C视频输入。不限制地区，保持各配置独立。",
+      "expected_constraints": [["display_size_inch", "eq", 27], ["usb_c_video", "eq", true]],
+      "requested_fields": ["display_size_inch", "usb_c_video"],
+      "expected_ids": ["asus-pa279crv-cn", "asus-pa27jcv-cn", "benq-pd2705u-us", "benq-pd2725u-ca", "dell-s2722qc-cn", "dell-u2723qe-cn", "lg-27up850k-w-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-013", "historical_case_id": "rc3i-monitor-013", "kind": "filter",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "筛选显示器：排除OLED，刷新率至少120Hz。不限制地区，保持配置独立。",
+      "expected_constraints": [["is_oled", "eq", false], ["refresh_rate_hz", "gte", 120]],
+      "requested_fields": ["is_oled", "refresh_rate_hz"],
+      "expected_ids": ["benq-ex2710u-cn", "dell-g2724d-cn", "dell-u2724d-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-014", "historical_case_id": "rc3i-monitor-014", "kind": "filter",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "筛选显示器：USB-C供电至少90W，宽度最多613毫米。不限制地区，保持配置独立。",
+      "expected_constraints": [["usb_c_power_delivery_w", "gte", 90], ["width_mm", "lte", 613]],
+      "requested_fields": ["usb_c_power_delivery_w", "width_mm"],
+      "expected_ids": ["asus-pa279crv-cn", "asus-pa27jcv-cn", "dell-u2723qe-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-015", "historical_case_id": "rc3i-monitor-015", "kind": "filter",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "筛选显示器：要求OLED，机身宽度最多605毫米。不限制地区，保持配置独立。",
+      "expected_constraints": [["is_oled", "eq", true], ["width_mm", "lte", 605]],
+      "requested_fields": ["is_oled", "width_mm"],
+      "expected_ids": ["asus-pg27aqdm-cn", "lg-27gs95qe-b-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-016", "historical_case_id": "rc3i-monitor-016", "kind": "filter",
+      "query_origin": "public_original_from_preflight_response",
+      "query": "请从已收录的显示器中挑选：刷新率至少165Hz，尺寸最多27英寸。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "expected_constraints": [["refresh_rate_hz", "gte", 165], ["display_size_inch", "lte", 27]],
+      "requested_fields": ["refresh_rate_hz", "display_size_inch"],
+      "expected_ids": ["asus-pg27aqdm-cn", "dell-g2724d-cn", "lg-27gs95qe-b-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-017", "historical_case_id": "rc3i-monitor-017", "kind": "filter",
+      "query_origin": "public_original_from_preflight_response",
+      "query": "请从已收录的显示器中挑选：分辨率必须为5120x2880，USB-C供电至少90W。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "expected_constraints": [["resolution", "eq", "5120x2880"], ["usb_c_power_delivery_w", "gte", 90]],
+      "requested_fields": ["resolution", "usb_c_power_delivery_w"], "expected_ids": ["asus-pa27jcv-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-018", "historical_case_id": "rc3i-monitor-018", "kind": "filter",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "筛选显示器：宽度最多615毫米，USB-C供电至少96W。不限制地区，保持配置独立。",
+      "expected_constraints": [["width_mm", "lte", 615], ["usb_c_power_delivery_w", "gte", 96]],
+      "requested_fields": ["width_mm", "usb_c_power_delivery_w"], "expected_ids": ["asus-pa279crv-cn", "asus-pa27jcv-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-019", "historical_case_id": "rc3i-monitor-019", "kind": "filter",
+      "query_origin": "public_original_from_preflight_response",
+      "query": "请从已收录的显示器中挑选：分辨率必须为3840x2160，刷新率至少100Hz。不限制地区，保持各配置独立，给出符合条件的选择及依据。",
+      "expected_constraints": [["resolution", "eq", "3840x2160"], ["refresh_rate_hz", "gte", 100]],
+      "requested_fields": ["resolution", "refresh_rate_hz"], "expected_ids": ["benq-ex2710u-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-020", "historical_case_id": "rc3i-monitor-020", "kind": "filter",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "筛选显示器：要求OLED，没有USB-C接口也可以，刷新率至少240Hz。不限制地区，保持配置独立。",
+      "expected_constraints": [["is_oled", "eq", true], ["refresh_rate_hz", "gte", 240]],
+      "requested_fields": ["is_oled", "refresh_rate_hz"], "expected_ids": ["asus-pg27aqdm-cn", "lg-27gs95qe-b-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-021", "historical_case_id": "rc3i-monitor-021", "kind": "comparison",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "比较dell-u2723qe-cn与dell-g2724d-cn的机身宽度和刷新率。只比较参数，不要把对象当作推荐商品。",
+      "expected_constraints": [], "requested_fields": ["width_mm", "refresh_rate_hz"], "expected_ids": ["dell-g2724d-cn", "dell-u2723qe-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-022", "historical_case_id": "rc3i-monitor-022", "kind": "comparison",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "比较dell-u2724d-cn与asus-pg27aqdm-cn的分辨率和屏幕尺寸。只比较参数，不要把对象当作推荐商品。",
+      "expected_constraints": [], "requested_fields": ["resolution", "display_size_inch"], "expected_ids": ["asus-pg27aqdm-cn", "dell-u2724d-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-023", "historical_case_id": "rc3i-monitor-023", "kind": "comparison",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "比较asus-pa27jcv-cn与lg-27gs95qe-b-cn的分辨率和屏幕尺寸。只比较参数，不要把对象当作推荐商品。",
+      "expected_constraints": [], "requested_fields": ["resolution", "display_size_inch"], "expected_ids": ["asus-pa27jcv-cn", "lg-27gs95qe-b-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-024", "historical_case_id": "rc3i-monitor-024", "kind": "comparison",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "比较dell-s2722qc-cn与benq-pd2725u-ca的屏幕尺寸和USB-C视频输入能力。只比较参数，不要把对象当作推荐商品。",
+      "expected_constraints": [], "requested_fields": ["display_size_inch", "usb_c_video"], "expected_ids": ["benq-pd2725u-ca", "dell-s2722qc-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-025", "historical_case_id": "rc3i-monitor-025", "kind": "comparison",
+      "query_origin": "reconstructed_from_executed_response",
+      "query": "比较lg-27up850k-w-cn与benq-ex2710u-cn的USB-C视频输入能力和OLED属性。只比较参数，不要把对象当作推荐商品。",
+      "expected_constraints": [], "requested_fields": ["usb_c_video", "is_oled"], "expected_ids": ["benq-ex2710u-cn", "lg-27up850k-w-cn"]
+    },
+    {
+      "case_id": "dev-trusted-intent-026", "historical_case_id": "rc3i-monitor-026", "kind": "negative",
+      "query_origin": "public_original_from_evaluation_report",
+      "query": "准备买显示器，宽度不能太大。请先问清楚具体能放多宽，再开始筛选。",
+      "expected_constraints": [], "requested_fields": [], "expected_ids": []
+    }
+  ]
+}

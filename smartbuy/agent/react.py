@@ -26,7 +26,8 @@ from smartbuy.constraints import (
     VERIFIER_VERSION,
 )
 from smartbuy.constraint_proposals.models import ConstraintResolution
-from smartbuy.decision_core.requirements import audit_requirement_coverage
+from smartbuy.decision_core.requirements import audit_requirement_coverage, clarification_obligations, RequirementCoverage
+from smartbuy.decision_core.query_semantics import analyze_trusted_query_intent
 from smartbuy.domain_packs import DomainPackLoader, DEFAULT_MONITOR_PACK
 from smartbuy.identity import resolve_catalog_identity
 from smartbuy.domain import (
@@ -967,6 +968,11 @@ class PurchaseDecisionAgent:
         normalized = query.lower()
         if any(token in normalized for token in ("阳台", "浇水器", "与显示器无关")):
             return "unrelated"
+        # Interpret the original clauses, not a model summary or a purchase
+        # keyword inside a negated comparison instruction.
+        signals = analyze_trusted_query_intent(query)
+        if signals.task_type in {"filter", "fact", "comparison"}:
+            return signals.task_type
         if any(token in normalized for token in ("当前价格", "现在", "库存", "多少钱")):
             return "dynamic"
         # A factual verification subtask cannot erase an explicit purchase
@@ -1060,16 +1066,9 @@ class PurchaseDecisionAgent:
 
     def _preflight_clarification_reason(self, query: str) -> str | None:
         compact = re.sub(r"\s+", "", query.casefold())
-        if any(
-            marker in compact
-            for marker in (
-                "别太大", "别太小", "大一点", "小一点", "高一点", "低一点",
-                "久一点", "轻一点", "便宜一点", "窄一点", "窄一些",
-                "强一点", "强一些", "好一点", "好一些", "性能强一点",
-                "性能强一些", "通话好一点", "通话好一些", "不能太高", "不要太重",
-            )
-        ) and not re.search(r"\d", compact):
-            return "qualitative_threshold_missing"
+        obligations = clarification_obligations(query, self.requirement_pack)
+        if obligations:
+            return obligations[0]["reason"]
 
         database_path = getattr(self.tools.get("text2sql"), "database_path", None)
         if not database_path:
@@ -1144,6 +1143,11 @@ class PurchaseDecisionAgent:
         )
         state.constraint_resolution = constraint_resolution
         state.product_scope = self._catalog_scope(query)
+        unresolved = clarification_obligations(query, self.requirement_pack)
+        if unresolved:
+            return await self._incomplete_requirements_report(
+                state, RequirementCoverage(unresolved), started, event_callback,
+            )
         preflight_reason = (
             self._preflight_clarification_reason(query)
             if constraint_resolution is None else None

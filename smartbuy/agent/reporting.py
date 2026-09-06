@@ -15,6 +15,7 @@ from smartbuy.domain import (
 )
 from smartbuy.constraints import VerificationStatus
 from smartbuy.agent.fact_completion import from_agent_state
+from smartbuy.decision_core.query_semantics import analyze_trusted_query_intent
 
 
 _FIELD_QUERY_MARKERS: dict[str, tuple[str, ...]] = {
@@ -120,6 +121,27 @@ def build_report(
             usage=usage,
             open_research=state.open_research,
         )
+    # Defense in depth: a stale/wrong upstream label cannot grant purchase
+    # authority that the original input explicitly withholds.
+    signals = analyze_trusted_query_intent(state.query)
+    if signals.ask_first:
+        return DecisionReport(
+            request_summary=state.query[:300], task_type="filter",
+            clarification_state="pending", pending_questions=["请先确认尚未明确的条件，确认后再开始筛选。"],
+            abstained=True, recommended_model_ids=[],
+            stop_reason="用户要求先澄清；不得根据剩余或空条件发布推荐。",
+            tool_call_count=state.tool_call_count, trace=state.traces, latency_ms=latency_ms,
+            usage={**usage, "result_status": "needs_clarification"},
+        )
+    if signals.task_type in {"fact", "comparison"} and state.requirements.task_type in {"filter", "dynamic"}:
+        state = state.model_copy(deep=True)
+        state.requirements.task_type = signals.task_type
+        state.requirements.hard_constraints = []
+        for constraint in state.constraint_set.constraints:
+            if constraint.hard_or_soft.value == "hard":
+                constraint.active = False
+                constraint.note = "query_field_not_purchase_constraint"
+        usage = {**usage, "intent_guard": "original_input_overrides_purchase_label"}
     # A comparison is an evidence-bearing analysis, not a purchase decision.
     # It may populate candidate/evidence sections, but only an explicit filter
     # or dynamic purchase request may publish recommended model ids.
@@ -143,7 +165,9 @@ def build_report(
         relevant_fields &= _query_relevant_fields(state.query)
     relevant_fields.update(active_fields)
     if completion is not None:
-        relevant_fields = {row["field"] for row in completion["matrix"]}
+        # No resolved product does not erase the user's requested fields.
+        # Preserve explicit unknowns while the (empty) matrix remains incomplete.
+        relevant_fields = {row["field"] for row in completion["matrix"]} or relevant_fields
     model_ids = (
         list(verification_by_model)
         if verification_by_model

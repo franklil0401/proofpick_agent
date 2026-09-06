@@ -48,7 +48,7 @@ from smartbuy.decision_core.intent import QueryUnderstandingEngine
 from smartbuy.decision_core.scope import CandidateScopeReducer
 from smartbuy.decision_core.result import ResultClassificationInput, classify_result
 from smartbuy.decision_core.safety import CandidateChainViolation, assert_candidate_chain
-from smartbuy.decision_core.requirements import audit_requirement_coverage
+from smartbuy.decision_core.requirements import audit_requirement_coverage, clarification_obligations
 from smartbuy.agent.fact_completion import build_fact_completion
 from smartbuy.memory import DomainPreferenceMemoryStore
 from smartbuy.orchestration.contracts import EventCallback, emit_event
@@ -1086,7 +1086,7 @@ class DomainDecisionAgent:
                 "requested_fields": understanding.requested_fields,
             },
         )
-        if scope.resolution_status in {
+        if not clarification_obligations(query, self.pack) and scope.resolution_status in {
             ProductScopeResolutionStatus.OPEN_REQUIRED,
             ProductScopeResolutionStatus.NO_MATCH,
         }:
@@ -1124,7 +1124,7 @@ class DomainDecisionAgent:
                 },
                 latency_ms=(time.perf_counter() - started) * 1000,
             )
-        if (
+        if clarification_obligations(query, self.pack) or (
             scope.resolution_status == ProductScopeResolutionStatus.NEEDS_CLARIFICATION
             and understanding.intent != QueryIntent.RECOMMENDATION_FILTER
         ):

@@ -1,0 +1,77 @@
+{
+  "classification": "offline_development_failure_audit_not_independent_evaluation",
+  "baseline_commit": "02e97a2c793ba75dfad5ece15e5df665652808bf",
+  "independent_result_commit": "faa1b108771959949a2f1a71937c03860685daeb",
+  "independent_first_unchanged": {
+    "planned": 79,
+    "executed": 15,
+    "passed": 4,
+    "failed": 11,
+    "unrun_not_read": 64,
+    "critical_failure": "explicit_ask_first_bypassed_5_llm_calls_12_recommendations"
+  },
+  "development_red_phases": [
+    {
+      "suite": "test_trusted_clarification_portfolio",
+      "passed": 4,
+      "failed": 8,
+      "reason": "Ask-first missed; unrelated numbers hide qualitative thresholds; negated purchase actions invert comparison intent."
+    },
+    {
+      "suite": "test_trusted_requirement_obligations_initial",
+      "passed": 5,
+      "failed": 3,
+      "reason": "The must-clause audit loses its subject and uses ASCII boundaries for Chinese aliases."
+    },
+    {
+      "suite": "test_trusted_query_intent_initial",
+      "passed": 3,
+      "failed": 19,
+      "reason": "12 behavioral failures and 7 initially missing shared-helper imports; not 19 model failures."
+    },
+    {
+      "suite": "test_trusted_constraint_semantics_initial",
+      "passed": 14,
+      "failed": 20,
+      "reason": "Size operators, optional interface cancellation, derived interface hard fields and double negation."
+    },
+    {
+      "suite": "intent_word_boundaries_added",
+      "passed": 22,
+      "failed": 3,
+      "reason": "Negative wishes and action-vs-property word boundaries."
+    },
+    {
+      "suite": "intent_parenthetical_clauses_added",
+      "passed": 28,
+      "failed": 2,
+      "reason": "Unfinished negated actions interrupted by comma-delimited parenthetical objects."
+    },
+    {
+      "suite": "intent_parenthetical_description_added",
+      "passed": 30,
+      "failed": 1,
+      "reason": "A comparison noun inside a parenthetical object prematurely ends the negated action scope."
+    },
+    {
+      "suite": "mid_integration_full_suite",
+      "passed": 757,
+      "failed": 6,
+      "reason": "Four in-progress new intent regressions, one empty-scope dynamic fact reporting regression, and one historical fifty-case Proposal compatibility regression. Kept as an intermediate run, not the final code's result."
+    },
+    {
+      "suite": "memory_requirement_masking_added",
+      "passed": 8,
+      "failed": 2,
+      "reason": "A previous session or long-term resolution value falsely resolves a new undefined explicit requirement."
+    }
+  ],
+  "unchanged_assertions": true,
+  "paid_api_calls": 0,
+  "estimated_cost_cny": 0,
+  "notes": [
+    "These suites expanded during development and overlap; their counts must not be added as a task success metric.",
+    "The independent report and first responses remain only on their original fixed commit, not overwritten or merged.",
+    "The unrelated independent tuple/list audit incident does not justify a production behavior change."
+  ]
+}
